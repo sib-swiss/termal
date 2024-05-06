@@ -1,4 +1,5 @@
 use std::io::{stdout, Result};
+use std::env;
 
 use crossterm::{
     event::{self, KeyCode, KeyEventKind},
@@ -38,12 +39,16 @@ fn make_span(c: &str) -> Span {
 }
 
 fn main() -> Result<()> {
+    let args: Vec<String> = env::args().collect();
+    
+    let fasta_file: &str = &args.get(1).expect("Expecting 1 arg");
+
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
     terminal.clear()?;
 
-    let app = App::new("./data/test2.fas");
+    let app = App::new(fasta_file);
     let saln: Vec<&str> = app.alignment.sequences.iter().map(String::as_str).collect();
 
     // main loop

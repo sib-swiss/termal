@@ -1,6 +1,11 @@
 Termal
 ======
 
+1. [x] Try alignments that do not fit on the screen, and see how Ratatui handles
+   them. Result: pretty well, in fact. I tried an alignment with sequences too
+   long for a screen, and they are displayed by Paragraph without a glitch, and
+   automatically handle screen resizing, which is pretty cool.
+1. [x] Pass the name of the alignment file as positional argument.
 3. [x] Read a Fasta File (see ~/projects/rasta) and display it in the Alignment
    box.
 1. [x] Define a struct for alignments. It should have a list of headers and one
