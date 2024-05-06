@@ -16,6 +16,7 @@ use ratatui::{
 
 use std::io::{stdout, Result};
 
+mod alignment;
 
 struct App {
     headers:   Vec<String>,
@@ -48,7 +49,7 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
     terminal.clear()?;
 
-    let mut app = App::new();
+    let app = App::new();
     let saln: Vec<&str> = app.sequences.iter().map(String::as_str).collect();
 
     // main loop
