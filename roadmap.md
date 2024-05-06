@@ -1,8 +1,9 @@
 Termal
 ======
 
-3. [ ] Read a Fasta File (see ~/projects/rasta)
-1. [ ] Define a struct for alignments. It should have a list of headers and one
+3. [x] Read a Fasta File (see ~/projects/rasta) and display it in the Alignment
+   box.
+1. [x] Define a struct for alignments. It should have a list of headers and one
    of sequences, and there should be a constructor that takes a file path. This
    should be in a separate file.
 2. [x] Display a rectangular array of chars, but using Ratatui widgets 

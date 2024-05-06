@@ -1,3 +1,4 @@
+use std::io::{stdout, Result};
 
 use crossterm::{
     event::{self, KeyCode, KeyEventKind},
@@ -14,27 +15,20 @@ use ratatui::{
     widgets::{Block,Borders,Paragraph},
 };
 
-use std::io::{stdout, Result};
+use rasta::read_fasta_file;
 
 mod alignment;
+use crate::alignment::Alignment;
 
 struct App {
-    headers:   Vec<String>,
-    sequences: Vec<String>,
+    alignment: Alignment,
 }
 
 impl App {
-    fn new() -> App {
+    fn new(path: &str) -> App {
         App {
-            headers: vec![
-                String::from("seq1"),
-            ],
-            sequences: vec![
-                String::from("ATGC"),
-                String::from("A-GC"),
-                String::from("A-CC"),
-                String::from("A-GC"),
-            ]
+            alignment: Alignment::new(read_fasta_file(path)
+                           .expect(format!("File {} not found", path).as_str()))
         }
     }
 }
@@ -49,8 +43,8 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
     terminal.clear()?;
 
-    let app = App::new();
-    let saln: Vec<&str> = app.sequences.iter().map(String::as_str).collect();
+    let app = App::new("./data/test2.fas");
+    let saln: Vec<&str> = app.alignment.sequences.iter().map(String::as_str).collect();
 
     // main loop
     loop {
