@@ -36,7 +36,8 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
-    let saln: Vec<&str> = app.alignment.sequences.iter().map(String::as_str).collect();
+    let str_aln: Vec<&str> = app.alignment.sequences
+                             .iter().map(String::as_str).collect();
 
     // main loop
     loop {
@@ -45,12 +46,9 @@ fn main() -> Result<()> {
             let area = frame.size();
             let title = format!(" {} ", app.filename.as_str());
             let aln_block = Block::default().title(title).borders(Borders::ALL);
-            let mut laln: Vec<Line> = saln.iter().map(|l| Line::from(*l)).collect();
-
-            let span = Line::from(make_span("G"));
-            laln.push(span);
-
-            let text = Text::from(laln);
+            let line_aln: Vec<Line> = str_aln
+                .iter().map(|l| Line::from(*l)).collect();
+            let text = Text::from(line_aln);
             let para = Paragraph::new(text)
                 .white()
                 .block(aln_block)
@@ -67,6 +65,7 @@ fn main() -> Result<()> {
                     match key.code {
                         KeyCode::Char('j') => { app.top_line += 1; },
                         KeyCode::Char('k') => { app.top_line -= 1; },
+                        // KeyCode::Char('k') => app.scroll_one_line_up(),
                         KeyCode::Char('l') => { app.leftmost_col += 1; },
                         KeyCode::Char('h') => { app.leftmost_col -= 1; },
                         KeyCode::Char('q') => break,
