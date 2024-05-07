@@ -1,3 +1,6 @@
+mod app;
+mod alignment;
+
 use std::io::{stdout, Result};
 use std::env;
 
@@ -16,23 +19,7 @@ use ratatui::{
     widgets::{Block,Borders,Paragraph},
 };
 
-use rasta::read_fasta_file;
-
-mod alignment;
-use crate::alignment::Alignment;
-
-struct App {
-    alignment: Alignment,
-}
-
-impl App {
-    fn new(path: &str) -> App {
-        App {
-            alignment: Alignment::new(read_fasta_file(path)
-                           .expect(format!("File {} not found", path).as_str()))
-        }
-    }
-}
+use crate::app::App;
 
 fn make_span(c: &str) -> Span {
     Span::styled(c, Style::default().fg(Color::Red))
@@ -48,7 +35,7 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
     terminal.clear()?;
 
-    let app = App::new(fasta_file);
+    let mut app = App::new(fasta_file);
     let saln: Vec<&str> = app.alignment.sequences.iter().map(String::as_str).collect();
 
     // main loop
@@ -56,16 +43,18 @@ fn main() -> Result<()> {
         // Draw UI
         terminal.draw(|frame| {
             let area = frame.size();
-            let aln_block = Block::default().title("Alignment").borders(Borders::ALL);
+            let title = format!(" {} ", app.filename.as_str());
+            let aln_block = Block::default().title(title).borders(Borders::ALL);
             let mut laln: Vec<Line> = saln.iter().map(|l| Line::from(*l)).collect();
 
-            // let spanv: Vec<Span> = saln[0].chars().map(|c| make_span(c.to_string().as_str())).collect();
             let span = Line::from(make_span("G"));
             laln.push(span);
 
             let text = Text::from(laln);
-            //let text = Text::from_iter(&app.sequences);
-            let para = Paragraph::new(text).white().block(aln_block);
+            let para = Paragraph::new(text)
+                .white()
+                .block(aln_block)
+                .scroll((app.top_line, app.leftmost_col));
             frame.render_widget(
                 para,
                 area,
@@ -74,12 +63,16 @@ fn main() -> Result<()> {
         // handle events
         if event::poll(std::time::Duration::from_millis(16))? {
             if let event::Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press 
-                    && (key.code == KeyCode::Char('q')
-                        ||
-                        key.code == KeyCode::Char('Q'))
-                {
-                    break;
+                if key.kind == KeyEventKind::Press {
+                    match key.code {
+                        KeyCode::Char('j') => { app.top_line += 1; },
+                        KeyCode::Char('k') => { app.top_line -= 1; },
+                        KeyCode::Char('l') => { app.leftmost_col += 1; },
+                        KeyCode::Char('h') => { app.leftmost_col -= 1; },
+                        KeyCode::Char('q') => break,
+                        KeyCode::Char('Q') => break,
+                        _ => {}
+                    }
                 }
             }
         }
@@ -89,17 +82,3 @@ fn main() -> Result<()> {
     disable_raw_mode()?;
     Ok(())
 }
-
-/*
-fn main() {
-    //print!("{esc}[2J{esc}[1;1H", esc = 27 as char);
-    print!("{}", termion::clear::All);
-    println!("ATGCCGTAGTGAA");
-    println!("ATGCCGTAGTGAA");
-    println!("ATGCCGTAGTGAA");
-    println!("ATGCCGTAGTGAA");
-    println!("ATGCCGTAGTGAA");
-    println!("ATGCCGTAGTGAA");
-    println!("Size is {:?}", terminal_size().unwrap());
-}
-*/

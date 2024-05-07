@@ -1,6 +1,8 @@
 Termal
 ======
 
+1. [ ] Move the alignment (for now: only moves down...)
+1. [x] Put the App in its own module.
 1. [x] Try alignments that do not fit on the screen, and see how Ratatui handles
    them. Result: pretty well, in fact. I tried an alignment with sequences too
    long for a screen, and they are displayed by Paragraph without a glitch, and
