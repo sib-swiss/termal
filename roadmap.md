@@ -1,6 +1,34 @@
 Termal
 ======
 
+Closure problem
+---------------
+
+At some point the code fails with the following message:
+
+```
+error[E0502]: cannot borrow `app` as mutable because it is also borrowed as immutable
+  --> src/main.rs:68:47
+   |
+39 |     let str_aln: Vec<&str> = app.alignment.sequences
+   |                              ----------------------- immutable borrow occurs here
+...
+49 |             let line_aln: Vec<Line> = str_aln
+   |                                       ------- immutable borrow later captured here by closure
+...
+68 |                         KeyCode::Char('k') => app.scroll_one_line_up(),
+   |                                               ^^^^^^^^^^^^^^^^^^^^^^^^ mutable borrow occurs here
+
+```
+
+As I understand, this is because the closure passed to `terminal.draw(|frame|)`
+borrows `app`, and that the `app.scroll_one_line_up()` also borrows it, and
+mutably at that.
+
+TODO
+====
+
+1. [ ] See if using a separate `ui()` function might solve the closure problem.
 1. [ ] Move the alignment (for now: only moves down...)
 1. [x] Put the App in its own module.
 1. [x] Try alignments that do not fit on the screen, and see how Ratatui handles
