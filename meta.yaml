@@ -1,0 +1,6 @@
+geometry:
+  - top=30mm
+  - left=30mm
+  - right=30mm
+
+fontfamily: DejaVuSerif

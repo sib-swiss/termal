@@ -24,4 +24,8 @@ impl App {
     pub fn scroll_one_line_up(&mut self) {
         if self.top_line > 0 { self.top_line -= 1; }
     }
+
+    pub fn scroll_one_col_left(&mut self) {
+        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
+    }
 }

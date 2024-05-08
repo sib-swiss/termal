@@ -14,6 +14,7 @@ use crossterm::{
 };
 
 use ratatui::{
+    Frame,
     prelude::{Color, CrosstermBackend, Stylize,
         Line, Span, Style, Terminal, Text},
     widgets::{Block,Borders,Paragraph},
@@ -23,6 +24,26 @@ use crate::app::App;
 
 fn make_span(c: &str) -> Span {
     Span::styled(c, Style::default().fg(Color::Red))
+}
+
+// Draw UI
+fn ui(f: &mut Frame, app: &App) {
+    let area = f.size();
+    let title = format!(" {} ", app.filename.as_str());
+    let aln_block = Block::default().title(title).borders(Borders::ALL);
+    let line_aln: Vec<Line> = app.alignment.sequences
+        .iter()
+        .map(|l| Line::from(String::as_str(l)))
+        .collect();
+    let text = Text::from(line_aln);
+    let para = Paragraph::new(text)
+        .white()
+        .block(aln_block)
+        .scroll((app.top_line, app.leftmost_col));
+    f.render_widget(
+        para,
+        area,
+    );
 }
 
 fn main() -> Result<()> {
@@ -36,38 +57,20 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
-    let str_aln: Vec<&str> = app.alignment.sequences
-                             .iter().map(String::as_str).collect();
 
     // main loop
     loop {
-        // Draw UI
-        terminal.draw(|frame| {
-            let area = frame.size();
-            let title = format!(" {} ", app.filename.as_str());
-            let aln_block = Block::default().title(title).borders(Borders::ALL);
-            let line_aln: Vec<Line> = str_aln
-                .iter().map(|l| Line::from(*l)).collect();
-            let text = Text::from(line_aln);
-            let para = Paragraph::new(text)
-                .white()
-                .block(aln_block)
-                .scroll((app.top_line, app.leftmost_col));
-            frame.render_widget(
-                para,
-                area,
-            );
-        })?;
+        terminal.draw(|f| ui(f, &app))?;
         // handle events
         if event::poll(std::time::Duration::from_millis(16))? {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
                         KeyCode::Char('j') => { app.top_line += 1; },
-                        KeyCode::Char('k') => { app.top_line -= 1; },
-                        // KeyCode::Char('k') => app.scroll_one_line_up(),
+                        // KeyCode::Char('k') => { app.top_line -= 1; },
+                        KeyCode::Char('k') => app.scroll_one_line_up(),
                         KeyCode::Char('l') => { app.leftmost_col += 1; },
-                        KeyCode::Char('h') => { app.leftmost_col -= 1; },
+                        KeyCode::Char('h') => app.scroll_one_col_left(),
                         KeyCode::Char('q') => break,
                         KeyCode::Char('Q') => break,
                         _ => {}

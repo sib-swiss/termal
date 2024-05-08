@@ -23,12 +23,25 @@ error[E0502]: cannot borrow `app` as mutable because it is also borrowed as immu
 
 As I understand, this is because the closure passed to `terminal.draw(|frame|)`
 borrows `app`, and that the `app.scroll_one_line_up()` also borrows it, and
-mutably at that.
+mutably at that. In this case the closure directly draws the UI.
+
+This was solved by adopting the same architecture as in the examples (except the
+simplest ones), namely to have the closure passed to termal call a function
+(`ui()`) that itself takes a ref to App:
+
+```rust
+terminal.draw(|f| ui(f, &app))?;
+```
+
+The ref does not live past the call to `ui()`, so there is no extra ref to `App`
+by the time a mutable borrow occurs in `scroll_one_line_up()`.
+
 
 TODO
 ====
 
-1. [ ] See if using a separate `ui()` function might solve the closure problem.
+1. [x] See if using a separate `ui()` function might solve the closure problem.
+   (It does).
 1. [ ] Move the alignment (for now: only moves down...)
 1. [x] Put the App in its own module.
 1. [x] Try alignments that do not fit on the screen, and see how Ratatui handles
