@@ -22,8 +22,22 @@ use ratatui::{
 
 use crate::app::App;
 
-fn make_span(c: &str) -> Span {
-    Span::styled(c, Style::default().fg(Color::Red))
+fn to_spans(line: &str) -> Vec<Span> {
+    let spans = line.chars().map(|c| Span::raw(c.to_string())
+                                            .green()
+                                            ).collect();
+
+    spans
+}
+
+fn line_aln(seqr: Vec<&str>) -> Vec<Line> {
+    let line_aln: Vec<Line> = seqr
+        .into_iter()
+        .map(|l| {
+            Line::from(to_spans(l))
+        })
+        .collect();
+    line_aln
 }
 
 // Draw UI
@@ -36,11 +50,9 @@ fn ui(f: &mut Frame, app: &mut App) {
     let title = format!(" {} ({} sequences of {} residues) ",
         app.filename.as_str(), app.num_seq(), app.aln_len());
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let line_aln: Vec<Line> = app.alignment.sequences
-        .iter()
-        .map(|l| Line::from(String::as_str(l)))
-        .collect();
-    let text = Text::from(line_aln);
+    let srefs: Vec<&str> = app.alignment.sequences.iter().map(String::as_ref).collect();
+    let seq_lines: Vec<Line> = line_aln(srefs);
+    let text = Text::from(seq_lines);
     let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block)
