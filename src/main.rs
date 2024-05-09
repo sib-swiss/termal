@@ -33,7 +33,7 @@ fn ui(f: &mut Frame, app: &mut App) {
             Direction::Vertical,
             [Constraint::Fill(1), Constraint::Length(3)])
         .split(area);
-    let title = format!(" {} ({} sequences of {} residues )",
+    let title = format!(" {} ({} sequences of {} residues) ",
         app.filename.as_str(), app.num_seq(), app.aln_len());
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let line_aln: Vec<Line> = app.alignment.sequences
