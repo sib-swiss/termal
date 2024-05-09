@@ -18,6 +18,10 @@ impl Alignment {
         }
         aln
     }
+
+    pub fn num_seq(&self) -> usize { self.sequences.len() }
+
+    pub fn aln_len(&self) -> usize { self.sequences[0].len() }
 }
 
 #[cfg(test)]

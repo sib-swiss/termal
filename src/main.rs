@@ -15,8 +15,8 @@ use crossterm::{
 
 use ratatui::{
     Frame,
-    prelude::{Color, CrosstermBackend, Stylize,
-        Line, Span, Style, Terminal, Text},
+    prelude::{Color, Constraint, CrosstermBackend, Direction,
+        Layout, Line, Span, Style, Stylize, Terminal, Text},
     widgets::{Block,Borders,Paragraph},
 };
 
@@ -27,23 +27,33 @@ fn make_span(c: &str) -> Span {
 }
 
 // Draw UI
-fn ui(f: &mut Frame, app: &App) {
+fn ui(f: &mut Frame, app: &mut App) {
     let area = f.size();
-    let title = format!(" {} ", app.filename.as_str());
+    let layout = Layout::new(
+            Direction::Vertical,
+            [Constraint::Fill(1), Constraint::Length(3)])
+        .split(area);
+    let title = format!(" {} ({} sequences of {} residues )",
+        app.filename.as_str(), app.num_seq(), app.aln_len());
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let line_aln: Vec<Line> = app.alignment.sequences
         .iter()
         .map(|l| Line::from(String::as_str(l)))
         .collect();
     let text = Text::from(line_aln);
-    let para = Paragraph::new(text)
+    let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block)
         .scroll((app.top_line, app.leftmost_col));
-    f.render_widget(
-        para,
-        area,
-    );
+    let msg_block = Block::default().borders(Borders::ALL);
+    let msg_para = Paragraph::new(format!("{:?}", layout[0].as_size()))
+        .white()
+        .block(msg_block);
+    f.render_widget(seq_para, layout[0]);
+    f.render_widget(msg_para, layout[1]);
+
+    app.set_seq_para_height(layout[0].as_size().height - 2); // -2: borders
+    app.set_seq_para_width(layout[0].as_size().width - 2);
 }
 
 fn main() -> Result<()> {
@@ -60,17 +70,24 @@ fn main() -> Result<()> {
 
     // main loop
     loop {
-        terminal.draw(|f| ui(f, &app))?;
+        terminal.draw(|f| ui(f, &mut app))?;
         // handle events
-        if event::poll(std::time::Duration::from_millis(16))? {
+        if event::poll(std::time::Duration::from_millis(100))? {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
-                        KeyCode::Char('j') => { app.top_line += 1; },
-                        // KeyCode::Char('k') => { app.top_line -= 1; },
+                        KeyCode::Char('j') => app.scroll_one_line_down(),
+                        KeyCode::Char('G') => app.jump_to_bottom(),
+
                         KeyCode::Char('k') => app.scroll_one_line_up(),
-                        KeyCode::Char('l') => { app.leftmost_col += 1; },
+                        KeyCode::Char('g') => app.jump_to_top(),
+
+                        KeyCode::Char('l') => app.scroll_one_col_right(),
+                        KeyCode::Char('$') => app.jump_to_end(),
+
                         KeyCode::Char('h') => app.scroll_one_col_left(),
+                        KeyCode::Char('^') => app.jump_to_begin(),
+
                         KeyCode::Char('q') => break,
                         KeyCode::Char('Q') => break,
                         _ => {}

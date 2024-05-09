@@ -40,6 +40,11 @@ by the time a mutable borrow occurs in `scroll_one_line_up()`.
 TODO
 ====
 
+1. [x] Provide shortcuts to begin, end, top, and bottom.
+1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
+   visible.
+1. [x] Prevent scrolling past the top or left margins (corrdinates become
+   negative, which causes a panic as they are usize).
 1. [x] See if using a separate `ui()` function might solve the closure problem.
    (It does).
 1. [ ] Move the alignment (for now: only moves down...)
