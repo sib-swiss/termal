@@ -48,9 +48,21 @@ impl App {
         if self.leftmost_col > 0 { self.leftmost_col -= 1; }
     }
 
-    fn max_top_line(&self) -> u16 {  self.num_seq() - self.seq_para_height }
+    fn max_top_line(&self) -> u16 {
+        if self.num_seq() >= self.seq_para_height {
+            self.num_seq() - self.seq_para_height
+        } else {
+            0
+        }
+    }
 
-    fn max_leftmost_col(&self) -> u16 {  self.aln_len() - self.seq_para_width }
+    fn max_leftmost_col(&self) -> u16 {
+        if self.aln_len() >= self.seq_para_width {
+            self.aln_len() - self.seq_para_width
+        } else {
+            0
+        }
+    }
 
     pub fn scroll_one_line_down(&mut self) {
       if self.top_line < self.max_top_line() { self.top_line += 1; }
