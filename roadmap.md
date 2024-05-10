@@ -40,6 +40,7 @@ by the time a mutable borrow occurs in `scroll_one_line_up()`.
 TODO
 ====
 
+1. [ ] Move ui code to a separate module.
 1. [x] Provide shortcuts to begin, end, top, and bottom.
 1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
    visible.
