@@ -35,6 +35,7 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
+    let mut tui = UI::new();
 
     // main loop
     loop {
