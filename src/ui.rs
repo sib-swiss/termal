@@ -11,16 +11,19 @@ pub struct UI<'a> {
     aln_para: Paragraph<'a>
 }
 
-fn to_spans(line: &str) -> Vec<Span> {
+fn to_spans<'a>(line: String) -> Vec<Span<'a>> {
     let spans = line.chars().map(|c| Span::raw(c.to_string())
                                             .green()
                                             ).collect();
-
     spans
 }
 
-fn line_aln(seqr: Vec<&str>) -> Vec<Line> {
-    let line_aln: Vec<Line> = seqr
+fn one_line<'a>(l: String) -> Line<'a> {
+    l.into()
+}
+
+pub fn line_aln<'a>(seq_vec: Vec<String>) -> Vec<Line<'a>> {
+    let line_aln: Vec<Line> = seq_vec
         .into_iter()
         .map(|l| {
             Line::from(to_spans(l))
@@ -29,8 +32,13 @@ fn line_aln(seqr: Vec<&str>) -> Vec<Line> {
     line_aln
 }
 
+pub fn aln_text(seq_lines_vec: Vec<Line>) -> Text {
+    let text = Text::from(seq_lines_vec);
+    text
+}
+
 // Draw UI
-pub fn ui(f: &mut Frame, app: &mut App) {
+pub fn ui(f: &mut Frame, app: &mut App, text: Text) {
     let area = f.size();
     let layout = Layout::new(
             Direction::Vertical,
@@ -39,9 +47,6 @@ pub fn ui(f: &mut Frame, app: &mut App) {
     let title = format!(" {} ({} sequences of {} residues) ",
         app.filename.as_str(), app.num_seq(), app.aln_len());
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let srefs: Vec<&str> = app.alignment.sequences.iter().map(String::as_ref).collect();
-    let seq_lines: Vec<Line> = line_aln(srefs);
-    let text = Text::from(seq_lines);
     let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block)

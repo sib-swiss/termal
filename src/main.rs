@@ -22,7 +22,7 @@ use ratatui::{
 };
 
 use crate::app::App;
-use crate::ui::ui;
+use crate::ui::{UI, aln_text, line_aln, ui};
 
 fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -35,11 +35,14 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
-    let mut tui = UI::new();
+    let seqs_cp: Vec<String> = app.alignment.sequences.clone();
+    let seq_lines: Vec<Line> = line_aln(seqs_cp);
+    let seq_text = aln_text(seq_lines);
+    //let mut tui = UI::new();
 
     // main loop
     loop {
-        terminal.draw(|f| ui(f, &mut app))?;
+        terminal.draw(|f| ui(f, &mut app, seq_text.clone()))?;
         // handle events
         if event::poll(std::time::Duration::from_millis(100))? {
             if let event::Event::Key(key) = event::read()? {

@@ -36,11 +36,106 @@ terminal.draw(|f| ui(f, &app))?;
 The ref does not live past the call to `ui()`, so there is no extra ref to `App`
 by the time a mutable borrow occurs in `scroll_one_line_up()`.
 
+Mutable ref Problem
+-------------------
+
+```
+error[E0502]: cannot borrow `app` as mutable because it is also borrowed as immutable
+  --> src/main.rs:44:23
+   |
+38 |     let srefs: Vec<&str> = app.alignment.sequences.iter().map(String::as_ref).c...
+   |                            ----------------------- immutable borrow occurs here
+...
+44 |         terminal.draw(|f| ui(f, &mut app, &seq_lines))?;
+   |                       ^^^            ---   --------- immutable borrow later captured here by closure
+   |                       |              |
+   |                       |              second borrow occurs due to use of `app` in closure
+   |                       mutable borrow occurs here
+```
+
+This is because I try to borrow from `app` (actually, its sequences, which are
+`String`s) both immutably and mutably, which is of course _verboten_. Now
+there's many ways to address this:
+
+* Only borrow immutably. This would mean that updates to the app would have to
+  be done after the lifetime of the immutable borrow(s).
+* Have the UI own a copy of the strings, so it does not need to borrow them.
+  That's an additional `clone()`, but it would only have to be done once. Maybe
+  some of the clonings (such as when constructiong the `Alignment` struct) could
+  be bypassed.
+
+Missing Lifetime Specifier, `<'static>` hint
+--------------------------------------------
+
+```
+error[E0106]: missing lifetime specifier
+  --> src/ui.rs:21:27
+   |
+21 | fn one_line(l: String) -> Line {
+   |                           ^^^^ expected named lifetime parameter
+   |
+   = help: this function's return type contains a borrowed value, but there is no value for it to be borrowed from
+help: consider using the `'static` lifetime, but this is uncommon unless you're returning a borrowed value from a `const` or a `static`, or if you will only have owned values
+   |
+21 | fn one_line(l: String) -> Line<'static> {
+```
+
+The `one_line()` function is very simple:
+
+```bash
+fn one_line(l: String) -> Line { 
+    l.into()
+}
+```
+
+The interesting thing is that the compiler doesn't care what's going on inside
+the function: even if I comment out the only line, I get the same error.  This
+means it can spot the error simply by looking at the types of the argument and
+return value.
+
+So let's look more closely at what a `Line` looks like (from [the Ratatui
+doc](https://docs.rs/ratatui/latest/ratatui/text/struct.Line.html)):
+
+```rust
+pub struct Line<'a> {
+    pub spans: Vec<Span<'a>>,
+    pub style: Style,
+    pub alignment: Option<Alignment>,
+}
+```
+
+All right: it contains (among other things) a vector of Spans which must have
+the same lifetime as itself. What does `Span` look like?
+
+```rust
+pub struct Span<'a> {
+    pub content: Cow<'a, str>,
+    pub style: Style,
+}
+```
+
+Ok, a `Cow` is a type of smart pointer that implements _clone-on-write_ (hence
+the name, I imagine). 
+
+Right. I confess I don't quite understand why the compiler suggests a _static_
+lifetime. And I'm pretty sure a static lifetime _won't_ do, since I don't want
+the alignment baked in the binary (this would limit the program to a single,
+fixed alignment, which seems rather pointless). So what would happen if I
+supplied a non-static lifetime?
+
+```bash
+fn one_line<'a>(l: String) -> Line<'a> { 
+    l.into()
+}
+```
+
+This seems to work - for now.
 
 TODO
 ====
 
-1. [ ] Move ui code to a separate module.
+1. [ ]
+1. [x] Move ui code to a separate module.
 1. [x] Provide shortcuts to begin, end, top, and bottom.
 1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
    visible.
