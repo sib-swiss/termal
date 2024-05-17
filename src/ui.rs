@@ -11,42 +11,32 @@ pub struct UI<'a> {
     aln_para: Paragraph<'a>
 }
 
-fn to_spans<'a>(line: String) -> Vec<Span<'a>> {
-    let spans = line.chars().map(|c| Span::raw(c.to_string())
-                                            .green()
-                                            ).collect();
-    spans
-}
-
-fn one_line<'a>(l: String) -> Line<'a> {
-    l.into()
-}
-
-pub fn line_aln<'a>(seq_vec: Vec<String>) -> Vec<Line<'a>> {
-    let line_aln: Vec<Line> = seq_vec
-        .into_iter()
-        .map(|l| {
-            Line::from(to_spans(l))
-        })
-        .collect();
-    line_aln
-}
-
-pub fn aln_text(seq_lines_vec: Vec<Line>) -> Text {
-    let text = Text::from(seq_lines_vec);
-    text
-}
-
 // Draw UI
-pub fn ui(f: &mut Frame, app: &mut App, text: Text) {
+pub fn ui(f: &mut Frame, app: &mut App) {
     let area = f.size();
     let layout = Layout::new(
             Direction::Vertical,
             [Constraint::Fill(1), Constraint::Length(3)])
         .split(area);
-    let title = format!(" {} ({} sequences of {} residues) ",
-        app.filename.as_str(), app.num_seq(), app.aln_len());
+    let title = format!(" {} ({} sequences of {} residues), showing (s{}, c{}) - (s{}, c{}) ",
+        app.filename.as_str(), app.num_seq(), app.aln_len(),
+        app.top_line, app.leftmost_col, 
+        app.top_line + f.size().width, app.leftmost_col + f.size().height);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
+    let nseqskip: usize = app.top_line.into();
+    let nseqtake: usize = f.size().height.into();
+    let text: Vec<Line> = app.alignment.sequences.iter()
+        .skip(nseqskip).take(nseqtake)
+        .map(|l| {
+        // TODO: inject the coordinates based on top_line, leftmost_col, panel width, and panel
+        // height.
+        let nskip: usize = app.leftmost_col.into();
+        let ntake: usize = f.size().width.into();
+        let lref: Vec<Span> = l.chars()
+            .skip(nskip).take(ntake)
+            .map(|c| Span::raw(c.to_string())).collect();
+        Line::from(lref)
+    }).collect();
     let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block)

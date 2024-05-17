@@ -134,7 +134,8 @@ This seems to work - for now.
 TODO
 ====
 
-1. [ ]
+1. [ ] Try constructing Paragraph only from the parts of the sequences that have
+   to be displayed --- this should avoid `clone()`s.
 1. [x] Move ui code to a separate module.
 1. [x] Provide shortcuts to begin, end, top, and bottom.
 1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
