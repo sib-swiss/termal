@@ -134,8 +134,18 @@ This seems to work - for now.
 TODO
 ====
 
-1. [ ] Try constructing Paragraph only from the parts of the sequences that have
+1. [ ] To avoid computing the Color of every visible residue at every keystroke,
+   _store_ those colours in a Vec<Vec<Color>> beforehand.
+1. [-] Try storing the whole alignment's characters (with the corresponding
+   Colors) in a Buffer => Won't work:: the number of Cells in a Buffer is a u16,
+   and therefore limited to 65,535.  Thus, storing all the alignment in a Buffer
+   will not work for larger alignments.
+1. [x] Try constructing Paragraph only from the parts of the sequences that have
    to be displayed --- this should avoid `clone()`s.
+   [ ] Try putting the whole alignment into a Paragraph upfront, then scrolling
+   it into position => Not sur eif this is possible. The constructors for Span,
+   Line, and Paragraph all seem to consume their arguments; I tried WidgetRefs
+   and StatefulWidgetRefs, to no avail.
 1. [x] Move ui code to a separate module.
 1. [x] Provide shortcuts to begin, end, top, and bottom.
 1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
@@ -144,7 +154,7 @@ TODO
    negative, which causes a panic as they are usize).
 1. [x] See if using a separate `ui()` function might solve the closure problem.
    (It does).
-1. [ ] Move the alignment (for now: only moves down...)
+1. [x] Move the alignment (for now: only moves down...)
 1. [x] Put the App in its own module.
 1. [x] Try alignments that do not fit on the screen, and see how Ratatui handles
    them. Result: pretty well, in fact. I tried an alignment with sequences too
@@ -157,7 +167,7 @@ TODO
    of sequences, and there should be a constructor that takes a file path. This
    should be in a separate file.
 2. [x] Display a rectangular array of chars, but using Ratatui widgets 
-   try that last one for now)
 1. [x] Explore TUI libraries (tried a few, including Cursive and Ratatui - will
+   try that last one for now)
 1. [x] Display a rectangular array of characters at the top left corner of the screen.
 

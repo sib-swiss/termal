@@ -35,12 +35,13 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
+    let mut app_ui = UI::new(&app);
 
     // main loop
     loop {
-        terminal.draw(|f| ui(f, &mut app))?;
+        terminal.draw(|f| ui(f, &mut app, &mut app_ui))?;
         // handle events
-        if event::poll(std::time::Duration::from_millis(100))? {
+        if event::poll(std::time::Duration::from_millis(16))? {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
@@ -67,5 +68,6 @@ fn main() -> Result<()> {
     
     stdout().execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
+
     Ok(())
 }
