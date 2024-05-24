@@ -37,41 +37,24 @@ fn aa_color_scheme_lesk(aa: char) -> Color {
 
 // Draw UI
 pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
-    let mut nskip: usize = 0;
-    let mut ntake: usize = 0;
     let area = f.size();
+    let nskip = app.leftmost_col.into();
+    let ntake = (f.size().width - 2).into();
+    let nseqskip: usize = app.top_line.into();
+    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence area
     let layout = Layout::new(
             Direction::Vertical,
             [Constraint::Fill(1), Constraint::Length(3)])
         .split(area);
-    let title = format!("(s{}, c{}) - (s{}, c{}) ",
-        app.top_line, app.leftmost_col, 
-        app.top_line + f.size().height, app.leftmost_col + f.size().width);
-    let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let nseqskip: usize = app.top_line.into();
-    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence area
-                                                  // instead
-    let text: Vec<Line> = app.alignment.sequences.iter()
-        .skip(nseqskip).take(nseqtake)
-        .map(|l| {
-        nskip = app.leftmost_col.into();
-        ntake = (f.size().width - 2).into();
-        let lref: Vec<Span> = l.chars()
-            .skip(nskip).take(ntake)
-            .map(|c| Span::styled(c.to_string(), aa_color_scheme_lesk(c))).collect();
-        Line::from(lref)
-    }).collect();
+    let title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
 
-    // TODO: Below loop should iterate only on visible part, using skip() and take() as in the
-    // above loop.
+    let aln_block = Block::default().title(title).borders(Borders::ALL);
 
     let mut ztext: Vec<Line> = Vec::new();
     let lzip = app.alignment.sequences.iter().zip(
         app_ui.res_colours.iter()
     ).skip(nseqskip).take(nseqtake);
     for (seq, seq_colours) in lzip {
-        nskip = app.leftmost_col.into();
-        ntake = (f.size().width - 2).into();
         let czip = seq.chars().zip(seq_colours.iter())
             .skip(nskip).take(ntake);
         let mut spans: Vec<Span> = Vec::new();
