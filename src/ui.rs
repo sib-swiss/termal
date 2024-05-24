@@ -62,18 +62,25 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         Line::from(lref)
     }).collect();
 
+    // TODO: Below loop should iterate only on visible part, using skip() and take() as in the
+    // above loop.
+
     let mut ztext: Vec<Line> = Vec::new();
     let lzip = app.alignment.sequences.iter().zip(
-        app_ui.res_colours.iter());
+        app_ui.res_colours.iter()
+    ).skip(nseqskip).take(nseqtake);
     for (seq, seq_colours) in lzip {
-        let spans: Vec<Span> = seq.chars().zip(seq_colours.iter())
-            .map(|(chr, col)| Span::styled(chr.to_string(), *col))
-            .collect();
+        nskip = app.leftmost_col.into();
+        ntake = (f.size().width - 2).into();
+        let czip = seq.chars().zip(seq_colours.iter())
+            .skip(nskip).take(ntake);
+        let mut spans: Vec<Span> = Vec::new();
+        for (chr, col) in czip {
+                spans.push(Span::styled(chr.to_string(), *col));
+        }
         ztext.push(Line::from(spans));
     }
 
-    // TODO: rewrite above loop so that colour is _looked up_ in UI.res_colours instead of
-    // computed.
     let seq_para = Paragraph::new(ztext)
         .white()
         .block(aln_block);
