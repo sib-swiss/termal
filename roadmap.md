@@ -134,7 +134,12 @@ This seems to work - for now.
 TODO
 ====
 
-1. [ ] To avoid computing the Color of every visible residue at every keystroke,
+1. [ ] See about computing a "summary" screen. This should toggle between
+   summary and residue views.
+   * [ ] implement a "funnel" function that selects _n_ indices out of _l_ so as
+     to spread them as evenly as possible. This will be used to select sequences
+     and columns for the zoom-out.
+1. [x] To avoid computing the Color of every visible residue at every keystroke,
    _store_ those colours in a Vec<Vec<Color>> beforehand.
 1. [-] Try storing the whole alignment's characters (with the corresponding
    Colors) in a Buffer => Won't work:: the number of Cells in a Buffer is a u16,
