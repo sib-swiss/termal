@@ -36,8 +36,8 @@ mod tests {
         assert_eq!("seq1", aln1.headers[0]);
         assert_eq!("seq2", aln1.headers[1]);
         assert_eq!("seq3", aln1.headers[2]);
-        assert_eq!("GAATTC", aln1.sequences[0]);
-        assert_eq!("TTGCCGGCAA", aln1.sequences[1]);
-        assert_eq!("TATAAT", aln1.sequences[2]);
+        assert_eq!("TTGCCG-CGA", aln1.sequences[0]);
+        assert_eq!("TTCCCGGCGA", aln1.sequences[1]);
+        assert_eq!("TTACCG-CAA", aln1.sequences[2]);
     }
 }
