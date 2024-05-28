@@ -136,11 +136,16 @@ TODO
 
 1. [ ] See about computing a "summary" screen. This should toggle between
    summary and residue views.
-   * [ ] implement a "funnel" function that selects _n_ indices out of _l_ so as
+   * [x] implement a "every-nth" function that selects _n_ indices out of _l_ so as
      to spread them as evenly as possible. This will be used to select sequences
      and columns for the zoom-out.
 1. [x] To avoid computing the Color of every visible residue at every keystroke,
    _store_ those colours in a Vec<Vec<Color>> beforehand.
+   * [ ] ... come to think of it, if we're going to look up the colour of
+     all residues on screen, why not just use a residue -> Color map? That
+     would be far easier than storing every single position's colour (for
+     the whole alignment, no less!), and probably still be faster than
+     calling a function every time.
 1. [-] Try storing the whole alignment's characters (with the corresponding
    Colors) in a Buffer => Won't work:: the number of Cells in a Buffer is a u16,
    and therefore limited to 65,535.  Thus, storing all the alignment in a Buffer
