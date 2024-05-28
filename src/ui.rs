@@ -99,4 +99,9 @@ mod tests {
     fn test_every_nth_2() {
         assert_eq!(vec![0,5,9], every_nth(10,3));
     }
+
+    #[test]
+    fn test_every_nth_3() {
+        assert_eq!(vec![0,1,2,3,4], every_nth(5,5));
+    }
 }
