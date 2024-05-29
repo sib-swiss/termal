@@ -141,11 +141,16 @@ TODO
      and columns for the zoom-out.
 1. [x] To avoid computing the Color of every visible residue at every keystroke,
    _store_ those colours in a Vec<Vec<Color>> beforehand.
-   * [ ] ... come to think of it, if we're going to look up the colour of
+   * [x] ... come to think of it, if we're going to look up the colour of
      all residues on screen, why not just use a residue -> Color map? That
      would be far easier than storing every single position's colour (for
      the whole alignment, no less!), and probably still be faster than
      calling a function every time.
+     => Not visibly much faster, but at least the fan doesn't start whirring as
+     soon as I start scrolling (in debug mode; release mode never causes fan
+     whirring), as it did up to now (whether when getting the colour through a
+     function or by precomputing them all). Different terminals also seem to
+     scroll better or worse (e.g.  alacritty is one of the fastest).
 1. [-] Try storing the whole alignment's characters (with the corresponding
    Colors) in a Buffer => Won't work:: the number of Cells in a Buffer is a u16,
    and therefore limited to 65,535.  Thus, storing all the alignment in a Buffer

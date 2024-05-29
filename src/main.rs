@@ -15,10 +15,7 @@ use crossterm::{
 };
 
 use ratatui::{
-    Frame,
-    prelude::{Color, Constraint, CrosstermBackend, Direction,
-        Layout, Line, Span, Style, Stylize, Terminal, Text},
-    widgets::{Block,Borders,Paragraph},
+    prelude::{CrosstermBackend, Terminal},
 };
 
 use crate::app::App;
@@ -35,7 +32,7 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
-    let mut app_ui = UI::new(&app);
+    let mut app_ui = UI::new();
 
     // main loop
     loop {

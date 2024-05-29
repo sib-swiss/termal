@@ -1,6 +1,8 @@
+use std::collections::HashMap;
+
 use ratatui::{
     Frame,
-    prelude::{Buffer, Color, Constraint, Direction, Layout, Line, Rect, Span, Text},
+    prelude::{Color, Constraint, Direction, Layout, Line, Span},
     style::Stylize,
     widgets::{Block, Borders, Paragraph},
 };
@@ -8,31 +10,44 @@ use ratatui::{
 use crate::App;
 
 pub struct UI {
-    // TODO: maybe use a Hash of Colors indexed by (x,y) tuples?
-    res_colours: Vec<Vec<Color>>,
+    colour_map: HashMap<char, Color>, 
 }
 
 impl UI {
-    pub fn new(app: &App) -> Self {
-        let mut res_colours = Vec::new();
-        for line in app.alignment.sequences.iter() {
-            let line_res_colours: Vec<Color> = line.chars().map(aa_color_scheme_lesk).collect();
-            res_colours.push(line_res_colours);
+    pub fn new() -> Self {
+        let colour_map = color_scheme_lesk();
+        UI {
+            colour_map,
         }
-        UI { res_colours }
     }
 }
 
-fn aa_color_scheme_lesk(aa: char) -> Color {
-    match aa {
-        'G' | 'A' | 'S' | 'T' => Color::Rgb(255, 165, 0),
-        'C' | 'V' | 'I' | 'L' | 'P' | 'F' | 'Y' | 'M' | 'W' => Color::Green,
-        'N' | 'Q' | 'H' => Color::Magenta,
-        'D' | 'E' => Color::Red,
-        'K' | 'R' => Color::Blue,
-        '-' => Color::Gray,
-        _   => Color::Gray,
-    }
+fn color_scheme_lesk() -> HashMap<char, Color> {
+    let orange = Color::Rgb(255, 165, 0);
+    let map = HashMap::from([
+        ('G', orange),
+        ('A', orange),
+        ('S', orange),
+        ('T', orange),
+        ('C', Color::Green),
+        ('V', Color::Green),
+        ('I', Color::Green),
+        ('L', Color::Green),
+        ('P', Color::Green),
+        ('F', Color::Green),
+        ('Y', Color::Green),
+        ('M', Color::Green),
+        ('W', Color::Green),
+        ('N', Color::Magenta),
+        ('Q', Color::Magenta),
+        ('H', Color::Magenta),
+        ('D', Color::Red),
+        ('E', Color::Red),
+        ('K', Color::Blue),
+        ('R', Color::Blue),
+        ('-', Color::Gray),
+        ]);
+    map
 }
 
 // Draw UI
@@ -50,22 +65,20 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
     let title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
 
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-
-    let mut ztext: Vec<Line> = Vec::new();
-    let lzip = app.alignment.sequences.iter().zip(
-        app_ui.res_colours.iter()
-    ).skip(nseqskip).take(nseqtake);
-    for (seq, seq_colours) in lzip {
-        let czip = seq.chars().zip(seq_colours.iter())
-            .skip(nskip).take(ntake);
-        let mut spans: Vec<Span> = Vec::new();
-        for (chr, col) in czip {
-                spans.push(Span::styled(chr.to_string(), *col));
-        }
-        ztext.push(Line::from(spans));
+    let mut text: Vec<Line> = Vec::new();
+    for seq in app.alignment.sequences.iter()
+        .skip(nseqskip).take(nseqtake) {
+        let spans: Vec<Span> = seq.chars()
+            .skip(nskip).take(ntake)
+            .map(|c| Span::styled(c.to_string(),
+                *app_ui.colour_map.get(&c).unwrap()))
+            .collect();
+        let line: Line = Line::from(spans);
+        text.push(line);
     }
 
-    let seq_para = Paragraph::new(ztext)
+
+    let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block);
     let msg_block = Block::default().borders(Borders::ALL);
@@ -80,7 +93,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
 }
 
 pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
-    let step: f32 = ((l-1) as f32 / (n-1) as f32);
+    let step: f32 = (l-1) as f32 / (n-1) as f32;
     println!("{}", step);
     let r: Vec<usize> = (0..n).map(|e| ((e as f32) * step).round() as usize).collect();
     r
