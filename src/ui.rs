@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use ratatui::{
     Frame,
-    prelude::{Color, Constraint, Direction, Layout, Line, Span, Text},
+    prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span},
     style::Stylize,
     widgets::{Block, Borders, Paragraph},
 };
@@ -71,15 +71,14 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-fn zoom_seq_text<'a>(f: &'a Frame<'a>, app: &'a App, app_ui: &UI) -> Text<'a> {
-    let area = f.size();
-    let nskip: usize = app.leftmost_col.into();
-    let ntake: usize = (f.size().width - 2).into();
-    let nseqskip: usize = app.top_line.into();
-    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence
+fn zoom_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>> {
+    let num_seq: usize = app.num_seq() as usize;
+    let aln_len: usize = app.aln_len() as usize;
+    let seq_area_width: usize = (area.width - 2).into();
+    let seq_area_height: usize = area.height.into(); // whole frame's height, should take the sequence
     let mut ztext: Vec<Line> = Vec::new();
-    let retained_seqs_ndx: Vec<usize> = every_nth(f.size().height.into(), nseqtake);
-    let retained_cols_ndx: Vec<usize> = every_nth(f.size().width.into(), ntake);
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
+    let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
     for i in &retained_seqs_ndx {
         let seq: &String = &app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
@@ -95,7 +94,7 @@ fn zoom_seq_text<'a>(f: &'a Frame<'a>, app: &'a App, app_ui: &UI) -> Text<'a> {
         ztext.push(Line::from(spans));
     }
 
-    ztext.into()
+    ztext
 }
 
 // Draw UI
@@ -131,22 +130,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         }
         ZoomLevel::ZOOMED_OUT => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
-            let retained_seqs_ndx: Vec<usize> = every_nth(f.size().height.into(), nseqtake);
-            let retained_cols_ndx: Vec<usize> = every_nth(f.size().width.into(), ntake);
-            for i in &retained_seqs_ndx {
-                let seq: &String = &app.alignment.sequences[*i];
-                let seq_chars: Vec<char> = seq.chars().collect();
-                let mut spans: Vec<Span> = Vec::new();
-                for j in &retained_cols_ndx {
-                    // NOTE: I don't want to iterate through all chars in seq intil I find the j-th: this
-                    // is going to be much too slow. 
-                    let c: char = seq_chars[*j];
-                    let span = Span::styled(c.to_string(),
-                                            *app_ui.colour_map.get(&c).unwrap());
-                    spans.push(span);
-                }
-                text.push(Line::from(spans));
-            }
+            text = zoom_seq_text(f.size(), app, app_ui);
         }
         ZoomLevel::ZOOMED_OUT_AR => todo!()
     }
@@ -167,6 +151,9 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
     app.set_seq_para_height(layout[0].as_size().height - 2); // -2: borders
     app.set_seq_para_width(layout[0].as_size().width - 2);
 }
+
+/* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
+ * the first (0) and last (l-1) indexes. */
 
 pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
     let step: f32 = (l-1) as f32 / (n-1) as f32;
