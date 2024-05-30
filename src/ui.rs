@@ -71,7 +71,27 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-fn zoom_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>> {
+fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a>> {
+    let nskip: usize = app.leftmost_col.into();
+    let ntake: usize = (area.width - 2).into();
+    let nseqskip: usize = app.top_line.into();
+    let nseqtake: usize = area.height.into(); 
+    let mut text: Vec<Line> = Vec::new();
+    for seq in app.alignment.sequences.iter()
+        .skip(nseqskip).take(nseqtake) {
+        let spans: Vec<Span> = seq.chars()
+            .skip(nskip).take(ntake)
+            .map(|c| Span::styled(c.to_string(),
+                *app_ui.colour_map.get(&c).unwrap()))
+            .collect();
+        let line: Line = Line::from(spans);
+        text.push(line);
+    }
+
+    text
+}
+
+fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = app.num_seq() as usize;
     let aln_len: usize = app.aln_len() as usize;
     let seq_area_width: usize = (area.width - 2).into();
@@ -100,37 +120,21 @@ fn zoom_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>> {
 // Draw UI
 
 pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
-    let area = f.size();
-    let nskip: usize = app.leftmost_col.into();
-    let ntake: usize = (f.size().width - 2).into();
-    let nseqskip: usize = app.top_line.into();
-    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence
-                                                  // area; also should be named just
-                                                  // 'seq_frame_height, or something.
     let layout = Layout::new(
             Direction::Vertical,
             [Constraint::Fill(1), Constraint::Length(3)])
-        .split(area);
+        .split(f.size());
 
     let mut text: Vec<Line> = Vec::new();
     let title: String;
     match app_ui.zoom_level {
         ZoomLevel::ZOOMED_IN => {
             title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
-            for seq in app.alignment.sequences.iter()
-                .skip(nseqskip).take(nseqtake) {
-                let spans: Vec<Span> = seq.chars()
-                    .skip(nskip).take(ntake)
-                    .map(|c| Span::styled(c.to_string(),
-                        *app_ui.colour_map.get(&c).unwrap()))
-                    .collect();
-                let line: Line = Line::from(spans);
-                text.push(line);
-            }
+            text = zoom_in_seq_text(f.size(), app, app_ui);
         }
         ZoomLevel::ZOOMED_OUT => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
-            text = zoom_seq_text(f.size(), app, app_ui);
+            text = zoom_out_seq_text(f.size(), app, app_ui);
         }
         ZoomLevel::ZOOMED_OUT_AR => todo!()
     }
@@ -141,7 +145,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         .block(aln_block);
 
     let msg_block = Block::default().borders(Borders::ALL);
-    let msg_para = Paragraph::new(format!("{:?} nskip: {}, ntake: {}", layout[0].as_size(), nskip, ntake))
+    let msg_para = Paragraph::new(format!("{:?}", layout[0].as_size()))
         .white()
         .block(msg_block);
 
