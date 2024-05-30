@@ -2,24 +2,45 @@ use std::collections::{HashMap, HashSet};
 
 use ratatui::{
     Frame,
-    prelude::{Color, Constraint, Direction, Layout, Line, Span},
+    prelude::{Color, Constraint, Direction, Layout, Line, Span, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph},
 };
 
 use crate::App;
 
+enum ZoomLevel {
+    ZOOMED_IN,
+    ZOOMED_OUT,
+    ZOOMED_OUT_AR,
+}
+
+// TODO: do we really need a separate UI struct, or could this just go into the App?
+//
 pub struct UI {
     colour_map: HashMap<char, Color>, 
+    zoom_level: ZoomLevel,
 }
 
 impl UI {
     pub fn new() -> Self {
         let colour_map = color_scheme_lesk();
+        let zoom_level = ZoomLevel::ZOOMED_IN;
         UI {
             colour_map,
+            zoom_level,
         }
     }
+
+    pub fn cycle_zoom(&mut self) {
+        self.zoom_level = match self.zoom_level {
+            ZoomLevel::ZOOMED_IN => ZoomLevel::ZOOMED_OUT,
+            ZoomLevel::ZOOMED_OUT => ZoomLevel::ZOOMED_IN,
+            ZoomLevel::ZOOMED_OUT_AR => ZoomLevel::ZOOMED_IN,
+            // TODO: OUT -> OUT_AR
+        }
+    }
+
 }
 
 fn color_scheme_lesk() -> HashMap<char, Color> {
@@ -50,37 +71,12 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-// Draw UI
-
-pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
+fn zoom_seq_text<'a>(f: &'a Frame<'a>, app: &'a App, app_ui: &UI) -> Text<'a> {
     let area = f.size();
-    let nskip = app.leftmost_col.into();
-    let ntake = (f.size().width - 2).into();
+    let nskip: usize = app.leftmost_col.into();
+    let ntake: usize = (f.size().width - 2).into();
     let nseqskip: usize = app.top_line.into();
     let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence
-                                                  // area; also should be named just
-                                                  // 'seq_frame_height, or something.
-    let layout = Layout::new(
-            Direction::Vertical,
-            [Constraint::Fill(1), Constraint::Length(3)])
-        .split(area);
-
-    let title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
-    let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let mut text: Vec<Line> = Vec::new();
-    for seq in app.alignment.sequences.iter()
-        .skip(nseqskip).take(nseqtake) {
-        let spans: Vec<Span> = seq.chars()
-            .skip(nskip).take(ntake)
-            .map(|c| Span::styled(c.to_string(),
-                *app_ui.colour_map.get(&c).unwrap()))
-            .collect();
-        let line: Line = Line::from(spans);
-        text.push(line);
-    }
-
-    let ztitle = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
-    let zoom_block = Block::default().title(ztitle).borders(Borders::ALL);
     let mut ztext: Vec<Line> = Vec::new();
     let retained_seqs_ndx: Vec<usize> = every_nth(f.size().height.into(), nseqtake);
     let retained_cols_ndx: Vec<usize> = every_nth(f.size().width.into(), ntake);
@@ -99,10 +95,67 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         ztext.push(Line::from(spans));
     }
 
-    let seq_para = Paragraph::new(ztext)
-    //let seq_para = Paragraph::new(text)
+    ztext.into()
+}
+
+// Draw UI
+
+pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
+    let area = f.size();
+    let nskip: usize = app.leftmost_col.into();
+    let ntake: usize = (f.size().width - 2).into();
+    let nseqskip: usize = app.top_line.into();
+    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence
+                                                  // area; also should be named just
+                                                  // 'seq_frame_height, or something.
+    let layout = Layout::new(
+            Direction::Vertical,
+            [Constraint::Fill(1), Constraint::Length(3)])
+        .split(area);
+
+    let mut text: Vec<Line> = Vec::new();
+    let title: String;
+    match app_ui.zoom_level {
+        ZoomLevel::ZOOMED_IN => {
+            title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
+            for seq in app.alignment.sequences.iter()
+                .skip(nseqskip).take(nseqtake) {
+                let spans: Vec<Span> = seq.chars()
+                    .skip(nskip).take(ntake)
+                    .map(|c| Span::styled(c.to_string(),
+                        *app_ui.colour_map.get(&c).unwrap()))
+                    .collect();
+                let line: Line = Line::from(spans);
+                text.push(line);
+            }
+        }
+        ZoomLevel::ZOOMED_OUT => {
+            title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
+            let retained_seqs_ndx: Vec<usize> = every_nth(f.size().height.into(), nseqtake);
+            let retained_cols_ndx: Vec<usize> = every_nth(f.size().width.into(), ntake);
+            for i in &retained_seqs_ndx {
+                let seq: &String = &app.alignment.sequences[*i];
+                let seq_chars: Vec<char> = seq.chars().collect();
+                let mut spans: Vec<Span> = Vec::new();
+                for j in &retained_cols_ndx {
+                    // NOTE: I don't want to iterate through all chars in seq intil I find the j-th: this
+                    // is going to be much too slow. 
+                    let c: char = seq_chars[*j];
+                    let span = Span::styled(c.to_string(),
+                                            *app_ui.colour_map.get(&c).unwrap());
+                    spans.push(span);
+                }
+                text.push(Line::from(spans));
+            }
+        }
+        ZoomLevel::ZOOMED_OUT_AR => todo!()
+    }
+
+    let aln_block = Block::default().title(title).borders(Borders::ALL);
+    let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block);
+
     let msg_block = Block::default().borders(Borders::ALL);
     let msg_para = Paragraph::new(format!("{:?} nskip: {}, ntake: {}", layout[0].as_size(), nskip, ntake))
         .white()

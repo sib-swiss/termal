@@ -42,6 +42,7 @@ fn main() -> Result<()> {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     match key.code {
+                        // Motion
                         KeyCode::Char('j') => app.scroll_one_line_down(),
                         KeyCode::Char('G') => app.jump_to_bottom(),
 
@@ -54,6 +55,10 @@ fn main() -> Result<()> {
                         KeyCode::Char('h') => app.scroll_one_col_left(),
                         KeyCode::Char('^') => app.jump_to_begin(),
 
+                        // Zoom
+                        KeyCode::Char('z') => app_ui.cycle_zoom(),
+
+                        // Exit
                         KeyCode::Char('q') => break,
                         KeyCode::Char('Q') => break,
                         _ => {}
