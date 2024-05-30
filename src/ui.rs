@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use ratatui::{
     Frame,
@@ -57,13 +57,15 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
     let nskip = app.leftmost_col.into();
     let ntake = (f.size().width - 2).into();
     let nseqskip: usize = app.top_line.into();
-    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence area
+    let nseqtake: usize = f.size().height.into(); // whole frame's height, should take the sequence
+                                                  // area; also should be named just
+                                                  // 'seq_frame_height, or something.
     let layout = Layout::new(
             Direction::Vertical,
             [Constraint::Fill(1), Constraint::Length(3)])
         .split(area);
-    let title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
 
+    let title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let mut text: Vec<Line> = Vec::new();
     for seq in app.alignment.sequences.iter()
@@ -77,14 +79,35 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         text.push(line);
     }
 
+    let ztitle = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
+    let zoom_block = Block::default().title(ztitle).borders(Borders::ALL);
+    let mut ztext: Vec<Line> = Vec::new();
+    let retained_seqs_ndx: Vec<usize> = every_nth(f.size().height.into(), nseqtake);
+    let retained_cols_ndx: Vec<usize> = every_nth(f.size().width.into(), ntake);
+    for i in &retained_seqs_ndx {
+        let seq: &String = &app.alignment.sequences[*i];
+        let seq_chars: Vec<char> = seq.chars().collect();
+        let mut spans: Vec<Span> = Vec::new();
+        for j in &retained_cols_ndx {
+            // NOTE: I don't want to iterate through all chars in seq intil I find the j-th: this
+            // is going to be much too slow. 
+            let c: char = seq_chars[*j];
+            let span = Span::styled(c.to_string(),
+                                    *app_ui.colour_map.get(&c).unwrap());
+            spans.push(span);
+        }
+        ztext.push(Line::from(spans));
+    }
 
-    let seq_para = Paragraph::new(text)
+    let seq_para = Paragraph::new(ztext)
+    //let seq_para = Paragraph::new(text)
         .white()
         .block(aln_block);
     let msg_block = Block::default().borders(Borders::ALL);
     let msg_para = Paragraph::new(format!("{:?} nskip: {}, ntake: {}", layout[0].as_size(), nskip, ntake))
         .white()
         .block(msg_block);
+
     f.render_widget(seq_para, layout[0]);
     f.render_widget(msg_para, layout[1]);
 
@@ -94,14 +117,13 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
 
 pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
     let step: f32 = (l-1) as f32 / (n-1) as f32;
-    println!("{}", step);
     let r: Vec<usize> = (0..n).map(|e| ((e as f32) * step).round() as usize).collect();
     r
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::ui::every_nth;
+    use crate::ui::{every_nth};
 
     #[test]
     fn test_every_nth_1() {

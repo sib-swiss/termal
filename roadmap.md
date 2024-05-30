@@ -134,7 +134,7 @@ This seems to work - for now.
 TODO
 ====
 
-1. [ ] See about computing a "summary" screen. This should toggle between
+1. [x] See about computing a "summary" screen. This should toggle between
    summary and residue views.
    * [x] implement a "every-nth" function that selects _n_ indices out of _l_ so as
      to spread them as evenly as possible. This will be used to select sequences
