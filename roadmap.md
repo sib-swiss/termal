@@ -134,7 +134,10 @@ This seems to work - for now.
 TODO
 ====
 
-1. [ ] Enabble toggling between zoomed-in and zoomed-out, using key 'z'.
+1. [x] CLI args: now uses Clap; may specify fixed height and width.
+1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
+   App).
+1. [x] Enabble toggling between zoomed-in and zoomed-out, using key 'z'.
 1. [x] See about computing a "summary" screen. This should toggle between
    summary and residue views.
    * [x] implement a "every-nth" function that selects _n_ indices out of _l_ so as

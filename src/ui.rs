@@ -149,6 +149,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         .white()
         .block(msg_block);
 
+    let port_box = 
     f.render_widget(seq_para, layout[0]);
     f.render_widget(msg_para, layout[1]);
 

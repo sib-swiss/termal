@@ -2,33 +2,69 @@ mod app;
 mod ui;
 mod alignment;
 
-use std::io::{stdout, Result};
-use std::env;
+use std::io::{stdout, Result, Write};
+use std::{
+    env,
+    fs::File,
+};
+
+use clap::{arg, command, Parser, };
 
 use crossterm::{
     event::{self, KeyCode, KeyEventKind},
     terminal::{
         disable_raw_mode, enable_raw_mode, EnterAlternateScreen,
-        LeaveAlternateScreen,
+        LeaveAlternateScreen, SetSize,
     },
     ExecutableCommand,
 };
 
 use ratatui::{
-    prelude::{CrosstermBackend, Terminal},
+    prelude::{CrosstermBackend, Rect, Terminal},
+    TerminalOptions, Viewport,
 };
 
 use crate::app::App;
 use crate::ui::{UI, ui};
 
+#[derive(Debug, Parser)]
+#[command(version, about, long_about = None)]
+struct Cli {
+    /// Alignment file
+    aln_fname: String,
+
+    /// Fixed terminal width (mostly used for testing/debugging)
+    #[arg(short, long, requires="height")]
+    width: Option<u16>,
+
+    /// Fixed terminal height ("tall" -- -h is already used)
+    #[arg(short='t', long, requires="width")]
+    height: Option<u16>,
+
+    /// Turn debugging information on
+    #[arg(short, long, action = clap::ArgAction::Count)]
+    debug: u8,
+}
+
 fn main() -> Result<()> {
-    let args: Vec<String> = env::args().collect();
-    
-    let fasta_file: &str = &args.get(1).expect("Expecting 1 arg");
+    let cli = Cli::parse(); 
+    let fasta_file: &str = &cli.aln_fname;
 
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
-    let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
+    //let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
+    let backend = CrosstermBackend::new(stdout());
+    let viewport: Viewport;
+    // Fix viewport dimensions IFF supplied (mainly for tests)
+    //
+    if let Some(width) = cli.width {
+        // height must be defined too (see 'requires' in struct Cli above)
+        let height = cli.height.unwrap();
+        viewport = Viewport::Fixed(Rect::new(0, 0, width, height));
+    } else {
+        viewport = Viewport::Fullscreen;
+    }
+    let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
     terminal.clear()?;
 
     let mut app = App::new(fasta_file);
