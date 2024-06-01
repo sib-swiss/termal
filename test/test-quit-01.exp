@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+
+set timeout 1
+spawn ../target/debug/termal -w 20 -t 10 ../data/test1.fas
+send "q"
+expect {
+    eof { }
+    default { exit 1 }
+}
+spawn ../target/debug/termal -w 20 -t 10 ../data/test1.fas
+send "Q"
+expect {
+    eof { }
+    default { exit 1 }
+}
