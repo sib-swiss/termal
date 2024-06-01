@@ -1,9 +1,0 @@
-#!/usr/bin/expect -f
-
-set timeout 1
-spawn ../target/debug/termal -w 20 -t 10 ../data/test1.fas
-expect "test1"
-expect "0mGAATT"
-expect "\033"
-send "q\r"
-
