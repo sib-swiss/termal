@@ -117,13 +117,27 @@ fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>>
     ztext
 }
 
+fn make_layout(show_debug_pane: bool) -> Layout {
+    /*
+     * One approach is to add the debug pane only if requested; another is to set its height to 3
+     * IFF requested.
+     */
+    let mut constraints: Vec<Constraint> = vec![Constraint::Fill(1)];
+    if show_debug_pane {
+        constraints.push(Constraint::Length(3));
+    }
+    let layout = Layout::new(
+            Direction::Vertical,
+            constraints);
+
+    layout
+}
+
 // Draw UI
 
 pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
-    let layout = Layout::new(
-            Direction::Vertical,
-            [Constraint::Fill(1), Constraint::Length(3)])
-        .split(f.size());
+    let debug = false; // TODO: get this from UI
+    let layout_panes = make_layout(debug).split(f.size());
 
     let mut text: Vec<Line> = Vec::new();
     let title: String;
@@ -144,17 +158,19 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         .white()
         .block(aln_block);
 
-    let msg_block = Block::default().borders(Borders::ALL);
-    let msg_para = Paragraph::new(format!("{:?}", layout[0].as_size()))
-        .white()
-        .block(msg_block);
+    // let port_box = 
+    f.render_widget(seq_para, layout_panes[0]);
 
-    let port_box = 
-    f.render_widget(seq_para, layout[0]);
-    f.render_widget(msg_para, layout[1]);
+    app.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
+    app.set_seq_para_width(layout_panes[0].as_size().width - 2);
 
-    app.set_seq_para_height(layout[0].as_size().height - 2); // -2: borders
-    app.set_seq_para_width(layout[0].as_size().width - 2);
+    if debug {
+        let msg_block = Block::default().borders(Borders::ALL);
+        let msg_para = Paragraph::new(format!("{:?}", layout_panes[0].as_size()))
+            .white()
+            .block(msg_block);
+        f.render_widget(msg_para, layout_panes[1]);
+    }
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
