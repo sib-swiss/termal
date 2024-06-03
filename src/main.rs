@@ -41,9 +41,9 @@ struct Cli {
     #[arg(short='t', long, requires="width")]
     height: Option<u16>,
 
-    /// Turn debugging information on
-    #[arg(short, long, action = clap::ArgAction::Count)]
-    debug: u8,
+    /// Show debug panel
+    #[arg(short='D', long)]
+    debug: bool,
 }
 
 fn main() -> Result<()> {
@@ -69,6 +69,7 @@ fn main() -> Result<()> {
 
     let mut app = App::new(fasta_file);
     let mut app_ui = UI::new();
+    app_ui.set_debug(cli.debug);
 
     // main loop
     loop {

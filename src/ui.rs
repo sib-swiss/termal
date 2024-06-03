@@ -20,15 +20,18 @@ enum ZoomLevel {
 pub struct UI {
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
+    show_debug_pane: bool,
 }
 
 impl UI {
     pub fn new() -> Self {
         let colour_map = color_scheme_lesk();
         let zoom_level = ZoomLevel::ZOOMED_IN;
+        let show_debug_pane = false;
         UI {
             colour_map,
             zoom_level,
+            show_debug_pane,
         }
     }
 
@@ -41,6 +44,9 @@ impl UI {
         }
     }
 
+    pub fn set_debug(&mut self, state: bool) {
+        self.show_debug_pane = state;
+    }
 }
 
 fn color_scheme_lesk() -> HashMap<char, Color> {
@@ -119,7 +125,7 @@ fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>>
 
 fn make_layout(show_debug_pane: bool) -> Layout {
     /*
-     * One approach is to add the debug pane only if requested; another is to set its height to 3
+     *  One approach is to add the debug pane only if requested; another is to set its height to 3
      * IFF requested.
      */
     let mut constraints: Vec<Constraint> = vec![Constraint::Fill(1)];
@@ -136,8 +142,8 @@ fn make_layout(show_debug_pane: bool) -> Layout {
 // Draw UI
 
 pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
-    let debug = false; // TODO: get this from UI
-    let layout_panes = make_layout(debug).split(f.size());
+    let layout_panes = make_layout(app_ui.show_debug_pane)
+        .split(f.size());
 
     let mut text: Vec<Line> = Vec::new();
     let title: String;
@@ -164,7 +170,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
     app.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
     app.set_seq_para_width(layout_panes[0].as_size().width - 2);
 
-    if debug {
+    if app_ui.show_debug_pane {
         let msg_block = Block::default().borders(Borders::ALL);
         let msg_para = Paragraph::new(format!("{:?}", layout_panes[0].as_size()))
             .white()
