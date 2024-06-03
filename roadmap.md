@@ -134,6 +134,12 @@ This seems to work - for now.
 TODO
 ====
 
+1. [ ] Transform the Message panel into a Debug panel, which should be optional.
+   Messages could be shown in the bottom pane (the one that will eventally show
+   consensus, etc.) or as (temporary) notifications in the center of the
+   terminal, masking the rest.
+1. [x] Provide a monochrome mode to simplify tests with Expect (otherwise I'll have
+   to deal with ANSI colour sequences for _every_ residue)
 1. [x] CLI args: now uses Clap; may specify fixed height and width.
 1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
    App).
