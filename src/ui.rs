@@ -49,6 +49,13 @@ impl UI {
     }
 }
 
+// It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
+// lookup or not.
+
+//fn color_scheme_none() -> HashMap<char, color> {
+//}
+
+
 fn color_scheme_lesk() -> HashMap<char, Color> {
     let orange = Color::Rgb(255, 165, 0);
     let map = HashMap::from([
@@ -77,6 +84,10 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
+fn make_span(c: char, app_ui: &UI) -> Span {
+    Span::raw(c.to_string())
+}
+
 fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = app.leftmost_col.into();
     let ntake: usize = (area.width - 2).into();
@@ -87,8 +98,8 @@ fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a
         .skip(nseqskip).take(nseqtake) {
         let spans: Vec<Span> = seq.chars()
             .skip(nskip).take(ntake)
-            .map(|c| Span::styled(c.to_string(),
-                *app_ui.colour_map.get(&c).unwrap()))
+            //.map(|c| Span::styled(c.to_string(), *app_ui.colour_map.get(&c).unwrap()))
+            .map(|c| make_span(c, app_ui))
             .collect();
         let line: Line = Line::from(spans);
         text.push(line);

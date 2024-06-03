@@ -1,0 +1,9 @@
+#!/usr/bin/expect -f
+
+set program [lindex $argv 0]
+set arguments [lrange $argv 1 end]
+#spawn $program {*}$arguments
+spawn ./target/debug/termal -w 10 -t 10 data/test1.fas
+expect "G"
+send "q"
+

@@ -79,7 +79,7 @@ fn main() -> Result<()> {
     loop {
         terminal.draw(|f| ui(f, &mut app, &mut app_ui))?;
         // handle events
-        if event::poll(std::time::Duration::from_millis(1))? {
+        if event::poll(std::time::Duration::from_millis(100))? {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                     match key.code {

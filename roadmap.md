@@ -131,6 +131,25 @@ fn one_line<'a>(l: String) -> Line<'a> {
 
 This seems to work - for now.
 
+Inlining Functions ?
+--------------------
+
+At some point I look up the colour of a residue using a HashMap (`ui.rs`, l. 95
+(among others)). The previous incarnation involved lookups into large vectors,
+which involved enough computations for the fan to start, except in release mode.
+
+Unfortunately, it may be that I need to do more for a given residue than just
+look up its colour: I may need to highlight it (selection) or to replace it with
+a frame (viewport in zoomed-out mode). Ideally, I'd just call a function that
+returns a suitably-styled Span for the residue, but calling a function (as
+compared to a HashMap lookup) for each residue again looks expensive. Unless,
+that is (or so I hope), if I can convince the compiler to inline the function.
+If not, I'll have to inline it myself, which will lead to duplication and longer
+loops, which I'd rather avoid. Also noteworthy is that the compmiler may
+actually figure out on its own that inlining is a good idea in this case - that
+may explain why the overhead seemingly only occurs in debug mode.
+
+
 TODO
 ====
 
