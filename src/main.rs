@@ -74,6 +74,7 @@ fn main() -> Result<()> {
     let mut app = App::new(fasta_file);
     let mut app_ui = UI::new();
     app_ui.set_debug(cli.debug);
+    if cli.no_colour { app_ui.set_monochrome(); }
 
     // main loop
     loop {

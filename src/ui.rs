@@ -47,14 +47,42 @@ impl UI {
     pub fn set_debug(&mut self, state: bool) {
         self.show_debug_pane = state;
     }
+
+    pub fn set_monochrome(&mut self) {
+        self.colour_map = color_scheme_monochrome();
+    }
 }
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
 
-//fn color_scheme_none() -> HashMap<char, color> {
-//}
 
+fn color_scheme_monochrome() -> HashMap<char, Color> {
+    let map = HashMap::from([
+        ('G', Color::White),
+        ('A', Color::White),
+        ('S', Color::White),
+        ('T', Color::White),
+        ('C', Color::White),
+        ('V', Color::White),
+        ('I', Color::White),
+        ('L', Color::White),
+        ('P', Color::White),
+        ('F', Color::White),
+        ('Y', Color::White),
+        ('M', Color::White),
+        ('W', Color::White),
+        ('N', Color::White),
+        ('Q', Color::White),
+        ('H', Color::White),
+        ('D', Color::White),
+        ('E', Color::White),
+        ('K', Color::White),
+        ('R', Color::White),
+        ('-', Color::White),
+        ]);
+    map
+}
 
 fn color_scheme_lesk() -> HashMap<char, Color> {
     let orange = Color::Rgb(255, 165, 0);
@@ -84,10 +112,6 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-fn make_span(c: char, app_ui: &UI) -> Span {
-    Span::raw(c.to_string())
-}
-
 fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = app.leftmost_col.into();
     let ntake: usize = (area.width - 2).into();
@@ -98,8 +122,7 @@ fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a
         .skip(nseqskip).take(nseqtake) {
         let spans: Vec<Span> = seq.chars()
             .skip(nskip).take(ntake)
-            //.map(|c| Span::styled(c.to_string(), *app_ui.colour_map.get(&c).unwrap()))
-            .map(|c| make_span(c, app_ui))
+            .map(|c| Span::styled(c.to_string(), *app_ui.colour_map.get(&c).unwrap()))
             .collect();
         let line: Line = Line::from(spans);
         text.push(line);
