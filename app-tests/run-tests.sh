@@ -1,47 +1,12 @@
 #!/usr/bin/env bash
 
-set -u
+set -ue
 
-# Maps a function (first argument) to the values of an associative array (whose
-# name is the second argument), and sets corresponding (k,f(v)) pairs in another
-# associative array (whose name is the 3rd argument).
-
-aamap() {
-    local f=$1
-    local -n src=$2
-    local -n tgt=$3
-    for k in "${!src[@]}"; do
-        tgt["$k"]="$($f "${src["$k"]}")"
-    done
+source ~/bin/functional-bash.sh || {
+	printf "Could not find functional-bash.sh - aborting." >&2
+	exit 1
 }
 
-# Same idea, but for a regular array.
-
-map() {
-    local f=$1
-    local -n src=$2
-    local -n tgt=$3
-    for i in "${!src[@]}"; do
-        tgt[$i]="$("$f" "$e")"
-    done
-}
-
-fold() {
-    local f=$1
-    local acc=$2
-    local -n list=$3
-    for e in "${list[@]}"; do
-        acc="$($f "$acc" "$e")"
-    done
-    printf "%s" "$acc"
-}
-
-add(){ echo $(($1 + $2)); }
-
-sum() {
-    local integers=$1 # NAME of the array! (not ref...)
-    printf "%d" "$(fold add 0 $integers)"
-}
 
 # Converts Unix exit status to label ("success" or "failure")
 #
@@ -64,6 +29,9 @@ status_to_boolean() {
         echo 0
     fi
 }
+
+################################################################
+# Main
 
 declare -A test_names
 declare -Ai test_status

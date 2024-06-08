@@ -153,6 +153,11 @@ may explain why the overhead seemingly only occurs in debug mode.
 TODO
 ====
 
+1. [x] Add app-level tests. This means:
+   * [x] Make it possible to fix the app's size (-> Viewport::Fixed)
+   * [x] Find a way to automate TUI interaction (-> good old Expect)
+   * [x] A test dir and a script to run Expect scripts in it (->
+     `app_tests/run-tests.sh` - runs tests in parallel).
 1. [x] Transform the Message panel into a Debug panel, which should be optional.
    Messages could be shown in the bottom pane (the one that will eventally show
    consensus, etc.) or (later) as (temporary) notifications in the center of the

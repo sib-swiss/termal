@@ -134,8 +134,8 @@ fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a
 fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = app.num_seq() as usize;
     let aln_len: usize = app.aln_len() as usize;
-    let seq_area_width: usize = (area.width - 2).into();
-    let seq_area_height: usize = area.height.into(); // whole frame's height, should take the sequence
+    let seq_area_width: usize = (area.width - 2).into();  // -2 <- panel border
+    let seq_area_height: usize = (area.height - 2).into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
