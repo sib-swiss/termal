@@ -13,15 +13,16 @@ pub struct App {
 }
 
 impl App {
-    pub fn new(path: &str) -> App {
-        App {
+    pub fn new(path: &str) -> Result<App, std::io::Error> {
+        let fasta_file = read_fasta_file(path)?;
+        Ok(App {
             filename: path.to_string(),
-            alignment: Alignment::new(read_fasta_file(path).expect(format!("File {} not found", path).as_str())),
+            alignment: Alignment::new(fasta_file),
             top_line: 0,
             leftmost_col: 0,
             seq_para_height: 0,
             seq_para_width: 0,
-        }
+        })
     }
 
     // Computed properties (TODO: could be set in a struct member, as they do not change)

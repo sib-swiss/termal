@@ -144,7 +144,7 @@ fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>>
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in &retained_cols_ndx {
-            // NOTE: I don't want to iterate through all chars in seq intil I find the j-th: this
+            // NOTE: I don't want to iterate through all chars in seq until I find the j-th: this
             // is going to be much too slow. 
             let c: char = seq_chars[*j];
             let span = Span::styled(c.to_string(),

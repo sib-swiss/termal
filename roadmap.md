@@ -6,7 +6,7 @@ Closure problem
 
 At some point the code fails with the following message:
 
-```
+```rustc
 error[E0502]: cannot borrow `app` as mutable because it is also borrowed as immutable
   --> src/main.rs:68:47
    |
@@ -131,6 +131,37 @@ fn one_line<'a>(l: String) -> Line<'a> {
 
 This seems to work - for now.
 
+Avoiding `clone()`
+------------------
+
+I tried several ways of avoiding calls to `clone()`, because of the associated
+resource consumption.  
+
+### Pre-computing the `Paragraph`
+
+I first tried to pre-compute a `Paragraph` object, to be re-used in every call
+to `draw()`. But, as far as I understand, the graphical primitives (`Span`,
+`Line`) etc. are _consumed_ in the draw. There are also stateful versions, and
+reference versions, but I wasn't able to make them work.
+
+### Putting t hewhole alignment in a `Buffer`
+
+I also tried pre-computing a large `Buffer` with the whole alignment, from which
+I intended to quicly copy the visible parts to the screen. This might well have
+worked, except that the buffer's area is a `Rect`, whose dimensions are `u16`
+and thus not large enough to hold the whole alignment when there are hundreds of
+sequences and more than a thousand columns (_to be checked_).
+
+So for now, `to_string()` is called on every visible character in the alignment.
+In fact, as I understand, the terminal library, at lower level, will consume the
+strings we pass it anyway, so it might well be that there is no avoiding these
+clones.
+
+Anyway, it is still quite fast enough, even in debug mode, and what's more some
+of the sluggishness (if any) may be due to the _terminal emulator_ rather than
+Termal itself - try e.g. a fast emulator like Alacritty versus a more standard
+one like Xfce4-terminal.
+
 Inlining Functions ?
 --------------------
 
@@ -153,6 +184,9 @@ may explain why the overhead seemingly only occurs in debug mode.
 TODO
 ====
 
+1. [ ] Represent the view port in zommed-out mode.
+1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
+   App).
 1. [x] Add app-level tests. This means:
    * [x] Make it possible to fix the app's size (-> Viewport::Fixed)
    * [x] Find a way to automate TUI interaction (-> good old Expect)
@@ -165,8 +199,6 @@ TODO
 1. [x] Provide a monochrome mode to simplify tests with Expect (otherwise I'll have
    to deal with ANSI colour sequences for _every_ residue)
 1. [x] CLI args: now uses Clap; may specify fixed height and width.
-1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
-   App).
 1. [x] Enabble toggling between zoomed-in and zoomed-out, using key 'z'.
 1. [x] See about computing a "summary" screen. This should toggle between
    summary and residue views.
@@ -191,7 +223,7 @@ TODO
    will not work for larger alignments.
 1. [x] Try constructing Paragraph only from the parts of the sequences that have
    to be displayed --- this should avoid `clone()`s.
-   [ ] Try putting the whole alignment into a Paragraph upfront, then scrolling
+1. [ ] Try putting the whole alignment into a Paragraph upfront, then scrolling
    it into position => Not sur eif this is possible. The constructors for Span,
    Line, and Paragraph all seem to consume their arguments; I tried WidgetRefs
    and StatefulWidgetRefs, to no avail.

@@ -1,7 +1,7 @@
 #!/usr/bin/expect -f
 
 set timeout 1
-spawn ../target/debug/termal -C -w 11 -t 3 data/test-zoom-01.fas
+spawn ../target/debug/termal -C -w 11 -t 3 data/test-aln-01.fas
 expect "AAAAAAAAA"
 send "z"
 expect {

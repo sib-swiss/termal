@@ -43,7 +43,7 @@ if {$force_conservative} {
 
 
 set timeout -1
-spawn ../target/debug/termal -w 9 -t 7 data/test-zoom-03.fas
+spawn ../target/debug/termal -w 9 -t 7 data/test-aln-03.fas
 match_max 100000
 expect -exact "\[?1049h\[1;1H\[J\[2;1H\[J\[3;1H\[J\[4;1H\[J\[5;1H\[J\[6;1H\[J\[7;1H\[J\[1;1H\[38;5;15m┌ data/t┐\[2;1H│\[38;5;4mK\[38;2;255;165;0mAAAAAA\[38;5;15m│\[3;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[4;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[5;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[6;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[7;1H└───────┘\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l"
 send -- "z"
