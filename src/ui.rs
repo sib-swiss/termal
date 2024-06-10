@@ -157,6 +157,31 @@ fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>>
     ztext
 }
 
+fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, app: &App) {
+
+    // -2 <- borders
+    let seq_area_width = area.width - 2;
+    let seq_area_height = area.height - 2;
+
+    let h_ratio: f64 = (seq_area_width as f64 / app.aln_len() as f64) as f64;
+    let v_ratio: f64 = (seq_area_height as f64 / app.num_seq() as f64) as f64;
+
+    eprintln!("hr: {}, vr: {}\n", h_ratio, v_ratio);
+
+    let vb_top:    usize = ((app.top_line as f64) * v_ratio).round() as usize;
+    let vb_bottom: usize = (((app.top_line+seq_area_height) as f64) * v_ratio).round() as usize;
+    let vb_left:   usize = ((app.leftmost_col as f64) * h_ratio).round() as usize;
+    let vb_right:  usize = (((app.leftmost_col+seq_area_width) as f64) * h_ratio).round() as usize;
+
+    eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
+
+    let l: &mut Line = &mut seq_para[vb_top];
+    let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("┌"));
+    let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("┐"));
+
+}
+
+
 fn make_layout(show_debug_pane: bool) -> Layout {
     /*
      *  One approach is to add the debug pane only if requested; another is to set its height to 3
@@ -189,6 +214,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         ZoomLevel::ZOOMED_OUT => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
             text = zoom_out_seq_text(f.size(), app, app_ui);
+            mark_viewport(&mut text, f.size(), app);
         }
         ZoomLevel::ZOOMED_OUT_AR => todo!()
     }
