@@ -166,19 +166,28 @@ fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, app: &App) {
     let h_ratio: f64 = (seq_area_width as f64 / app.aln_len() as f64) as f64;
     let v_ratio: f64 = (seq_area_height as f64 / app.num_seq() as f64) as f64;
 
-    eprintln!("hr: {}, vr: {}\n", h_ratio, v_ratio);
+    //eprintln!("hr: {}, vr: {}\n", h_ratio, v_ratio);
 
     let vb_top:    usize = ((app.top_line as f64) * v_ratio).round() as usize;
     let vb_bottom: usize = (((app.top_line+seq_area_height) as f64) * v_ratio).round() as usize;
     let vb_left:   usize = ((app.leftmost_col as f64) * h_ratio).round() as usize;
     let vb_right:  usize = (((app.leftmost_col+seq_area_width) as f64) * h_ratio).round() as usize;
 
-    eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
+    //eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
 
-    let l: &mut Line = &mut seq_para[vb_top];
+    let mut l: &mut Line = &mut seq_para[vb_top];
+    for c in vb_left+1 .. vb_right { std::mem::replace(&mut (*l).spans[c], Span::raw("─")); }
     let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("┌"));
     let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("┐"));
-
+    for s in vb_top+1 .. vb_bottom {
+        l = &mut seq_para[s];
+        let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("│"));
+    }
+    l = &mut seq_para[vb_bottom];
+    for c in vb_left+1 .. vb_right { std::mem::replace(&mut (*l).spans[c], Span::raw("─")); }
+    let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("└"));
+    let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("┘"));
 }
 
 
