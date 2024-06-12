@@ -49,6 +49,10 @@ struct Cli {
     /// Disable colour
     #[arg(short='C')]
     no_colour: bool,
+
+    /// Disable viewport
+    #[arg(long="no-viewport")]
+    no_viewport: bool,
 }
 
 fn main() -> Result<()> {
@@ -76,6 +80,7 @@ fn main() -> Result<()> {
     let mut app_ui = UI::new();
     app_ui.set_debug(cli.debug);
     if cli.no_colour { app_ui.set_monochrome(); }
+    if cli.no_viewport { app_ui.set_viewport(false); }
 
     // main loop
     loop {

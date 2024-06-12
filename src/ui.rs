@@ -21,6 +21,7 @@ pub struct UI {
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
     show_debug_pane: bool,
+    show_viewport: bool,
 }
 
 impl UI {
@@ -28,10 +29,12 @@ impl UI {
         let colour_map = color_scheme_lesk();
         let zoom_level = ZoomLevel::ZOOMED_IN;
         let show_debug_pane = false;
+        let show_viewport = true;
         UI {
             colour_map,
             zoom_level,
             show_debug_pane,
+            show_viewport,
         }
     }
 
@@ -51,6 +54,8 @@ impl UI {
     pub fn set_monochrome(&mut self) {
         self.colour_map = color_scheme_monochrome();
     }
+
+    pub fn set_viewport(&mut self, state: bool) { self.show_viewport = state; }
 }
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
@@ -223,7 +228,7 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
         ZoomLevel::ZOOMED_OUT => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
             text = zoom_out_seq_text(f.size(), app, app_ui);
-            mark_viewport(&mut text, f.size(), app);
+            if app_ui.show_viewport { mark_viewport(&mut text, f.size(), app); }
         }
         ZoomLevel::ZOOMED_OUT_AR => todo!()
     }
