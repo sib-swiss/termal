@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use ratatui::{
     Frame,
@@ -10,9 +10,9 @@ use ratatui::{
 use crate::App;
 
 enum ZoomLevel {
-    ZOOMED_IN,
-    ZOOMED_OUT,
-    ZOOMED_OUT_AR,
+    ZoomedIn,
+    ZoomedOut,
+    ZoomedOutAR,
 }
 
 // TODO: do we really need a separate UI struct, or could this just go into the App?
@@ -27,7 +27,7 @@ pub struct UI {
 impl UI {
     pub fn new() -> Self {
         let colour_map = color_scheme_lesk();
-        let zoom_level = ZoomLevel::ZOOMED_IN;
+        let zoom_level = ZoomLevel::ZoomedIn;
         let show_debug_pane = false;
         let show_viewport = true;
         UI {
@@ -40,9 +40,9 @@ impl UI {
 
     pub fn cycle_zoom(&mut self) {
         self.zoom_level = match self.zoom_level {
-            ZoomLevel::ZOOMED_IN => ZoomLevel::ZOOMED_OUT,
-            ZoomLevel::ZOOMED_OUT => ZoomLevel::ZOOMED_IN,
-            ZoomLevel::ZOOMED_OUT_AR => ZoomLevel::ZOOMED_IN,
+            ZoomLevel::ZoomedIn => ZoomLevel::ZoomedOut,
+            ZoomLevel::ZoomedOut => ZoomLevel::ZoomedIn,
+            ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
             // TODO: OUT -> OUT_AR
         }
     }
@@ -123,6 +123,8 @@ fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a
     let nseqskip: usize = app.top_line.into();
     let nseqtake: usize = area.height.into(); 
     let mut text: Vec<Line> = Vec::new();
+    // TODO: we probably don't need to skip() and then take(): why not just access elements
+    // directly, as is done in mark_viewport() ? See also zoom_out_seq_text().
     for seq in app.alignment.sequences.iter()
         .skip(nseqskip).take(nseqtake) {
         let spans: Vec<Span> = seq.chars()
@@ -181,18 +183,22 @@ fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, app: &App) {
     //eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
 
     let mut l: &mut Line = &mut seq_para[vb_top];
-    for c in vb_left+1 .. vb_right { std::mem::replace(&mut (*l).spans[c], Span::raw("─")); }
+    for c in vb_left+1 .. vb_right {
+        let _ = std::mem::replace(&mut (*l).spans[c], Span::raw("─"));
+    }
     let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("┌"));
-    let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("┐"));
+    let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("┐"));
     for s in vb_top+1 .. vb_bottom {
         l = &mut seq_para[s];
         let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("│"));
-        let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("│"));
+        let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("│"));
     }
-    l = &mut seq_para[vb_bottom];
-    for c in vb_left+1 .. vb_right { std::mem::replace(&mut (*l).spans[c], Span::raw("─")); }
+    l = &mut seq_para[vb_bottom-1];
+    for c in vb_left+1 .. vb_right {
+        let _ = std::mem::replace(&mut (*l).spans[c], Span::raw("─"));
+    }
     let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("└"));
-    let _ = std::mem::replace(&mut (*l).spans[vb_right], Span::raw("┘"));
+    let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("┘"));
 }
 
 
@@ -218,19 +224,19 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
     let layout_panes = make_layout(app_ui.show_debug_pane)
         .split(f.size());
 
-    let mut text: Vec<Line> = Vec::new();
+    let mut text;
     let title: String;
     match app_ui.zoom_level {
-        ZoomLevel::ZOOMED_IN => {
+        ZoomLevel::ZoomedIn => {
             title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
             text = zoom_in_seq_text(f.size(), app, app_ui);
         }
-        ZoomLevel::ZOOMED_OUT => {
+        ZoomLevel::ZoomedOut => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
             text = zoom_out_seq_text(f.size(), app, app_ui);
             if app_ui.show_viewport { mark_viewport(&mut text, f.size(), app); }
         }
-        ZoomLevel::ZOOMED_OUT_AR => todo!()
+        ZoomLevel::ZoomedOutAR => todo!()
     }
 
     let aln_block = Block::default().title(title).borders(Borders::ALL);

@@ -4,9 +4,7 @@ mod alignment;
 
 
 use std::{
-    env,
-    fs::File,
-    io::{stdout, Result, Write},
+    io::{stdout, Result},
 };
 
 use clap::{arg, command, Parser, };
@@ -15,7 +13,7 @@ use crossterm::{
     event::{self, KeyCode, KeyEventKind},
     terminal::{
         disable_raw_mode, enable_raw_mode, EnterAlternateScreen,
-        LeaveAlternateScreen, SetSize,
+        LeaveAlternateScreen,
     },
     ExecutableCommand,
 };

@@ -17,10 +17,11 @@ source ~/bin/functional-bash.sh || die "Could not source ~/bin/functional-bash.s
 status_to_label() {
     local -ri status=$1
      # We treat 126 and 127 (which indicate permission error and file not found,
-     # respectively) as indications of error rather than failure.
+     # respectively) as indications of error rather than failure. 101 is
+	 # typically returned when Rust panic!s, so we also terat it as an error.
     case $status in
         0 ) echo success ;;
-        126 | 127 ) echo error ;;
+        101 | 126 | 127 ) echo error ;;
         * ) echo failure ;;
     esac
 }
@@ -51,6 +52,7 @@ echo
 printf "Waiting for completion...\n"
 
 for PID in "${!test_names[@]}"; do
+	printf "Waiting for %s (%d)...\n" "${test_names["$PID"]}" "$PID"
     wait -n "$PID"
     test_status["$PID"]=$?
 done
