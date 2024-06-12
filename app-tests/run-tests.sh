@@ -43,7 +43,7 @@ declare -Ai test_status
 
 for test_script in test-*.exp; do
     printf "Launching %s...\n" "$test_script"
-    ./$test_script >/dev/null 2>&1 &
+    timeout 3s ./$test_script >/dev/null 2>&1 &
     test_names[$!]=$test_script
 done
 
