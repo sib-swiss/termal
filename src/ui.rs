@@ -17,24 +17,38 @@ enum ZoomLevel {
 
 // TODO: do we really need a separate UI struct, or could this just go into the App?
 //
-pub struct UI {
+pub struct UI<'a> {
+    app: &'a App,
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
     show_debug_pane: bool,
     show_viewport: bool,
+    top_line: u16,
+    leftmost_col: u16,
+    seq_para_height: u16,
+    seq_para_width: u16,
 }
 
-impl UI {
-    pub fn new() -> Self {
+impl<'a> UI<'a> {
+    pub fn new(app: &'a App) -> Self {
         let colour_map = color_scheme_lesk();
         let zoom_level = ZoomLevel::ZoomedIn;
         let show_debug_pane = false;
         let show_viewport = true;
+        let top_line = 0;
+        let leftmost_col = 0;
+        let seq_para_width = 0;
+        let seq_para_height = 0;
         UI {
+            app,
             colour_map,
             zoom_level,
             show_debug_pane,
             show_viewport,
+            top_line,
+            leftmost_col,
+            seq_para_width,
+            seq_para_height,
         }
     }
 
@@ -56,6 +70,56 @@ impl UI {
     }
 
     pub fn set_viewport(&mut self, state: bool) { self.show_viewport = state; }
+    //
+    // Setting size (must be done after layout is solved) - this is layout-agnostic, i.e. the
+    // height is th aactual number of lines displayable in the sequence widget, after taking into
+    // account its size, the presence of borders, etc.
+
+    pub fn set_seq_para_height(&mut self, height: u16) { self.seq_para_height = height; }
+
+    pub fn set_seq_para_width(&mut self, width: u16) { self.seq_para_width = width; }
+
+    // Scrolling
+
+    pub fn scroll_one_line_up(&mut self) {
+        if self.top_line > 0 { self.top_line -= 1; }
+    }
+
+    pub fn scroll_one_col_left(&mut self) {
+        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
+    }
+
+    fn max_top_line(&self) -> u16 {
+        if self.app.num_seq() >= self.seq_para_height {
+            self.app.num_seq() - self.seq_para_height
+        } else {
+            0
+        }
+    }
+
+    fn max_leftmost_col(&self) -> u16 {
+        if self.app.aln_len() >= self.seq_para_width {
+            self.app.aln_len() - self.seq_para_width
+        } else {
+            0
+        }
+    }
+
+    pub fn scroll_one_line_down(&mut self) {
+      if self.top_line < self.max_top_line() { self.top_line += 1; }
+    }
+
+    pub fn scroll_one_col_right(&mut self) {
+        if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
+    }
+
+    pub fn jump_to_top(&mut self) { self.top_line = 0 }
+
+    pub fn jump_to_begin(&mut self) { self.leftmost_col = 0 }
+
+    pub fn jump_to_bottom(&mut self) { self.top_line = self.max_top_line() }
+
+    pub fn jump_to_end(&mut self) { self.leftmost_col = self.max_leftmost_col() }
 }
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
@@ -117,19 +181,19 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a>> {
-    let nskip: usize = app.leftmost_col.into();
+fn zoom_in_seq_text<'a>(area: Rect,  ui: &'a UI) -> Vec<Line<'a>> {
+    let nskip: usize = ui.leftmost_col.into();
     let ntake: usize = (area.width - 2).into();
-    let nseqskip: usize = app.top_line.into();
+    let nseqskip: usize = ui.top_line.into();
     let nseqtake: usize = area.height.into(); 
     let mut text: Vec<Line> = Vec::new();
     // TODO: we probably don't need to skip() and then take(): why not just access elements
     // directly, as is done in mark_viewport() ? See also zoom_out_seq_text().
-    for seq in app.alignment.sequences.iter()
+    for seq in ui.app.alignment.sequences.iter()
         .skip(nseqskip).take(nseqtake) {
         let spans: Vec<Span> = seq.chars()
             .skip(nskip).take(ntake)
-            .map(|c| Span::styled(c.to_string(), *app_ui.colour_map.get(&c).unwrap()))
+            .map(|c| Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap()))
             .collect();
         let line: Line = Line::from(spans);
         text.push(line);
@@ -138,16 +202,16 @@ fn zoom_in_seq_text<'a>(area: Rect, app: &'a App, app_ui: &'a UI) -> Vec<Line<'a
     text
 }
 
-fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>> {
-    let num_seq: usize = app.num_seq() as usize;
-    let aln_len: usize = app.aln_len() as usize;
+fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
+    let num_seq: usize = ui.app.num_seq() as usize;
+    let aln_len: usize = ui.app.aln_len() as usize;
     let seq_area_width: usize = (area.width - 2).into();  // -2 <- panel border
     let seq_area_height: usize = (area.height - 2).into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
     for i in &retained_seqs_ndx {
-        let seq: &String = &app.alignment.sequences[*i];
+        let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in &retained_cols_ndx {
@@ -155,7 +219,7 @@ fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>>
             // is going to be much too slow. 
             let c: char = seq_chars[*j];
             let span = Span::styled(c.to_string(),
-                                    *app_ui.colour_map.get(&c).unwrap());
+                                    *ui.colour_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -164,21 +228,21 @@ fn zoom_out_seq_text<'a>(area: Rect, app: &'a App, app_ui: &UI) -> Vec<Line<'a>>
     ztext
 }
 
-fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, app: &App) {
+fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, ui: &UI) {
 
     // -2 <- borders
     let seq_area_width = area.width - 2;
     let seq_area_height = area.height - 2;
 
-    let h_ratio: f64 = (seq_area_width as f64 / app.aln_len() as f64) as f64;
-    let v_ratio: f64 = (seq_area_height as f64 / app.num_seq() as f64) as f64;
+    let h_ratio: f64 = (seq_area_width as f64 / ui.app.aln_len() as f64) as f64;
+    let v_ratio: f64 = (seq_area_height as f64 / ui.app.num_seq() as f64) as f64;
 
     //eprintln!("hr: {}, vr: {}\n", h_ratio, v_ratio);
 
-    let vb_top:    usize = ((app.top_line as f64) * v_ratio).round() as usize;
-    let vb_bottom: usize = (((app.top_line+seq_area_height) as f64) * v_ratio).round() as usize;
-    let vb_left:   usize = ((app.leftmost_col as f64) * h_ratio).round() as usize;
-    let vb_right:  usize = (((app.leftmost_col+seq_area_width) as f64) * h_ratio).round() as usize;
+    let vb_top:    usize = ((ui.top_line as f64) * v_ratio).round() as usize;
+    let vb_bottom: usize = (((ui.top_line+seq_area_height) as f64) * v_ratio).round() as usize;
+    let vb_left:   usize = ((ui.leftmost_col as f64) * h_ratio).round() as usize;
+    let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * h_ratio).round() as usize;
 
     //eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
 
@@ -220,21 +284,21 @@ fn make_layout(show_debug_pane: bool) -> Layout {
 
 // Draw UI
 
-pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
-    let layout_panes = make_layout(app_ui.show_debug_pane)
+pub fn ui(f: &mut Frame, ui: &mut UI) {
+    let layout_panes = make_layout(ui.show_debug_pane)
         .split(f.size());
 
     let mut text;
     let title: String;
-    match app_ui.zoom_level {
+    match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
-            title = format!(" {} - {}s x {}c ", app.filename, app.num_seq(), app.aln_len());
-            text = zoom_in_seq_text(f.size(), app, app_ui);
+            title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+            text = zoom_in_seq_text(f.size(), ui);
         }
         ZoomLevel::ZoomedOut => {
-            title = format!(" {} - {}s x {}c - fully zoomed out ", app.filename, app.num_seq(), app.aln_len());
-            text = zoom_out_seq_text(f.size(), app, app_ui);
-            if app_ui.show_viewport { mark_viewport(&mut text, f.size(), app); }
+            title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+            text = zoom_out_seq_text(f.size(), ui);
+            if ui.show_viewport { mark_viewport(&mut text, f.size(), ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }
@@ -247,10 +311,10 @@ pub fn ui(f: &mut Frame, app: &mut App, app_ui: &mut UI) {
     // let port_box = 
     f.render_widget(seq_para, layout_panes[0]);
 
-    app.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
-    app.set_seq_para_width(layout_panes[0].as_size().width - 2);
+    ui.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
+    ui.set_seq_para_width(layout_panes[0].as_size().width - 2);
 
-    if app_ui.show_debug_pane {
+    if ui.show_debug_pane {
         let msg_block = Block::default().borders(Borders::ALL);
         let msg_para = Paragraph::new(format!("{:?}", layout_panes[0].as_size()))
             .white()
