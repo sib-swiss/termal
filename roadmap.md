@@ -184,9 +184,13 @@ may explain why the overhead seemingly only occurs in debug mode.
 TODO
 ====
 
-1. [ ] Represent the view port in zommed-out mode.
+1. [x] Represent the view port in zommed-out mode.
 1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
-   App).
+   App). In fact, the "App" structure does not really seem to be useful, at
+   least not as long as the alignment is read-only. We'll keep it because later
+   on we may add functions that _change_ the alignment, and that should not be
+   coupled to the UI. "App" is perhaps best thought of as "Model" (in the MVC
+   sense).
 1. [x] Add app-level tests. This means:
    * [x] Make it possible to fix the app's size (-> Viewport::Fixed)
    * [x] Find a way to automate TUI interaction (-> good old Expect)
@@ -224,7 +228,7 @@ TODO
 1. [x] Try constructing Paragraph only from the parts of the sequences that have
    to be displayed --- this should avoid `clone()`s.
 1. [ ] Try putting the whole alignment into a Paragraph upfront, then scrolling
-   it into position => Not sur eif this is possible. The constructors for Span,
+   it into position => Not sure if this is possible. The constructors for Span,
    Line, and Paragraph all seem to consume their arguments; I tried WidgetRefs
    and StatefulWidgetRefs, to no avail.
 1. [x] Move ui code to a separate module.
