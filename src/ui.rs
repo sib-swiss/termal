@@ -234,21 +234,19 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, ui: &UI) {
+fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 
-    // -2 <- borders
+    // -2 <- borders 
     let seq_area_width = area.width - 2;
     let seq_area_height = area.height - 2;
 
-    let h_ratio: f64 = (seq_area_width as f64 / ui.app.aln_len() as f64) as f64;
-    let v_ratio: f64 = (seq_area_height as f64 / ui.app.num_seq() as f64) as f64;
+    ui.h_ratio = (seq_area_width as f64 / ui.app.aln_len() as f64) as f64;
+    ui.v_ratio = (seq_area_height as f64 / ui.app.num_seq() as f64) as f64;
 
-    //eprintln!("hr: {}, vr: {}\n", h_ratio, v_ratio);
-
-    let vb_top:    usize = ((ui.top_line as f64) * v_ratio).round() as usize;
-    let vb_bottom: usize = (((ui.top_line+seq_area_height) as f64) * v_ratio).round() as usize;
-    let vb_left:   usize = ((ui.leftmost_col as f64) * h_ratio).round() as usize;
-    let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * h_ratio).round() as usize;
+    let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio).round() as usize;
+    let vb_bottom: usize = (((ui.top_line+seq_area_height) as f64) * ui.v_ratio).round() as usize;
+    let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio).round() as usize;
+    let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * ui.h_ratio).round() as usize;
 
     //eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
 
@@ -325,11 +323,6 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
             ui.v_ratio = 1.0;
         }
         ZoomLevel::ZoomedOut  => {
-            // -2 <- borders
-            let seq_area_width = f.size().width - 2;
-            let seq_area_height = f.size().height - 2;
-            ui.h_ratio = (seq_area_width as f64 / ui.app.aln_len() as f64) as f64;
-            ui.v_ratio = (seq_area_height as f64 / ui.app.num_seq() as f64) as f64;
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }
