@@ -27,6 +27,8 @@ pub struct UI<'a> {
     leftmost_col: u16,
     seq_para_height: u16,
     seq_para_width: u16,
+    h_ratio: f64,
+    v_ratio: f64,
 }
 
 impl<'a> UI<'a> {
@@ -39,6 +41,8 @@ impl<'a> UI<'a> {
         let leftmost_col = 0;
         let seq_para_width = 0;
         let seq_para_height = 0;
+        let h_ratio = 1.0;
+        let v_ratio = 1.0;
         UI {
             app,
             colour_map,
@@ -49,6 +53,8 @@ impl<'a> UI<'a> {
             leftmost_col,
             seq_para_width,
             seq_para_height,
+            h_ratio,
+            v_ratio,
         }
     }
 
@@ -308,11 +314,25 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .white()
         .block(aln_block);
 
-    // let port_box = 
     f.render_widget(seq_para, layout_panes[0]);
 
     ui.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
     ui.set_seq_para_width(layout_panes[0].as_size().width - 2);
+    
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            ui.h_ratio = 1.0;
+            ui.v_ratio = 1.0;
+        }
+        ZoomLevel::ZoomedOut  => {
+            // -2 <- borders
+            let seq_area_width = f.size().width - 2;
+            let seq_area_height = f.size().height - 2;
+            ui.h_ratio = (seq_area_width as f64 / ui.app.aln_len() as f64) as f64;
+            ui.v_ratio = (seq_area_height as f64 / ui.app.num_seq() as f64) as f64;
+        }
+        ZoomLevel::ZoomedOutAR => todo!()
+    }
 
     if ui.show_debug_pane {
         let msg_block = Block::default().borders(Borders::ALL);

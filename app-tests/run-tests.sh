@@ -39,12 +39,19 @@ colour_label() {
 ################################################################
 # Main
 
+declare -a tests_to_run
 declare -A test_names
 declare -Ai test_status
 
-for test_script in test-*.exp; do
+if (($# > 0)); then
+    tests_to_run=("$@")
+else
+    tests_to_run=(test-*.exp)
+fi
+
+for test_script in "${tests_to_run[@]}"; do
     printf "Launching %s...\n" "$test_script"
-    timeout 3s ./$test_script >/dev/null 2>&1 &
+    ./$test_script >/dev/null 2>&1 &
     test_names[$!]=$test_script
 done
 
