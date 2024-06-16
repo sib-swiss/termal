@@ -85,16 +85,8 @@ impl<'a> UI<'a> {
 
     pub fn set_seq_para_width(&mut self, width: u16) { self.seq_para_width = width; }
 
-    // Scrolling
-
-    pub fn scroll_one_line_up(&mut self) {
-        if self.top_line > 0 { self.top_line -= 1; }
-    }
-
-    pub fn scroll_one_col_left(&mut self) {
-        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
-    }
-
+    // Info 
+    
     fn max_top_line(&self) -> u16 {
         if self.app.num_seq() >= self.seq_para_height {
             self.app.num_seq() - self.seq_para_height
@@ -111,6 +103,16 @@ impl<'a> UI<'a> {
         }
     }
 
+    // Scrolling
+
+    pub fn scroll_one_line_up(&mut self) {
+        if self.top_line > 0 { self.top_line -= 1; }
+    }
+
+    pub fn scroll_one_col_left(&mut self) {
+        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
+    }
+
     pub fn scroll_one_line_down(&mut self) {
       if self.top_line < self.max_top_line() { self.top_line += 1; }
     }
@@ -118,6 +120,24 @@ impl<'a> UI<'a> {
     pub fn scroll_one_col_right(&mut self) {
         if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
     }
+
+    
+    pub fn scroll_viewport_one_line_up(&mut self) {
+        if self.top_line > 0 { self.top_line -= 1; }
+    }
+
+    pub fn scroll_viewport_one_col_left(&mut self) {
+        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
+    }
+
+    pub fn scroll_viewport_one_line_down(&mut self) {
+      if self.top_line < self.max_top_line() { self.top_line += 1; }
+    }
+
+    pub fn scroll_viewport_one_col_right(&mut self) {
+        if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
+    }
+
 
     pub fn jump_to_top(&mut self) { self.top_line = 0 }
 
