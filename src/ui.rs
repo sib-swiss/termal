@@ -9,7 +9,8 @@ use ratatui::{
 
 use crate::App;
 
-enum ZoomLevel {
+#[derive(Clone,Copy)]
+pub enum ZoomLevel {
     ZoomedIn,
     ZoomedOut,
     ZoomedOutAR,
@@ -57,6 +58,10 @@ impl<'a> UI<'a> {
             v_ratio,
         }
     }
+
+    // Zooming
+
+    pub fn zoom_level(&self) -> ZoomLevel { self.zoom_level }
 
     pub fn cycle_zoom(&mut self) {
         self.zoom_level = match self.zoom_level {
@@ -121,21 +126,33 @@ impl<'a> UI<'a> {
         if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
     }
 
-    
-    pub fn scroll_viewport_one_line_up(&mut self) {
-        if self.top_line > 0 { self.top_line -= 1; }
-    }
-
-    pub fn scroll_viewport_one_col_left(&mut self) {
-        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
-    }
 
     pub fn scroll_viewport_one_line_down(&mut self) {
-      if self.top_line < self.max_top_line() { self.top_line += 1; }
+        self.top_line += (1.0 / self.v_ratio).round() as u16;
+        if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
+    }
+    
+    pub fn scroll_viewport_one_line_up(&mut self) {
+        let lines_to_skip = (1.0 / self.v_ratio).round() as u16;
+        if lines_to_skip < self.top_line {
+            self.top_line -= lines_to_skip;
+        } else {
+            self.top_line = 0; 
+        }
     }
 
     pub fn scroll_viewport_one_col_right(&mut self) {
-        if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
+        self.leftmost_col += (1.0 / self.h_ratio).round() as u16;
+        if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
+    }
+
+    pub fn scroll_viewport_one_col_left(&mut self) {
+        let cols_to_skip = (1.0 / self.h_ratio).round() as u16;
+        if cols_to_skip < self.leftmost_col {
+            self.leftmost_col -= cols_to_skip;
+        } else {
+            self.leftmost_col = 0; 
+        }
     }
 
 
@@ -146,6 +163,7 @@ impl<'a> UI<'a> {
     pub fn jump_to_bottom(&mut self) { self.top_line = self.max_top_line() }
 
     pub fn jump_to_end(&mut self) { self.leftmost_col = self.max_leftmost_col() }
+
 }
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a

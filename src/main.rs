@@ -3,6 +3,8 @@ mod ui;
 mod alignment;
 
 
+use log::{info,debug};
+
 use std::{
     io::{stdout, Result},
 };
@@ -24,7 +26,7 @@ use ratatui::{
 };
 
 use crate::app::App;
-use crate::ui::{UI, ui};
+use crate::ui::{UI, ui, ZoomLevel};
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -54,6 +56,9 @@ struct Cli {
 }
 
 fn main() -> Result<()> {
+    env_logger::init();
+    info!("Starting log");
+
     let cli = Cli::parse(); 
     let fasta_file: &str = &cli.aln_fname;
 
@@ -87,28 +92,48 @@ fn main() -> Result<()> {
         if event::poll(std::time::Duration::from_millis(100))? {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
-                    match key.code {
-                        // Motion
-                        KeyCode::Char('j') => app_ui.scroll_one_line_down(),
-                        KeyCode::Char('G') => app_ui.jump_to_bottom(),
+                        match key.code {
+                            // ----- Motion -----
+                            
+                            // Down
+                            KeyCode::Char('j') => match app_ui.zoom_level() {
+                                ZoomLevel::ZoomedIn => app_ui.scroll_one_line_down(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_line_down(),
+                                _ => todo!(),
+                            }
+                            KeyCode::Char('G') => app_ui.jump_to_bottom(),
 
-                        KeyCode::Char('k') => app_ui.scroll_one_line_up(),
-                        KeyCode::Char('g') => app_ui.jump_to_top(),
+                            // Up
+                            KeyCode::Char('k') => match app_ui.zoom_level() {
+                                ZoomLevel::ZoomedIn => app_ui.scroll_one_line_up(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_line_up(),
+                                _ => todo!(),
+                            }
+                            KeyCode::Char('g') => app_ui.jump_to_top(),
 
-                        KeyCode::Char('l') => app_ui.scroll_one_col_right(),
-                        KeyCode::Char('$') => app_ui.jump_to_end(),
+                            // Right
+                            KeyCode::Char('l') => match app_ui.zoom_level() {
+                                ZoomLevel::ZoomedIn => app_ui.scroll_one_col_right(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_col_right(),
+                                _ => todo!(),
+                            }
+                            KeyCode::Char('$') => app_ui.jump_to_end(),
 
-                        KeyCode::Char('h') => app_ui.scroll_one_col_left(),
-                        KeyCode::Char('^') => app_ui.jump_to_begin(),
+                            KeyCode::Char('h') => match app_ui.zoom_level() {
+                                ZoomLevel::ZoomedIn => app_ui.scroll_one_col_left(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_col_left(),
+                                _ => todo!(),
+                            }
+                            KeyCode::Char('^') => app_ui.jump_to_begin(),
 
-                        // Zoom
-                        KeyCode::Char('z') => app_ui.cycle_zoom(),
+                            // Zoom
+                            KeyCode::Char('z') => app_ui.cycle_zoom(),
 
-                        // Exit
-                        KeyCode::Char('q') => break,
-                        KeyCode::Char('Q') => break,
-                        _ => {}
-                    }
+                            // Exit
+                            KeyCode::Char('q') => break,
+                            KeyCode::Char('Q') => break,
+                            _ => {}
+                        }
                 }
             }
         }
