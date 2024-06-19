@@ -50,6 +50,10 @@ struct Cli {
     #[arg(short='C')]
     no_colour: bool,
 
+    /// Poll wait time [ms]
+    #[clap(long="poll-wait-time", default_value_t = 100)]
+    poll_wait_time: u64,
+
     /// Disable viewport
     #[arg(long="no-viewport")]
     no_zoombox: bool,
@@ -87,9 +91,11 @@ fn main() -> Result<()> {
 
     // main loop
     loop {
-        terminal.draw(|f| ui(f, &mut app_ui))?;
+        debug!("**** Draw Iteration ****");
+        debug!("size: {:?}", terminal.size().unwrap());
+        terminal.draw(|f|  ui(f, &mut app_ui) )?;
         // handle events
-        if event::poll(std::time::Duration::from_millis(100))? {
+        if event::poll(std::time::Duration::from_millis(cli.poll_wait_time))? {
             if let event::Event::Key(key) = event::read()? {
                 if key.kind == KeyEventKind::Press {
                         match key.code {
