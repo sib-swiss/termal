@@ -36,6 +36,8 @@ colour_label() {
     esac
 }
 
+strlen() { printf "%d" "${#1}"; }
+
 ################################################################
 # Main
 
@@ -55,7 +57,7 @@ for test_script in "${tests_to_run[@]}"; do
     test_names[$!]=$test_script
 done
 
-echo
+
 printf "Waiting for completion...\n"
 
 for PID in "${!test_names[@]}"; do
@@ -67,9 +69,12 @@ done
 declare -A test_result_labels
 aamap status_to_label test_status test_result_labels
 
-echo
+declare -a test_name_lengths
+map strlen test_names test_name_lengths
+max_len="$(max test_name_lengths)"
+fmt="$(printf "%%-%ds -> %%s\\\n" "$max_len")"
 for PID in "${!test_names[@]}"; do
-    printf "%s -> %s\n" "${test_names["$PID"]}" \
+    printf "$fmt" "${test_names["$PID"]}" \
         "$(colour_label "${test_result_labels["$PID"]}")"
 done
 
