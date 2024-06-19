@@ -25,7 +25,7 @@ pub struct UI<'a> {
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
     show_debug_pane: bool,
-    show_viewport: bool,
+    show_zoombox: bool,
     top_line: u16,
     leftmost_col: u16,
     seq_para_height: u16,
@@ -39,7 +39,7 @@ impl<'a> UI<'a> {
         let colour_map = color_scheme_lesk();
         let zoom_level = ZoomLevel::ZoomedIn;
         let show_debug_pane = false;
-        let show_viewport = true;
+        let show_zoombox = true;
         let top_line = 0;
         let leftmost_col = 0;
         let seq_para_width = 0;
@@ -51,7 +51,7 @@ impl<'a> UI<'a> {
             colour_map,
             zoom_level,
             show_debug_pane,
-            show_viewport,
+            show_zoombox,
             top_line,
             leftmost_col,
             seq_para_width,
@@ -82,7 +82,7 @@ impl<'a> UI<'a> {
         self.colour_map = color_scheme_monochrome();
     }
 
-    pub fn set_viewport(&mut self, state: bool) { self.show_viewport = state; }
+    pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }
     //
     // Setting size (must be done after layout is solved) - this is layout-agnostic, i.e. the
     // height is th aactual number of lines displayable in the sequence widget, after taking into
@@ -160,12 +160,12 @@ impl<'a> UI<'a> {
        }
     }
 
-    pub fn scroll_viewport_one_line_down(&mut self) {
+    pub fn scroll_zoombox_one_line_down(&mut self) {
         self.top_line += (1.0 / self.v_ratio).round() as u16;
         if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
     }
     
-    pub fn scroll_viewport_one_line_up(&mut self) {
+    pub fn scroll_zoombox_one_line_up(&mut self) {
         let lines_to_skip = (1.0 / self.v_ratio).round() as u16;
         if lines_to_skip < self.top_line {
             self.top_line -= lines_to_skip;
@@ -174,12 +174,12 @@ impl<'a> UI<'a> {
         }
     }
 
-    pub fn scroll_viewport_one_col_right(&mut self) {
+    pub fn scroll_zoombox_one_col_right(&mut self) {
         self.leftmost_col += (1.0 / self.h_ratio).round() as u16;
         if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
     }
 
-    pub fn scroll_viewport_one_col_left(&mut self) {
+    pub fn scroll_zoombox_one_col_left(&mut self) {
         let cols_to_skip = (1.0 / self.h_ratio).round() as u16;
         if cols_to_skip < self.leftmost_col {
             self.leftmost_col -= cols_to_skip;
@@ -264,7 +264,7 @@ fn zoom_in_seq_text<'a>(area: Rect,  ui: &'a UI) -> Vec<Line<'a>> {
     let nseqtake: usize = area.height.into(); 
     let mut text: Vec<Line> = Vec::new();
     // TODO: we probably don't need to skip() and then take(): why not just access elements
-    // directly, as is done in mark_viewport() ? See also zoom_out_seq_text().
+    // directly, as is done in mark_zoombox() ? See also zoom_out_seq_text().
     for seq in ui.app.alignment.sequences.iter()
         .skip(nseqskip).take(nseqtake) {
         let spans: Vec<Span> = seq.chars()
@@ -306,7 +306,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
+fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 
     // -2 <- borders 
     let seq_area_width = area.width - 2;
@@ -378,7 +378,7 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
             title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             text = zoom_out_seq_text(f.size(), ui);
             debug!("  UI Text dims: {}s x {}c", text.len(), text[0].spans.len());
-            if ui.show_viewport { mark_viewport(&mut text, f.size(), ui); }
+            if ui.show_zoombox { mark_zoombox(&mut text, f.size(), ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }

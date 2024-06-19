@@ -51,8 +51,8 @@ struct Cli {
     no_colour: bool,
 
     /// Disable viewport
-    #[arg(long="no-viewport")]
-    no_viewport: bool,
+    #[arg(long="no-zoombox")]
+    no_zoombox: bool,
 }
 
 fn main() -> Result<()> {
@@ -83,7 +83,7 @@ fn main() -> Result<()> {
     let mut app_ui = UI::new(&app);
     app_ui.set_debug(cli.debug);
     if cli.no_colour { app_ui.set_monochrome(); }
-    if cli.no_viewport { app_ui.set_viewport(false); }
+    if cli.no_zoombox { app_ui.set_zoombox(false); }
 
     // main loop
     loop {
@@ -98,7 +98,7 @@ fn main() -> Result<()> {
                             // Down
                             KeyCode::Char('j') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_line_down(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_line_down(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_line_down(),
                                 _ => todo!(),
                             }
                             KeyCode::Char('J') => app_ui.scroll_one_screen_down(),
@@ -107,7 +107,7 @@ fn main() -> Result<()> {
                             // Up
                             KeyCode::Char('k') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_line_up(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_line_up(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_line_up(),
                                 _ => todo!(),
                             }
                             KeyCode::Char('K') => app_ui.scroll_one_screen_up(),
@@ -116,7 +116,7 @@ fn main() -> Result<()> {
                             // Right
                             KeyCode::Char('l') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_col_right(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_col_right(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_col_right(),
                                 _ => todo!(),
                             }
                             KeyCode::Char('L') => app_ui.scroll_one_screen_right(),
@@ -125,7 +125,7 @@ fn main() -> Result<()> {
                             // Left
                             KeyCode::Char('h') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_col_left(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_col_left(),
+                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_col_left(),
                                 _ => todo!(),
                             }
                             KeyCode::Char('H') => app_ui.scroll_one_screen_left(),
