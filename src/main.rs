@@ -51,7 +51,7 @@ struct Cli {
     no_colour: bool,
 
     /// Disable viewport
-    #[arg(long="no-zoombox")]
+    #[arg(long="no-viewport")]
     no_zoombox: bool,
 }
 
