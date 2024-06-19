@@ -101,6 +101,7 @@ fn main() -> Result<()> {
                                 ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_line_down(),
                                 _ => todo!(),
                             }
+                            KeyCode::Char('J') => app_ui.scroll_one_screen_down(),
                             KeyCode::Char('G') => app_ui.jump_to_bottom(),
 
                             // Up
@@ -109,6 +110,7 @@ fn main() -> Result<()> {
                                 ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_line_up(),
                                 _ => todo!(),
                             }
+                            KeyCode::Char('K') => app_ui.scroll_one_screen_up(),
                             KeyCode::Char('g') => app_ui.jump_to_top(),
 
                             // Right
@@ -117,13 +119,16 @@ fn main() -> Result<()> {
                                 ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_col_right(),
                                 _ => todo!(),
                             }
+                            KeyCode::Char('L') => app_ui.scroll_one_screen_right(),
                             KeyCode::Char('$') => app_ui.jump_to_end(),
 
+                            // Left
                             KeyCode::Char('h') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_col_left(),
                                 ZoomLevel::ZoomedOut => app_ui.scroll_viewport_one_col_left(),
                                 _ => todo!(),
                             }
+                            KeyCode::Char('H') => app_ui.scroll_one_screen_left(),
                             KeyCode::Char('^') => app_ui.jump_to_begin(),
 
                             // Zoom

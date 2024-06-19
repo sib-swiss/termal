@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use log::{info,debug};
+
 use ratatui::{
     Frame,
     prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span},
@@ -126,6 +128,37 @@ impl<'a> UI<'a> {
         if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
     }
 
+    pub fn scroll_one_screen_up(&mut self) {
+       if self.top_line > self.seq_para_height  {
+           self.top_line -= self.seq_para_height;
+       } else {
+           self.top_line = 0;
+       }
+    }
+
+    pub fn scroll_one_screen_left(&mut self) {
+       if self.leftmost_col > self.seq_para_width  {
+           self.leftmost_col -= self.seq_para_width;
+       } else {
+           self.leftmost_col = 0;
+       }
+    }
+
+    pub fn scroll_one_screen_down(&mut self) {
+       if self.top_line + self.seq_para_height < self.max_top_line() {
+           self.top_line += self.seq_para_height;
+       } else {
+           self.top_line = self.max_top_line();
+       }
+    }
+
+    pub fn scroll_one_screen_right(&mut self) {
+       if self.leftmost_col + self.seq_para_width < self.max_leftmost_col() {
+           self.leftmost_col += self.seq_para_width;
+       } else {
+           self.leftmost_col = self.max_leftmost_col();
+       }
+    }
 
     pub fn scroll_viewport_one_line_down(&mut self) {
         self.top_line += (1.0 / self.v_ratio).round() as u16;
@@ -154,7 +187,6 @@ impl<'a> UI<'a> {
             self.leftmost_col = 0; 
         }
     }
-
 
     pub fn jump_to_top(&mut self) { self.top_line = 0 }
 
@@ -254,6 +286,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
+    debug!("  ZO retaining {} columns, area width: {}", retained_cols_ndx.len(), seq_area_width);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
@@ -269,6 +302,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
         ztext.push(Line::from(spans));
     }
 
+    debug!("  ZO Text dims: {}s x {}c", ztext.len(), ztext[0].spans.len());
     ztext
 }
 
@@ -286,9 +320,11 @@ fn mark_viewport(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio).round() as usize;
     let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * ui.h_ratio).round() as usize;
 
-    //eprintln!("t: {}, b: {}; l: {}, r: {}\n", vb_top, vb_bottom, vb_left, vb_right);
+    debug!("  VP top: {}, bot: {}; left: {}, right: {}", vb_top, vb_bottom, vb_left, vb_right);
+    debug!("  VP LMC: {}, AW: {}, HR: {}", ui.leftmost_col, seq_area_width, ui.h_ratio);
 
     let mut l: &mut Line = &mut seq_para[vb_top];
+    debug!("  #spans: {}", (*l).spans.len());
     for c in vb_left+1 .. vb_right {
         let _ = std::mem::replace(&mut (*l).spans[c], Span::raw("─"));
     }
@@ -338,8 +374,10 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
             text = zoom_in_seq_text(f.size(), ui);
         }
         ZoomLevel::ZoomedOut => {
+            debug!("**** UI ZoomOut");
             title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             text = zoom_out_seq_text(f.size(), ui);
+            debug!("  UI Text dims: {}s x {}c", text.len(), text[0].spans.len());
             if ui.show_viewport { mark_viewport(&mut text, f.size(), ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()
