@@ -30,8 +30,6 @@ pub struct UI<'a> {
     leftmost_col: u16,
     seq_para_height: u16,
     seq_para_width: u16,
-    h_ratio: f64,
-    v_ratio: f64,
 }
 
 impl<'a> UI<'a> {
@@ -44,8 +42,6 @@ impl<'a> UI<'a> {
         let leftmost_col = 0;
         let seq_para_width = 0;
         let seq_para_height = 0;
-        let h_ratio = 1.0;
-        let v_ratio = 1.0;
         UI {
             app,
             colour_map,
@@ -56,8 +52,6 @@ impl<'a> UI<'a> {
             leftmost_col,
             seq_para_width,
             seq_para_height,
-            h_ratio,
-            v_ratio,
         }
     }
 
@@ -72,6 +66,14 @@ impl<'a> UI<'a> {
             ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
             // TODO: OUT -> OUT_AR
         }
+    }
+
+    pub fn h_ratio(&self) -> f64 {
+        (self.seq_para_width as f64 / self.app.aln_len() as f64) as f64
+    }
+
+    pub fn v_ratio(&self) -> f64 {
+        (self.seq_para_height as f64 / self.app.num_seq() as f64) as f64
     }
 
     pub fn set_debug(&mut self, state: bool) {
@@ -161,12 +163,12 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_zoombox_one_line_down(&mut self) {
-        self.top_line += (1.0 / self.v_ratio).round() as u16;
+        self.top_line += (1.0 / self.v_ratio()).round() as u16;
         if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
     }
     
     pub fn scroll_zoombox_one_line_up(&mut self) {
-        let lines_to_skip = (1.0 / self.v_ratio).round() as u16;
+        let lines_to_skip = (1.0 / self.v_ratio()).round() as u16;
         if lines_to_skip < self.top_line {
             self.top_line -= lines_to_skip;
         } else {
@@ -175,12 +177,12 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_zoombox_one_col_right(&mut self) {
-        self.leftmost_col += (1.0 / self.h_ratio).round() as u16;
+        self.leftmost_col += (1.0 / self.h_ratio()).round() as u16;
         if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
     }
 
     pub fn scroll_zoombox_one_col_left(&mut self) {
-        let cols_to_skip = (1.0 / self.h_ratio).round() as u16;
+        let cols_to_skip = (1.0 / self.h_ratio()).round() as u16;
         if cols_to_skip < self.leftmost_col {
             self.leftmost_col -= cols_to_skip;
         } else {
@@ -312,16 +314,13 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
     let seq_area_width = area.width - 2;
     let seq_area_height = area.height - 2;
 
-    ui.h_ratio = (seq_area_width as f64 / ui.app.aln_len() as f64) as f64;
-    ui.v_ratio = (seq_area_height as f64 / ui.app.num_seq() as f64) as f64;
-
-    let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio).round() as usize;
-    let vb_bottom: usize = (((ui.top_line+seq_area_height) as f64) * ui.v_ratio).round() as usize;
-    let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio).round() as usize;
-    let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * ui.h_ratio).round() as usize;
+    let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
+    let vb_bottom: usize = (((ui.top_line+seq_area_height) as f64) * ui.v_ratio()).round() as usize;
+    let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
+    let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * ui.h_ratio()).round() as usize;
 
     debug!("  VP top: {}, bot: {}; left: {}, right: {}", vb_top, vb_bottom, vb_left, vb_right);
-    debug!("  VP LMC: {}, AW: {}, HR: {}", ui.leftmost_col, seq_area_width, ui.h_ratio);
+    debug!("  VP LMC: {}, AW: {}, HR: {}", ui.leftmost_col, seq_area_width, ui.h_ratio());
 
     let mut l: &mut Line = &mut seq_para[vb_top];
     debug!("  #spans: {}", (*l).spans.len());
@@ -366,6 +365,9 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(ui.show_debug_pane)
         .split(f.size());
 
+    ui.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
+    ui.set_seq_para_width(layout_panes[0].as_size().width - 2);
+
     let mut text;
     let title: String;
     match ui.zoom_level {
@@ -388,19 +390,6 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .block(aln_block);
 
     f.render_widget(seq_para, layout_panes[0]);
-
-    ui.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
-    ui.set_seq_para_width(layout_panes[0].as_size().width - 2);
-    
-    match ui.zoom_level {
-        ZoomLevel::ZoomedIn => {
-            ui.h_ratio = 1.0;
-            ui.v_ratio = 1.0;
-        }
-        ZoomLevel::ZoomedOut  => {
-        }
-        ZoomLevel::ZoomedOutAR => todo!()
-    }
 
     if ui.show_debug_pane {
         let msg_block = Block::default().borders(Borders::ALL);
