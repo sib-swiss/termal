@@ -180,6 +180,115 @@ loops, which I'd rather avoid. Also noteworthy is that the compmiler may
 actually figure out on its own that inlining is a good idea in this case - that
 may explain why the overhead seemingly only occurs in debug mode.
 
+Screen Measures and Invariants
+------------------------------
+
+### Zoomed-in
+
+```
++--------------------------- w_a ----------------------------+         ^
+|                                                            |         |
+|   +-------- w_s ----------+                                |         |
+|   | +-------- w_p -------+|                                |< t       
+|     |                    ||                                |         t
+  h_s                      ||                                |          
+h_a   h_p                  ||                                |         |
+    |                      ||            +...... w_p ........|< t_max  v
+|   | |                    ||            .                   |
+|   | +------- seq panel --+|            .                   |
+|   |                       |            h                   |
+|   +--------------- scrn --+            .                   |
+|                                        .                   |
++--------------------------------------------------- aln ----+
+      ^                                  ^
+      l                                  l_max
+<-------------------- l ---------------->                                         
+```
+
+where
+
+symbol   meaning
+------   --------
+_w~a~_   width (= number of columns) of the alignment
+_h~a~_   height (= number of sequences (= lines)) of the alignment
+_w~s~_   width of the screen
+_h~s~_   height of the screen
+_w~p~_   width of the sequence panel (not counting borders)
+_h~p~_   height of the sequence panel (not counting borders)
+_l_      leftmost alignment column visible in the sequence panel
+_t_      topmost sequence visible in the sequence panel 
+_l~max~_ maximum possible value for _l_
+_t~max~_ maximum possible value for _t_
+
+**NOTES**
+
+* The sequence panel is the _main_, but (usually) not the _only_ visible part of the
+  UI. It also has a border on each side. Therefore, the number of alignment
+  columns shown on screen, _w~p~_, is always smaller than the screen width (by
+  at least 2). This value is determined by the layout solver and can change,
+  e.g. due to resizes of the label panel or the termnal itself. A similar
+  situation obtains for height, naturally. 
+* (_l_, _t_) is the top-left corner of the sequence panel, if we imagine it as
+  positioned within the alignment (whose top left corner is at (0,0)).
+* The value of _l_ cannot exceed the width of the alignment _w~a~_ minus the
+  number of columns shown in the sequence panel (_w~p~_). Likewise for _t_
+
+In symbols:
+
+* $l_{\mathrm{max}} = w_a - w_p$ 
+* $t_{\mathrm{max}} = h_a - h_p$ 
+* $0 \leq{} l \leq{} l_{\mathrm{max}}$
+* $0 \leq{} t \leq{} t_{\mathrm{max}}$
+
+### Zoomed-Out
+
+In zoomed-out mode, the sequence panel shows a uniform sample of the whole
+alignment, that is, the first column in the panel is the first in the alignment,
+and so is the last column. Every other column shown is sampled from the
+alignment such as every _n_^th^ column is displayed. 
+
+The ratio of columns displayed to total alignment columns is called the
+_horizontal ratio_ _r~h~_. The _vertical ratio_ _r~v~_ is definied analogously.
+
+A rectangle called the _zoom box_ is also displayed. This shows the portion of
+the alignment that would be displayed in the sequence panel when zooming in
+again. Note that the box's border _covers_ the top, bottom, left, and right
+boundaries of the box. This means that the zoom box never fuses with the
+sequence panel's border. 
+
+The upper corner of the box (_l~b~_, _t~b~_) corresponds to _l_ and _t_ (see
+above) multiplied by the appropriate ratio (see equations below); its width
+and height derived from the width and height of the sequence panel, also
+multiplied by the corresponding ratio. 
+
+**NOTE**: in the following drawing, the alignment boundaries are not shown.
+
+```
++----------------------------- w_s -------------------------------+
+|   +--------------------------- w_p ----------------------------+|
+|   |                                                            ||
+|   |                                                            ||
+|   |                                                            ||
+|   |               +------ w_b ------+............................<- t_b
+|                   |                 |                          ||
+    h_p                               |                          ||
+h_s                 h_b               |                          ||
+    |                                 |                          ||
+|   |               |                 |                          ||
+|   |               +-----------------+                          ||
+|   |               .                                            ||
+|   |               .                                            ||
+|   +---------------.------------------------------ seq panel ---+|
+|                   .                                             |
++-------------------.------------------------------- screen ------+
+                    ^
+                    l_b
+```
+
+* $r_h = w_p / w_a = w_b / w_p$
+* $r_v = h_p / h_a = h_b / h_p$
+* $l_b = \mathrm{round}(r_h l)$
+* $t_b = \mathrm{round}(r_v t)$
 
 TODO
 ====
