@@ -374,7 +374,6 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
             text = zoom_in_seq_text(f.size(), ui);
         }
         ZoomLevel::ZoomedOut => {
-            debug!("**** UI ZoomOut");
             title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             text = zoom_out_seq_text(f.size(), ui);
             debug!("  UI Text dims: {}s x {}c", text.len(), text[0].spans.len());
