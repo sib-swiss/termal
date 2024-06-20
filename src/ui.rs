@@ -28,8 +28,8 @@ pub struct UI<'a> {
     show_zoombox: bool,
     top_line: u16,
     leftmost_col: u16,
-    seq_para_height: u16,
     seq_para_width: u16,
+    seq_para_height: u16,
 }
 
 impl<'a> UI<'a> {
@@ -53,6 +53,17 @@ impl<'a> UI<'a> {
             seq_para_width,
             seq_para_height,
         }
+    }
+
+    // Handling Resizes
+
+    // Resizing affects max_top_line and max_leftmost_col, so top_line and leftmost_col may now
+    // exceed them. This function, which should be called after the layout is solved but before the
+    // widgets are drawn, makes sure that l does not exceed l_max, etc.
+
+    pub fn adjust_seq_pane_position(&mut self) {
+        if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
+        if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
     }
 
     // Zooming
@@ -198,6 +209,16 @@ impl<'a> UI<'a> {
 
     pub fn jump_to_end(&mut self) { self.leftmost_col = self.max_leftmost_col() }
 
+    // Debugging
+
+    pub fn assert_invariants(&self) {
+        assert!(self.max_leftmost_col() + self.seq_para_width == self.app.aln_len(),
+            "l_max: {} + w_p: {} == w_a: {} failed",
+            self.max_leftmost_col(), self.seq_para_width, self.app.aln_len()
+        );
+        assert!(self.leftmost_col <= self.max_leftmost_col(), 
+            "l: {}<= l_max: {}", self.leftmost_col, self.max_leftmost_col())
+    }
 }
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
@@ -288,7 +309,6 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
-    debug!("  ZO retaining {} columns, area width: {}", retained_cols_ndx.len(), seq_area_width);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
@@ -304,26 +324,19 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
         ztext.push(Line::from(spans));
     }
 
-    debug!("  ZO Text dims: {}s x {}c", ztext.len(), ztext[0].spans.len());
     ztext
 }
 
 fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 
-    // -2 <- borders 
-    let seq_area_width = area.width - 2;
-    let seq_area_height = area.height - 2;
-
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
-    let vb_bottom: usize = (((ui.top_line+seq_area_height) as f64) * ui.v_ratio()).round() as usize;
+    let vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    let vb_right:  usize = (((ui.leftmost_col+seq_area_width) as f64) * ui.h_ratio()).round() as usize;
+    let vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width) as f64) * ui.h_ratio()).round() as usize;
 
-    debug!("  VP top: {}, bot: {}; left: {}, right: {}", vb_top, vb_bottom, vb_left, vb_right);
-    debug!("  VP LMC: {}, AW: {}, HR: {}", ui.leftmost_col, seq_area_width, ui.h_ratio());
+    ui.assert_invariants();
 
     let mut l: &mut Line = &mut seq_para[vb_top];
-    debug!("  #spans: {}", (*l).spans.len());
     for c in vb_left+1 .. vb_right {
         let _ = std::mem::replace(&mut (*l).spans[c], Span::raw("─"));
     }
@@ -367,6 +380,9 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
     ui.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
     ui.set_seq_para_width(layout_panes[0].as_size().width - 2);
+    ui.adjust_seq_pane_position();
+
+    ui.assert_invariants();
 
     let mut text;
     let title: String;
@@ -378,7 +394,6 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         ZoomLevel::ZoomedOut => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             text = zoom_out_seq_text(f.size(), ui);
-            debug!("  UI Text dims: {}s x {}c", text.len(), text[0].spans.len());
             if ui.show_zoombox { mark_zoombox(&mut text, f.size(), ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()

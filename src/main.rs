@@ -83,7 +83,7 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
     terminal.clear()?;
 
-    let mut app = App::new(fasta_file)?;
+    let app = App::new(fasta_file)?;
     let mut app_ui = UI::new(&app);
     app_ui.set_debug(cli.debug);
     if cli.no_colour { app_ui.set_monochrome(); }
