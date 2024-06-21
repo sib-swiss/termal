@@ -280,11 +280,16 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-fn zoom_in_seq_text<'a>(area: Rect,  ui: &'a UI) -> Vec<Line<'a>> {
+fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    ui.app.alignment.headers.iter()
+        .map(|h| Line::from(h.clone())).collect()
+}
+
+fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = ui.leftmost_col.into();
-    let ntake: usize = (area.width - 2).into();
+    let ntake: usize = ui.seq_para_width.into();
     let nseqskip: usize = ui.top_line.into();
-    let nseqtake: usize = area.height.into(); 
+    let nseqtake: usize = ui.seq_para_width.into(); 
     let mut text: Vec<Line> = Vec::new();
     // TODO: we probably don't need to skip() and then take(): why not just access elements
     // directly, as is done in mark_zoombox() ? See also zoom_out_seq_text().
@@ -400,26 +405,35 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
     ui.assert_invariants();
 
-    let mut text;
+    let labels;
+    let mut sequences;
     let title: String;
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
-            text = zoom_in_seq_text(f.size(), ui);
+            labels = zoom_in_lbl_text(ui);
+            sequences = zoom_in_seq_text(ui);
         }
         ZoomLevel::ZoomedOut => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
-            text = zoom_out_seq_text(f.size(), ui);
-            if ui.show_zoombox { mark_zoombox(&mut text, f.size(), ui); }
+            labels = Vec::new(); // TODO
+            sequences = zoom_out_seq_text(f.size(), ui);
+            if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }
 
+    let lbl_block = Block::default().borders(Borders::ALL);
+    let lbl_para = Paragraph::new(labels)
+        .white()
+        .scroll((ui.top_line, 0))
+        .block(lbl_block);
+    f.render_widget(lbl_para, layout_panes.labels);
+
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let seq_para = Paragraph::new(text)
+    let seq_para = Paragraph::new(sequences)
         .white()
         .block(aln_block);
-
     f.render_widget(seq_para, layout_panes.sequence);
 
     if ui.show_debug_pane {
