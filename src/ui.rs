@@ -356,30 +356,46 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 }
 
 
-fn make_layout(show_debug_pane: bool) -> Layout {
-    /*
-     *  One approach is to add the debug pane only if requested; another is to set its height to 3
-     * IFF requested.
-     */
-    let mut constraints: Vec<Constraint> = vec![Constraint::Fill(1)];
-    if show_debug_pane {
-        constraints.push(Constraint::Length(3));
-    }
-    let layout = Layout::new(
-            Direction::Vertical,
-            constraints);
+struct Panes {
+    sequence: Rect,
+    labels: Rect,
+    bottom: Rect,
+    corner: Rect,
+}
 
-    layout
+fn make_layout(f: &Frame) -> Panes {
+    let constraints: Vec<Constraint> = vec![
+        Constraint::Fill(1),
+        Constraint::Max(3),
+    ];
+    let v_panes = Layout::new(
+            Direction::Vertical,
+            constraints)
+        .split(f.size());
+    let upper_panes = Layout::new(
+            Direction::Horizontal,
+            vec![Constraint::Max(10), Constraint::Fill(1)])
+        .split(v_panes[0]);
+    let lower_panes = Layout::new(
+            Direction::Horizontal,
+            vec![Constraint::Max(10), Constraint::Fill(1)])
+        .split(v_panes[1]);
+
+   Panes {
+       labels: upper_panes[0],
+       sequence: upper_panes[1],
+       corner: lower_panes[0],
+       bottom: lower_panes[1],
+   }
 }
 
 // Draw UI
 
 pub fn ui(f: &mut Frame, ui: &mut UI) {
-    let layout_panes = make_layout(ui.show_debug_pane)
-        .split(f.size());
+    let layout_panes = make_layout(f);
 
-    ui.set_seq_para_height(layout_panes[0].as_size().height - 2); // -2: borders
-    ui.set_seq_para_width(layout_panes[0].as_size().width - 2);
+    ui.set_seq_para_height(layout_panes.sequence.as_size().height - 2); // -2: borders
+    ui.set_seq_para_width(layout_panes.sequence.as_size().width - 2);
     ui.adjust_seq_pane_position();
 
     ui.assert_invariants();
@@ -404,14 +420,14 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .white()
         .block(aln_block);
 
-    f.render_widget(seq_para, layout_panes[0]);
+    f.render_widget(seq_para, layout_panes.sequence);
 
     if ui.show_debug_pane {
         let msg_block = Block::default().borders(Borders::ALL);
-        let msg_para = Paragraph::new(format!("{:?}", layout_panes[0].as_size()))
+        let msg_para = Paragraph::new(format!("{:?}", layout_panes.sequence.as_size()))
             .white()
             .block(msg_block);
-        f.render_widget(msg_para, layout_panes[1]);
+        f.render_widget(msg_para, layout_panes.bottom);
     }
 }
 
