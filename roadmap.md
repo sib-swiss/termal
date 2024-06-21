@@ -293,7 +293,13 @@ h_s                 h_b               |                          ||
 TODO
 ====
 
-1. [x] Represent the view port in zommed-out mode.
+
+1. [x] Resizes to a larger screen causes a panic (-> fixed; see
+   c5996bc7498eeac...; concomitant changes including h,v ratios accessible only
+   trough functions -> recomputed every time -> always up to date; this WASN'T
+   the original problem though, so restoring simple variables for h_ratio and
+   v_ratio is not off the table).
+1. [x] Represent the view port in zoomed-out mode.
 1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
    App). In fact, the "App" structure does not really seem to be useful, at
    least not as long as the alignment is read-only. We'll keep it because later
