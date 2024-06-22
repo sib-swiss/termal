@@ -54,6 +54,10 @@ struct Cli {
     #[clap(long="poll-wait-time", default_value_t = 100)]
     poll_wait_time: u64,
 
+    /// Panic (for testing)
+    #[clap(long="panic")]
+    panic: bool,
+
     /// Disable viewport
     #[arg(long="no-viewport")]
     no_zoombox: bool,
@@ -64,6 +68,8 @@ fn main() -> Result<()> {
     info!("Starting log");
 
     let cli = Cli::parse(); 
+    if cli.panic { panic!("User-requested panic"); }
+
     let fasta_file: &str = &cli.aln_fname;
 
     stdout().execute(EnterAlternateScreen)?;
