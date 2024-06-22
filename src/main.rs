@@ -42,6 +42,10 @@ struct Cli {
     #[arg(short='t', long, requires="width")]
     height: Option<u16>,
 
+    /// Set initial width of labels pane (pass 0 to hide)
+    #[arg(short='l', long, default_value_t = 15)]
+    labels_pane_width: u16,
+
     /// Show debug panel
     #[arg(short='D', long)]
     debug: bool,
@@ -94,6 +98,7 @@ fn main() -> Result<()> {
     app_ui.set_debug(cli.debug);
     if cli.no_colour { app_ui.set_monochrome(); }
     if cli.no_zoombox { app_ui.set_zoombox(false); }
+    app_ui.set_label_pane_width(cli.labels_pane_width);
 
     // main loop
     loop {

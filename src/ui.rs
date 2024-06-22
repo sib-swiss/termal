@@ -30,6 +30,11 @@ pub struct UI<'a> {
     leftmost_col: u16,
     seq_para_width: u16,
     seq_para_height: u16,
+    // No meaningful value can be given to signal that `label_pane_width` still needs to be
+    // initalised: 0 is a valid width (when hiding the pane), and -1 (or any other negative number)
+    // is invalid due to the unsigned type. I could (i) use a signed integer (but all negative
+    // values except -1 would be wasted) or (ii) use an Option. Let's try that.
+    label_pane_width: Option<u16>,
 }
 
 impl<'a> UI<'a> {
@@ -42,6 +47,7 @@ impl<'a> UI<'a> {
         let leftmost_col = 0;
         let seq_para_width = 0;
         let seq_para_height = 0;
+        let label_pane_width = None;
         UI {
             app,
             colour_map,
@@ -52,6 +58,7 @@ impl<'a> UI<'a> {
             leftmost_col,
             seq_para_width,
             seq_para_height,
+            label_pane_width,
         }
     }
 
@@ -105,7 +112,7 @@ impl<'a> UI<'a> {
 
     pub fn set_seq_para_width(&mut self, width: u16) { self.seq_para_width = width; }
 
-    // Info 
+    // Bounds 
     
     fn max_top_line(&self) -> u16 {
         if self.app.num_seq() >= self.seq_para_height {
@@ -122,6 +129,10 @@ impl<'a> UI<'a> {
             0
         }
     }
+
+    // Side panel dimensions
+    
+    pub fn set_label_pane_width(&mut self, width: u16) { self.label_pane_width = Some(width); }
 
     // Scrolling
 
@@ -368,7 +379,7 @@ struct Panes {
     corner: Rect,
 }
 
-fn make_layout(f: &Frame) -> Panes {
+fn make_layout(f: &Frame, ui: &UI) -> Panes {
     let constraints: Vec<Constraint> = vec![
         Constraint::Fill(1),
         Constraint::Max(3),
@@ -379,11 +390,11 @@ fn make_layout(f: &Frame) -> Panes {
         .split(f.size());
     let upper_panes = Layout::new(
             Direction::Horizontal,
-            vec![Constraint::Max(10), Constraint::Fill(1)])
+            vec![Constraint::Max(ui.label_pane_width.unwrap()), Constraint::Fill(1)])
         .split(v_panes[0]);
     let lower_panes = Layout::new(
             Direction::Horizontal,
-            vec![Constraint::Max(10), Constraint::Fill(1)])
+            vec![Constraint::Max(ui.label_pane_width.unwrap()), Constraint::Fill(1)])
         .split(v_panes[1]);
 
    Panes {
@@ -397,7 +408,7 @@ fn make_layout(f: &Frame) -> Panes {
 // Draw UI
 
 pub fn ui(f: &mut Frame, ui: &mut UI) {
-    let layout_panes = make_layout(f);
+    let layout_panes = make_layout(f, ui);
 
     ui.set_seq_para_height(layout_panes.sequence.as_size().height - 2); // -2: borders
     ui.set_seq_para_width(layout_panes.sequence.as_size().width - 2);
