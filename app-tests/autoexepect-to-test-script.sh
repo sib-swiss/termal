@@ -10,12 +10,16 @@ set -u
 # I delete lines 3-42 now because I don't like them, but because I don't need
 # them in _all_ the test scripts.
 
+# Then I add a `default` clause to all `expect` commands, so that the test
+# _fails_ (instead of blithely proceeding) if an expect is not met.
+
 orig_script=$1
 new_name=$2
 
 sed -i '{
 	3,42d;
 	s/timeout -1/timeout 0.5/;
+	s/^expect -exact \(.*\)$/expect {\n\texpect -exact \1 {} \n\tdefault { exit 1 }\n}/
 	$a\
 	\
 # Gets the exit code of the spawned process, so that this script fails IFF it \

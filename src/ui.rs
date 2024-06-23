@@ -410,6 +410,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
+    debug!("seq pane size: {:?}", layout_panes.sequence.as_size());
     ui.set_seq_para_height(layout_panes.sequence.as_size().height - 2); // -2: borders
     ui.set_seq_para_width(layout_panes.sequence.as_size().width - 2);
     ui.adjust_seq_pane_position();
