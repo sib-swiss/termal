@@ -153,6 +153,12 @@ fn main() -> Result<()> {
                             KeyCode::Char('H') => app_ui.scroll_one_screen_left(),
                             KeyCode::Char('^') => app_ui.jump_to_begin(),
 
+                            // Label Pane width
+                            // NOTE: for these methods I'm using a more general approach than for
+                            // motion: pass the argument instead of having 
+                            KeyCode::Char('>') => app_ui.widen_label_pane(1),
+                            KeyCode::Char('<') => app_ui.reduce_label_pane(1),
+
                             // Zoom
                             KeyCode::Char('z') => app_ui.cycle_zoom(),
 

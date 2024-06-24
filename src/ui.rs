@@ -143,6 +143,24 @@ impl<'a> UI<'a> {
         self.bottom_pane_height = Some(height);
     }
 
+    pub fn widen_label_pane(&mut self, amount: u16) {
+        // TODO: heed the border width (not sure if we'll keep them)
+        self.label_pane_width = if self.label_pane_width.unwrap() + amount < self.seq_para_width {
+            Some(self.label_pane_width.unwrap() + amount)
+        } else {
+            Some(self.seq_para_width)
+        }
+    }
+
+    pub fn reduce_label_pane(&mut self, amount: u16) {
+        // TODO: heed the border width (not sure if we'll keep them)
+        self.label_pane_width = if self.label_pane_width.unwrap() - amount > 0 {
+            Some(self.label_pane_width.unwrap() - amount)
+        } else {
+            Some(0)
+        }
+    }
+
     // Scrolling
 
     pub fn scroll_one_line_up(&mut self) {

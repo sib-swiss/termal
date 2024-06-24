@@ -293,8 +293,12 @@ h_s                 h_b               |                          ||
 TODO
 ====
 
-1. [ ] Add the left panel, for sequence labels. For now it can be fixed-width
-   and always shown.
+1. [ ] Allow `<` and `>`to set the size of the label pane
+1. [x] Make label pane work in zoomed-out mode.
+1. [x] Make it possible to hide the labels pane, because some existing tests
+   fail when it's shown.
+1. [x] Add the left panel, for sequence labels. For now it can be fixed-width
+   and always shown, and in Zoomed-in mode.
 1. [x] Resizes to a larger screen causes a panic (-> fixed; see
    c5996bc7498eeac...; concomitant changes including h,v ratios accessible only
    trough functions -> recomputed every time -> always up to date; this WASN'T
