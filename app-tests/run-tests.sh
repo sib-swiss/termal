@@ -73,7 +73,7 @@ declare -a test_name_lengths
 map strlen test_names test_name_lengths
 max_len="$(max test_name_lengths)"
 fmt="$(printf "%%-%ds -> %%s\\\n" "$max_len")"
-for PID in "${!test_names[@]}"; do
+for PID in $(printf "%s\n" "${!test_names[@]}" | sort); do
     printf "$fmt" "${test_names["$PID"]}" \
         "$(colour_label "${test_result_labels["$PID"]}")"
 done
