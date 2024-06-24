@@ -310,11 +310,22 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         .map(|h| Line::from(h.clone())).collect()
 }
 
+fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let mut ztext: Vec<Line> = Vec::new();
+    let num_seq: usize = ui.app.num_seq() as usize;
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height.into());
+    for i in &retained_seqs_ndx {
+        ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
+    }
+
+    ztext
+}
+
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = ui.leftmost_col.into();
     let ntake: usize = ui.seq_para_width.into();
     let nseqskip: usize = ui.top_line.into();
-    let nseqtake: usize = ui.seq_para_width.into(); 
+    let nseqtake: usize = ui.seq_para_width.into(); // FIXME should be HEIGHT!!!
     let mut text: Vec<Line> = Vec::new();
     // TODO: we probably don't need to skip() and then take(): why not just access elements
     // directly, as is done in mark_zoombox() ? See also zoom_out_seq_text().
@@ -334,6 +345,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
+    // TODO: use UI members
     let seq_area_width: usize = (area.width - 2).into();  // -2 <- panel border
     let seq_area_height: usize = (area.height - 2).into(); // "
     let mut ztext: Vec<Line> = Vec::new();
@@ -442,7 +454,7 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         }
         ZoomLevel::ZoomedOut => {
             title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
-            labels = Vec::new(); // TODO
+            labels = zoom_out_lbl_text(ui);
             sequences = zoom_out_seq_text(f.size(), ui);
             if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
         }
@@ -450,9 +462,14 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     }
 
     let lbl_block = Block::default().borders(Borders::ALL);
+    let top_lbl_line = match ui.zoom_level() {
+        ZoomLevel::ZoomedIn => ui.top_line,
+        ZoomLevel::ZoomedOut => 0,
+        ZoomLevel::ZoomedOutAR => todo!(),
+    };
     let lbl_para = Paragraph::new(labels)
         .white()
-        .scroll((ui.top_line, 0))
+        .scroll((top_lbl_line, 0))
         .block(lbl_block);
     f.render_widget(lbl_para, layout_panes.labels);
 
