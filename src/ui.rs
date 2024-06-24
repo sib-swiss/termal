@@ -35,6 +35,7 @@ pub struct UI<'a> {
     // is invalid due to the unsigned type. I could (i) use a signed integer (but all negative
     // values except -1 would be wasted) or (ii) use an Option. Let's try that.
     label_pane_width: Option<u16>,
+    bottom_pane_height: Option<u16>,
 }
 
 impl<'a> UI<'a> {
@@ -48,6 +49,7 @@ impl<'a> UI<'a> {
         let seq_para_width = 0;
         let seq_para_height = 0;
         let label_pane_width = None;
+        let bottom_pane_height = None;
         UI {
             app,
             colour_map,
@@ -59,6 +61,7 @@ impl<'a> UI<'a> {
             seq_para_width,
             seq_para_height,
             label_pane_width,
+            bottom_pane_height,
         }
     }
 
@@ -132,7 +135,13 @@ impl<'a> UI<'a> {
 
     // Side panel dimensions
     
-    pub fn set_label_pane_width(&mut self, width: u16) { self.label_pane_width = Some(width); }
+    pub fn set_label_pane_width(&mut self, width: u16) {
+        self.label_pane_width = Some(width);
+    }
+
+    pub fn set_bottom_pane_height(&mut self, height: u16) {
+        self.bottom_pane_height = Some(height);
+    }
 
     // Scrolling
 
@@ -382,7 +391,7 @@ struct Panes {
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
     let constraints: Vec<Constraint> = vec![
         Constraint::Fill(1),
-        Constraint::Max(3),
+        Constraint::Max(ui.bottom_pane_height.unwrap()),
     ];
     let v_panes = Layout::new(
             Direction::Vertical,
