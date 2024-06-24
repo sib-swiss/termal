@@ -232,10 +232,15 @@ impl<'a> UI<'a> {
     // Debugging
 
     pub fn assert_invariants(&self) {
-        assert!(self.max_leftmost_col() + self.seq_para_width == self.app.aln_len(),
-            "l_max: {} + w_p: {} == w_a: {} failed",
-            self.max_leftmost_col(), self.seq_para_width, self.app.aln_len()
-        );
+        debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width);
+        if self.seq_para_width > self.app.aln_len() {
+            assert!(self.max_leftmost_col() == 0);
+        } else {
+            assert!(self.max_leftmost_col() + self.seq_para_width == self.app.aln_len(),
+                "l_max: {} + w_p: {} == w_a: {} failed",
+                self.max_leftmost_col(), self.seq_para_width, self.app.aln_len()
+            );
+        }
         assert!(self.leftmost_col <= self.max_leftmost_col(), 
             "l: {}<= l_max: {}", self.leftmost_col, self.max_leftmost_col())
     }
