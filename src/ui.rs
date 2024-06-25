@@ -259,6 +259,7 @@ impl<'a> UI<'a> {
 
     pub fn assert_invariants(&self) {
         debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width);
+        debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.seq_para_height);
         if self.seq_para_width > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
@@ -352,17 +353,24 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let ntake: usize = ui.seq_para_width.into();
     let nseqskip: usize = ui.top_line.into();
     let nseqtake: usize = ui.seq_para_width.into(); // FIXME should be HEIGHT!!!
+
+    let top_i = ui.top_line as usize;
+    let bot_i = (ui.top_line+ui.seq_para_height) as usize;
+    let lft_j = ui.leftmost_col as usize; 
+    let rgt_j = (ui.leftmost_col+ui.seq_para_width) as usize;
+
     let mut text: Vec<Line> = Vec::new();
     // TODO: we probably don't need to skip() and then take(): why not just access elements
     // directly, as is done in mark_zoombox() ? See also zoom_out_seq_text().
-    for seq in ui.app.alignment.sequences.iter()
-        .skip(nseqskip).take(nseqtake) {
-        let spans: Vec<Span> = seq.chars()
-            .skip(nskip).take(ntake)
-            .map(|c| Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap()))
-            .collect();
-        let line: Line = Line::from(spans);
-        text.push(line);
+
+    for i in top_i .. bot_i {
+        let mut spans: Vec<Span> = Vec::new();
+        for j in lft_j .. rgt_j {
+            let cur_seq_ref = &ui.app.alignment.sequences[i];
+            let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
+            spans.push(Span::styled(cur_char.to_string(), *ui.colour_map.get(&cur_char).unwrap()));
+        }
+        text.push(Line::from(spans));
     }
 
     text
@@ -488,6 +496,7 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }
+    debug!("showing {} sequences", sequences.len());
 
     let lbl_block = Block::default().borders(Borders::ALL);
     let top_lbl_line = match ui.zoom_level() {
