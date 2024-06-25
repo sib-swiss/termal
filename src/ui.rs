@@ -36,6 +36,9 @@ pub struct UI<'a> {
     // values except -1 would be wasted) or (ii) use an Option. Let's try that.
     label_pane_width: Option<u16>,
     bottom_pane_height: Option<u16>,
+    // Whole app
+    frame_width: Option<u16>,
+    frame_height: Option<u16>,
 }
 
 impl<'a> UI<'a> {
@@ -50,6 +53,8 @@ impl<'a> UI<'a> {
         let seq_para_height = 0;
         let label_pane_width = None;
         let bottom_pane_height = None;
+        let frame_width = None;
+        let frame_height = None;
         UI {
             app,
             colour_map,
@@ -62,6 +67,8 @@ impl<'a> UI<'a> {
             seq_para_height,
             label_pane_width,
             bottom_pane_height,
+            frame_width,
+            frame_height,
         }
     }
 
@@ -133,6 +140,7 @@ impl<'a> UI<'a> {
         }
     }
 
+
     // Side panel dimensions
     
     pub fn set_label_pane_width(&mut self, width: u16) {
@@ -145,16 +153,16 @@ impl<'a> UI<'a> {
 
     pub fn widen_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() + amount < self.seq_para_width {
+        self.label_pane_width = if self.label_pane_width.unwrap() + amount < self.frame_width.unwrap() {
             Some(self.label_pane_width.unwrap() + amount)
         } else {
-            Some(self.seq_para_width)
+            Some(self.frame_width.unwrap())
         }
     }
 
     pub fn reduce_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() - amount > 0 {
+        self.label_pane_width = if self.label_pane_width.unwrap() > amount {
             Some(self.label_pane_width.unwrap() - amount)
         } else {
             Some(0)
@@ -458,6 +466,8 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     ui.set_seq_para_height(layout_panes.sequence.as_size().height - 2); // -2: borders
     ui.set_seq_para_width(layout_panes.sequence.as_size().width - 2);
     ui.adjust_seq_pane_position();
+    ui.frame_width = Some(f.size().width);
+    ui.frame_height = Some(f.size().height);
 
     ui.assert_invariants();
 
