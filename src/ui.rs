@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use log::{info,debug};
 
 use ratatui::{
-    Frame, Terminal,
+    Frame,
     prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span},
     style::Stylize,
     widgets::{Block, Borders, Paragraph},
@@ -18,9 +18,10 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
-pub struct UI<'a, B: ratatui::backend::Backend> {
+// TODO: do we really need a separate UI struct, or could this just go into the App?
+//
+pub struct UI<'a> {
     app: &'a App,
-    terminal: &'a Terminal<B>,
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
     show_debug_pane: bool,
@@ -37,8 +38,8 @@ pub struct UI<'a, B: ratatui::backend::Backend> {
     bottom_pane_height: Option<u16>,
 }
 
-impl<'a, B: ratatui::backend::Backend> UI<'a, B> {
-    pub fn new(app: &'a App, terminal: &'a Terminal<B>) -> Self {
+impl<'a> UI<'a> {
+    pub fn new(app: &'a App) -> Self {
         let colour_map = color_scheme_lesk();
         let zoom_level = ZoomLevel::ZoomedIn;
         let show_debug_pane = false;
@@ -49,10 +50,8 @@ impl<'a, B: ratatui::backend::Backend> UI<'a, B> {
         let seq_para_height = 0;
         let label_pane_width = None;
         let bottom_pane_height = None;
-
         UI {
             app,
-            terminal,
             colour_map,
             zoom_level,
             show_debug_pane,
@@ -155,7 +154,7 @@ impl<'a, B: ratatui::backend::Backend> UI<'a, B> {
 
     pub fn reduce_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() > amount {
+        self.label_pane_width = if self.label_pane_width.unwrap() - amount > 0 {
             Some(self.label_pane_width.unwrap() - amount)
         } else {
             Some(0)
@@ -324,12 +323,12 @@ fn color_scheme_lesk() -> HashMap<char, Color> {
     map
 }
 
-fn zoom_in_lbl_text<'a, B: ratatui::backend::Backend>(ui: &UI<B>) -> Vec<Line<'a>> {
+fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app.alignment.headers.iter()
         .map(|h| Line::from(h.clone())).collect()
 }
 
-fn zoom_out_lbl_text<'a, B: ratatui::backend::Backend>(ui: &UI<B>) -> Vec<Line<'a>> {
+fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
     let num_seq: usize = ui.app.num_seq() as usize;
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height.into());
@@ -340,7 +339,7 @@ fn zoom_out_lbl_text<'a, B: ratatui::backend::Backend>(ui: &UI<B>) -> Vec<Line<'
     ztext
 }
 
-fn zoom_in_seq_text<'a, B: ratatui::backend::Backend>(ui: &'a UI<B>) -> Vec<Line<'a>> {
+fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = ui.leftmost_col.into();
     let ntake: usize = ui.seq_para_width.into();
     let nseqskip: usize = ui.top_line.into();
@@ -361,7 +360,7 @@ fn zoom_in_seq_text<'a, B: ratatui::backend::Backend>(ui: &'a UI<B>) -> Vec<Line
     text
 }
 
-fn zoom_out_seq_text<'a, B: ratatui::backend::Backend>(area: Rect, ui: &UI<B>) -> Vec<Line<'a>> {
+fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
     // TODO: use UI members
@@ -388,7 +387,7 @@ fn zoom_out_seq_text<'a, B: ratatui::backend::Backend>(area: Rect, ui: &UI<B>) -
     ztext
 }
 
-fn mark_zoombox<B: ratatui::backend::Backend>(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI<B>) {
+fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
     let vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
@@ -424,7 +423,7 @@ struct Panes {
     corner: Rect,
 }
 
-fn make_layout<B: ratatui::backend::Backend>(f: &Frame, ui: &UI<B>) -> Panes {
+fn make_layout(f: &Frame, ui: &UI) -> Panes {
     let constraints: Vec<Constraint> = vec![
         Constraint::Fill(1),
         Constraint::Max(ui.bottom_pane_height.unwrap()),
@@ -452,7 +451,7 @@ fn make_layout<B: ratatui::backend::Backend>(f: &Frame, ui: &UI<B>) -> Panes {
 
 // Draw UI
 
-pub fn ui<B: ratatui::backend::Backend>(f: &mut Frame, ui: &mut UI<B>) {
+pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
     debug!("seq pane size: {:?}", layout_panes.sequence.as_size());
