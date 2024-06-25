@@ -118,9 +118,21 @@ impl<'a> UI<'a> {
     // height is th aactual number of lines displayable in the sequence widget, after taking into
     // account its size, the presence of borders, etc.
 
-    pub fn set_seq_para_height(&mut self, height: u16) { self.seq_para_height = height; }
+    pub fn set_seq_para_height(&mut self, height: u16) {
+        self.seq_para_height = if height >= 2 {  // border, should later be a constant or a field of UI
+             height - 2
+        } else {
+             0
+        }
+    }
 
-    pub fn set_seq_para_width(&mut self, width: u16) { self.seq_para_width = width; }
+    pub fn set_seq_para_width(&mut self, width: u16) {
+        self.seq_para_width = if width >= 2 {
+            width - 2
+        } else {
+            0
+        }
+    }
 
     // Bounds 
     
@@ -471,8 +483,9 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
     debug!("seq pane size: {:?}", layout_panes.sequence.as_size());
-    ui.set_seq_para_height(layout_panes.sequence.as_size().height - 2); // -2: borders
-    ui.set_seq_para_width(layout_panes.sequence.as_size().width - 2);
+    ui.set_seq_para_height(layout_panes.sequence.as_size().height); // the f() takes care of
+                                                                    // borders!
+    ui.set_seq_para_width(layout_panes.sequence.as_size().width);
     ui.adjust_seq_pane_position();
     ui.frame_width = Some(f.size().width);
     ui.frame_height = Some(f.size().height);
