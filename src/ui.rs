@@ -477,6 +477,17 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
    }
 }
 
+fn tick_marks(aln_length: usize) -> String {
+    let mut ticks = String::with_capacity(aln_length);
+    for i in 0 .. aln_length {
+        ticks.push(
+            if i % 10 == 0 { '|' } else { ' ' }
+            );
+    }
+
+    ticks
+}
+
 // Draw UI
 
 pub fn ui(f: &mut Frame, ui: &mut UI) {
@@ -529,13 +540,12 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .block(aln_block);
     f.render_widget(seq_para, layout_panes.sequence);
 
-    if ui.show_debug_pane {
-        let msg_block = Block::default().borders(Borders::ALL);
-        let msg_para = Paragraph::new(format!("{:?}", layout_panes.sequence.as_size()))
-            .white()
-            .block(msg_block);
-        f.render_widget(msg_para, layout_panes.bottom);
-    }
+    let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
+
+    let btm_para = Paragraph::new(tick_marks(ui.app.aln_len() as usize))
+        .scroll((0, ui.leftmost_col))
+        .block(btm_block);
+    f.render_widget(btm_para, layout_panes.bottom);
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
