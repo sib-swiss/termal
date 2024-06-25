@@ -488,6 +488,18 @@ fn tick_marks(aln_length: usize) -> String {
     ticks
 }
 
+fn tick_position(aln_length: usize) -> String {
+    let mut intervals: Vec<String> = vec![String::from("0")];
+    let mut tens = 10;
+    while tens < aln_length {
+        let int = format!("{:>10}", tens);
+        tens += 10;
+        intervals.push(int);
+    }
+    intervals.join("")
+}
+
+
 // Draw UI
 
 pub fn ui(f: &mut Frame, ui: &mut UI) {
@@ -541,8 +553,10 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     f.render_widget(seq_para, layout_panes.sequence);
 
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
-
-    let btm_para = Paragraph::new(tick_marks(ui.app.aln_len() as usize))
+    let mut btm_text: Vec<Line> = Vec::new();
+    btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
+    btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
+    let btm_para = Paragraph::new(btm_text)
         .scroll((0, ui.leftmost_col))
         .block(btm_block);
     f.render_widget(btm_para, layout_panes.bottom);
