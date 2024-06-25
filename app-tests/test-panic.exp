@@ -3,7 +3,7 @@
 # This test checks that panics are caught.
 #
 set timeout 1
-spawn ../target/debug/termal -w 15 -t 9 data/test-aln-02.fas
+spawn ../target/debug/termal -w 15 -t 9 --panic data/test-aln-02.fas
 send "q\r"
 expect eof
 
