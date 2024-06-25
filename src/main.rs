@@ -98,7 +98,7 @@ fn main() -> Result<()> {
     terminal.clear()?;
 
     let app = App::new(fasta_file)?;
-    let mut app_ui = UI::new(&app);
+    let mut app_ui = UI::new(&app, &mut terminal);
     app_ui.set_debug(cli.debug);
     if cli.no_colour { app_ui.set_monochrome(); }
     if cli.no_zoombox { app_ui.set_zoombox(false); }
@@ -109,6 +109,7 @@ fn main() -> Result<()> {
     loop {
         debug!("**** Draw Iteration ****");
         debug!("size: {:?}", terminal.size().unwrap());
+        // TODO: try a UI::draw() method that uses the 'terminal' member
         terminal.draw(|f|  ui(f, &mut app_ui) )?;
         // handle events
         if event::poll(std::time::Duration::from_millis(cli.poll_wait_time))? {
