@@ -372,10 +372,9 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let rgt_j = (ui.leftmost_col+ui.seq_para_width) as usize;
 
     let mut text: Vec<Line> = Vec::new();
-    // TODO: we probably don't need to skip() and then take(): why not just access elements
-    // directly, as is done in mark_zoombox() ? See also zoom_out_seq_text().
 
     for i in top_i .. bot_i {
+        if i >= ui.app.num_seq().into() { break; } // if there is extra vertical space
         let mut spans: Vec<Span> = Vec::new();
         for j in lft_j .. rgt_j {
             let cur_seq_ref = &ui.app.alignment.sequences[i];
