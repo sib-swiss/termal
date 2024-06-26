@@ -364,7 +364,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = ui.leftmost_col.into();
     let ntake: usize = ui.seq_para_width.into();
     let nseqskip: usize = ui.top_line.into();
-    let nseqtake: usize = ui.seq_para_height.into(); // FIXME should be HEIGHT!!!
+    let nseqtake: usize = ui.seq_para_height.into(); 
 
     let top_i = ui.top_line as usize;
     let bot_i = (ui.top_line+ui.seq_para_height) as usize;
