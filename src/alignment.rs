@@ -5,6 +5,14 @@ use rasta::FastaFile;
 pub struct Alignment {
     pub headers: Vec<String>,
     pub sequences: Vec<String>,
+    /* The consensus sequence is now a field of Alignment, and is computed once upon creation. This
+     * contrasts with the very first implementation, in which the consensus was recomputed every
+     * time the UI was drawn... which was very inefficient but had this funny "twinkling" effect in
+     * columns with tied residue frequencies. This was due to the fact that HashMap stores its keys
+     * in an unpredictable order, and that different calls to keys() may return them indifferent
+     * orders. See best_residue().
+     */
+    pub consensus: String,
 }
 
 #[derive(Debug, PartialEq)]
@@ -16,51 +24,56 @@ struct BestResidue {
 impl Alignment {
     // Makes an Alignment from a FastaFile, which is consumed.
     pub fn new(fasta: FastaFile) -> Alignment {
-        let mut aln = Alignment {
-            headers: Vec::new(),
-            sequences: Vec::new(),
-        };
+        let mut headers: Vec<String> = Vec::new();
+        let mut sequences: Vec<String> = Vec::new();
         for record in fasta {
-            aln.headers.push(record.header);
-            aln.sequences.push(record.sequence);
+            headers.push(record.header);
+            sequences.push(record.sequence);
         }
-        aln
+        let consensus = consensus(&sequences);
+
+        Alignment {
+            headers,
+            sequences,
+            consensus,
+        }
     }
 
     pub fn num_seq(&self) -> usize { self.sequences.len() }
 
     pub fn aln_len(&self) -> usize { self.sequences[0].len() }
 
-    fn res_freq(&self, col: usize) -> HashMap<char, u64> {
-        let mut freqs: HashMap<char, u64> = HashMap::new();
-        for seq in &self.sequences {
-            let residue = seq.as_bytes()[col] as char;
-            *freqs.entry(residue).or_insert(0) += 1;
-        }
-        freqs
-    }
 
-    pub fn consensus(&self) -> String {
-        let aln_len = self.sequences.len();
-        let mut consensus = String::new();
-        for j in 0 .. self.sequences[0].len() {
-            let dist = self.res_freq(j);
-            let br = best_residue(&dist);
-            let rel_freq: f64 = (br.frequency as f64 / aln_len as f64) as f64;
-            if rel_freq >= 0.8 {
-                consensus.push(br.residue);
-            } else if rel_freq >= 0.2 {
-                if br.residue.is_alphabetic() {
-                    consensus.push((br.residue as u8 + 97 - 65) as char);
-                } else {
-                    consensus.push('-'); 
-                }
-            } else {
-                consensus.push('.');
-            }
-        }
-        consensus
+}
+
+fn res_freq(sequences: &Vec<String>, col: usize) -> HashMap<char, u64> {
+    let mut freqs: HashMap<char, u64> = HashMap::new();
+    for seq in sequences {
+        let residue = seq.as_bytes()[col] as char;
+        *freqs.entry(residue).or_insert(0) += 1;
     }
+    freqs
+}
+
+pub fn consensus(sequences: &Vec<String>) -> String {
+    let mut consensus = String::new();
+    for j in 0 .. sequences[0].len() {
+        let dist = res_freq(sequences, j);
+        let br = best_residue(&dist);
+        let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
+        if rel_freq >= 0.8 {
+            consensus.push(br.residue);
+        } else if rel_freq >= 0.2 {
+            if br.residue.is_alphabetic() {
+                consensus.push((br.residue as u8 + 97 - 65) as char);
+            } else {
+                consensus.push('-'); 
+            }
+        } else {
+            consensus.push('.');
+        }
+    }
+    consensus
 }
 
 fn best_residue(dist: &HashMap<char, u64>) -> BestResidue {
