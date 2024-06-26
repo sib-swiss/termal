@@ -554,6 +554,7 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
     let mut btm_text: Vec<Line> = Vec::new();
+    btm_text.push(Line::from(ui.app.alignment.consensus()));
     btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
     btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
     let btm_para = Paragraph::new(btm_text)

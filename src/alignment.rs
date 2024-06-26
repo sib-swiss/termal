@@ -32,10 +32,8 @@ impl Alignment {
     pub fn aln_len(&self) -> usize { self.sequences[0].len() }
 
     fn res_freq(&self, col: usize) -> HashMap<char, u64> {
-        eprintln!("col: {col}");
         let mut freqs: HashMap<char, u64> = HashMap::new();
         for seq in &self.sequences {
-            eprintln!("seq: {seq}");
             let residue = seq.as_bytes()[col] as char;
             *freqs.entry(residue).or_insert(0) += 1;
         }
@@ -47,10 +45,8 @@ impl Alignment {
         let mut consensus = String::new();
         for j in 0 .. self.sequences[0].len() {
             let dist = self.res_freq(j);
-            eprintln!("D() {:?}", dist);
             let br = best_residue(&dist);
             let rel_freq: f64 = (br.frequency as f64 / aln_len as f64) as f64;
-            eprintln!("-> {:?} ({})", br, rel_freq);
             if rel_freq >= 0.8 {
                 consensus.push(br.residue);
             } else if rel_freq >= 0.2 {
