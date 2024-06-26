@@ -364,7 +364,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let nskip: usize = ui.leftmost_col.into();
     let ntake: usize = ui.seq_para_width.into();
     let nseqskip: usize = ui.top_line.into();
-    let nseqtake: usize = ui.seq_para_width.into(); // FIXME should be HEIGHT!!!
+    let nseqtake: usize = ui.seq_para_height.into(); // FIXME should be HEIGHT!!!
 
     let top_i = ui.top_line as usize;
     let bot_i = (ui.top_line+ui.seq_para_height) as usize;
@@ -377,6 +377,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
         if i >= ui.app.num_seq().into() { break; } // if there is extra vertical space
         let mut spans: Vec<Span> = Vec::new();
         for j in lft_j .. rgt_j {
+            if j >= ui.app.aln_len().into() { break; } // ", horizontal
             let cur_seq_ref = &ui.app.alignment.sequences[i];
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(cur_char.to_string(), *ui.colour_map.get(&cur_char).unwrap()));
