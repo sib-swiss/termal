@@ -301,7 +301,13 @@ Urgent
 Normal
 ------
 
-1. [ ] Zooming causes a panic when the whole alignment fits on screen (which
+1. [x] Zooming causes a panic in "tall" and "wide" alignments (those in which
+   the alignment is short enough to be displayed, but not all sequences fit on
+   screen, or (respectively) those whose sequences can all be shown, though not
+   in their entirety. -> Fixed by modifying `every_nth()` so that the number of
+   indices returned never exceeds `l` (IOW, it can zoom out, but not in, as it
+   were).
+1. [x] Zooming causes a panic when the whole alignment fits on screen (which
    makes zooming kind of pointless anyway...). Zooming should not happen (no-op)
    in these situations.
    * add a function that determines if the alignment fits (vertically and

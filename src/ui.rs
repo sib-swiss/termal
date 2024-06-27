@@ -442,10 +442,15 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
 fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
-    let vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
+    let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
+    // If h_a < h_p
+    if vb_bottom > ui.app.num_seq() as usize {
+        vb_bottom = ui.app.num_seq() as usize;
+    }
+
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    // if w_a < w_p
     let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width) as f64) * ui.h_ratio()).round() as usize;
+    // If w_a < w_p
     if vb_right > ui.app.aln_len() as usize {
         vb_right = ui.app.aln_len() as usize;
     }
