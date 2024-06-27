@@ -94,6 +94,7 @@ mod tests {
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
+            consensus, res_freq,
     };
     use log::debug;
 
@@ -113,7 +114,7 @@ mod tests {
     fn test_consensus() {
         let fasta2 = read_fasta_file("data/test-cons.fas").unwrap();
         let aln2 = Alignment::new(fasta2);
-        assert_eq!("AQw-", aln2.consensus());
+        assert_eq!("AQw-", consensus(&aln2.sequences));
     }
 
     #[test]
@@ -122,12 +123,12 @@ mod tests {
         let aln2 = Alignment::new(fasta2);
         let mut d0: HashMap<char, u64> = HashMap::new();
         d0.insert('A', 6);
-        assert_eq!(d0, aln2.res_freq(0));
+        assert_eq!(d0, res_freq(&aln2.sequences, 0));
 
         let mut d1: HashMap<char, u64> = HashMap::new();
         d1.insert('Q', 5);
         d1.insert('T', 1);
-        assert_eq!(d1, aln2.res_freq(1));
+        assert_eq!(d1, res_freq(&aln2.sequences, 1));
 
         let mut d2: HashMap<char, u64> = HashMap::new();
         d2.insert('W', 2);
@@ -135,13 +136,13 @@ mod tests {
         d2.insert('S', 1); 
         d2.insert('D', 1); 
         d2.insert('F', 1); 
-        assert_eq!(d2, aln2.res_freq(2));
+        assert_eq!(d2, res_freq(&aln2.sequences, 2));
 
         let mut d3: HashMap<char, u64> = HashMap::new();
         d3.insert('-', 3);
         d3.insert('K', 2);
         d3.insert('L', 1);
-        assert_eq!(d3, aln2.res_freq(3));
+        assert_eq!(d3, res_freq(&aln2.sequences, 3));
 
     }
 
