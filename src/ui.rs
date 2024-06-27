@@ -428,8 +428,6 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in &retained_cols_ndx {
-            // NOTE: I don't want to iterate through all chars in seq until I find the j-th: this
-            // is going to be much too slow. 
             let c: char = seq_chars[*j];
             let span = Span::styled(c.to_string(),
                                     *ui.colour_map.get(&c).unwrap());
@@ -446,7 +444,11 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
     let vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    let vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width) as f64) * ui.h_ratio()).round() as usize;
+    // if w_a < w_p
+    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width) as f64) * ui.h_ratio()).round() as usize;
+    if vb_right > ui.app.aln_len() as usize {
+        vb_right = ui.app.aln_len() as usize;
+    }
     debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width, ui.h_ratio());
     ui.assert_invariants();
 
@@ -590,12 +592,16 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
- * the first (0) and last (l-1) indexes. */
+ * the first (0) and last (l-1) indexes. If n >= l, then return 0 .. l. */
 
 pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
-    let step: f32 = (l-1) as f32 / (n-1) as f32;
-    let r: Vec<usize> = (0..n).map(|e| ((e as f32) * step).round() as usize).collect();
-    r
+    if n >= l {
+        (0..l).collect()
+    } else {
+        let step: f32 = (l-1) as f32 / (n-1) as f32;
+        let r: Vec<usize> = (0..n).map(|e| ((e as f32) * step).round() as usize).collect();
+        r
+    }
 }
 
 #[cfg(test)]
@@ -615,5 +621,10 @@ mod tests {
     #[test]
     fn test_every_nth_3() {
         assert_eq!(vec![0,1,2,3,4], every_nth(5,5));
+    }
+
+    #[test]
+    fn test_every_nth_4() {
+        assert_eq!(vec![0,1,2,3,4], every_nth(5,10));
     }
 }
