@@ -293,6 +293,14 @@ h_s                 h_b               |                          ||
 TODO
 ====
 
+Urgent
+------
+
+(empty)
+
+Normal
+------
+
 1. [ ] Zooming causes a panic when the whole alignment fits on screen (which
    makes zooming kind of pointless anyway...). Zooming should not happen (no-op)
    in these situations.
