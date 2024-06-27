@@ -293,7 +293,31 @@ h_s                 h_b               |                          ||
 TODO
 ====
 
-1. [ ] Allow `<` and `>`to set the size of the label pane
+1. [ ] Zooming causes a panic when the whole alignment fits on screen (which
+   makes zooming kind of pointless anyway...). Zooming should not happen (no-op)
+   in these situations.
+   * add a function that determines if the alignment fits (vertically and
+     horizontally)
+   * call that function to decide whether or not to zoom.
+1. [x] Add a consensus sequence to the bottom pane, just above the tick marks.
+   For now, only zoomed-in, no colouring, no fancy speed optimization. -> Works,
+   but the consensus is computed at every screen write, which is inefficient.
+   The funny consequence is that positions at which several residues are tied
+   for most frequent acually "blink" as the one that gets selected changes every
+     time (see src/alignment::best_residue()). This is actually rather cool (if
+     totally unexpected); a "blink" consensus can be done without recomputing
+     the consensus all the time and it might be nice to have it -- although as
+     an option, because blinking things may become annoying. Also, just as for
+     coordinates and tick marks, no need to change the zoom box: the consensus
+     acually summarises the contents of the box, which is again rather cool (and
+     again, wasn't at all intended).
+1. [x] Add alignment coordinates to the bottom pane, just below the tick marks.
+   Only zoomed-in for now -> In fact, this works pretty well in zoomed-out mode:
+   the tick marks and coordinates simply refer to the contents of the zoom box.
+1. [x] Add tick marks to the bottom panel (every 10th residue); zoomed-in only
+   for now. 
+1. [x] Show the bottom panel (for now, fixed-width).
+1. [x] Allow `<` and `>`to set the size of the label pane
 1. [x] Make label pane work in zoomed-out mode.
 1. [x] Make it possible to hide the labels pane, because some existing tests
    fail when it's shown.
