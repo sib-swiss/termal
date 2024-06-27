@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use bitflags::bitflags;
 
 use log::{info,debug};
 
@@ -18,8 +19,16 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
-// TODO: do we really need a separate UI struct, or could this just go into the App?
-//
+bitflags! {
+    #[derive(PartialEq)]
+    pub struct AlnWRTSeqPane: u8 {
+        const Fits           = 0b00;
+        const TooTall        = 0b01;
+        const TooWide        = 0b10;
+        const TooTallAndWide = 0b11;
+    }
+}
+
 pub struct UI<'a> {
     app: &'a App,
     colour_map: HashMap<char, Color>, 
@@ -85,14 +94,31 @@ impl<'a> UI<'a> {
 
     // Zooming
 
+    pub fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
+        let mut rel = AlnWRTSeqPane::Fits;
+        if self.app.aln_len() > self.seq_para_width {
+            rel |= AlnWRTSeqPane::TooWide;
+        }
+        if self.app.num_seq() > self.seq_para_height {
+            rel |= AlnWRTSeqPane::TooTall;
+        }
+
+        rel
+    }
+
     pub fn zoom_level(&self) -> ZoomLevel { self.zoom_level }
 
     pub fn cycle_zoom(&mut self) {
-        self.zoom_level = match self.zoom_level {
-            ZoomLevel::ZoomedIn => ZoomLevel::ZoomedOut,
-            ZoomLevel::ZoomedOut => ZoomLevel::ZoomedIn,
-            ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
-            // TODO: OUT -> OUT_AR
+        // Don't zoom out if the whole aln fits on screen
+        if self.aln_wrt_seq_pane() == AlnWRTSeqPane::Fits {
+            self.zoom_level =  ZoomLevel::ZoomedIn;
+        } else {
+            self.zoom_level = match self.zoom_level {
+                ZoomLevel::ZoomedIn  => ZoomLevel::ZoomedOut,
+                ZoomLevel::ZoomedOut => ZoomLevel::ZoomedIn,
+                ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
+                // TODO: OUT -> OUT_AR
+            }
         }
     }
 
@@ -391,7 +417,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
-    // TODO: use UI members
+    // TODO: use UI members - seq_para_{width,height}
     let seq_area_width: usize = (area.width - 2).into();  // -2 <- panel border
     let seq_area_height: usize = (area.height - 2).into(); // "
     let mut ztext: Vec<Line> = Vec::new();
@@ -421,7 +447,7 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
     let vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
     let vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width) as f64) * ui.h_ratio()).round() as usize;
-
+    debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width, ui.h_ratio());
     ui.assert_invariants();
 
     let mut l: &mut Line = &mut seq_para[vb_top];
