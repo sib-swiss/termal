@@ -6,7 +6,7 @@ set options {
         {t.arg 1 "Expect timeout [s]"}
         {w.arg 500 "Crossterm poll wait time [ms]"}
 }
-set usage ": prog [options]"
+set usage ": prog \[options]"
 array set params [::cmdline::getoptions argv $options $usage]
 
 set pwt $params(w)
