@@ -2,8 +2,20 @@
 
 # This test checks that panics are caught.
 #
-set timeout 1
-spawn ../target/debug/termal -w 15 -t 9 --panic data/test-aln-02.fas
+package require cmdline
+
+set options {
+        {t.arg 1 "Expect timeout [s]"}
+        {w.arg 500 "Crossterm poll wait time [ms]"}
+}
+set usage ": prog [options]"
+array set params [::cmdline::getoptions argv $options $usage]
+
+set pwt $params(w)
+set timeout $params(t)
+
+
+spawn ../target/debug/termal --poll-wait-time $pwt -w 15 -t 9 --panic data/test-aln-02.fas
 send "q\r"
 expect eof
 

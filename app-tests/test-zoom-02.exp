@@ -1,7 +1,19 @@
 #!/usr/bin/expect -f
 
-set timeout 1
-spawn ../target/debug/termal -LBC -w 11 -t 3 --no-viewport data/test-aln-01.fas
+package require cmdline
+
+set options {
+        {t.arg 1 "Expect timeout [s]"}
+        {w.arg 500 "Crossterm poll wait time [ms]"}
+}
+set usage ": prog [options]"
+array set params [::cmdline::getoptions argv $options $usage]
+
+set pwt $params(w)
+set timeout $params(t)
+
+
+spawn ../target/debug/termal --poll-wait-time $pwt -LBC -w 11 -t 3 --no-viewport data/test-aln-01.fas
 expect "AAAAAAAAA"
 send "z"
 expect {
