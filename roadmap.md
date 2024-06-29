@@ -290,6 +290,14 @@ h_s                 h_b               |                          ||
 * $l_b = \mathrm{round}(r_h l)$
 * $t_b = \mathrm{round}(r_v t)$
 
+Miscellaneous Ideas
+===================
+
+* A bottom-panel line for some "per-column" conservation metric
+* Make the labels panel part of a more general left pane, which could contain
+  other "by-sequence" panes such as length and conservation (WRT consensus)
+* Reinstate the "blinky" consensus, at least optionally
+
 TODO
 ====
 
@@ -301,18 +309,21 @@ Urgent
 Normal
 ------
 
+
 1. [x] Zooming causes a panic in "tall" and "wide" alignments (those in which
    the alignment is short enough to be displayed, but not all sequences fit on
    screen, or (respectively) those whose sequences can all be shown, though not
    in their entirety. -> Fixed by modifying `every_nth()` so that the number of
    indices returned never exceeds `l` (IOW, it can zoom out, but not in, as it
    were).
+
 1. [x] Zooming causes a panic when the whole alignment fits on screen (which
    makes zooming kind of pointless anyway...). Zooming should not happen (no-op)
    in these situations.
    * add a function that determines if the alignment fits (vertically and
      horizontally)
    * call that function to decide whether or not to zoom.
+
 1. [x] Add a consensus sequence to the bottom pane, just above the tick marks.
    For now, only zoomed-in, no colouring, no fancy speed optimization. -> Works,
    but the consensus is computed at every screen write, which is inefficient.
@@ -325,48 +336,65 @@ Normal
      coordinates and tick marks, no need to change the zoom box: the consensus
      acually summarises the contents of the box, which is again rather cool (and
      again, wasn't at all intended).
+
 1. [x] Add alignment coordinates to the bottom pane, just below the tick marks.
    Only zoomed-in for now -> In fact, this works pretty well in zoomed-out mode:
    the tick marks and coordinates simply refer to the contents of the zoom box.
+
 1. [x] Add tick marks to the bottom panel (every 10th residue); zoomed-in only
    for now. 
+
 1. [x] Show the bottom panel (for now, fixed-width).
+
 1. [x] Allow `<` and `>`to set the size of the label pane
+
 1. [x] Make label pane work in zoomed-out mode.
+
 1. [x] Make it possible to hide the labels pane, because some existing tests
    fail when it's shown.
+
 1. [x] Add the left panel, for sequence labels. For now it can be fixed-width
    and always shown, and in Zoomed-in mode.
+
 1. [x] Resizes to a larger screen causes a panic (-> fixed; see
    c5996bc7498eeac...; concomitant changes including h,v ratios accessible only
    trough functions -> recomputed every time -> always up to date; this WASN'T
    the original problem though, so restoring simple variables for h_ratio and
    v_ratio is not off the table).
+
 1. [x] Represent the view port in zoomed-out mode.
+
 1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
    App). In fact, the "App" structure does not really seem to be useful, at
    least not as long as the alignment is read-only. We'll keep it because later
    on we may add functions that _change_ the alignment, and that should not be
    coupled to the UI. "App" is perhaps best thought of as "Model" (in the MVC
    sense).
+
 1. [x] Add app-level tests. This means:
    * [x] Make it possible to fix the app's size (-> Viewport::Fixed)
    * [x] Find a way to automate TUI interaction (-> good old Expect)
    * [x] A test dir and a script to run Expect scripts in it (->
      `app_tests/run-tests.sh` - runs tests in parallel).
+
 1. [x] Transform the Message panel into a Debug panel, which should be optional.
    Messages could be shown in the bottom pane (the one that will eventally show
    consensus, etc.) or (later) as (temporary) notifications in the center of the
    terminal, masking the rest.
+
 1. [x] Provide a monochrome mode to simplify tests with Expect (otherwise I'll have
    to deal with ANSI colour sequences for _every_ residue)
+
 1. [x] CLI args: now uses Clap; may specify fixed height and width.
+
 1. [x] Enabble toggling between zoomed-in and zoomed-out, using key 'z'.
+
 1. [x] See about computing a "summary" screen. This should toggle between
    summary and residue views.
    * [x] implement a "every-nth" function that selects _n_ indices out of _l_ so as
      to spread them as evenly as possible. This will be used to select sequences
      and columns for the zoom-out.
+
 1. [x] To avoid computing the Color of every visible residue at every keystroke,
    _store_ those colours in a Vec<Vec<Color>> beforehand.
    * [x] ... come to think of it, if we're going to look up the colour of
@@ -379,38 +407,55 @@ Normal
      whirring), as it did up to now (whether when getting the colour through a
      function or by precomputing them all). Different terminals also seem to
      scroll better or worse (e.g.  alacritty is one of the fastest).
+
 1. [-] Try storing the whole alignment's characters (with the corresponding
    Colors) in a Buffer => Won't work:: the number of Cells in a Buffer is a u16,
    and therefore limited to 65,535.  Thus, storing all the alignment in a Buffer
    will not work for larger alignments.
+
 1. [x] Try constructing Paragraph only from the parts of the sequences that have
    to be displayed --- this should avoid `clone()`s.
+
 1. [ ] Try putting the whole alignment into a Paragraph upfront, then scrolling
    it into position => Not sure if this is possible. The constructors for Span,
    Line, and Paragraph all seem to consume their arguments; I tried WidgetRefs
    and StatefulWidgetRefs, to no avail.
+
 1. [x] Move ui code to a separate module.
+
 1. [x] Provide shortcuts to begin, end, top, and bottom.
+
 1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
    visible.
+
 1. [x] Prevent scrolling past the top or left margins (corrdinates become
    negative, which causes a panic as they are usize).
+
 1. [x] See if using a separate `ui()` function might solve the closure problem.
    (It does).
+
 1. [x] Move the alignment (for now: only moves down...)
+
 1. [x] Put the App in its own module.
+
 1. [x] Try alignments that do not fit on the screen, and see how Ratatui handles
    them. Result: pretty well, in fact. I tried an alignment with sequences too
    long for a screen, and they are displayed by Paragraph without a glitch, and
    automatically handle screen resizing, which is pretty cool.
+
 1. [x] Pass the name of the alignment file as positional argument.
+
 3. [x] Read a Fasta File (see ~/projects/rasta) and display it in the Alignment
    box.
+
 1. [x] Define a struct for alignments. It should have a list of headers and one
    of sequences, and there should be a constructor that takes a file path. This
    should be in a separate file.
+
 2. [x] Display a rectangular array of chars, but using Ratatui widgets 
+
 1. [x] Explore TUI libraries (tried a few, including Cursive and Ratatui - will
    try that last one for now)
+
 1. [x] Display a rectangular array of characters at the top left corner of the screen.
 
