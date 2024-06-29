@@ -6,6 +6,6 @@ roadmap.pdf: roadmap.md meta.yaml
 				--output $@ $<
 
 test:
-	cargo test
+	cargo test 2> /dev/null
 	make -C app-tests/ test
 

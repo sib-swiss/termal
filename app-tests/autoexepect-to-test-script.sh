@@ -15,10 +15,22 @@ set -u
 
 sed '{
 	3,42d;
-	s/timeout -1/timeout 1/;
-	s/^expect -exact \(.*\)$/expect {\n\texpect -exact \1 {} \n\tdefault { exit 1 }\n}/
-	$a\
-	\
+    /^set timeout/c\
+package require cmdline\
+\
+set options {\
+        {t.arg 1 "Expect timeout [s]"}\
+        {w.arg 500 "Crossterm poll wait time [ms]"}\
+}\
+set usage ": prog \\[options]"\
+array set params [::cmdline::getoptions argv $options $usage]\
+\
+set pwt $params(w)\
+set timeout $params(t)\
+
+s/^expect -exact \(.*\)$/expect {\n\texpect -exact \1 {} \n\tdefault { exit 1 }\n}/
+$a\
+\
 # Gets the exit code of the spawned process, so that this script fails IFF it \
 # did. \
 catch wait result \
