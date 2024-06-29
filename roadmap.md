@@ -309,6 +309,7 @@ Urgent
 Normal
 ------
 
+1. [x] Add a function for computing cross-entropy. This should go in Alignment.
 
 1. [x] Zooming causes a panic in "tall" and "wide" alignments (those in which
    the alignment is short enough to be displayed, but not all sequences fit on
