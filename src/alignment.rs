@@ -2,6 +2,9 @@ use std::collections::HashMap;
 
 use rasta::FastaFile;
 
+type ResidueDistribution = HashMap<char, f64>;
+type ResidueCounts = HashMap<char, u64>;
+
 pub struct Alignment {
     pub headers: Vec<String>,
     pub sequences: Vec<String>,
@@ -46,7 +49,7 @@ impl Alignment {
 
 }
 
-fn res_freq(sequences: &Vec<String>, col: usize) -> HashMap<char, u64> {
+fn res_count(sequences: &Vec<String>, col: usize) -> HashMap<char, u64> {
     let mut freqs: HashMap<char, u64> = HashMap::new();
     for seq in sequences {
         let residue = seq.as_bytes()[col] as char;
@@ -58,7 +61,7 @@ fn res_freq(sequences: &Vec<String>, col: usize) -> HashMap<char, u64> {
 pub fn consensus(sequences: &Vec<String>) -> String {
     let mut consensus = String::new();
     for j in 0 .. sequences[0].len() {
-        let dist = res_freq(sequences, j);
+        let dist = res_count(sequences, j);
         let br = best_residue(&dist);
         let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
         if rel_freq >= 0.8 {
@@ -94,7 +97,7 @@ mod tests {
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
-            consensus, res_freq,
+            consensus, res_count,
     };
     use log::debug;
 
@@ -118,17 +121,17 @@ mod tests {
     }
 
     #[test]
-    fn test_res_freq() {
+    fn test_res_count() {
         let fasta2 = read_fasta_file("data/test-cons.fas").unwrap();
         let aln2 = Alignment::new(fasta2);
         let mut d0: HashMap<char, u64> = HashMap::new();
         d0.insert('A', 6);
-        assert_eq!(d0, res_freq(&aln2.sequences, 0));
+        assert_eq!(d0, res_count(&aln2.sequences, 0));
 
         let mut d1: HashMap<char, u64> = HashMap::new();
         d1.insert('Q', 5);
         d1.insert('T', 1);
-        assert_eq!(d1, res_freq(&aln2.sequences, 1));
+        assert_eq!(d1, res_count(&aln2.sequences, 1));
 
         let mut d2: HashMap<char, u64> = HashMap::new();
         d2.insert('W', 2);
@@ -136,13 +139,13 @@ mod tests {
         d2.insert('S', 1); 
         d2.insert('D', 1); 
         d2.insert('F', 1); 
-        assert_eq!(d2, res_freq(&aln2.sequences, 2));
+        assert_eq!(d2, res_count(&aln2.sequences, 2));
 
         let mut d3: HashMap<char, u64> = HashMap::new();
         d3.insert('-', 3);
         d3.insert('K', 2);
         d3.insert('L', 1);
-        assert_eq!(d3, res_freq(&aln2.sequences, 3));
+        assert_eq!(d3, res_count(&aln2.sequences, 3));
 
     }
 
