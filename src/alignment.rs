@@ -49,8 +49,8 @@ impl Alignment {
 
 }
 
-fn res_count(sequences: &Vec<String>, col: usize) -> HashMap<char, u64> {
-    let mut freqs: HashMap<char, u64> = HashMap::new();
+fn res_count(sequences: &Vec<String>, col: usize) ->  ResidueCounts {
+    let mut freqs: ResidueCounts = HashMap::new();
     for seq in sequences {
         let residue = seq.as_bytes()[col] as char;
         *freqs.entry(residue).or_insert(0) += 1;
@@ -79,7 +79,7 @@ pub fn consensus(sequences: &Vec<String>) -> String {
     consensus
 }
 
-fn best_residue(dist: &HashMap<char, u64>) -> BestResidue {
+fn best_residue(dist: &ResidueCounts) -> BestResidue {
     let max_freq = dist.values().max().unwrap();
     let most_frequent_residue = dist.keys()
         .find(|&&k| dist.get(&k) == Some(max_freq))
@@ -91,13 +91,28 @@ fn best_residue(dist: &HashMap<char, u64>) -> BestResidue {
     }
 }
 
+fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
+    let total_counts: u64 = counts.values().copied().sum();
+    let dist = ResidueDistribution::new();
+    for (res, count) in counts.iter() {
+    }
+    dist
+}
+
+fn entropy(freqs: &ResidueDistribution) -> f64 {
+    // DIscard '-'s
+    let residues: Vec<&char> = freqs.keys().filter(|&&r| r != '-').collect();
+    0.0
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
-            consensus, res_count,
+            consensus, ResidueCounts, ResidueDistribution,
+            res_count, to_freq_distrib,
     };
     use log::debug;
 
@@ -124,16 +139,16 @@ mod tests {
     fn test_res_count() {
         let fasta2 = read_fasta_file("data/test-cons.fas").unwrap();
         let aln2 = Alignment::new(fasta2);
-        let mut d0: HashMap<char, u64> = HashMap::new();
+        let mut d0: ResidueCounts = HashMap::new();
         d0.insert('A', 6);
         assert_eq!(d0, res_count(&aln2.sequences, 0));
 
-        let mut d1: HashMap<char, u64> = HashMap::new();
+        let mut d1: ResidueCounts = HashMap::new();
         d1.insert('Q', 5);
         d1.insert('T', 1);
         assert_eq!(d1, res_count(&aln2.sequences, 1));
 
-        let mut d2: HashMap<char, u64> = HashMap::new();
+        let mut d2: ResidueCounts = HashMap::new();
         d2.insert('W', 2);
         d2.insert('I', 1); 
         d2.insert('S', 1); 
@@ -141,7 +156,7 @@ mod tests {
         d2.insert('F', 1); 
         assert_eq!(d2, res_count(&aln2.sequences, 2));
 
-        let mut d3: HashMap<char, u64> = HashMap::new();
+        let mut d3: ResidueCounts = HashMap::new();
         d3.insert('-', 3);
         d3.insert('K', 2);
         d3.insert('L', 1);
@@ -151,18 +166,18 @@ mod tests {
 
     #[test]
     fn test_most_frequent_residue() {
-        let mut d0: HashMap<char, u64> = HashMap::from([('A', 6)]);
+        let mut d0: ResidueCounts = HashMap::from([('A', 6)]);
         let mut exp: BestResidue = BestResidue { residue: 'A', frequency: 6 };
         assert_eq!(exp, best_residue(&d0));
 
-        let mut d1: HashMap<char, u64> = HashMap::from([
+        let mut d1: ResidueCounts = HashMap::from([
         	('Q', 5),
         	('T', 1),
         ]);
         exp = BestResidue { residue: 'Q', frequency: 5 };
         assert_eq!(exp, best_residue(&d1));
 
-        let mut d2: HashMap<char, u64> = HashMap::from([
+        let mut d2: ResidueCounts = HashMap::from([
         	('W', 2),
         	('I', 1), 
         	('S', 1), 
@@ -174,12 +189,27 @@ mod tests {
 
         // col 3 cannot be tested <- ties
 
-        let mut d4: HashMap<char, u64> = HashMap::from([
+        let mut d4: ResidueCounts = HashMap::from([
         	('-', 3),
         	('K', 2),
         	('L', 1),
         ]);
         exp = BestResidue { residue: '-', frequency: 3 };
         assert_eq!(exp, best_residue(&d4));
+    }
+
+    #[test]
+    fn test_to_freq_distrib() {
+        let counts: ResidueCounts = HashMap::from([
+            ('K', 3),
+            ('L', 3),
+            ('G', 6),
+            ('-', 6),
+        ]);
+        let rfreqs = to_freq_distrib(&counts);
+        assert_eq!(0.25, *rfreqs.get(&'K').unwrap());
+        assert_eq!(0.25, *rfreqs.get(&'L').unwrap());
+        assert_eq!(0.5, *rfreqs.get(&'G').unwrap());
+        assert_eq!(0.5, *rfreqs.get(&'-').unwrap());
     }
 }

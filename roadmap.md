@@ -290,6 +290,15 @@ h_s                 h_b               |                          ||
 * $l_b = \mathrm{round}(r_h l)$
 * $t_b = \mathrm{round}(r_v t)$
 
+Measures of column-wise Conservation
+------------------------------------
+
+### SPS
+
+### Relative entropy
+
+For a given column: 
+
 Miscellaneous Ideas
 ===================
 
