@@ -318,6 +318,9 @@ Urgent
 Normal
 ------
 
+1. [ ] The corner pane should show the labels of (some of) the lines in the
+   bottom pane, such as coordinates, consensus, etc.
+
 1. [x] Add a function for computing  relative entropy. This should go in
    Alignment.
 
