@@ -16,6 +16,7 @@ pub struct Alignment {
      * orders. See best_residue().
      */
     pub consensus: String,
+    pub entropies: Vec<f64>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -34,11 +35,13 @@ impl Alignment {
             sequences.push(record.sequence);
         }
         let consensus = consensus(&sequences);
+        let entropies = entropies(&sequences);
 
         Alignment {
             headers,
             sequences,
             consensus,
+            entropies,
         }
     }
 
@@ -111,7 +114,6 @@ fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
         .filter(|(res, count)| **res != '-')
         .map(|(res, count)| count)
         .sum();
-    println!("counts: {total_counts}");
     let mut distrib = ResidueDistribution::new();
     for (residue, count) in counts.iter() {
         if *residue == '-' { continue; }
