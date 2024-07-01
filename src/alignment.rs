@@ -93,10 +93,12 @@ fn best_residue(dist: &ResidueCounts) -> BestResidue {
 
 fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
     let total_counts: u64 = counts.values().copied().sum();
-    let dist = ResidueDistribution::new();
-    for (res, count) in counts.iter() {
+    println!("counts: {total_counts}");
+    let mut distrib = ResidueDistribution::new();
+    for (residue, count) in counts.iter() {
+        distrib.insert(*residue, *count as f64 / total_counts as f64 );
     }
-    dist
+    distrib
 }
 
 fn entropy(freqs: &ResidueDistribution) -> f64 {
@@ -115,6 +117,7 @@ mod tests {
             res_count, to_freq_distrib,
     };
     use log::debug;
+    use approx::assert_relative_eq;
 
     #[test]
     fn test_read_aln() {
@@ -200,6 +203,7 @@ mod tests {
 
     #[test]
     fn test_to_freq_distrib() {
+        let ε = 0.001;
         let counts: ResidueCounts = HashMap::from([
             ('K', 3),
             ('L', 3),
@@ -207,9 +211,9 @@ mod tests {
             ('-', 6),
         ]);
         let rfreqs = to_freq_distrib(&counts);
-        assert_eq!(0.25, *rfreqs.get(&'K').unwrap());
-        assert_eq!(0.25, *rfreqs.get(&'L').unwrap());
-        assert_eq!(0.5, *rfreqs.get(&'G').unwrap());
-        assert_eq!(0.5, *rfreqs.get(&'-').unwrap());
+        assert_relative_eq!(0.1666, *rfreqs.get(&'K').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.1666, *rfreqs.get(&'L').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.3333, *rfreqs.get(&'G').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.3333, *rfreqs.get(&'-').unwrap(), epsilon = ε);
     }
 }

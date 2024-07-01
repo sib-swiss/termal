@@ -13,3 +13,4 @@ ratatui = "0.26.2"
 rasta = { path = "../rasta" }
 clap = { version = "4.5.4", features = ["derive", "cargo"] }
 bitflags = "2.6.0"
+approx = "0.3.2"
