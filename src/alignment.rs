@@ -102,9 +102,14 @@ fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
 }
 
 fn entropy(freqs: &ResidueDistribution) -> f64 {
-    // DIscard '-'s
+    // Discard '-'s
     let residues: Vec<&char> = freqs.keys().filter(|&&r| r != '-').collect();
-    0.0
+    let sum: f64 = residues.into_iter().map(|res| {
+        let p = *freqs.get(res).unwrap();
+        p * p.ln()
+    })
+    .sum();
+    -1.0 * sum
 }
 
 #[cfg(test)]
@@ -113,7 +118,7 @@ mod tests {
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
-            consensus, ResidueCounts, ResidueDistribution,
+            consensus, entropy, ResidueCounts, ResidueDistribution,
             res_count, to_freq_distrib,
     };
     use log::debug;
@@ -216,4 +221,30 @@ mod tests {
         assert_relative_eq!(0.3333, *rfreqs.get(&'G').unwrap(), epsilon = ε);
         assert_relative_eq!(0.3333, *rfreqs.get(&'-').unwrap(), epsilon = ε);
     }
+
+    #[test]
+    fn test_entropy_1() {
+        let ε = 0.00001;
+        let distrib: ResidueDistribution = ResidueDistribution::from([('A', 1.0)]);
+        assert_relative_eq!(0.0, entropy(&distrib), epsilon = ε);
+    }
+
+    #[test]
+    fn test_entropy_2() {
+        let ε = 0.00001;
+        let distrib: ResidueDistribution = ResidueDistribution::from([
+            ('A', 0.5), ('F', 0.5),
+        ]);
+        assert_relative_eq!(0.6931471805599453, entropy(&distrib), epsilon = ε);
+    }
+
+    #[test]
+    fn test_entropy_3() {
+        let ε = 0.00001;
+        let distrib: ResidueDistribution = ResidueDistribution::from([
+            ('A', 0.5), ('F', 0.25), ('T', 0.25)
+        ]);
+        assert_relative_eq!(1.0397207708399179, entropy(&distrib), epsilon = ε);
+    }
+
 }
