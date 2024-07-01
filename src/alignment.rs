@@ -91,11 +91,19 @@ fn best_residue(dist: &ResidueCounts) -> BestResidue {
     }
 }
 
+// Convert a residue -> count map into a residue -> frequency map (relative frequency, that is).
+// While gaps are allowed (and indeed useful) in the former, they are not included in the latter
+// (in particular because they make litle sense when computing entropy).
+//
 fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
-    let total_counts: u64 = counts.values().copied().sum();
+    let total_counts: u64 = counts.iter()
+        .filter(|(res, count)| **res != '-')
+        .map(|(res, count)| count)
+        .sum();
     println!("counts: {total_counts}");
     let mut distrib = ResidueDistribution::new();
     for (residue, count) in counts.iter() {
+        if *residue == '-' { continue; }
         distrib.insert(*residue, *count as f64 / total_counts as f64 );
     }
     distrib
@@ -216,10 +224,9 @@ mod tests {
             ('-', 6),
         ]);
         let rfreqs = to_freq_distrib(&counts);
-        assert_relative_eq!(0.1666, *rfreqs.get(&'K').unwrap(), epsilon = ε);
-        assert_relative_eq!(0.1666, *rfreqs.get(&'L').unwrap(), epsilon = ε);
-        assert_relative_eq!(0.3333, *rfreqs.get(&'G').unwrap(), epsilon = ε);
-        assert_relative_eq!(0.3333, *rfreqs.get(&'-').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.25, *rfreqs.get(&'K').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.25, *rfreqs.get(&'L').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.5, *rfreqs.get(&'G').unwrap(), epsilon = ε);
     }
 
     #[test]
