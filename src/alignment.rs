@@ -79,6 +79,17 @@ pub fn consensus(sequences: &Vec<String>) -> String {
     consensus
 }
 
+pub fn entropies(sequences: &Vec<String>) -> Vec<f64> {
+    let mut entropies: Vec<f64> = Vec::new();
+    for j in 0 .. sequences[0].len() {
+        let dist = res_count(sequences, j);
+        let freq = to_freq_distrib(&dist);
+        let e = entropy(&freq);
+        entropies.push(e);
+    }
+    entropies
+}
+
 fn best_residue(dist: &ResidueCounts) -> BestResidue {
     let max_freq = dist.values().max().unwrap();
     let most_frequent_residue = dist.keys()
@@ -126,7 +137,7 @@ mod tests {
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
-            consensus, entropy, ResidueCounts, ResidueDistribution,
+            consensus, entropies, entropy, ResidueCounts, ResidueDistribution,
             res_count, to_freq_distrib,
     };
     use log::debug;
@@ -254,4 +265,15 @@ mod tests {
         assert_relative_eq!(1.0397207708399179, entropy(&distrib), epsilon = ε);
     }
 
+    #[test]
+    fn test_entropies() {
+        let fasta2 = read_fasta_file("data/test-cons.fas").unwrap();
+        let aln2 = Alignment::new(fasta2);
+        let entrs = entropies(&aln2.sequences);
+        let ε = 0.001;
+        assert_relative_eq!(0.0,    entrs[0], epsilon = ε);
+        assert_relative_eq!(0.4505, entrs[1], epsilon = ε);
+        assert_relative_eq!(1.5607, entrs[2], epsilon = ε);
+        assert_relative_eq!(0.6365, entrs[3], epsilon = ε);
+    }
 }
