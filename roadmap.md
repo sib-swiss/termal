@@ -318,8 +318,20 @@ Urgent
 Normal
 ------
 
+1. [ ] Entropy, as such, measures not conservation but rather divergence. Show
+   the complement to 1 of entropy, so that highly-conserved columns are
+   represented as tall bars.
+
+1. [x] Convert the entropy (float) to an ASCII-graphics representation, using
+   block characters like "▅", etc. This allows conservation to be plotted as a
+   barchart. -> My first attempt involved a Ratatui Sparkline, but this is
+   overkill: such block chars can be made into a String, itself into a Line, and
+   everything in the bottom pane's Paragraph.
+
 1. [x] Add a function for computing  relative entropy. This should go in
-   Alignment.
+   Alignment. -> well, for now it's just entropy (i.e., per-column, Shannon).
+   This is because it's not obvious how to get base-rate frequencies (although
+   estimating them from t healignment is an obvious candidate).
 
 1. [x] Zooming causes a panic in "tall" and "wide" alignments (those in which
    the alignment is short enough to be displayed, but not all sequences fit on
