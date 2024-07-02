@@ -4,7 +4,6 @@ pub fn entropies_to_blocks(entropies: &Vec<f64>) -> String {
         |a:f64,b: &f64| f64::max(a, *b));
     for e in entropies {
         let rel_e: f64 = *e / max;
-        println!("e: {}, r_e = {}/{} = {:?}", e, e, max, rel_e);
         blocks.push(
             if rel_e <= 0.11111111111111112  {
                 ' '

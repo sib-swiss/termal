@@ -12,7 +12,10 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph},
 };
 
-use crate::App;
+use crate::{
+    App,
+    ui::conservation::entropies_to_blocks
+};
 
 #[derive(Clone,Copy)]
 pub enum ZoomLevel {
@@ -590,6 +593,8 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
     let mut btm_text: Vec<Line> = Vec::new();
     btm_text.push(Line::from(ui.app.alignment.consensus.clone()));
+    btm_text.push(Line::from(
+            entropies_to_blocks(&ui.app.alignment.entropies)));
     btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
     btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
     let btm_para = Paragraph::new(btm_text)
