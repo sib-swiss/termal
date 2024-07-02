@@ -483,8 +483,6 @@ struct Panes {
     sequence: Rect,
     labels: Rect,
     bottom: Rect,
-    bottom_metrics: Rect,
-    bottom_para: Rect,
     corner: Rect,
 }
 
@@ -506,28 +504,12 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
             vec![Constraint::Max(ui.label_pane_width.unwrap()), Constraint::Fill(1)])
         .split(v_panes[1]);
 
-    // Four main divisions
-    let labels_pane = upper_panes[0];
-    let sequence_pane = upper_panes[1];
-    let corner_pane = lower_panes[0];
-    let bottom_pane = lower_panes[1];
-
-    // Subdivide bottom pane
-    let bottom_chunks = Layout::new(
-        Direction::Vertical,
-        vec![Constraint::Length(1),
-            Constraint::Max(ui.bottom_pane_height.unwrap()-1)])
-        .split(bottom_pane);
-    
-    
-    Panes {
-       labels: labels_pane,
-       sequence: sequence_pane,
-       corner: corner_pane,
-       bottom: bottom_pane,
-       bottom_metrics: bottom_chunks[0],
-       bottom_para: bottom_chunks[0],
-    }
+   Panes {
+       labels: upper_panes[0],
+       sequence: upper_panes[1],
+       corner: lower_panes[0],
+       bottom: lower_panes[1],
+   }
 }
 
 fn tick_marks(aln_length: usize) -> String {
