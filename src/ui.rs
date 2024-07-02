@@ -526,7 +526,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
        corner: corner_pane,
        bottom: bottom_pane,
        bottom_metrics: bottom_chunks[0],
-       bottom_para: bottom_chunks[1],
+       bottom_para: bottom_chunks[0],
     }
 }
 
@@ -605,16 +605,15 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .block(aln_block);
     f.render_widget(seq_para, layout_panes.sequence);
 
+    let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
     let mut btm_text: Vec<Line> = Vec::new();
     btm_text.push(Line::from(ui.app.alignment.consensus.clone()));
     btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
     btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
     let btm_para = Paragraph::new(btm_text)
-        .scroll((0, ui.leftmost_col));
-    f.render_widget(btm_para, layout_panes.bottom_para);
-
-    let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
-    f.render_widget(btm_block, layout_panes.bottom);
+        .scroll((0, ui.leftmost_col))
+        .block(btm_block);
+    f.render_widget(btm_para, layout_panes.bottom);
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
