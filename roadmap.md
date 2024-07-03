@@ -318,7 +318,16 @@ Urgent
 Normal
 ------
 
-1. [ ] Entropy, as such, measures not conservation but rather divergence. Show
+1. [x] One's complement of normalized entropy is better, but gap-rich columns
+   tend to show as highly conserved (gaps do not count against entropy, but the
+   low number of residues sometimes lower the entropy, yielding an illusion of
+   high conservation). In this sense, they _are_ well conserved; OTOH they do
+   not represent a strong conservation signal. Introduce a new metric: one's
+   complement of normalized entropy, _weighted by column density_ (which is the
+   ratio of number of residues to number of sequences, IOW a column wihout gaps
+   has density 1.0).
+
+1. [x] Entropy, as such, measures not conservation but rather divergence. Show
    the complement to 1 of entropy, so that highly-conserved columns are
    represented as tall bars.
 
@@ -326,7 +335,9 @@ Normal
    block characters like "▅", etc. This allows conservation to be plotted as a
    barchart. -> My first attempt involved a Ratatui Sparkline, but this is
    overkill: such block chars can be made into a String, itself into a Line, and
-   everything in the bottom pane's Paragraph.
+   everything in the bottom pane's Paragraph. The entropy is relative to the
+   maximum entropy across the alignment's columns, so it should be called
+   _normalized_ entropy.
 
 1. [x] Add a function for computing  relative entropy. This should go in
    Alignment. -> well, for now it's just entropy (i.e., per-column, Shannon).

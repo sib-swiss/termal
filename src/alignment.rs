@@ -93,6 +93,25 @@ pub fn entropies(sequences: &Vec<String>) -> Vec<f64> {
     entropies
 }
 
+pub fn col_density(sequences: &Vec<String>, col: usize) -> f64 {
+    let mut mass = 0;
+    for seq in sequences {
+        match seq.as_bytes()[col] as char {
+            'a' ..= 'z' | 'A' ..= 'Z' => { mass += 1 }
+            '-' => {}
+            other => { panic!("Character {other} unexpected in an alignment."); }
+        }
+    }
+    let ρ = mass as f64 / sequences.len() as f64;
+    ρ
+}
+
+pub fn densities(sequences: &Vec<String>) -> Vec<f64> {
+    (0 .. sequences[0].len()).map(|col| {
+        col_density(sequences, col)
+    }).collect()
+}
+
 fn best_residue(dist: &ResidueCounts) -> BestResidue {
     let max_freq = dist.values().max().unwrap();
     let most_frequent_residue = dist.keys()
@@ -139,7 +158,7 @@ mod tests {
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
-            consensus, entropies, entropy, ResidueCounts, ResidueDistribution,
+            consensus, densities, entropies, entropy, ResidueCounts, ResidueDistribution,
             res_count, to_freq_distrib,
     };
     use log::debug;
@@ -278,4 +297,18 @@ mod tests {
         assert_relative_eq!(1.5607, entrs[2], epsilon = ε);
         assert_relative_eq!(0.6365, entrs[3], epsilon = ε);
     }
+
+    #[test]
+    fn test_density() {
+        let fasta = read_fasta_file("data/test-density.msa").unwrap();
+        let aln = Alignment::new(fasta);
+        let dens = densities(&aln.sequences);
+        assert_eq!(1.0, dens[0]);
+        assert_eq!(0.8, dens[1]);
+        assert_eq!(0.6, dens[2]);
+        assert_eq!(0.4, dens[3]);
+        assert_eq!(0.2, dens[4]);
+        assert_eq!(0.0, dens[5]);
+    }
+
 }
