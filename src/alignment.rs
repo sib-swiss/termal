@@ -152,14 +152,18 @@ fn entropy(freqs: &ResidueDistribution) -> f64 {
     -1.0 * sum
 }
 
+fn density_wgt_entropies(dens: &Vec<f64>, entrs: &Vec<f64>) -> Vec<f64> {
+    dens.iter().zip(entrs).map(|(d, e)| d * e).collect()
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
     use rasta::read_fasta_file;
     use crate::alignment::{
         Alignment, BestResidue, best_residue,
-            consensus, densities, entropies, entropy, ResidueCounts, ResidueDistribution,
-            res_count, to_freq_distrib,
+            consensus, densities, density_wgt_entropies, entropies, entropy, ResidueCounts,
+            ResidueDistribution, res_count, to_freq_distrib,
     };
     use log::debug;
     use approx::assert_relative_eq;
@@ -309,6 +313,20 @@ mod tests {
         assert_eq!(0.4, dens[3]);
         assert_eq!(0.2, dens[4]);
         assert_eq!(0.0, dens[5]);
+    }
+
+    #[test]
+    fn test_density_wgt_entropies() {
+        let fasta = read_fasta_file("data/test-cons.fas").unwrap();
+        let aln = Alignment::new(fasta);
+        let entrs = entropies(&aln.sequences);
+        let dens = densities(&aln.sequences);
+        let dens_wgt_entropies = density_wgt_entropies(&dens, &entrs);
+        let ε = 0.001;
+        assert_relative_eq!(0.0,    dens_wgt_entropies[0], epsilon = ε);
+        assert_relative_eq!(0.4505, dens_wgt_entropies[1], epsilon = ε);
+        assert_relative_eq!(1.5607, dens_wgt_entropies[2], epsilon = ε);
+        assert_relative_eq!(0.31825, dens_wgt_entropies[3], epsilon = ε);
     }
 
 }
