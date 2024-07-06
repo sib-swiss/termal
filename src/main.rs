@@ -1,14 +1,20 @@
+/*
+
 mod app;
 mod ui;
+
+*/
 mod alignment;
+mod vec_f64_aux;
 
 
-use log::{info,debug};
+// use log::{info,debug};
 
 use std::{
     io::{stdout, Result},
 };
 
+/*
 use clap::{arg, command, Parser, };
 
 use crossterm::{
@@ -71,7 +77,10 @@ struct Cli {
     no_zoombox: bool,
 }
 
+*/
+
 fn main() -> Result<()> {
+    /*
     env_logger::init();
     info!("Starting log");
 
@@ -174,6 +183,6 @@ fn main() -> Result<()> {
     
     stdout().execute(LeaveAlternateScreen)?;
     disable_raw_mode()?;
-
+    */
     Ok(())
 }
