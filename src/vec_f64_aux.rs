@@ -2,24 +2,14 @@
 pub fn normalize(values: &Vec<f64>) -> Vec<f64> {
     let max = values.iter().fold(-1.0/0.0,
         |a:f64,b: &f64| f64::max(a, *b));
-    values.iter().map(|v| v / max).collect()
+    let min = values.iter().fold(1.0/0.0,
+        |a:f64,b: &f64| f64::min(a, *b));
+    values.iter().map(|v| (v-min) / (max-min)).collect()
 }
 
 // Complements to one. Only makes sense for normalized values.
-pub fn ones_complement(chart: &String) -> String {
-    chart.chars().map(|c|
-        match c {
-            ' ' => '█',
-            '▁' => '▇',
-            '▂' => '▆',
-            '▃' => '▅',
-            '▄' => '▄',
-            '▅' => '▃',
-            '▆' => '▂',
-            '▇' => '▁',
-            '█' => ' ',
-            _   => c,
-        }).collect()
+pub fn ones_complement(values: &Vec<f64>) -> Vec<f64> {
+    values.iter().map(|v| 1.0 - v).collect()
 }
 
 
@@ -29,10 +19,12 @@ pub fn product(v1: &Vec<f64>, v2: &Vec<f64>) -> Vec<f64> {
 }
 
 mod test {
-use crate::vec_f64_aux::{
-    normalize,
-    ones_complement,
-};
+    use approx::assert_relative_eq;
+    use crate::vec_f64_aux::{
+        normalize,
+        ones_complement,
+        product,
+    };
 
     #[test]
     fn test_normalize_1() {
@@ -43,16 +35,19 @@ use crate::vec_f64_aux::{
 
     #[test]
     fn test_normalize_2() {
-        let values = vec![-4.0, -2.0 0.0, 2.0, 4.0];
-        let exp = vec![0.0, 0.2, 0.4, 0.6, 0.8];
+        let values = vec![-4.0, -2.0, 0.0, 2.0, 4.0];
+        let exp    = vec![0.0, 0.25, 0.5, 0.75, 1.0];
         assert_eq!(normalize(&values), exp);
     }
 
     #[test]
     fn test_ones_complement_1() {
         let values = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9];
-        let exp = "█▇▆▅▄▃▂▁ ";
-        assert_eq!(conservation_barchart(&values), exp);
+        let comps  = ones_complement(&values);
+        let exp    = vec![0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1];
+        for (c, e) in comps.iter().zip(exp) {
+            assert_relative_eq!(*c, e, epsilon=0.001);
+        }
     }
     
     #[test]
