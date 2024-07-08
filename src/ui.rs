@@ -9,7 +9,8 @@ use ratatui::{
     Frame,
     prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span, Text},
     style::Stylize,
-    widgets::{Block, Borders, Paragraph},
+    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation,
+        ScrollbarState},
 };
 
 use crate::{
@@ -595,6 +596,15 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .white()
         .block(aln_block);
     f.render_widget(seq_para, layout_panes.sequence);
+    let mut v_scrollbar_state = ScrollbarState::new(ui.app.num_seq() as usize)
+        .position(ui.top_line.into());
+    let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+        .begin_symbol(Some("↑"))
+        .end_symbol(Some("↓"));
+    f.render_stateful_widget(
+        v_scrollbar,
+        layout_panes.sequence,
+        &mut v_scrollbar_state);
 
     let corner_block = Block::default()
         .borders(Borders::LEFT | Borders::BOTTOM);
