@@ -318,6 +318,8 @@ Urgent
 Normal
 ------
 
+1. [x] Add labels for the bottom panel (in the corner panel).
+
 1. [x] One's complement of normalized entropy is better, but gap-rich columns
    tend to show as highly conserved (gaps do not count against entropy, but the
    low number of residues sometimes lower the entropy, yielding an illusion of

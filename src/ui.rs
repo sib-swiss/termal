@@ -7,7 +7,7 @@ use log::{info,debug};
 
 use ratatui::{
     Frame,
-    prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span},
+    prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph},
 };
@@ -577,7 +577,8 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     }
     debug!("showing {} sequences", sequences.len());
 
-    let lbl_block = Block::default().borders(Borders::ALL);
+    let lbl_block = Block::default()
+        .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
         ZoomLevel::ZoomedOut => 0,
@@ -594,6 +595,16 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .white()
         .block(aln_block);
     f.render_widget(seq_para, layout_panes.sequence);
+
+    let corner_block = Block::default()
+        .borders(Borders::LEFT | Borders::BOTTOM);
+    let corner_text = Text::from(vec![
+        "Consensus".into(),
+        "Conservation".into(),
+        "".into(), "Position".into()]);
+    let corner_para = Paragraph::new(corner_text)
+        .block(corner_block);
+    f.render_widget(corner_para, layout_panes.corner);
 
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
     let mut btm_text: Vec<Line> = Vec::new();
