@@ -318,7 +318,12 @@ Urgent
 Normal
 ------
 
-1. [x] Add labels for the bottom panel (in the corner panel).
+1. [.] Try adding scrollbars. These should reflect the position of the zoom box WRT
+   the whole alignment. They should NOT be shown when in zoomed-out mode, as the
+   zoom box already carries the same information.
+   * [x] vertical scrollbar +- ok.
+
+1. [x] Add labels for the bottom panel (Consensus, etc.) in the corner panel.
 
 1. [x] One's complement of normalized entropy is better, but gap-rich columns
    tend to show as highly conserved (gaps do not count against entropy, but the

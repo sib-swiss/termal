@@ -7,7 +7,7 @@ use log::{info,debug};
 
 use ratatui::{
     Frame,
-    prelude::{Color, Constraint, Direction, Layout, Line, Rect, Span, Text},
+    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation,
         ScrollbarState},
@@ -549,7 +549,7 @@ fn tick_position(aln_length: usize) -> String {
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
-    debug!("seq pane size: {:?}", layout_panes.sequence.as_size());
+    debug!("seq pane size (w/ borders): {:?}", layout_panes.sequence.as_size());
     ui.set_seq_para_height(layout_panes.sequence.as_size().height); // the f() takes care of
                                                                     // borders!
     ui.set_seq_para_width(layout_panes.sequence.as_size().width);
@@ -596,14 +596,22 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .white()
         .block(aln_block);
     f.render_widget(seq_para, layout_panes.sequence);
-    let mut v_scrollbar_state = ScrollbarState::new(ui.app.num_seq() as usize)
+    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
+    let mut v_scrollbar_state = ScrollbarState::default()
+        .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
+        .viewport_content_length((ui.seq_para_height - 2).into())
         .position(ui.top_line.into());
+    debug!("v_bar: {:#?}", v_scrollbar_state);
+    debug!("t_max: {}", ui.max_top_line());
     let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-        .begin_symbol(Some("↑"))
-        .end_symbol(Some("↓"));
+        .begin_symbol(None)
+        .end_symbol(None);
     f.render_stateful_widget(
         v_scrollbar,
-        layout_panes.sequence,
+        layout_panes.sequence.inner(&Margin{
+            vertical: 1,
+            horizontal: 0,
+        }),
         &mut v_scrollbar_state);
 
     let corner_block = Block::default()

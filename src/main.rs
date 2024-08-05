@@ -111,7 +111,7 @@ fn main() -> Result<()> {
     // main loop
     loop {
         debug!("**** Draw Iteration ****");
-        debug!("size: {:?}", terminal.size().unwrap());
+        debug!("terminal size: {:?}", terminal.size().unwrap());
         terminal.draw(|f|  ui(f, &mut app_ui) )?;
         // handle events
         if event::poll(std::time::Duration::from_millis(cli.poll_wait_time))? {
