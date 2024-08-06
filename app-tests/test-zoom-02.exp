@@ -3,7 +3,7 @@
 package require cmdline
 
 set options {
-        {t.arg 1 "Expect timeout [s]"}
+        {t.arg 100 "Expect timeout [ms]"}
         {w.arg 500 "Crossterm poll wait time [ms]"}
 }
 set usage ": prog \[options]"
@@ -13,7 +13,7 @@ set pwt $params(w)
 set timeout $params(t)
 
 
-spawn ../target/debug/termal --poll-wait-time $pwt -LBC -w 11 -t 3 --no-viewport data/test-aln-01.fas
+spawn ../target/debug/termal --poll-wait-time $pwt -LBC -w 11 -t 3 --no-zoom-box data/test-aln-01.fas
 expect "AAAAAAAAA"
 send "z"
 expect {

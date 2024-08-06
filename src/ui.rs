@@ -609,7 +609,9 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     f.render_widget(seq_para, layout_panes.sequence);
     debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
 
-    if ui.zoom_level == ZoomLevel::ZoomedIn && ui.show_scrollbars {
+    if ui.zoom_level == ZoomLevel::ZoomedIn
+        && ui.show_scrollbars
+        && ui.seq_para_height > 2 {
         let mut v_scrollbar_state = ScrollbarState::default()
             .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
             .viewport_content_length((ui.seq_para_height - 2).into())
