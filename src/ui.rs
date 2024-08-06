@@ -612,6 +612,8 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     if ui.zoom_level == ZoomLevel::ZoomedIn
         && ui.show_scrollbars
         && ui.seq_para_height > 2 {
+
+        // vertical scrollbar
         let mut v_scrollbar_state = ScrollbarState::default()
             .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
             .viewport_content_length((ui.seq_para_height - 2).into())
@@ -628,6 +630,22 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
                 horizontal: 0,
             }),
             &mut v_scrollbar_state);
+
+        // horizontal scrollbar
+        let mut h_scrollbar_state = ScrollbarState::default()
+            .content_length((ui.app.aln_len() - ui.seq_para_width ).into())
+            .viewport_content_length((ui.seq_para_width - 2).into())
+            .position(ui.leftmost_col.into());
+        let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
+            .begin_symbol(None)
+            .end_symbol(None);
+        f.render_stateful_widget(
+            h_scrollbar,
+            layout_panes.sequence.inner(&Margin{
+                vertical: 0,
+                horizontal: 1,
+            }),
+            &mut h_scrollbar_state);
     }
 
     let corner_block = Block::default()
