@@ -61,6 +61,10 @@ struct Cli {
     #[arg(short='C')]
     no_colour: bool,
 
+    /// Disable scrollbars (mostly for testing)
+    #[arg(long="no-scrollbars")]
+    no_scrollbars: bool,
+
     /// Poll wait time [ms]
     #[clap(long="poll-wait-time", default_value_t = 100)]
     poll_wait_time: u64,
@@ -69,8 +73,8 @@ struct Cli {
     #[clap(long="panic")]
     panic: bool,
 
-    /// Disable viewport
-    #[arg(long="no-viewport")]
+    /// Disable zoom box (but not zoom itself)
+    #[arg(long="no-zoom-box")]
     no_zoombox: bool,
 }
 
@@ -102,7 +106,9 @@ fn main() -> Result<()> {
 
     let app = App::new(fasta_file)?;
     let mut app_ui = UI::new(&app);
+    // TODO: either pass the options in a struct, or implement builder pattern for all fields.
     app_ui.set_debug(cli.debug);
+    if cli.no_scrollbars { app_ui.disable_scrollbars(); }
     if cli.no_colour { app_ui.set_monochrome(); }
     if cli.no_zoombox { app_ui.set_zoombox(false); }
     app_ui.set_label_pane_width( if cli.hide_labels_pane { 0 } else { 15 });

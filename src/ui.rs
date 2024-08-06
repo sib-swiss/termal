@@ -23,7 +23,7 @@ use crate::{
     },
 };
 
-#[derive(Clone,Copy)]
+#[derive(Clone,Copy,PartialEq)]
 pub enum ZoomLevel {
     ZoomedIn,
     ZoomedOut,
@@ -40,12 +40,16 @@ bitflags! {
     }
 }
 
+// TODO see about keeping members private, especially those that should not be set without a bundary
+// check (such as top_line).
+
 pub struct UI<'a> {
     app: &'a App,
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
     show_debug_pane: bool,
     show_zoombox: bool,
+    show_scrollbars: bool,
     top_line: u16,
     leftmost_col: u16,
     seq_para_width: u16,
@@ -62,11 +66,13 @@ pub struct UI<'a> {
 }
 
 impl<'a> UI<'a> {
+    // TODO: see about shortcuts in constructors
     pub fn new(app: &'a App) -> Self {
         let colour_map = color_scheme_lesk();
         let zoom_level = ZoomLevel::ZoomedIn;
         let show_debug_pane = false;
         let show_zoombox = true;
+        let show_scrollbars = true;
         let top_line = 0;
         let leftmost_col = 0;
         let seq_para_width = 0;
@@ -81,6 +87,7 @@ impl<'a> UI<'a> {
             zoom_level,
             show_debug_pane,
             show_zoombox,
+            show_scrollbars,
             top_line,
             leftmost_col,
             seq_para_width,
@@ -150,10 +157,14 @@ impl<'a> UI<'a> {
     }
 
     pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }
-    //
-    // Setting size (must be done after layout is solved) - this is layout-agnostic, i.e. the
-    // height is th aactual number of lines displayable in the sequence widget, after taking into
+
+    pub fn disable_scrollbars(&mut self) { self.show_scrollbars = false; }
+
+    // Update size (must be done after layout is solved) - this is layout-agnostic, i.e. the
+    // height is the actual number of lines displayable in the sequence widget, after taking into
     // account its size, the presence of borders, etc.
+    // TODO: arguably, functions could just look up the sizes of chunks after layout is done, so
+    // perhaps this function isn't necessary.
 
     pub fn set_seq_para_height(&mut self, height: u16) {
         self.seq_para_height = if height >= 2 {  // border, should later be a constant or a field of UI
@@ -597,22 +608,25 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .block(aln_block);
     f.render_widget(seq_para, layout_panes.sequence);
     debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
-    let mut v_scrollbar_state = ScrollbarState::default()
-        .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
-        .viewport_content_length((ui.seq_para_height - 2).into())
-        .position(ui.top_line.into());
-    debug!("v_bar: {:#?}", v_scrollbar_state);
-    debug!("t_max: {}", ui.max_top_line());
-    let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-        .begin_symbol(None)
-        .end_symbol(None);
-    f.render_stateful_widget(
-        v_scrollbar,
-        layout_panes.sequence.inner(&Margin{
-            vertical: 1,
-            horizontal: 0,
-        }),
-        &mut v_scrollbar_state);
+
+    if ui.zoom_level == ZoomLevel::ZoomedIn && ui.show_scrollbars {
+        let mut v_scrollbar_state = ScrollbarState::default()
+            .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
+            .viewport_content_length((ui.seq_para_height - 2).into())
+            .position(ui.top_line.into());
+        debug!("v_bar: {:#?}", v_scrollbar_state);
+        debug!("t_max: {}", ui.max_top_line());
+        let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+            .begin_symbol(None)
+            .end_symbol(None);
+        f.render_stateful_widget(
+            v_scrollbar,
+            layout_panes.sequence.inner(&Margin{
+                vertical: 1,
+                horizontal: 0,
+            }),
+            &mut v_scrollbar_state);
+    }
 
     let corner_block = Block::default()
         .borders(Borders::LEFT | Borders::BOTTOM);
