@@ -68,34 +68,21 @@ pub struct UI<'a> {
 impl<'a> UI<'a> {
     // TODO: see about shortcuts in constructors
     pub fn new(app: &'a App) -> Self {
-        let colour_map = color_scheme_lesk();
-        let zoom_level = ZoomLevel::ZoomedIn;
-        let show_debug_pane = false;
-        let show_zoombox = true;
-        let show_scrollbars = true;
-        let top_line = 0;
-        let leftmost_col = 0;
-        let seq_para_width = 0;
-        let seq_para_height = 0;
-        let label_pane_width = None;
-        let bottom_pane_height = None;
-        let frame_width = None;
-        let frame_height = None;
         UI {
             app,
-            colour_map,
-            zoom_level,
-            show_debug_pane,
-            show_zoombox,
-            show_scrollbars,
-            top_line,
-            leftmost_col,
-            seq_para_width,
-            seq_para_height,
-            label_pane_width,
-            bottom_pane_height,
-            frame_width,
-            frame_height,
+            colour_map: color_scheme_lesk(),
+            zoom_level: ZoomLevel::ZoomedIn,
+            show_debug_pane: false,
+            show_zoombox: true,
+            show_scrollbars: true,
+            top_line: 0,
+            leftmost_col: 0,
+            seq_para_width: 0,
+            seq_para_height: 0,
+            label_pane_width: None,
+            bottom_pane_height: None,
+            frame_width: None,
+            frame_height: None,
         }
     }
 
