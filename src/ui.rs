@@ -1,6 +1,8 @@
 mod conservation;
+mod color_scheme;
 
 use std::collections::HashMap;
+
 use bitflags::bitflags;
 
 use log::{info,debug};
@@ -16,6 +18,10 @@ use ratatui::{
 use crate::{
     App,
     ui::conservation::values_barchart,
+    ui::color_scheme::{
+        color_scheme_lesk,
+        color_scheme_monochrome,
+    },
     vec_f64_aux::{
         normalize,
         ones_complement,
@@ -326,65 +332,6 @@ impl<'a> UI<'a> {
         assert!(self.leftmost_col <= self.max_leftmost_col(), 
             "l: {}<= l_max: {}", self.leftmost_col, self.max_leftmost_col())
     }
-}
-
-// It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
-// lookup or not.
-
-
-fn color_scheme_monochrome() -> HashMap<char, Color> {
-    let map = HashMap::from([
-        ('G', Color::White),
-        ('A', Color::White),
-        ('S', Color::White),
-        ('T', Color::White),
-        ('C', Color::White),
-        ('V', Color::White),
-        ('I', Color::White),
-        ('L', Color::White),
-        ('P', Color::White),
-        ('F', Color::White),
-        ('Y', Color::White),
-        ('M', Color::White),
-        ('W', Color::White),
-        ('N', Color::White),
-        ('Q', Color::White),
-        ('H', Color::White),
-        ('D', Color::White),
-        ('E', Color::White),
-        ('K', Color::White),
-        ('R', Color::White),
-        ('-', Color::White),
-        ]);
-    map
-}
-
-fn color_scheme_lesk() -> HashMap<char, Color> {
-    let orange = Color::Rgb(255, 165, 0);
-    let map = HashMap::from([
-        ('G', orange),
-        ('A', orange),
-        ('S', orange),
-        ('T', orange),
-        ('C', Color::Green),
-        ('V', Color::Green),
-        ('I', Color::Green),
-        ('L', Color::Green),
-        ('P', Color::Green),
-        ('F', Color::Green),
-        ('Y', Color::Green),
-        ('M', Color::Green),
-        ('W', Color::Green),
-        ('N', Color::Magenta),
-        ('Q', Color::Magenta),
-        ('H', Color::Magenta),
-        ('D', Color::Red),
-        ('E', Color::Red),
-        ('K', Color::Blue),
-        ('R', Color::Blue),
-        ('-', Color::Gray),
-        ]);
-    map
 }
 
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
