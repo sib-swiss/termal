@@ -30,6 +30,9 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
+// A bit field that denotes if the alignment is too wide (with respect to the sequence panel), to
+// tall, both, or neither.
+
 bitflags! {
     #[derive(PartialEq)]
     pub struct AlnWRTSeqPane: u8 {
@@ -88,9 +91,11 @@ impl<'a> UI<'a> {
 
     // Handling Resizes
 
-    // Resizing affects max_top_line and max_leftmost_col, so top_line and leftmost_col may now
-    // exceed them. This function, which should be called after the layout is solved but before the
-    // widgets are drawn, makes sure that l does not exceed l_max, etc.
+    // Resizing (as when the user resizes the terminal window where Termal runs) affects
+    // max_top_line and max_leftmost_col (because the number of available lines (resp. columns)
+    // will generally change), so top_line and leftmost_col may now exceed them. This function,
+    // which should be called after the layout is solved but before the widgets are drawn, makes
+    // sure that l does not exceed l_max, etc.
 
     pub fn adjust_seq_pane_position(&mut self) {
         if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
@@ -99,7 +104,10 @@ impl<'a> UI<'a> {
 
     // Zooming
 
-    pub fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
+    // This functions determines if the alignment fits on the screen or is too wide or tall (it can
+    // be both).
+    // TODO: might be an inner function of cycle_zoom, as it is not used anywhere else.
+    fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
         let mut rel = AlnWRTSeqPane::Fits;
         if self.app.aln_len() > self.seq_para_width {
             rel |= AlnWRTSeqPane::TooWide;
