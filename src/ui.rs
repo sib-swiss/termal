@@ -334,6 +334,12 @@ impl<'a> UI<'a> {
     }
 }
 
+/*****************************************************************
+ * Panel Texts
+ *
+ * for all zoom levels
+*****************************************************************/
+
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app.alignment.headers.iter()
         .map(|h| Line::from(h.clone())).collect()
@@ -403,6 +409,8 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
+// Draws the zoombox (just overwrites the sequence area with box-drawing characters).
+//
 fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
@@ -440,6 +448,9 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
     let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("┘"));
 }
 
+/****************************************************************
+* Layout
+****************************************************************/
 
 struct Panes {
     sequence: Rect,
@@ -474,6 +485,8 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
    }
 }
 
+// Ticks and tick marks for bottom pane
+
 fn tick_marks(aln_length: usize) -> String {
     let mut ticks = String::with_capacity(aln_length);
     for i in 0 .. aln_length {
@@ -496,16 +509,37 @@ fn tick_position(aln_length: usize) -> String {
     intervals.join("")
 }
 
-
+/****************************************************************
 // Draw UI
+****************************************************************/
+
+fn compute_title(ui: &UI) -> String {
+    let title: String;
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+        }
+        ZoomLevel::ZoomedOut => {
+            title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+        }
+        ZoomLevel::ZoomedOutAR => todo!()
+    }
+
+    title
+}
+
 
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
     debug!("seq pane size (w/ borders): {:?}", layout_panes.sequence.as_size());
+    // TODO: do we really need to store this? Or could code within this function just look up the
+    // size of the sequence pane? Review the variables in UI and make sure they're all needed;
+    // replace those that ar enot by locals in this function.
     ui.set_seq_para_height(layout_panes.sequence.as_size().height); // the f() takes care of
                                                                     // borders!
     ui.set_seq_para_width(layout_panes.sequence.as_size().width);
+    // Handle resizing
     ui.adjust_seq_pane_position();
     ui.frame_width = Some(f.size().width);
     ui.frame_height = Some(f.size().height);
@@ -514,15 +548,14 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
     let labels;
     let mut sequences;
-    let title: String;
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
-            title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+            // title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             labels = zoom_in_lbl_text(ui);
             sequences = zoom_in_seq_text(ui);
         }
         ZoomLevel::ZoomedOut => {
-            title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+            // title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             labels = zoom_out_lbl_text(ui);
             sequences = zoom_out_seq_text(f.size(), ui);
             if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
@@ -530,6 +563,8 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         ZoomLevel::ZoomedOutAR => todo!()
     }
     debug!("showing {} sequences", sequences.len());
+
+    let title = compute_title(&ui);
 
     let lbl_block = Block::default()
         .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
