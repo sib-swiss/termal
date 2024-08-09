@@ -1,6 +1,153 @@
 Termal
 ======
 
+"Hidden" Borrow Problem
+=======================
+
+The following code doesn't compile:
+
+```rust
+/* f: &Frame */
+584     let seq = compute_sequence_pane_text(f, ui);
+585     //debug!("showing {} sequences", sequences.len());
+586     let aln_block = Block::default().title(title).borders(Borders::ALL);
+587     let seq_para = Paragraph::new(seq)
+588         .white()
+589         .block(aln_block);
+590     //f.render_widget(seq_para, layout_panes.sequence);
+```
+
+```
+error[E0502]: cannot borrow `*f` as mutable because it is also borrowed as immutable
+   --> src/ui.rs:590:5
+    |
+584 |     let seq = compute_sequence_pane_text(f, ui);
+    |                                          - immutable borrow occurs here
+...
+590 |     f.render_widget(seq_para, layout_panes.sequence);
+    |     ^^-------------^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |     | |
+    |     | immutable borrow later used by call
+    |     mutable borrow occurs here
+```
+
+So `f` is a `&Frame`, and `*f` is the `Frame` `f` references. Rustc complains
+that `*f` cannot be borrowed as mutable because it is also borrowed as mutable,
+no surprise here... except that it's far from obvious (to me, at least)  where
+the other borrows of `*f` actually are. Ok, one is easy enough, and is helpfully
+indicated by the compiler:
+
+```rust
+f.render_widget(seq_para, layout_panes.sequence);
+^
+|
+mutable borrow occurs here
+```
+
+Looking at the [docs](https://docs.rs/ratatui/latest/ratatui/struct.Frame.html#method.render_widget), we see that the signature of `render_widget()` is
+
+```rust
+pub fn render_widget<W: Widget>(&mut self, widget: W, area: Rect)
+```
+
+Clearly, `f` is a mutable reference to the frame itself. This is not a problem
+per se --- except, that is, if there is still _another_ reference to `*f`. And
+this is exactly what Rustc complains about. But where this borrow may be is far
+from clear to me. The message seems to imply that it is within one (or both) of
+the parameters to `render_widget()`: let's try passing a dummy one that
+absolutely doesn't reference `*f`:
+
+```rust
+f.render_widget(Paragraph::default(), layout_panes.sequence);
+```
+
+Now obviously this would display the sequence in a completely wring location,
+but the point is to check if this _compiles_. Well:
+
+```bash
+$ cargo check
+...
+    Finished dev [unoptimized + debuginfo] target(s) in 0.16s
+```
+
+It does! So the problem is in `seq_para`. What could that be? 
+
+```rust
+    let seq_para = Paragraph::new(seq)
+        .white()
+        .block(aln_block);
+```
+
+Probably the dependence on `seq`. Indeed, changing to `Paragrapg::default()`
+solves th eproblem (again, at the cost of a completely wrong display). So
+somehow `seq` must contain a reference to `*f`. Here is the code:
+
+```rust
+fn compute_sequence_pane_text<'a>(f: &'a Frame<'a>, ui: &'a UI<'a>) -> Vec<Line<'a>> {
+    let mut sequences: Vec<Line>;
+
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            sequences = zoom_in_seq_text(ui);
+        }
+        ZoomLevel::ZoomedOut => {
+            sequences = zoom_out_seq_text(f.size(), ui);
+            if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
+        }
+        ZoomLevel::ZoomedOutAR => todo!()
+    }
+
+    sequences
+}
+```
+
+First thing: I don't really need a ref to `f`, since I only ever use its size,
+which is Copy. Even so, I do not see any reference to `*f` in the computation
+of `sequences`. What happens if I suppress anny reference to `*f` when computing
+`sequences`?
+
+```rust
+        ZoomLevel::ZoomedOut => {
+            sequences = zoom_in_seq_text(ui);
+            /*
+            sequences = zoom_out_seq_text(f.size(), ui);
+            if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
+            */
+        }
+```
+
+Same error. In fact, what happens if I completely ignore `f` in the function;
+
+```rust
+fn compute_sequence_pane_text<'a>(f: &'a Frame<'a>, ui: &'a UI<'a>) -> Vec<Line<'a>> {
+    let mut sequences: Vec<Line>;
+
+    /*
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            sequences = zoom_in_seq_text(ui);
+        }
+        ZoomLevel::ZoomedOut => {
+            sequences = zoom_in_seq_text(ui);
+            /*
+            sequences = zoom_out_seq_text(f.size(), ui);
+            if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
+            */
+        }
+        ZoomLevel::ZoomedOutAR => todo!()
+    }
+*/
+```
+
+Same error! So Rustc derives this reference solely from the function's
+signature: as it were, since `compute_sequence_pane_text` is _passed_ a ref to
+`*f`, its result (`sequences`) is "suspected" of itself referencing `*f`.
+
+Soves this by not passing a ref to `*f`, which wasn't needed anyway. If it _had_
+been needed, then there probably _would_ have been another ref to `*f`
+somewhere.
+
+
 Closure problem
 ---------------
 

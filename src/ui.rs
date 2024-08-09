@@ -411,7 +411,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
 
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
 //
-fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &mut UI) {
+fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
     let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
@@ -528,7 +528,25 @@ fn compute_title(ui: &UI) -> String {
     title
 }
 
+// FIXME we don't need to borrow f, as we only need its size.
+fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> {
+    let mut sequences: Vec<Line>;
 
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            sequences = zoom_in_seq_text(ui);
+        }
+        ZoomLevel::ZoomedOut => {
+            sequences = zoom_out_seq_text(frame_size, ui);
+            if ui.show_zoombox { mark_zoombox(&mut sequences, frame_size, ui); }
+        }
+        ZoomLevel::ZoomedOutAR => todo!()
+    }
+
+    sequences
+}
+
+    // fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
@@ -547,24 +565,32 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     ui.assert_invariants();
 
     let labels;
-    let mut sequences;
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             // title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             labels = zoom_in_lbl_text(ui);
-            sequences = zoom_in_seq_text(ui);
+            // sequences = zoom_in_seq_text(ui);
         }
         ZoomLevel::ZoomedOut => {
             // title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
             labels = zoom_out_lbl_text(ui);
-            sequences = zoom_out_seq_text(f.size(), ui);
-            if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
+            // sequences = zoom_out_seq_text(f.size(), ui);
+            // if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }
-    debug!("showing {} sequences", sequences.len());
 
-    let title = compute_title(&ui);
+    let title = compute_title(ui);
+
+    let seq = compute_sequence_pane_text(f.size(), ui);
+    //debug!("showing {} sequences", sequences.len());
+    let aln_block = Block::default().title(title).borders(Borders::ALL);
+    let seq_para = Paragraph::new(seq)
+        .white()
+        .block(aln_block);
+    f.render_widget(seq_para, layout_panes.sequence);
+    //f.render_widget(Paragraph::default(), layout_panes.sequence);
+    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
 
     let lbl_block = Block::default()
         .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
@@ -578,13 +604,6 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .scroll((top_lbl_line, 0))
         .block(lbl_block);
     f.render_widget(lbl_para, layout_panes.labels);
-
-    let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let seq_para = Paragraph::new(sequences)
-        .white()
-        .block(aln_block);
-    f.render_widget(seq_para, layout_panes.sequence);
-    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
 
     if ui.zoom_level == ZoomLevel::ZoomedIn
         && ui.show_scrollbars
