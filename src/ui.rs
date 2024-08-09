@@ -560,6 +560,77 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     labels
 }
 
+fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
+    /* Labels pane */
+    let labels = compute_labels_pane_text(ui);
+    let lbl_block = Block::default()
+        .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
+    let top_lbl_line = match ui.zoom_level() {
+        ZoomLevel::ZoomedIn => ui.top_line,
+        ZoomLevel::ZoomedOut => 0,
+        ZoomLevel::ZoomedOutAR => todo!(),
+    };
+    let lbl_para = Paragraph::new(labels)
+        .white()
+        .scroll((top_lbl_line, 0))
+        .block(lbl_block);
+    f.render_widget(lbl_para, seq_chunk);
+}
+
+// TODO: the "sequences" pane should be called "alignment" pane.
+
+fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
+    /* Sequence pane */
+    let title = compute_title(ui);
+    let seq = compute_sequence_pane_text(f.size(), ui);
+    //debug!("showing {} sequences", sequences.len());
+    let aln_block = Block::default().title(title).borders(Borders::ALL);
+    let seq_para = Paragraph::new(seq)
+        .white()
+        .block(aln_block);
+    f.render_widget(seq_para, aln_chunk);
+    //f.render_widget(Paragraph::default(), layout_panes.sequence);
+    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
+
+    if ui.zoom_level == ZoomLevel::ZoomedIn
+        && ui.show_scrollbars
+        && ui.seq_para_height > 2 {
+
+        // vertical scrollbar
+        let mut v_scrollbar_state = ScrollbarState::default()
+            .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
+            .viewport_content_length((ui.seq_para_height - 2).into())
+            .position(ui.top_line.into());
+        debug!("v_bar: {:#?}", v_scrollbar_state);
+        debug!("t_max: {}", ui.max_top_line());
+        let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+            .begin_symbol(None)
+            .end_symbol(None);
+        f.render_stateful_widget(
+            v_scrollbar,
+            aln_chunk.inner(&Margin{
+                vertical: 1,
+                horizontal: 0,
+            }),
+            &mut v_scrollbar_state);
+
+        // horizontal scrollbar
+        let mut h_scrollbar_state = ScrollbarState::default()
+            .content_length((ui.app.aln_len() - ui.seq_para_width ).into())
+            .viewport_content_length((ui.seq_para_width - 2).into())
+            .position(ui.leftmost_col.into());
+        let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
+            .begin_symbol(None)
+            .end_symbol(None);
+        f.render_stateful_widget(
+            h_scrollbar,
+            aln_chunk.inner(&Margin{
+                vertical: 0,
+                horizontal: 1,
+            }),
+            &mut h_scrollbar_state);
+    }
+}
     // fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
@@ -580,70 +651,10 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
 
     /* Labels pane */
-    let labels = compute_labels_pane_text(ui);
-    let lbl_block = Block::default()
-        .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
-    let top_lbl_line = match ui.zoom_level() {
-        ZoomLevel::ZoomedIn => ui.top_line,
-        ZoomLevel::ZoomedOut => 0,
-        ZoomLevel::ZoomedOutAR => todo!(),
-    };
-    let lbl_para = Paragraph::new(labels)
-        .white()
-        .scroll((top_lbl_line, 0))
-        .block(lbl_block);
-    f.render_widget(lbl_para, layout_panes.labels);
+    render_labels_pane(f, layout_panes.labels, ui);
 
     /* Sequence pane */
-    let title = compute_title(ui);
-    let seq = compute_sequence_pane_text(f.size(), ui);
-    //debug!("showing {} sequences", sequences.len());
-    let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let seq_para = Paragraph::new(seq)
-        .white()
-        .block(aln_block);
-    f.render_widget(seq_para, layout_panes.sequence);
-    //f.render_widget(Paragraph::default(), layout_panes.sequence);
-    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
-
-    if ui.zoom_level == ZoomLevel::ZoomedIn
-        && ui.show_scrollbars
-        && ui.seq_para_height > 2 {
-
-        // vertical scrollbar
-        let mut v_scrollbar_state = ScrollbarState::default()
-            .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
-            .viewport_content_length((ui.seq_para_height - 2).into())
-            .position(ui.top_line.into());
-        debug!("v_bar: {:#?}", v_scrollbar_state);
-        debug!("t_max: {}", ui.max_top_line());
-        let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-            .begin_symbol(None)
-            .end_symbol(None);
-        f.render_stateful_widget(
-            v_scrollbar,
-            layout_panes.sequence.inner(&Margin{
-                vertical: 1,
-                horizontal: 0,
-            }),
-            &mut v_scrollbar_state);
-
-        // horizontal scrollbar
-        let mut h_scrollbar_state = ScrollbarState::default()
-            .content_length((ui.app.aln_len() - ui.seq_para_width ).into())
-            .viewport_content_length((ui.seq_para_width - 2).into())
-            .position(ui.leftmost_col.into());
-        let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
-            .begin_symbol(None)
-            .end_symbol(None);
-        f.render_stateful_widget(
-            h_scrollbar,
-            layout_panes.sequence.inner(&Margin{
-                vertical: 0,
-                horizontal: 1,
-            }),
-            &mut h_scrollbar_state);
-    }
+    render_alignment_pane(f, layout_panes.sequence, ui);
 
     let corner_block = Block::default()
         .borders(Borders::LEFT | Borders::BOTTOM);
