@@ -528,7 +528,6 @@ fn compute_title(ui: &UI) -> String {
     title
 }
 
-// FIXME we don't need to borrow f, as we only need its size.
 fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let mut sequences: Vec<Line>;
 
@@ -544,6 +543,21 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
     }
 
     sequences
+}
+
+fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
+    let labels: Vec<Line>;
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            labels = zoom_in_lbl_text(ui);
+        }
+        ZoomLevel::ZoomedOut => {
+            labels = zoom_out_lbl_text(ui);
+        }
+        ZoomLevel::ZoomedOutAR => todo!()
+    }
+
+    labels
 }
 
     // fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
@@ -564,34 +578,9 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
     ui.assert_invariants();
 
-    let labels;
-    match ui.zoom_level {
-        ZoomLevel::ZoomedIn => {
-            // title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
-            labels = zoom_in_lbl_text(ui);
-            // sequences = zoom_in_seq_text(ui);
-        }
-        ZoomLevel::ZoomedOut => {
-            // title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
-            labels = zoom_out_lbl_text(ui);
-            // sequences = zoom_out_seq_text(f.size(), ui);
-            // if ui.show_zoombox { mark_zoombox(&mut sequences, f.size(), ui); }
-        }
-        ZoomLevel::ZoomedOutAR => todo!()
-    }
 
-    let title = compute_title(ui);
-
-    let seq = compute_sequence_pane_text(f.size(), ui);
-    //debug!("showing {} sequences", sequences.len());
-    let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let seq_para = Paragraph::new(seq)
-        .white()
-        .block(aln_block);
-    f.render_widget(seq_para, layout_panes.sequence);
-    //f.render_widget(Paragraph::default(), layout_panes.sequence);
-    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
-
+    /* Labels pane */
+    let labels = compute_labels_pane_text(ui);
     let lbl_block = Block::default()
         .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -604,6 +593,18 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
         .scroll((top_lbl_line, 0))
         .block(lbl_block);
     f.render_widget(lbl_para, layout_panes.labels);
+
+    /* Sequence pane */
+    let title = compute_title(ui);
+    let seq = compute_sequence_pane_text(f.size(), ui);
+    //debug!("showing {} sequences", sequences.len());
+    let aln_block = Block::default().title(title).borders(Borders::ALL);
+    let seq_para = Paragraph::new(seq)
+        .white()
+        .block(aln_block);
+    f.render_widget(seq_para, layout_panes.sequence);
+    //f.render_widget(Paragraph::default(), layout_panes.sequence);
+    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
 
     if ui.zoom_level == ZoomLevel::ZoomedIn
         && ui.show_scrollbars
