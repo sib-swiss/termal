@@ -1,24 +1,15 @@
-use std::collections::HashMap;
-
-use bitflags::bitflags;
-
-use log::{info,debug};
+use log::debug;
 
 use ratatui::{
     Frame,
-    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
+    prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation,
         ScrollbarState},
 };
 
 use crate::{
-    App,
     ui::conservation::values_barchart,
-    ui::color_scheme::{
-        color_scheme_lesk,
-        color_scheme_monochrome,
-    },
     UI,
     vec_f64_aux::{
         normalize,
@@ -51,11 +42,6 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
-    let nskip: usize = ui.leftmost_col.into();
-    let ntake: usize = ui.seq_para_width.into();
-    let nseqskip: usize = ui.top_line.into();
-    let nseqtake: usize = ui.seq_para_height.into(); 
-
     let top_i = ui.top_line as usize;
     let bot_i = (ui.top_line+ui.seq_para_height) as usize;
     let lft_j = ui.leftmost_col as usize; 
@@ -105,7 +91,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
 
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
 //
-fn mark_zoombox(seq_para: &mut Vec<Line>, area: Rect, ui: &UI) {
+fn mark_zoombox(seq_para: &mut Vec<Line>, ui: &UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
     let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
@@ -231,7 +217,7 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
         }
         ZoomLevel::ZoomedOut => {
             sequences = zoom_out_seq_text(frame_size, ui);
-            if ui.show_zoombox { mark_zoombox(&mut sequences, frame_size, ui); }
+            if ui.show_zoombox { mark_zoombox(&mut sequences, ui); }
         }
         ZoomLevel::ZoomedOutAR => todo!()
     }
@@ -395,7 +381,7 @@ pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
 
 #[cfg(test)]
 mod tests {
-    use crate::ui::{every_nth};
+    use crate::ui::render::every_nth;
 
     #[test]
     fn test_every_nth_1() {

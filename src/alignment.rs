@@ -6,8 +6,6 @@ use std::collections::HashMap;
 
 use rasta::FastaFile;
 
-use crate::vec_f64_aux::product;
-
 type ResidueDistribution = HashMap<char, f64>;
 type ResidueCounts = HashMap<char, u64>;
 
@@ -140,8 +138,8 @@ fn best_residue(dist: &ResidueCounts) -> BestResidue {
 //
 fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
     let total_counts: u64 = counts.iter()
-        .filter(|(res, count)| **res != '-')
-        .map(|(res, count)| count)
+        .filter(|(res, _count)| **res != '-')
+        .map(|(_res, count)| count)
         .sum();
     let mut distrib = ResidueDistribution::new();
     for (residue, count) in counts.iter() {
@@ -171,7 +169,6 @@ mod tests {
             consensus, densities, entropies, entropy, ResidueCounts,
             ResidueDistribution, res_count, to_freq_distrib,
     };
-    use log::debug;
     use approx::assert_relative_eq;
 
     #[test]
@@ -224,18 +221,18 @@ mod tests {
 
     #[test]
     fn test_most_frequent_residue() {
-        let mut d0: ResidueCounts = HashMap::from([('A', 6)]);
+        let d0: ResidueCounts = HashMap::from([('A', 6)]);
         let mut exp: BestResidue = BestResidue { residue: 'A', frequency: 6 };
         assert_eq!(exp, best_residue(&d0));
 
-        let mut d1: ResidueCounts = HashMap::from([
+        let d1: ResidueCounts = HashMap::from([
         	('Q', 5),
         	('T', 1),
         ]);
         exp = BestResidue { residue: 'Q', frequency: 5 };
         assert_eq!(exp, best_residue(&d1));
 
-        let mut d2: ResidueCounts = HashMap::from([
+        let d2: ResidueCounts = HashMap::from([
         	('W', 2),
         	('I', 1), 
         	('S', 1), 
@@ -247,7 +244,7 @@ mod tests {
 
         // col 3 cannot be tested <- ties
 
-        let mut d4: ResidueCounts = HashMap::from([
+        let d4: ResidueCounts = HashMap::from([
         	('-', 3),
         	('K', 2),
         	('L', 1),

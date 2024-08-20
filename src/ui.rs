@@ -7,27 +7,17 @@ use std::collections::HashMap;
 
 use bitflags::bitflags;
 
-use log::{info,debug};
+use log::{debug};
 
 use ratatui::{
-    Frame,
-    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
-    style::Stylize,
-    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation,
-        ScrollbarState},
+    prelude::Color,
 };
 
 use crate::{
     App,
-    ui::conservation::values_barchart,
     ui::color_scheme::{
         color_scheme_lesk,
         color_scheme_monochrome,
-    },
-    vec_f64_aux::{
-        normalize,
-        ones_complement,
-        product,
     },
 };
 
@@ -332,43 +322,5 @@ impl<'a> UI<'a> {
         }
         assert!(self.leftmost_col <= self.max_leftmost_col(), 
             "l: {}<= l_max: {}", self.leftmost_col, self.max_leftmost_col())
-    }
-}
-
-/* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
- * the first (0) and last (l-1) indexes. If n >= l, then return 0 .. l. */
-
-pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
-    if n >= l {
-        (0..l).collect()
-    } else {
-        let step: f32 = (l-1) as f32 / (n-1) as f32;
-        let r: Vec<usize> = (0..n).map(|e| ((e as f32) * step).round() as usize).collect();
-        r
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::ui::{every_nth};
-
-    #[test]
-    fn test_every_nth_1() {
-        assert_eq!(vec![0,4,8], every_nth(9,3));
-    }
-
-    #[test]
-    fn test_every_nth_2() {
-        assert_eq!(vec![0,5,9], every_nth(10,3));
-    }
-
-    #[test]
-    fn test_every_nth_3() {
-        assert_eq!(vec![0,1,2,3,4], every_nth(5,5));
-    }
-
-    #[test]
-    fn test_every_nth_4() {
-        assert_eq!(vec![0,1,2,3,4], every_nth(5,10));
     }
 }

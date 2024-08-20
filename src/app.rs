@@ -1,8 +1,6 @@
 use rasta::read_fasta_file;
 
 use crate::alignment::Alignment;
-use crate::vec_f64_aux::*;
-
 
 pub struct App {
     pub filename: String,
