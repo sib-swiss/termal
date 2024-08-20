@@ -1,4 +1,3 @@
-
 mod app;
 mod ui;
 
@@ -29,7 +28,8 @@ use ratatui::{
 };
 
 use crate::app::App;
-use crate::ui::{UI, ui, ZoomLevel};
+use crate::ui::{UI, ZoomLevel};
+use crate::ui::render::render_ui;
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
@@ -118,7 +118,7 @@ fn main() -> Result<()> {
     loop {
         debug!("**** Draw Iteration ****");
         debug!("terminal size: {:?}", terminal.size().unwrap());
-        terminal.draw(|f|  ui(f, &mut app_ui) )?;
+        terminal.draw(|f|  render_ui(f, &mut app_ui) )?;
         // handle events
         if event::poll(std::time::Duration::from_millis(cli.poll_wait_time))? {
             if let event::Event::Key(key) = event::read()? {
