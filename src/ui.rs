@@ -644,6 +644,23 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
     f.render_widget(corner_para, corner_chunk);
 }
 
+fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
+    let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
+    let mut btm_text: Vec<Line> = Vec::new();
+    btm_text.push(Line::from(ui.app.alignment.consensus.clone()));
+    btm_text.push(Line::from(
+            values_barchart(&product(
+                    &ui.app.alignment.densities,
+                    &ones_complement(&normalize(&ui.app.alignment.entropies))
+                ))));
+    btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
+    btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
+    let btm_para = Paragraph::new(btm_text)
+        .scroll((0, ui.leftmost_col))
+        .block(btm_block);
+    f.render_widget(btm_para, bottom_chunk);
+}
+
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
@@ -661,26 +678,11 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
 
     ui.assert_invariants();
 
-
     /* Render panes */
     render_labels_pane(f, layout_panes.labels, ui);
     render_alignment_pane(f, layout_panes.sequence, ui);
     render_corner_pane(f, layout_panes.corner);
-
-    let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
-    let mut btm_text: Vec<Line> = Vec::new();
-    btm_text.push(Line::from(ui.app.alignment.consensus.clone()));
-    btm_text.push(Line::from(
-            values_barchart(&product(
-                    &ui.app.alignment.densities,
-                    &ones_complement(&normalize(&ui.app.alignment.entropies))
-                ))));
-    btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
-    btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
-    let btm_para = Paragraph::new(btm_text)
-        .scroll((0, ui.leftmost_col))
-        .block(btm_block);
-    f.render_widget(btm_para, layout_panes.bottom);
+    render_bottom_pane(f, layout_panes.bottom, ui);
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
