@@ -631,7 +631,19 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
             &mut h_scrollbar_state);
     }
 }
-    // fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
+
+fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
+    let corner_block = Block::default()
+        .borders(Borders::LEFT | Borders::BOTTOM);
+    let corner_text = Text::from(vec![
+        "Consensus".into(),
+        "Conservation".into(),
+        "".into(), "Position".into()]);
+    let corner_para = Paragraph::new(corner_text)
+        .block(corner_block);
+    f.render_widget(corner_para, corner_chunk);
+}
+
 pub fn ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
@@ -650,21 +662,10 @@ pub fn ui(f: &mut Frame, ui: &mut UI) {
     ui.assert_invariants();
 
 
-    /* Labels pane */
+    /* Render panes */
     render_labels_pane(f, layout_panes.labels, ui);
-
-    /* Sequence pane */
     render_alignment_pane(f, layout_panes.sequence, ui);
-
-    let corner_block = Block::default()
-        .borders(Borders::LEFT | Borders::BOTTOM);
-    let corner_text = Text::from(vec![
-        "Consensus".into(),
-        "Conservation".into(),
-        "".into(), "Position".into()]);
-    let corner_para = Paragraph::new(corner_text)
-        .block(corner_block);
-    f.render_widget(corner_para, layout_panes.corner);
+    render_corner_pane(f, layout_panes.corner);
 
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
     let mut btm_text: Vec<Line> = Vec::new();

@@ -1,6 +1,29 @@
 Termal
 ======
 
+Immutable borrow invalid, but mutable borrow ok
+===============================================
+
+I find this error unclear:
+
+```bash
+error[E0596]: cannot borrow `*f` as mutable, as it is behind a `&` reference
+   --> src/ui.rs:644:5
+    |
+644 |     f.render_widget(corner_para, corner_chunk);
+    |     ^ `f` is a `&` reference, so the data it refers to cannot be borrowed as mutable
+    |
+help: consider changing this to be a mutable reference
+    |
+635 | fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
+```
+
+It I must not borrow `*f` as mutable, then why change it to `&mut`?
+
+Unless... well, ok, this seems to make sense if it means that `render_widget()`
+_needs_ to borrow `*f` as mutable (reasonable, since it's going to write to the
+frame), but _can't_ because we're declared it as immutable.
+
 "Hidden" Borrow Problem
 =======================
 
