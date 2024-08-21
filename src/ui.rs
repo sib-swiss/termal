@@ -1,6 +1,5 @@
 mod conservation;
 mod color_scheme;
-// Why is pub needed here but not in the previous two lines?
 pub mod render;
 
 use std::collections::HashMap;

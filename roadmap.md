@@ -1,5 +1,79 @@
-Termal
-======
+---
+title: Termal
+---
+
+
+`pub` required for some module, but not its siblings
+====================================================
+
+I have the following source structure
+
+```bash
+src
+├── alignment.rs
+├── app.rs
+├── main.rs
+├── ui
+│   ├── color_scheme.rs
+│   ├── conservation.rs
+│   └── render.rs
+├── ui.rs
+```
+
+And, in ui.rs`:
+
+```rust
+mod conservation;
+mod color_scheme;
+pub mod render;
+```
+
+Notice the `pub mod render`: this module must be public, else compilation
+fails. The other two, which are its siblings, do not need to be public. I'm not
+sure why. Here is where the modules are used:
+
+Function                             Used in     Relationship
+------                               -------     ------------
+`conservation::values_barchart()`    `render.rs` sibling
+`color_scheme::color_scheme_lesk()`  `ui.rs`     parent
+`render::render_ui()`                `main.rs`   "grandparent"?
+
+All three functions are `pub`.
+
+So:
+
+* `render.rs` can `use crate::ui::conservation::...` without condition;
+* `ui.rs` can `use crate::ui::color_scheme::...` without condition;
+* but `main.rs` cannot `use crate::ui::render::...` (unless `render` is public,
+  that is).
+
+Here are [the
+rules](https://doc.rust-lang.org/reference/visibility-and-privacy.html) for
+visibility:
+
+1. If an item is public, then it can be accessed externally from some module `m`
+   if you can access all the item's ancestor modules from `m`. 
+2. If an item is private, it may be accessed by the current module and its
+   descendants.
+
+Now this becomes a little clearer: `render_ui()` is called from `main.rs`, which
+has to `use ui::render::render_ui()`. Being a direct descendant of the root,
+`ui` is visible from `main.rs`, but its descendants, by default, are are not. If
+`render` is not public, then rule 1 prevents access to `render` and its
+contents. Furthermore, the root module (which
+`main.rs` is in) is not a descendant of any module that has access to
+`render_ui()` (in fact it isn't a descendant of any module at all), so the
+conditions for rule 2 aren't met. Hence, `render` _must_ be public.
+
+`color_scheme_lesk()`, by constrast, is used in `ui`, a direct parent of
+`color_scheme`. The latter need therefore not be public for rule 1 to grant
+access to `color_scheme_lesk()` (though the function itself must be).
+
+As for `conservation::values_barchart()`, which is used in its _sibling_ --- not
+ancestor --- `render`, then rule 2 says that it may be used because `render` is
+a descendant of `ui`, which itself has access to the function through rule 1 (as
+a parent, and because the function is public.
+
 
 Immutable borrow invalid, but mutable borrow ok
 ===============================================

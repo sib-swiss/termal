@@ -1,9 +1,7 @@
 mod app;
 mod ui;
-
 mod alignment;
 mod vec_f64_aux;
-
 
 use log::{info,debug};
 
@@ -28,8 +26,10 @@ use ratatui::{
 };
 
 use crate::app::App;
-use crate::ui::{UI, ZoomLevel};
-use crate::ui::render::render_ui;
+use crate::ui::{
+    {UI, ZoomLevel},
+    render::render_ui,
+};
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None)]
