@@ -557,13 +557,15 @@ TODO
 Urgent
 ------
 
-* [ ] Add an option to disable scrollbars, so that pre-scrollbar tests don't
-  fail.
-
 Normal
 ------
 
-1. [ ] Refactor long functions, especially `ui()`
+1. [ ] Use `Option` for _all_ UI fields that cannot be initialized on
+   construction, e.g. like 
+1. [.] Refactor long functions, especially `ui()` -> New module `render`.
+
+1. [x] Add an option to disable scrollbars, so that pre-scrollbar tests don't
+   fail.
 
 1. [.] Try adding scrollbars. These should reflect the position of the zoom box WRT
    the whole alignment. They should NOT be shown when in zoomed-out mode, as the

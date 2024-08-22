@@ -40,24 +40,23 @@ bitflags! {
     }
 }
 
-// TODO see about keeping members private, especially those that should not be set without a bundary
-// check (such as top_line).
-
 pub struct UI<'a> {
     app: &'a App,
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
-    show_debug_pane: bool,
+    // What to show
+    show_debug_pane: bool, // TODO not used anymore -> rm all refs
     show_zoombox: bool,
     show_scrollbars: bool,
+    // Dimensions and Positions - all are affected by the terminal size (among other things), so no
+    // meaningful value can be given to signal that they still needs to be
+    // initalised: 0 is a valid width (when hiding the pane), and -1 (or any other negative number)
+    // is invalid due to the unsigned type. I could (i) use a signed integer (but all negative
+    // values except -1 would be wasted) or (ii) use an Option. Let's try that.
     top_line: u16,
     leftmost_col: u16,
     seq_para_width: u16,
     seq_para_height: u16,
-    // No meaningful value can be given to signal that `label_pane_width` still needs to be
-    // initalised: 0 is a valid width (when hiding the pane), and -1 (or any other negative number)
-    // is invalid due to the unsigned type. I could (i) use a signed integer (but all negative
-    // values except -1 would be wasted) or (ii) use an Option. Let's try that.
     label_pane_width: Option<u16>,
     bottom_pane_height: Option<u16>,
     // Whole app
@@ -66,6 +65,7 @@ pub struct UI<'a> {
 }
 
 impl<'a> UI<'a> {
+
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
@@ -85,23 +85,97 @@ impl<'a> UI<'a> {
         }
     }
 
-    // Handling Resizes
+    // **************************************************************** 
+    /*
+     * Dimensions
+     *
+     * The layout determines the maximal number of sequences and columns shown; this in turn
+     * affects the maximal top line and leftmost column, etc.
+     * */
+
+    /* Public functions: these must be called just after the layout is solved. All other dimentions
+     * depend on this.
+     */
+
+    pub fn set_seq_para_height(&mut self, height: u16) {
+        self.seq_para_height = if height >= 2 {  // border, should later be a constant or a field of UI
+             height - 2
+        } else {
+             0
+        }
+    }
+
+    pub fn set_seq_para_width(&mut self, width: u16) {
+        self.seq_para_width = if width >= 2 {
+            width - 2
+        } else {
+            0
+        }
+    }
 
     // Resizing (as when the user resizes the terminal window where Termal runs) affects
     // max_top_line and max_leftmost_col (because the number of available lines (resp. columns)
     // will generally change), so top_line and leftmost_col may now exceed them. This function,
     // which should be called after the layout is solved but before the widgets are drawn, makes
-    // sure that l does not exceed l_max, etc.
+    // sure that l_max corresponds to the size of the alignment panel, so that l does not exceed
+    // l_max, etc.
 
     pub fn adjust_seq_pane_position(&mut self) {
         if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
         if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
     }
 
+    /* The following are only called internally. */
+
+    fn max_top_line(&self) -> u16 {
+        if self.app.num_seq() >= self.seq_para_height {
+            self.app.num_seq() - self.seq_para_height
+        } else {
+            0
+        }
+    }
+
+    fn max_leftmost_col(&self) -> u16 {
+        if self.app.aln_len() >= self.seq_para_width {
+            self.app.aln_len() - self.seq_para_width
+        } else {
+            0
+        }
+    }
+    //
+    // Side panel dimensions
+    
+    pub fn set_label_pane_width(&mut self, width: u16) {
+        self.label_pane_width = Some(width);
+    }
+
+    pub fn set_bottom_pane_height(&mut self, height: u16) {
+        self.bottom_pane_height = Some(height);
+    }
+
+    pub fn widen_label_pane(&mut self, amount: u16) {
+        // TODO: heed the border width (not sure if we'll keep them)
+        self.label_pane_width = if self.label_pane_width.unwrap() + amount < self.frame_width.unwrap() {
+            Some(self.label_pane_width.unwrap() + amount)
+        } else {
+            Some(self.frame_width.unwrap())
+        }
+    }
+
+    pub fn reduce_label_pane(&mut self, amount: u16) {
+        // TODO: heed the border width (not sure if we'll keep them)
+        self.label_pane_width = if self.label_pane_width.unwrap() > amount {
+            Some(self.label_pane_width.unwrap() - amount)
+        } else {
+            Some(0)
+        }
+    }
+
+
+    // **************************************************************** 
     // Zooming
 
-    // This functions determines if the alignment fits on the screen or is too wide or tall (it can
-    // be both).
+    // Determines if the alignment fits on the screen or is too wide or tall (it can be both).
     // TODO: might be an inner function of cycle_zoom, as it is not used anywhere else.
     fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
         let mut rel = AlnWRTSeqPane::Fits;
@@ -143,82 +217,20 @@ impl<'a> UI<'a> {
         self.show_debug_pane = state;
     }
 
+    pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }
+
+    // **************************************************************** 
+    // Color scheme
+
     pub fn set_monochrome(&mut self) {
         self.colour_map = color_scheme_monochrome();
     }
 
-    pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }
+    // **************************************************************** 
 
     pub fn disable_scrollbars(&mut self) { self.show_scrollbars = false; }
 
-    // Update size (must be done after layout is solved) - this is layout-agnostic, i.e. the
-    // height is the actual number of lines displayable in the sequence widget, after taking into
-    // account its size, the presence of borders, etc.
-    // TODO: arguably, functions could just look up the sizes of chunks after layout is done, so
-    // perhaps this function isn't necessary.
 
-    pub fn set_seq_para_height(&mut self, height: u16) {
-        self.seq_para_height = if height >= 2 {  // border, should later be a constant or a field of UI
-             height - 2
-        } else {
-             0
-        }
-    }
-
-    pub fn set_seq_para_width(&mut self, width: u16) {
-        self.seq_para_width = if width >= 2 {
-            width - 2
-        } else {
-            0
-        }
-    }
-
-    // Bounds 
-    
-    fn max_top_line(&self) -> u16 {
-        if self.app.num_seq() >= self.seq_para_height {
-            self.app.num_seq() - self.seq_para_height
-        } else {
-            0
-        }
-    }
-
-    fn max_leftmost_col(&self) -> u16 {
-        if self.app.aln_len() >= self.seq_para_width {
-            self.app.aln_len() - self.seq_para_width
-        } else {
-            0
-        }
-    }
-
-
-    // Side panel dimensions
-    
-    pub fn set_label_pane_width(&mut self, width: u16) {
-        self.label_pane_width = Some(width);
-    }
-
-    pub fn set_bottom_pane_height(&mut self, height: u16) {
-        self.bottom_pane_height = Some(height);
-    }
-
-    pub fn widen_label_pane(&mut self, amount: u16) {
-        // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() + amount < self.frame_width.unwrap() {
-            Some(self.label_pane_width.unwrap() + amount)
-        } else {
-            Some(self.frame_width.unwrap())
-        }
-    }
-
-    pub fn reduce_label_pane(&mut self, amount: u16) {
-        // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() > amount {
-            Some(self.label_pane_width.unwrap() - amount)
-        } else {
-            Some(0)
-        }
-    }
 
     // Scrolling
 
