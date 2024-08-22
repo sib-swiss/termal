@@ -560,14 +560,18 @@ Urgent
 Normal
 ------
 
+1. [x] Disable right (resp. bottom) scrollbar for alignments that are short
+   (resp. narrow) enough to fit. Test on `./data/{tall,wide}.msa`
+
 1. [ ] Use `Option` for _all_ UI fields that cannot be initialized on
-   construction, e.g. like 
+   construction, e.g. like `label_pane_width`. This applies e.g. to  
+
 1. [.] Refactor long functions, especially `ui()` -> New module `render`.
 
 1. [x] Add an option to disable scrollbars, so that pre-scrollbar tests don't
    fail.
 
-1. [.] Try adding scrollbars. These should reflect the position of the zoom box WRT
+1. [x] Try adding scrollbars. These should reflect the position of the zoom box WRT
    the whole alignment. They should NOT be shown when in zoomed-out mode, as the
    zoom box already carries the same information.
    * [x] vertical scrollbar +- ok.

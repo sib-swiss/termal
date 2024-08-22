@@ -9,7 +9,10 @@ use ratatui::{
 };
 
 use crate::{
-    ui::conservation::values_barchart,
+    ui::{
+        conservation::values_barchart,
+        AlnWRTSeqPane,
+    },
     UI,
     vec_f64_aux::{
         normalize,
@@ -273,28 +276,32 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
 
     if ui.zoom_level == ZoomLevel::ZoomedIn
-        && ui.show_scrollbars
-        && ui.seq_para_height > 2 {
+        && ui.show_scrollbars {
 
         // vertical scrollbar
-        let mut v_scrollbar_state = ScrollbarState::default()
-            .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
-            .viewport_content_length((ui.seq_para_height - 2).into())
-            .position(ui.top_line.into());
-        debug!("v_bar: {:#?}", v_scrollbar_state);
-        debug!("t_max: {}", ui.max_top_line());
-        let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-            .begin_symbol(None)
-            .end_symbol(None);
-        f.render_stateful_widget(
-            v_scrollbar,
-            aln_chunk.inner(&Margin{
-                vertical: 1,
-                horizontal: 0,
-            }),
-            &mut v_scrollbar_state);
+          if (AlnWRTSeqPane::TooTall == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooTall))
+                && ui.seq_para_height > 2 {
+            let mut v_scrollbar_state = ScrollbarState::default()
+                .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
+                .viewport_content_length((ui.seq_para_height - 2).into())
+                .position(ui.top_line.into());
+            debug!("v_bar: {:#?}", v_scrollbar_state);
+            debug!("t_max: {}", ui.max_top_line());
+            let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+                .begin_symbol(None)
+                .end_symbol(None);
+            f.render_stateful_widget(
+                v_scrollbar,
+                aln_chunk.inner(&Margin{
+                    vertical: 1,
+                    horizontal: 0,
+                }),
+                &mut v_scrollbar_state);
+        }
 
         // horizontal scrollbar
+      if (AlnWRTSeqPane::TooWide == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooWide))
+            && ui.seq_para_width > 2 {
         let mut h_scrollbar_state = ScrollbarState::default()
             .content_length((ui.app.aln_len() - ui.seq_para_width ).into())
             .viewport_content_length((ui.seq_para_width - 2).into())
@@ -309,6 +316,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 horizontal: 1,
             }),
             &mut h_scrollbar_state);
+      }
     }
 }
 
