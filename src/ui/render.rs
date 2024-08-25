@@ -36,7 +36,7 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
     let num_seq: usize = ui.app.num_seq() as usize;
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height.into());
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
     for i in &retained_seqs_ndx {
         ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
     }
@@ -46,9 +46,9 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let top_i = ui.top_line as usize;
-    let bot_i = (ui.top_line+ui.seq_para_height) as usize;
+    let bot_i = (ui.top_line+ui.seq_para_height()) as usize;
     let lft_j = ui.leftmost_col as usize; 
-    let rgt_j = (ui.leftmost_col+ui.seq_para_width.unwrap()) as usize;
+    let rgt_j = (ui.leftmost_col+ui.seq_para_width()) as usize;
 
     let mut text: Vec<Line> = Vec::new();
 
@@ -97,19 +97,19 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
 fn mark_zoombox(seq_para: &mut Vec<Line>, ui: &UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
-    let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height) as f64) * ui.v_ratio()).round() as usize;
+    let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
     // If h_a < h_p
     if vb_bottom > ui.app.num_seq() as usize {
         vb_bottom = ui.app.num_seq() as usize;
     }
 
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width.unwrap()) as f64) * ui.h_ratio()).round() as usize;
+    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
     // If w_a < w_p
     if vb_right > ui.app.aln_len() as usize {
         vb_right = ui.app.aln_len() as usize;
     }
-    debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width.unwrap(), ui.h_ratio());
+    debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ui.h_ratio());
     ui.assert_invariants();
 
     let mut l: &mut Line = &mut seq_para[vb_top];
@@ -273,17 +273,17 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
         .block(aln_block);
     f.render_widget(seq_para, aln_chunk);
     //f.render_widget(Paragraph::default(), layout_panes.sequence);
-    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height.into()).len());
+    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height().into()).len());
 
     if ui.zoom_level == ZoomLevel::ZoomedIn
         && ui.show_scrollbars {
 
         // vertical scrollbar
           if (AlnWRTSeqPane::TooTall == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooTall))
-                && ui.seq_para_height > 2 {
+                && ui.seq_para_height() > 2 {
             let mut v_scrollbar_state = ScrollbarState::default()
-                .content_length((ui.app.num_seq() - ui.seq_para_height ).into())
-                .viewport_content_length((ui.seq_para_height - 2).into())
+                .content_length((ui.app.num_seq() - ui.seq_para_height() ).into())
+                .viewport_content_length((ui.seq_para_height() - 2).into())
                 .position(ui.top_line.into());
             debug!("v_bar: {:#?}", v_scrollbar_state);
             debug!("t_max: {}", ui.max_top_line());
@@ -301,10 +301,10 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 
         // horizontal scrollbar
       if (AlnWRTSeqPane::TooWide == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooWide))
-            && ui.seq_para_width > Some(2) {
+            && ui.seq_para_width() > 2 {
         let mut h_scrollbar_state = ScrollbarState::default()
-            .content_length((ui.app.aln_len() - ui.seq_para_width.unwrap() ).into())
-            .viewport_content_length((ui.seq_para_width.unwrap() - 2).into())
+            .content_length((ui.app.aln_len() - ui.seq_para_width() ).into())
+            .viewport_content_length((ui.seq_para_width() - 2).into())
             .position(ui.leftmost_col.into());
         let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
             .begin_symbol(None)
@@ -358,8 +358,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
      * alignment fits in it, the horizontal and vertical ratios when zooming, the top line and
      * leftmost column, etc.
      */
-    ui.set_seq_para_height(layout_panes.sequence.as_size().height); 
-    ui.set_seq_para_width(layout_panes.sequence.as_size().width);
+    ui.aln_pane_size = Some(layout_panes.sequence.as_size());
     // Handle resizing
     ui.adjust_seq_pane_position();
     ui.frame_width = Some(f.size().width);

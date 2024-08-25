@@ -9,7 +9,10 @@ use bitflags::bitflags;
 use log::{debug};
 
 use ratatui::{
-    prelude::Color,
+    layout::Size,
+    prelude::{
+        Color,
+    },
 };
 
 use crate::{
@@ -27,7 +30,7 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
-// A bit field that denotes if the alignment is too wide (with respect to the sequence panel), to
+// A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
 // tall, both, or neither.
 
 bitflags! {
@@ -50,11 +53,10 @@ pub struct UI<'a> {
     show_scrollbars: bool,
     top_line: u16,
     leftmost_col: u16,
-    // These cannot be known when the structure is initialized, So they are Options -- but it is
+    // These cannot be known when the structure is initialized, so they are Options -- but it is
     // possible that they need not be stored at all, as they can in principle be computed when the
     // layout is known.
-    seq_para_width: Option<u16>,
-    seq_para_height: u16,
+    aln_pane_size: Option<Size>,
     label_pane_width: Option<u16>,
     bottom_pane_height: Option<u16>,
     // Whole app
@@ -74,8 +76,7 @@ impl<'a> UI<'a> {
             show_scrollbars: true,
             top_line: 0,
             leftmost_col: 0,
-            seq_para_width: None,
-            seq_para_height: 0,
+            aln_pane_size: None,
             label_pane_width: None,
             bottom_pane_height: None,
             frame_width: None,
@@ -91,26 +92,23 @@ impl<'a> UI<'a> {
      * affects the maximal top line and leftmost column, etc.
      * */
 
-    /* Public functions: these must be called just after the layout is solved. All other dimentions
-     * depend on this.
-     */
-
-    pub fn set_seq_para_height(&mut self, height: u16) {
-        self.seq_para_height = if height >= 2 {  // border, should later be a constant or a field of UI
+    fn seq_para_height(& self) -> u16 {
+        let height = self.aln_pane_size.unwrap().height;
+        if height >= 2 {  // border, should later be a constant or a field of UI
              height - 2
         } else {
+            // Set to null (prevents display) if not enough room
              0
         }
     }
 
-    pub fn set_seq_para_width(&mut self, width: u16) {
-        self.seq_para_width = Some(
-            if width >= 2 {
-                width - 2
-            } else {
-                0
-            }
-        );
+    fn seq_para_width(& self) -> u16 {
+        let width = self.aln_pane_size.unwrap().width;
+        if width >= 2 {
+            width - 2
+        } else {
+            0
+        }
     }
 
     // Resizing (as when the user resizes the terminal window where Termal runs) affects
@@ -128,16 +126,16 @@ impl<'a> UI<'a> {
     /* The following are only called internally. */
 
     fn max_top_line(&self) -> u16 {
-        if self.app.num_seq() >= self.seq_para_height {
-            self.app.num_seq() - self.seq_para_height
+        if self.app.num_seq() >= self.seq_para_height() {
+            self.app.num_seq() - self.seq_para_height()
         } else {
             0
         }
     }
 
     fn max_leftmost_col(&self) -> u16 {
-        if self.app.aln_len() >= self.seq_para_width.unwrap() {
-            self.app.aln_len() - self.seq_para_width.unwrap()
+        if self.app.aln_len() >= self.seq_para_width() {
+            self.app.aln_len() - self.seq_para_width()
         } else {
             0
         }
@@ -179,10 +177,10 @@ impl<'a> UI<'a> {
     // TODO: might be an inner function of cycle_zoom, as it is not used anywhere else.
     fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
         let mut rel = AlnWRTSeqPane::Fits;
-        if self.app.aln_len() > self.seq_para_width.unwrap() {
+        if self.app.aln_len() > self.seq_para_width() {
             rel |= AlnWRTSeqPane::TooWide;
         }
-        if self.app.num_seq() > self.seq_para_height {
+        if self.app.num_seq() > self.seq_para_height() {
             rel |= AlnWRTSeqPane::TooTall;
         }
 
@@ -206,11 +204,11 @@ impl<'a> UI<'a> {
     }
 
     pub fn h_ratio(&self) -> f64 {
-        (self.seq_para_width.unwrap() as f64 / self.app.aln_len() as f64) as f64
+        (self.seq_para_width() as f64 / self.app.aln_len() as f64) as f64
     }
 
     pub fn v_ratio(&self) -> f64 {
-        (self.seq_para_height as f64 / self.app.num_seq() as f64) as f64
+        (self.seq_para_height() as f64 / self.app.num_seq() as f64) as f64
     }
 
     pub fn set_debug(&mut self, state: bool) {
@@ -251,32 +249,32 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_one_screen_up(&mut self) {
-       if self.top_line > self.seq_para_height  {
-           self.top_line -= self.seq_para_height;
+       if self.top_line > self.seq_para_height()  {
+           self.top_line -= self.seq_para_height();
        } else {
            self.top_line = 0;
        }
     }
 
     pub fn scroll_one_screen_left(&mut self) {
-       if self.leftmost_col > self.seq_para_width.unwrap()  {
-           self.leftmost_col -= self.seq_para_width.unwrap();
+       if self.leftmost_col > self.seq_para_width()  {
+           self.leftmost_col -= self.seq_para_width();
        } else {
            self.leftmost_col = 0;
        }
     }
 
     pub fn scroll_one_screen_down(&mut self) {
-       if self.top_line + self.seq_para_height < self.max_top_line() {
-           self.top_line += self.seq_para_height;
+       if self.top_line + self.seq_para_height() < self.max_top_line() {
+           self.top_line += self.seq_para_height();
        } else {
            self.top_line = self.max_top_line();
        }
     }
 
     pub fn scroll_one_screen_right(&mut self) {
-       if self.leftmost_col + self.seq_para_width.unwrap() < self.max_leftmost_col() {
-           self.leftmost_col += self.seq_para_width.unwrap();
+       if self.leftmost_col + self.seq_para_width() < self.max_leftmost_col() {
+           self.leftmost_col += self.seq_para_width();
        } else {
            self.leftmost_col = self.max_leftmost_col();
        }
@@ -321,14 +319,14 @@ impl<'a> UI<'a> {
     // Debugging
 
     pub fn assert_invariants(&self) {
-        debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width.unwrap());
-        debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.seq_para_height);
-        if self.seq_para_width.unwrap() > self.app.aln_len() {
+        debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width());
+        debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.seq_para_height());
+        if self.seq_para_width() > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
-            assert!(self.max_leftmost_col() + self.seq_para_width.unwrap() == self.app.aln_len(),
+            assert!(self.max_leftmost_col() + self.seq_para_width() == self.app.aln_len(),
                 "l_max: {} + w_p: {} == w_a: {} failed",
-                self.max_leftmost_col(), self.seq_para_width.unwrap(), self.app.aln_len()
+                self.max_leftmost_col(), self.seq_para_width(), self.app.aln_len()
             );
         }
         assert!(self.leftmost_col <= self.max_leftmost_col(), 
