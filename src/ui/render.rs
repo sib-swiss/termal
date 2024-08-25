@@ -48,7 +48,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let top_i = ui.top_line as usize;
     let bot_i = (ui.top_line+ui.seq_para_height) as usize;
     let lft_j = ui.leftmost_col as usize; 
-    let rgt_j = (ui.leftmost_col+ui.seq_para_width) as usize;
+    let rgt_j = (ui.leftmost_col+ui.seq_para_width.unwrap()) as usize;
 
     let mut text: Vec<Line> = Vec::new();
 
@@ -104,12 +104,12 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, ui: &UI) {
     }
 
     let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width) as f64) * ui.h_ratio()).round() as usize;
+    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width.unwrap()) as f64) * ui.h_ratio()).round() as usize;
     // If w_a < w_p
     if vb_right > ui.app.aln_len() as usize {
         vb_right = ui.app.aln_len() as usize;
     }
-    debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width, ui.h_ratio());
+    debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width.unwrap(), ui.h_ratio());
     ui.assert_invariants();
 
     let mut l: &mut Line = &mut seq_para[vb_top];
@@ -301,10 +301,10 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 
         // horizontal scrollbar
       if (AlnWRTSeqPane::TooWide == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooWide))
-            && ui.seq_para_width > 2 {
+            && ui.seq_para_width > Some(2) {
         let mut h_scrollbar_state = ScrollbarState::default()
-            .content_length((ui.app.aln_len() - ui.seq_para_width ).into())
-            .viewport_content_length((ui.seq_para_width - 2).into())
+            .content_length((ui.app.aln_len() - ui.seq_para_width.unwrap() ).into())
+            .viewport_content_length((ui.seq_para_width.unwrap() - 2).into())
             .position(ui.leftmost_col.into());
         let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
             .begin_symbol(None)
