@@ -110,8 +110,7 @@ pub fn col_density(sequences: &Vec<String>, col: usize) -> f64 {
             other => { panic!("Character {other} unexpected in an alignment."); }
         }
     }
-    let ρ = mass as f64 / sequences.len() as f64;
-    ρ
+    mass as f64 / sequences.len() as f64
 }
 
 pub fn densities(sequences: &Vec<String>) -> Vec<f64> {

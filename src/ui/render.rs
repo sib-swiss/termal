@@ -197,16 +197,15 @@ fn tick_position(aln_length: usize) -> String {
 ****************************************************************/
 
 fn compute_title(ui: &UI) -> String {
-    let title: String;
-    match ui.zoom_level {
+    let title: String = match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
-            title = format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+            format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
         }
         ZoomLevel::ZoomedOut => {
-            title = format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len());
+            format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
         }
         ZoomLevel::ZoomedOutAR => todo!()
-    }
+    };
 
     title
 }
@@ -229,16 +228,15 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
 }
 
 fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
-    let labels: Vec<Line>;
-    match ui.zoom_level {
+    let labels: Vec<Line> = match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
-            labels = zoom_in_lbl_text(ui);
+            zoom_in_lbl_text(ui)
         }
         ZoomLevel::ZoomedOut => {
-            labels = zoom_out_lbl_text(ui);
+            zoom_out_lbl_text(ui)
         }
         ZoomLevel::ZoomedOutAR => todo!()
-    }
+    };
 
     labels
 }
@@ -334,15 +332,18 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
 
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
-    let mut btm_text: Vec<Line> = Vec::new();
-    btm_text.push(Line::from(ui.app.alignment.consensus.clone()));
-    btm_text.push(Line::from(
+
+    let mut btm_text: Vec<Line> = vec![
+        Line::from(ui.app.alignment.consensus.clone()),
+        Line::from(
             values_barchart(&product(
                     &ui.app.alignment.densities,
                     &ones_complement(&normalize(&ui.app.alignment.entropies))
-                ))));
-    btm_text.push(Line::from(tick_marks(ui.app.aln_len() as usize)));
-    btm_text.push(Line::from(tick_position(ui.app.aln_len() as usize)));
+            ))),
+        Line::from(tick_marks(ui.app.aln_len() as usize)),
+        Line::from(tick_position(ui.app.aln_len() as usize)),
+    ];
+
     let btm_para = Paragraph::new(btm_text)
         .scroll((0, ui.leftmost_col))
         .block(btm_block);

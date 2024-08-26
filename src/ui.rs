@@ -199,11 +199,11 @@ impl<'a> UI<'a> {
     }
 
     pub fn h_ratio(&self) -> f64 {
-        (self.seq_para_width() as f64 / self.app.aln_len() as f64) as f64
+        self.seq_para_width() as f64 / self.app.aln_len() as f64
     }
 
     pub fn v_ratio(&self) -> f64 {
-        (self.seq_para_height() as f64 / self.app.num_seq() as f64) as f64
+        self.seq_para_height() as f64 / self.app.num_seq() as f64
     }
 
     pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }

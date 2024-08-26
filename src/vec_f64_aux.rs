@@ -1,5 +1,5 @@
 // Subtracts the minimum and then divides by the maximum -> [0, 1]
-pub fn normalize(values: &Vec<f64>) -> Vec<f64> {
+pub fn normalize(values: &[f64]) -> Vec<f64> {
     let max = values.iter().fold(-1.0/0.0,
         |a:f64,b: &f64| f64::max(a, *b));
     let min = values.iter().fold(1.0/0.0,
@@ -8,13 +8,13 @@ pub fn normalize(values: &Vec<f64>) -> Vec<f64> {
 }
 
 // Complements to one. Only makes sense for normalized values.
-pub fn ones_complement(values: &Vec<f64>) -> Vec<f64> {
+pub fn ones_complement(values: &[f64]) -> Vec<f64> {
     values.iter().map(|v| 1.0 - v).collect()
 }
 
 
 // Element-wise product of two Vec<f64>
-pub fn product(v1: &Vec<f64>, v2: &Vec<f64>) -> Vec<f64> {
+pub fn product(v1: &[f64], v2: &[f64]) -> Vec<f64> {
     v1.iter().zip(v2).map(|(v, w)| v * w).collect()
 }
 
