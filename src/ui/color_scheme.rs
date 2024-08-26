@@ -10,7 +10,7 @@ use ratatui::prelude::Color;
 // lookup or not.
 
 pub fn color_scheme_monochrome() -> HashMap<char, Color> {
-    let map = HashMap::from([
+    HashMap::from([
         ('G', Color::White),
         ('A', Color::White),
         ('S', Color::White),
@@ -52,13 +52,12 @@ pub fn color_scheme_monochrome() -> HashMap<char, Color> {
         ('k', Color::White),
         ('r', Color::White),
         ('-', Color::White),
-        ]);
-    map
+        ])
 }
 
 pub fn color_scheme_lesk() -> HashMap<char, Color> {
     let orange = Color::Rgb(255, 165, 0);
-    let map = HashMap::from([
+    HashMap::from([
         ('G', orange),
         ('A', orange),
         ('S', orange),
@@ -100,7 +99,6 @@ pub fn color_scheme_lesk() -> HashMap<char, Color> {
         ('k', Color::Blue),
         ('r', Color::Blue),
         ('-', Color::Gray),
-        ]);
-    map
+        ])
 }
 

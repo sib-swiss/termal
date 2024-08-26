@@ -94,7 +94,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
 
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
 //
-fn mark_zoombox(seq_para: &mut Vec<Line>, ui: &UI) {
+fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 
     let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
     let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
@@ -118,14 +118,30 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, ui: &UI) {
     }
     let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("┌"));
     let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┐"));
-    // NOTE: Clippy suggests using an iterator here, but if I want, say residues 600-680, then
-    // there are going to be 600 useless iterations. I imagine [s] is faster.
-    //
+    
+    // NOTE: Clippy suggests using an iterator here, but if I want, say, residues 600-680, then
+    // there are going to be 600 useless iterations. I imagine indexing is faster, though
+    // admittedly I did not benchmark it... except with my eye-o-meter, which indeed did not detect
+    // any difference on a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz machine running WSL2, and
+    // a 144-column by 33-lines terminal. 
+
+    // mine
+    /*
     for s in vb_top+1 .. vb_bottom {
         l = &mut seq_para[s];
         let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
         let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
     }
+    */
+
+    // Clippy
+    // /*
+     for l in seq_para.iter_mut().take(vb_bottom).skip(vb_top+1) {
+        let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
+     }
+    //*/
+         
     l = &mut seq_para[vb_bottom-1];
     for c in vb_left+1 .. vb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
@@ -336,7 +352,7 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
 
-    let mut btm_text: Vec<Line> = vec![
+    let btm_text: Vec<Line> = vec![
         Line::from(ui.app.alignment.consensus.clone()),
         Line::from(
             values_barchart(&product(
