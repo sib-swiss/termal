@@ -111,8 +111,8 @@ fn main() -> Result<()> {
     if cli.no_scrollbars { app_ui.disable_scrollbars(); }
     if cli.no_colour { app_ui.set_monochrome(); }
     if cli.no_zoombox { app_ui.set_zoombox(false); }
-    app_ui.set_label_pane_width( if cli.hide_labels_pane { 0 } else { 15 });
-    app_ui.set_bottom_pane_height( if cli.hide_bottom_pane { 0 } else { 5 });
+    if cli.hide_labels_pane { app_ui.set_label_pane_width(0); }
+    if cli.hide_bottom_pane { app_ui.set_bottom_pane_height(0); }
 
     // main loop
     loop {

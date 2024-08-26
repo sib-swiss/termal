@@ -53,13 +53,15 @@ pub struct UI<'a> {
     show_scrollbars: bool,
     top_line: u16,
     leftmost_col: u16,
+    label_pane_width: u16,
+    bottom_pane_height: u16,
     // These cannot be known when the structure is initialized, so they are Options -- but it is
     // possible that they need not be stored at all, as they can in principle be computed when the
     // layout is known.
     aln_pane_size: Option<Size>,
-    label_pane_width: Option<u16>,
-    bottom_pane_height: Option<u16>,
     // Whole app
+    // TODO: instead of passing the frame's width and height separately, pass them as a single
+    // Option<Size>, just like aln_pane_size.
     frame_width: Option<u16>,
     frame_height: Option<u16>,
 }
@@ -76,9 +78,9 @@ impl<'a> UI<'a> {
             show_scrollbars: true,
             top_line: 0,
             leftmost_col: 0,
+            label_pane_width: 15,     // Reasonable default, I'd say...
+            bottom_pane_height: 5,
             aln_pane_size: None,
-            label_pane_width: None,
-            bottom_pane_height: None,
             frame_width: None,
             frame_height: None,
         }
@@ -144,28 +146,28 @@ impl<'a> UI<'a> {
     // Side panel dimensions
     
     pub fn set_label_pane_width(&mut self, width: u16) {
-        self.label_pane_width = Some(width);
+        self.label_pane_width = width;
     }
 
     pub fn set_bottom_pane_height(&mut self, height: u16) {
-        self.bottom_pane_height = Some(height);
+        self.bottom_pane_height = height;
     }
 
     pub fn widen_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() + amount < self.frame_width.unwrap() {
-            Some(self.label_pane_width.unwrap() + amount)
+        self.label_pane_width = if self.label_pane_width + amount < self.frame_width.unwrap() {
+            self.label_pane_width + amount
         } else {
-            Some(self.frame_width.unwrap())
+            self.frame_width.unwrap()
         }
     }
 
     pub fn reduce_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width.unwrap() > amount {
-            Some(self.label_pane_width.unwrap() - amount)
+        self.label_pane_width = if self.label_pane_width > amount {
+            self.label_pane_width - amount
         } else {
-            Some(0)
+            0
         }
     }
 
