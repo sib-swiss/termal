@@ -114,21 +114,24 @@ fn mark_zoombox(seq_para: &mut Vec<Line>, ui: &UI) {
 
     let mut l: &mut Line = &mut seq_para[vb_top];
     for c in vb_left+1 .. vb_right {
-        let _ = std::mem::replace(&mut (*l).spans[c], Span::raw("─"));
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
-    let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("┌"));
-    let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("┐"));
+    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("┌"));
+    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┐"));
+    // NOTE: Clippy suggests using an iterator here, but if I want, say residues 600-680, then
+    // there are going to be 600 useless iterations. I imagine [s] is faster.
+    //
     for s in vb_top+1 .. vb_bottom {
         l = &mut seq_para[s];
-        let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("│"));
-        let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
     }
     l = &mut seq_para[vb_bottom-1];
     for c in vb_left+1 .. vb_right {
-        let _ = std::mem::replace(&mut (*l).spans[c], Span::raw("─"));
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
-    let _ = std::mem::replace(&mut (*l).spans[vb_left], Span::raw("└"));
-    let _ = std::mem::replace(&mut (*l).spans[vb_right-1], Span::raw("┘"));
+    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("└"));
+    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┘"));
 }
 
 /****************************************************************
