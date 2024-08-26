@@ -106,8 +106,6 @@ fn main() -> Result<()> {
 
     let app = App::new(fasta_file)?;
     let mut app_ui = UI::new(&app);
-    // TODO: either pass the options in a struct, or implement builder pattern for all fields.
-    app_ui.set_debug(cli.debug);
     if cli.no_scrollbars { app_ui.disable_scrollbars(); }
     if cli.no_colour { app_ui.set_monochrome(); }
     if cli.no_zoombox { app_ui.set_zoombox(false); }

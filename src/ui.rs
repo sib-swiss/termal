@@ -48,7 +48,6 @@ pub struct UI<'a> {
     colour_map: HashMap<char, Color>, 
     zoom_level: ZoomLevel,
     // What to show
-    show_debug_pane: bool, // TODO not used anymore -> rm all refs
     show_zoombox: bool,
     show_scrollbars: bool,
     top_line: u16,
@@ -73,7 +72,6 @@ impl<'a> UI<'a> {
             app,
             colour_map: color_scheme_lesk(),
             zoom_level: ZoomLevel::ZoomedIn,
-            show_debug_pane: false,
             show_zoombox: true,
             show_scrollbars: true,
             top_line: 0,
@@ -211,10 +209,6 @@ impl<'a> UI<'a> {
 
     pub fn v_ratio(&self) -> f64 {
         (self.seq_para_height() as f64 / self.app.num_seq() as f64) as f64
-    }
-
-    pub fn set_debug(&mut self, state: bool) {
-        self.show_debug_pane = state;
     }
 
     pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }
