@@ -546,7 +546,6 @@ For a given column:
 Miscellaneous Ideas
 ===================
 
-* A bottom-panel line for some "per-column" conservation metric
 * Make the labels panel part of a more general left pane, which could contain
   other "by-sequence" panes such as length and conservation (WRT consensus)
 * Reinstate the "blinky" consensus, at least optionally
@@ -556,6 +555,9 @@ TODO
 
 Urgent
 ------
+
+1. When the horizontal scrollbar is visible, pushing the labels pane all the way
+   to the right causes a panic.
 
 Normal
 ------

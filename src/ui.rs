@@ -58,11 +58,7 @@ pub struct UI<'a> {
     // possible that they need not be stored at all, as they can in principle be computed when the
     // layout is known.
     aln_pane_size: Option<Size>,
-    // Whole app
-    // TODO: instead of passing the frame's width and height separately, pass them as a single
-    // Option<Size>, just like aln_pane_size.
-    frame_width: Option<u16>,
-    frame_height: Option<u16>,
+    frame_size: Option<Size>,     // whole app
 }
 
 impl<'a> UI<'a> {
@@ -79,8 +75,7 @@ impl<'a> UI<'a> {
             label_pane_width: 15,     // Reasonable default, I'd say...
             bottom_pane_height: 5,
             aln_pane_size: None,
-            frame_width: None,
-            frame_height: None,
+            frame_size: None,
         }
     }
 
@@ -153,10 +148,10 @@ impl<'a> UI<'a> {
 
     pub fn widen_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
-        self.label_pane_width = if self.label_pane_width + amount < self.frame_width.unwrap() {
+        self.label_pane_width = if self.label_pane_width + amount < self.frame_size.unwrap().width {
             self.label_pane_width + amount
         } else {
-            self.frame_width.unwrap()
+            self.frame_size.unwrap().width
         }
     }
 

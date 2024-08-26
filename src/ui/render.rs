@@ -361,8 +361,22 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     ui.aln_pane_size = Some(layout_panes.sequence.as_size());
     // Handle resizing
     ui.adjust_seq_pane_position();
-    ui.frame_width = Some(f.size().width);
-    ui.frame_height = Some(f.size().height);
+    /* NOTE: the docs (https://docs.rs/ratatui/latest/ratatui/struct.Frame.html#method.area) say
+     * that ratatui::Frame::size is deprecated and that area() should be used instead, but I get a
+     * E0599 if I use area(). 
+
+    Versions:
+
+     * rustc 1.77.2 (25ef9e3d8 2024-04-09)
+
+     * Ratatui:
+       name = "ratatui"
+       version = "0.26.2"
+       source = "registry+https://github.com/rust-lang/crates.io-index"
+       checksum = "a564a852040e82671dc50a37d88f3aa83bbc690dfc6844cfe7a2591620206a80"
+    */
+    //ui.frame_size = Some(f.area().as_size());
+    ui.frame_size = Some(f.size().as_size());
 
     ui.assert_invariants();
 
