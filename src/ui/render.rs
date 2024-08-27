@@ -189,6 +189,48 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┘"));
 }
 
+// Draws the zoombox, but preserving aspect ratio
+//
+fn mark_zoombox_AR(seq_para: &mut [Line], ui: &UI) {
+
+    let ratio = ui.h_ratio().min(ui.v_ratio());
+
+    let vb_top:    usize = ((ui.top_line as f64) * ratio).round() as usize;
+    let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height()) as f64) * ratio).round() as usize;
+    // If h_a < h_p
+    if vb_bottom > ui.app.num_seq() as usize {
+        vb_bottom = ui.app.num_seq() as usize;
+    }
+
+    let vb_left:   usize = ((ui.leftmost_col as f64) * ratio).round() as usize;
+    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width()) as f64) * ratio).round() as usize;
+    // If w_a < w_p
+    if vb_right > ui.app.aln_len() as usize {
+        vb_right = ui.app.aln_len() as usize;
+    }
+    // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ratio);
+    ui.assert_invariants();
+
+    let mut l: &mut Line = &mut seq_para[vb_top];
+    for c in vb_left+1 .. vb_right {
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
+    }
+    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("┌"));
+    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┐"));
+
+     for l in seq_para.iter_mut().take(vb_bottom).skip(vb_top+1) {
+        let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
+     }
+         
+    l = &mut seq_para[vb_bottom-1];
+    for c in vb_left+1 .. vb_right {
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
+    }
+    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("└"));
+    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┘"));
+}
+
 /****************************************************************
 * Layout
 ****************************************************************/
@@ -286,6 +328,7 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
         }
         ZoomLevel::ZoomedOutAR(_) => {
             sequences = zoom_out_AR_seq_text(ui);
+            if ui.show_zoombox { mark_zoombox_AR(&mut sequences, ui); }
         }
     }
 
