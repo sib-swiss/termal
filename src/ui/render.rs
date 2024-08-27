@@ -1,4 +1,4 @@
-use log::debug;
+use std::cmp::min;
 
 use ratatui::{
     Frame,
@@ -7,6 +7,8 @@ use ratatui::{
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation,
         ScrollbarState},
 };
+
+use log::debug;
 
 use crate::{
     ui::{
@@ -36,6 +38,18 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
     let num_seq: usize = ui.app.num_seq() as usize;
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
+    for i in &retained_seqs_ndx {
+        ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
+    }
+
+    ztext
+}
+
+fn zoom_out_AR_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let ratio = ui.h_ratio().min(ui.v_ratio()); 
+    let mut ztext: Vec<Line> = Vec::new();
+    let num_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
     for i in &retained_seqs_ndx {
         ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
@@ -74,8 +88,33 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let seq_area_width: usize = (area.width - 2).into();  // -2 <- panel border
     let seq_area_height: usize = (area.height - 2).into(); // "
     let mut ztext: Vec<Line> = Vec::new();
+    debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
+    for i in &retained_seqs_ndx {
+        let seq: &String = &ui.app.alignment.sequences[*i];
+        let seq_chars: Vec<char> = seq.chars().collect();
+        let mut spans: Vec<Span> = Vec::new();
+        for j in &retained_cols_ndx {
+            let c: char = seq_chars[*j];
+            let span = Span::styled(c.to_string(),
+                                    *ui.colour_map.get(&c).unwrap());
+            spans.push(span);
+        }
+        ztext.push(Line::from(spans));
+    }
+
+    ztext
+}
+
+fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let ratio = ui.h_ratio().min(ui.v_ratio());
+    let num_retained_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
+    let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
+
+    let mut ztext: Vec<Line> = Vec::new();
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_retained_seq, ui.seq_para_height().into());
+    let retained_cols_ndx: Vec<usize> = every_nth(num_retained_cols, ui.seq_para_width().into());
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
@@ -109,7 +148,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     if vb_right > ui.app.aln_len() as usize {
         vb_right = ui.app.aln_len() as usize;
     }
-    debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ui.h_ratio());
+    // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ui.h_ratio());
     ui.assert_invariants();
 
     let mut l: &mut Line = &mut seq_para[vb_top];
@@ -223,7 +262,10 @@ fn compute_title(ui: &UI) -> String {
         ZoomLevel::ZoomedOut => {
             format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
         }
-        ZoomLevel::ZoomedOutAR => todo!()
+        ZoomLevel::ZoomedOutAR(_) => {
+            format!(" {} - {}s x {}c - fully zoomed out, preserving aspect ratio ",
+                ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
+        }
     };
 
     title
@@ -237,10 +279,14 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
             sequences = zoom_in_seq_text(ui);
         }
         ZoomLevel::ZoomedOut => {
+            // FIXME: ui knows its frame size (it has a frame_size member); furthemore the relevant
+            // dimension seems to be the ALIGNMENT PANEL's size, not the whole frame.
             sequences = zoom_out_seq_text(frame_size, ui);
             if ui.show_zoombox { mark_zoombox(&mut sequences, ui); }
         }
-        ZoomLevel::ZoomedOutAR => todo!()
+        ZoomLevel::ZoomedOutAR(_) => {
+            sequences = zoom_out_AR_seq_text(ui);
+        }
     }
 
     sequences
@@ -254,7 +300,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
         ZoomLevel::ZoomedOut => {
             zoom_out_lbl_text(ui)
         }
-        ZoomLevel::ZoomedOutAR => todo!()
+        ZoomLevel::ZoomedOutAR(_) => zoom_out_AR_lbl_text(ui),
     };
 
     labels
@@ -268,7 +314,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
         ZoomLevel::ZoomedOut => 0,
-        ZoomLevel::ZoomedOutAR => todo!(),
+        ZoomLevel::ZoomedOutAR(_) => 0,
     };
     let lbl_para = Paragraph::new(labels)
         .white()
@@ -280,7 +326,6 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 // TODO: the "sequences" pane should be called "alignment" pane.
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
-    /* Sequence pane */
     let title = compute_title(ui);
     let seq = compute_sequence_pane_text(f.size(), ui);
     //debug!("showing {} sequences", sequences.len());
@@ -290,7 +335,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
         .block(aln_block);
     f.render_widget(seq_para, aln_chunk);
     //f.render_widget(Paragraph::default(), layout_panes.sequence);
-    debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height().into()).len());
+    // debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height().into()).len());
 
     if ui.zoom_level == ZoomLevel::ZoomedIn
         && ui.show_scrollbars {
@@ -302,8 +347,8 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .content_length((ui.app.num_seq() - ui.seq_para_height() ).into())
                 .viewport_content_length((ui.seq_para_height() - 2).into())
                 .position(ui.top_line.into());
-            debug!("v_bar: {:#?}", v_scrollbar_state);
-            debug!("t_max: {}", ui.max_top_line());
+            // debug!("v_bar: {:#?}", v_scrollbar_state);
+            // debug!("t_max: {}", ui.max_top_line());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
                 .begin_symbol(None)
                 .end_symbol(None);
@@ -372,7 +417,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
-    debug!("seq pane size (w/ borders): {:?}", layout_panes.sequence.as_size());
+    // debug!("seq pane size (w/ borders): {:?}", layout_panes.sequence.as_size());
     /*
      * Many aspects of the UI depend on the alignment pane's dimensions, e.g. whether the whole
      * alignment fits in it, the horizontal and vertical ratios when zooming, the top line and

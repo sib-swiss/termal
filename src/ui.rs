@@ -23,11 +23,18 @@ use crate::{
     },
 };
 
+// TODO: this might not be needed after all
+#[derive(Clone,Copy,PartialEq)]
+enum Aspect {
+    Wide,
+    Tall
+}
+
 #[derive(Clone,Copy,PartialEq)]
 pub enum ZoomLevel {
     ZoomedIn,
     ZoomedOut,
-    ZoomedOutAR,
+    ZoomedOutAR(Aspect),
 }
 
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
@@ -182,19 +189,21 @@ impl<'a> UI<'a> {
         rel
     }
 
+    // TODO: is this accessor needed?
     pub fn zoom_level(&self) -> ZoomLevel { self.zoom_level }
 
     pub fn cycle_zoom(&mut self) {
-        // Don't zoom out if the whole aln fits on screen
-        if self.aln_wrt_seq_pane() == AlnWRTSeqPane::Fits {
-            self.zoom_level =  ZoomLevel::ZoomedIn;
-        } else {
-            self.zoom_level = match self.zoom_level {
-                ZoomLevel::ZoomedIn  => ZoomLevel::ZoomedOut,
-                ZoomLevel::ZoomedOut => ZoomLevel::ZoomedIn,
-                ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
-                // TODO: OUT -> OUT_AR
-            }
+        self.zoom_level = match self.zoom_level {
+            ZoomLevel::ZoomedIn => {
+                // ZoomedOut, unless alignment fits
+                if self.aln_wrt_seq_pane() == AlnWRTSeqPane::Fits {
+                    ZoomLevel::ZoomedIn
+                } else {
+                    ZoomLevel::ZoomedOut
+                }
+            },
+            ZoomLevel::ZoomedOut =>  ZoomLevel::ZoomedOutAR(Aspect::Wide),
+            ZoomLevel::ZoomedOutAR(_) => ZoomLevel::ZoomedIn,
         }
     }
 
@@ -310,8 +319,8 @@ impl<'a> UI<'a> {
     // Debugging
 
     pub fn assert_invariants(&self) {
-        debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width());
-        debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.seq_para_height());
+        // debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width());
+        // debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.seq_para_height());
         if self.seq_para_width() > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
