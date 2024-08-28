@@ -333,7 +333,7 @@ fn compute_title(ui: &UI) -> String {
     title
 }
 
-fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> {
+fn compute_aln_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let mut sequences: Vec<Line>;
 
     match ui.zoom_level {
@@ -385,12 +385,9 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
     f.render_widget(lbl_para, seq_chunk);
 }
 
-// TODO: the "sequences" pane should be called "alignment" pane.
-
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     let title = compute_title(ui);
-    let seq = compute_sequence_pane_text(f.size(), ui);
-    //debug!("showing {} sequences", sequences.len());
+    let seq = compute_aln_pane_text(f.size(), ui);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
