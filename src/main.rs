@@ -127,8 +127,7 @@ fn main() -> Result<()> {
                             // Down
                             KeyCode::Char('j') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_line_down(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_line_down(),
-                                _ => todo!(),
+                                ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR=> app_ui.scroll_zoombox_one_line_down(),
                             }
                             KeyCode::Char('J') => app_ui.scroll_one_screen_down(),
                             KeyCode::Char('G') => app_ui.jump_to_bottom(),
@@ -136,8 +135,7 @@ fn main() -> Result<()> {
                             // Up
                             KeyCode::Char('k') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_line_up(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_line_up(),
-                                _ => todo!(),
+                                ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => app_ui.scroll_zoombox_one_line_up(),
                             }
                             KeyCode::Char('K') => app_ui.scroll_one_screen_up(),
                             KeyCode::Char('g') => app_ui.jump_to_top(),
@@ -145,8 +143,7 @@ fn main() -> Result<()> {
                             // Right
                             KeyCode::Char('l') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_col_right(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_col_right(),
-                                _ => todo!(),
+                                ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => app_ui.scroll_zoombox_one_col_right(),
                             }
                             KeyCode::Char('L') => app_ui.scroll_one_screen_right(),
                             KeyCode::Char('$') => app_ui.jump_to_end(),
@@ -154,8 +151,7 @@ fn main() -> Result<()> {
                             // Left
                             KeyCode::Char('h') => match app_ui.zoom_level() {
                                 ZoomLevel::ZoomedIn => app_ui.scroll_one_col_left(),
-                                ZoomLevel::ZoomedOut => app_ui.scroll_zoombox_one_col_left(),
-                                _ => todo!(),
+                                ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => app_ui.scroll_zoombox_one_col_left(),
                             }
                             KeyCode::Char('H') => app_ui.scroll_one_screen_left(),
                             KeyCode::Char('^') => app_ui.jump_to_begin(),

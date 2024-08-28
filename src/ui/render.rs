@@ -1,27 +1,18 @@
 use std::cmp::min;
 
 use ratatui::{
-    Frame,
     prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
     style::Stylize,
-    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation,
-        ScrollbarState},
+    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
+    Frame,
 };
 
 use log::debug;
 
 use crate::{
-    ui::{
-        conservation::values_barchart,
-        AlnWRTSeqPane,
-    },
-    UI,
-    vec_f64_aux::{
-        normalize,
-        ones_complement,
-        product,
-    },
-    ZoomLevel,
+    ui::{conservation::values_barchart, AlnWRTSeqPane},
+    vec_f64_aux::{normalize, ones_complement, product},
+    ZoomLevel, UI,
 };
 
 /*****************************************************************
@@ -31,8 +22,12 @@ use crate::{
 *****************************************************************/
 
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    ui.app.alignment.headers.iter()
-        .map(|h| Line::from(h.clone())).collect()
+    ui.app
+        .alignment
+        .headers
+        .iter()
+        .map(|h| Line::from(h.clone()))
+        .collect()
 }
 
 fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
@@ -47,7 +42,7 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_AR_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let ratio = ui.h_ratio().min(ui.v_ratio()); 
+    let ratio = ui.h_ratio().min(ui.v_ratio());
     let mut ztext: Vec<Line> = Vec::new();
     let num_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
@@ -60,20 +55,27 @@ fn zoom_out_AR_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let top_i = ui.top_line as usize;
-    let bot_i = (ui.top_line+ui.seq_para_height()) as usize;
-    let lft_j = ui.leftmost_col as usize; 
-    let rgt_j = (ui.leftmost_col+ui.seq_para_width()) as usize;
+    let bot_i = (ui.top_line + ui.seq_para_height()) as usize;
+    let lft_j = ui.leftmost_col as usize;
+    let rgt_j = (ui.leftmost_col + ui.seq_para_width()) as usize;
 
     let mut text: Vec<Line> = Vec::new();
 
-    for i in top_i .. bot_i {
-        if i >= ui.app.num_seq().into() { break; } // if there is extra vertical space
+    for i in top_i..bot_i {
+        if i >= ui.app.num_seq().into() {
+            break;
+        } // if there is extra vertical space
         let mut spans: Vec<Span> = Vec::new();
-        for j in lft_j .. rgt_j {
-            if j >= ui.app.aln_len().into() { break; } // ", horizontal
+        for j in lft_j..rgt_j {
+            if j >= ui.app.aln_len().into() {
+                break;
+            } // ", horizontal
             let cur_seq_ref = &ui.app.alignment.sequences[i];
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
-            spans.push(Span::styled(cur_char.to_string(), *ui.colour_map.get(&cur_char).unwrap()));
+            spans.push(Span::styled(
+                cur_char.to_string(),
+                *ui.colour_map.get(&cur_char).unwrap(),
+            ));
         }
         text.push(Line::from(spans));
     }
@@ -85,7 +87,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
     // TODO: use UI members - seq_para_{width,height}
-    let seq_area_width: usize = (area.width - 2).into();  // -2 <- panel border
+    let seq_area_width: usize = (area.width - 2).into(); // -2 <- panel border
     let seq_area_height: usize = (area.height - 2).into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
@@ -97,8 +99,7 @@ fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in &retained_cols_ndx {
             let c: char = seq_chars[*j];
-            let span = Span::styled(c.to_string(),
-                                    *ui.colour_map.get(&c).unwrap());
+            let span = Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -121,8 +122,7 @@ fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in &retained_cols_ndx {
             let c: char = seq_chars[*j];
-            let span = Span::styled(c.to_string(),
-                                    *ui.colour_map.get(&c).unwrap());
+            let span = Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -134,101 +134,112 @@ fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
 //
 fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
-
-    let vb_top:    usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
-    let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
+    let zb_top: usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
+    let mut zb_bottom: usize =
+        (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
     // If h_a < h_p
-    if vb_bottom > ui.app.num_seq() as usize {
-        vb_bottom = ui.app.num_seq() as usize;
+    if zb_bottom > ui.app.num_seq() as usize {
+        zb_bottom = ui.app.num_seq() as usize;
     }
 
-    let vb_left:   usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
+    let zb_left: usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
+    let mut zb_right: usize =
+        (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
     // If w_a < w_p
-    if vb_right > ui.app.aln_len() as usize {
-        vb_right = ui.app.aln_len() as usize;
+    if zb_right > ui.app.aln_len() as usize {
+        zb_right = ui.app.aln_len() as usize;
     }
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ui.h_ratio());
     ui.assert_invariants();
 
-    let mut l: &mut Line = &mut seq_para[vb_top];
-    for c in vb_left+1 .. vb_right {
+    let mut l: &mut Line = &mut seq_para[zb_top];
+    for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
-    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("┌"));
-    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┐"));
-    
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("┌"));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┐"));
+
     // NOTE: Clippy suggests using an iterator here, but if I want, say, residues 600-680, then
     // there are going to be 600 useless iterations. I imagine indexing is faster, though
     // admittedly I did not benchmark it... except with my eye-o-meter, which indeed did not detect
     // any difference on a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz machine running WSL2, and
-    // a 144-column by 33-lines terminal. 
+    // a 144-column by 33-lines terminal.
 
     // mine
     /*
-    for s in vb_top+1 .. vb_bottom {
+    for s in zb_top+1 .. zb_bottom {
         l = &mut seq_para[s];
-        let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
-        let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[zb_right-1], Span::raw("│"));
     }
     */
 
     // Clippy
     // /*
-     for l in seq_para.iter_mut().take(vb_bottom).skip(vb_top+1) {
-        let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
-        let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
-     }
+    for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
+    }
     //*/
-         
-    l = &mut seq_para[vb_bottom-1];
-    for c in vb_left+1 .. vb_right {
+    l = &mut seq_para[zb_bottom - 1];
+    for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
-    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("└"));
-    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┘"));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("└"));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┘"));
 }
 
 // Draws the zoombox, but preserving aspect ratio
 //
 fn mark_zoombox_AR(seq_para: &mut [Line], ui: &UI) {
-
     let ratio = ui.h_ratio().min(ui.v_ratio());
+    debug!("[MZAR] ratio: {}", ratio);
 
-    let vb_top:    usize = ((ui.top_line as f64) * ratio).round() as usize;
-    let mut vb_bottom: usize = (((ui.top_line + ui.seq_para_height()) as f64) * ratio).round() as usize;
+    /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the number of
+     * retained sequences (which are in seq_para), and (ii) the alignment panel's height. */
+    let aln_para_height = min(seq_para.len() as u16, ui.seq_para_height());
+    debug!("[MZAR] aln para height: {}", aln_para_height);
+    let zb_top: usize = ((ui.top_line as f64) * ratio).round() as usize;
+    let mut zb_bottom: usize =
+        (((ui.top_line + ui.seq_para_height()) as f64) * ratio).round() as usize;
     // If h_a < h_p
-    if vb_bottom > ui.app.num_seq() as usize {
-        vb_bottom = ui.app.num_seq() as usize;
+    if zb_bottom > aln_para_height as usize {
+        zb_bottom = aln_para_height as usize;
     }
+    debug!("[MZAR] zb_top: {}, zb_bottom: {}", zb_top, zb_bottom);
 
-    let vb_left:   usize = ((ui.leftmost_col as f64) * ratio).round() as usize;
-    let mut vb_right:  usize = (((ui.leftmost_col + ui.seq_para_width()) as f64) * ratio).round() as usize;
+    /* IN AR mode, the width of the alignment paragraph is the smallest of (i) the number of
+     * retained columns, and (ii) the alignment panel's width. */
+    let aln_para_width = min((seq_para[0]).width() as u16, ui.seq_para_width());
+    let zb_left: usize = ((ui.leftmost_col as f64) * ratio).round() as usize;
+    let mut zb_right: usize =
+        (((ui.leftmost_col + ui.seq_para_width()) as f64) * ratio).round() as usize;
     // If w_a < w_p
-    if vb_right > ui.app.aln_len() as usize {
-        vb_right = ui.app.aln_len() as usize;
+    if zb_right > aln_para_width as usize {
+        zb_right = aln_para_width as usize;
     }
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ratio);
     ui.assert_invariants();
 
-    let mut l: &mut Line = &mut seq_para[vb_top];
-    for c in vb_left+1 .. vb_right {
+    let mut l: &mut Line = &mut seq_para[zb_top];
+    for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
-    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("┌"));
-    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┐"));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("┌"));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┐"));
 
-     for l in seq_para.iter_mut().take(vb_bottom).skip(vb_top+1) {
-        let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("│"));
-        let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("│"));
-     }
-         
-    l = &mut seq_para[vb_bottom-1];
-    for c in vb_left+1 .. vb_right {
+    for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
+    }
+
+    debug!("[MZAR] seq_para length: {} index: {}", seq_para.len(), zb_bottom-1);
+    l = &mut seq_para[zb_bottom - 1];
+    for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
-    let _ = std::mem::replace(&mut l.spans[vb_left], Span::raw("└"));
-    let _ = std::mem::replace(&mut l.spans[vb_right-1], Span::raw("┘"));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("└"));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┘"));
 }
 
 /****************************************************************
@@ -243,39 +254,34 @@ struct Panes {
 }
 
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
-    let constraints: Vec<Constraint> = vec![
-        Constraint::Fill(1),
-        Constraint::Max(ui.bottom_pane_height),
-    ];
-    let v_panes = Layout::new(
-            Direction::Vertical,
-            constraints)
-        .split(f.size());
+    let constraints: Vec<Constraint> =
+        vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)];
+    let v_panes = Layout::new(Direction::Vertical, constraints).split(f.size());
     let upper_panes = Layout::new(
-            Direction::Horizontal,
-            vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)])
-        .split(v_panes[0]);
+        Direction::Horizontal,
+        vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
+    )
+    .split(v_panes[0]);
     let lower_panes = Layout::new(
-            Direction::Horizontal,
-            vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)])
-        .split(v_panes[1]);
+        Direction::Horizontal,
+        vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
+    )
+    .split(v_panes[1]);
 
-   Panes {
-       labels: upper_panes[0],
-       sequence: upper_panes[1],
-       corner: lower_panes[0],
-       bottom: lower_panes[1],
-   }
+    Panes {
+        labels: upper_panes[0],
+        sequence: upper_panes[1],
+        corner: lower_panes[0],
+        bottom: lower_panes[1],
+    }
 }
 
 // Ticks and tick marks for bottom pane
 
 fn tick_marks(aln_length: usize) -> String {
     let mut ticks = String::with_capacity(aln_length);
-    for i in 0 .. aln_length {
-        ticks.push(
-            if i % 10 == 0 { '|' } else { ' ' }
-            );
+    for i in 0..aln_length {
+        ticks.push(if i % 10 == 0 { '|' } else { ' ' });
     }
 
     ticks
@@ -299,14 +305,28 @@ fn tick_position(aln_length: usize) -> String {
 fn compute_title(ui: &UI) -> String {
     let title: String = match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
-            format!(" {} - {}s x {}c ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
+            format!(
+                " {} - {}s x {}c ",
+                ui.app.filename,
+                ui.app.num_seq(),
+                ui.app.aln_len()
+            )
         }
         ZoomLevel::ZoomedOut => {
-            format!(" {} - {}s x {}c - fully zoomed out ", ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
+            format!(
+                " {} - {}s x {}c - fully zoomed out ",
+                ui.app.filename,
+                ui.app.num_seq(),
+                ui.app.aln_len()
+            )
         }
-        ZoomLevel::ZoomedOutAR(_) => {
-            format!(" {} - {}s x {}c - fully zoomed out, preserving aspect ratio ",
-                ui.app.filename, ui.app.num_seq(), ui.app.aln_len())
+        ZoomLevel::ZoomedOutAR => {
+            format!(
+                " {} - {}s x {}c - fully zoomed out, preserving aspect ratio ",
+                ui.app.filename,
+                ui.app.num_seq(),
+                ui.app.aln_len()
+            )
         }
     };
 
@@ -324,11 +344,15 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
             // FIXME: ui knows its frame size (it has a frame_size member); furthemore the relevant
             // dimension seems to be the ALIGNMENT PANEL's size, not the whole frame.
             sequences = zoom_out_seq_text(frame_size, ui);
-            if ui.show_zoombox { mark_zoombox(&mut sequences, ui); }
+            if ui.show_zoombox {
+                mark_zoombox(&mut sequences, ui);
+            }
         }
-        ZoomLevel::ZoomedOutAR(_) => {
+        ZoomLevel::ZoomedOutAR => {
             sequences = zoom_out_AR_seq_text(ui);
-            if ui.show_zoombox { mark_zoombox_AR(&mut sequences, ui); }
+            if ui.show_zoombox {
+                mark_zoombox_AR(&mut sequences, ui);
+            }
         }
     }
 
@@ -337,13 +361,9 @@ fn compute_sequence_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<
 
 fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let labels: Vec<Line> = match ui.zoom_level {
-        ZoomLevel::ZoomedIn => {
-            zoom_in_lbl_text(ui)
-        }
-        ZoomLevel::ZoomedOut => {
-            zoom_out_lbl_text(ui)
-        }
-        ZoomLevel::ZoomedOutAR(_) => zoom_out_AR_lbl_text(ui),
+        ZoomLevel::ZoomedIn => zoom_in_lbl_text(ui),
+        ZoomLevel::ZoomedOut => zoom_out_lbl_text(ui),
+        ZoomLevel::ZoomedOutAR => zoom_out_AR_lbl_text(ui),
     };
 
     labels
@@ -352,12 +372,11 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
     /* Labels pane */
     let labels = compute_labels_pane_text(ui);
-    let lbl_block = Block::default()
-        .borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
+    let lbl_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
         ZoomLevel::ZoomedOut => 0,
-        ZoomLevel::ZoomedOutAR(_) => 0,
+        ZoomLevel::ZoomedOutAR => 0,
     };
     let lbl_para = Paragraph::new(labels)
         .white()
@@ -373,21 +392,18 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     let seq = compute_sequence_pane_text(f.size(), ui);
     //debug!("showing {} sequences", sequences.len());
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-    let seq_para = Paragraph::new(seq)
-        .white()
-        .block(aln_block);
+    let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
     //f.render_widget(Paragraph::default(), layout_panes.sequence);
     // debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height().into()).len());
 
-    if ui.zoom_level == ZoomLevel::ZoomedIn
-        && ui.show_scrollbars {
-
+    if ui.zoom_level == ZoomLevel::ZoomedIn && ui.show_scrollbars {
         // vertical scrollbar
-          if (AlnWRTSeqPane::TooTall == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooTall))
-                && ui.seq_para_height() > 2 {
+        if (AlnWRTSeqPane::TooTall == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooTall))
+            && ui.seq_para_height() > 2
+        {
             let mut v_scrollbar_state = ScrollbarState::default()
-                .content_length((ui.app.num_seq() - ui.seq_para_height() ).into())
+                .content_length((ui.app.num_seq() - ui.seq_para_height()).into())
                 .viewport_content_length((ui.seq_para_height() - 2).into())
                 .position(ui.top_line.into());
             // debug!("v_bar: {:#?}", v_scrollbar_state);
@@ -397,43 +413,46 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .end_symbol(None);
             f.render_stateful_widget(
                 v_scrollbar,
-                aln_chunk.inner(&Margin{
+                aln_chunk.inner(&Margin {
                     vertical: 1,
                     horizontal: 0,
                 }),
-                &mut v_scrollbar_state);
+                &mut v_scrollbar_state,
+            );
         }
 
         // horizontal scrollbar
-      if (AlnWRTSeqPane::TooWide == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooWide))
-            && ui.seq_para_width() > 2 {
-        let mut h_scrollbar_state = ScrollbarState::default()
-            .content_length((ui.app.aln_len() - ui.seq_para_width() ).into())
-            .viewport_content_length((ui.seq_para_width() - 2).into())
-            .position(ui.leftmost_col.into());
-        let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
-            .begin_symbol(None)
-            .end_symbol(None);
-        f.render_stateful_widget(
-            h_scrollbar,
-            aln_chunk.inner(&Margin{
-                vertical: 0,
-                horizontal: 1,
-            }),
-            &mut h_scrollbar_state);
-      }
+        if (AlnWRTSeqPane::TooWide == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooWide))
+            && ui.seq_para_width() > 2
+        {
+            let mut h_scrollbar_state = ScrollbarState::default()
+                .content_length((ui.app.aln_len() - ui.seq_para_width()).into())
+                .viewport_content_length((ui.seq_para_width() - 2).into())
+                .position(ui.leftmost_col.into());
+            let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
+                .begin_symbol(None)
+                .end_symbol(None);
+            f.render_stateful_widget(
+                h_scrollbar,
+                aln_chunk.inner(&Margin {
+                    vertical: 0,
+                    horizontal: 1,
+                }),
+                &mut h_scrollbar_state,
+            );
+        }
     }
 }
 
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
-    let corner_block = Block::default()
-        .borders(Borders::LEFT | Borders::BOTTOM);
+    let corner_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
     let corner_text = Text::from(vec![
         "Consensus".into(),
         "Conservation".into(),
-        "".into(), "Position".into()]);
-    let corner_para = Paragraph::new(corner_text)
-        .block(corner_block);
+        "".into(),
+        "Position".into(),
+    ]);
+    let corner_para = Paragraph::new(corner_text).block(corner_block);
     f.render_widget(corner_para, corner_chunk);
 }
 
@@ -442,11 +461,10 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 
     let btm_text: Vec<Line> = vec![
         Line::from(ui.app.alignment.consensus.clone()),
-        Line::from(
-            values_barchart(&product(
-                    &ui.app.alignment.densities,
-                    &ones_complement(&normalize(&ui.app.alignment.entropies))
-            ))),
+        Line::from(values_barchart(&product(
+            &ui.app.alignment.densities,
+            &ones_complement(&normalize(&ui.app.alignment.entropies)),
+        ))),
         Line::from(tick_marks(ui.app.aln_len() as usize)),
         Line::from(tick_position(ui.app.aln_len() as usize)),
     ];
@@ -471,7 +489,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     ui.adjust_seq_pane_position();
     /* NOTE: the docs (https://docs.rs/ratatui/latest/ratatui/struct.Frame.html#method.area) say
      * that ratatui::Frame::size is deprecated and that area() should be used instead, but I get a
-     * E0599 if I use area(). 
+     * E0599 if I use area().
 
     Versions:
 
@@ -502,8 +520,10 @@ pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
     if n >= l {
         (0..l).collect()
     } else {
-        let step: f32 = (l-1) as f32 / (n-1) as f32;
-        let r: Vec<usize> = (0..n).map(|e| ((e as f32) * step).round() as usize).collect();
+        let step: f32 = (l - 1) as f32 / (n - 1) as f32;
+        let r: Vec<usize> = (0..n)
+            .map(|e| ((e as f32) * step).round() as usize)
+            .collect();
         r
     }
 }
@@ -514,21 +534,21 @@ mod tests {
 
     #[test]
     fn test_every_nth_1() {
-        assert_eq!(vec![0,4,8], every_nth(9,3));
+        assert_eq!(vec![0, 4, 8], every_nth(9, 3));
     }
 
     #[test]
     fn test_every_nth_2() {
-        assert_eq!(vec![0,5,9], every_nth(10,3));
+        assert_eq!(vec![0, 5, 9], every_nth(10, 3));
     }
 
     #[test]
     fn test_every_nth_3() {
-        assert_eq!(vec![0,1,2,3,4], every_nth(5,5));
+        assert_eq!(vec![0, 1, 2, 3, 4], every_nth(5, 5));
     }
 
     #[test]
     fn test_every_nth_4() {
-        assert_eq!(vec![0,1,2,3,4], every_nth(5,10));
+        assert_eq!(vec![0, 1, 2, 3, 4], every_nth(5, 10));
     }
 }

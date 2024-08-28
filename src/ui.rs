@@ -23,18 +23,11 @@ use crate::{
     },
 };
 
-// TODO: this might not be needed after all
-#[derive(Clone,Copy,PartialEq)]
-enum Aspect {
-    Wide,
-    Tall
-}
-
 #[derive(Clone,Copy,PartialEq)]
 pub enum ZoomLevel {
     ZoomedIn,
     ZoomedOut,
-    ZoomedOutAR(Aspect),
+    ZoomedOutAR,
 }
 
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
@@ -202,8 +195,8 @@ impl<'a> UI<'a> {
                     ZoomLevel::ZoomedOut
                 }
             },
-            ZoomLevel::ZoomedOut =>  ZoomLevel::ZoomedOutAR(Aspect::Wide),
-            ZoomLevel::ZoomedOutAR(_) => ZoomLevel::ZoomedIn,
+            ZoomLevel::ZoomedOut =>  ZoomLevel::ZoomedOutAR,
+            ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
         }
     }
 
