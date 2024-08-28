@@ -83,12 +83,11 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     text
 }
 
-fn zoom_out_seq_text<'a>(area: Rect, ui: &UI) -> Vec<Line<'a>> {
+fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
-    // TODO: use UI members - seq_para_{width,height}
-    let seq_area_width: usize = (area.width - 2).into(); // -2 <- panel border
-    let seq_area_height: usize = (area.height - 2).into(); // "
+    let seq_area_width: usize = ui.seq_para_width().into(); 
+    let seq_area_height: usize = ui.seq_para_height().into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
@@ -341,9 +340,7 @@ fn compute_aln_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> 
             sequences = zoom_in_seq_text(ui);
         }
         ZoomLevel::ZoomedOut => {
-            // FIXME: ui knows its frame size (it has a frame_size member); furthemore the relevant
-            // dimension seems to be the ALIGNMENT PANEL's size, not the whole frame.
-            sequences = zoom_out_seq_text(frame_size, ui);
+            sequences = zoom_out_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox(&mut sequences, ui);
             }
