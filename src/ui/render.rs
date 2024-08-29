@@ -10,7 +10,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{conservation::values_barchart, AlnWRTSeqPane},
+    ui::{color_scheme::salmon, conservation::values_barchart, AlnWRTSeqPane},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -468,7 +468,12 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .alignment
         .consensus
         .chars()
-        .map(|c| Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap_or(&Color::White)))
+        .map(|c| {
+            Span::styled(
+                c.to_string(),
+                *ui.colour_map.get(&c).unwrap_or(&Color::White),
+            )
+        })
         .collect();
 
     let btm_text: Vec<Line> = vec![
@@ -476,7 +481,8 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         Line::from(values_barchart(&product(
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
-        ))),
+        )))
+        .style(salmon),
         Line::from(tick_marks(ui.app.aln_len() as usize)),
         Line::from(tick_position(ui.app.aln_len() as usize)),
     ];

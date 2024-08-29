@@ -2,9 +2,12 @@ use std::collections::HashMap;
 
 use ratatui::prelude::Color;
 
-// NOTE: it it turns out that these hash maps are not efficient (didn't benchmark yet), we might
-// eant to look at perfect hash functions - see e.g https://crates.io/crates/phf
+// NOTE: if it turns out that these hash maps are not efficient (didn't benchmark yet), we might
+// want to look at perfect hash functions - see e.g https://crates.io/crates/phf
 
+
+pub const orange: Color = Color::Rgb(255, 165, 0);
+pub const salmon: Color = Color::Rgb(250, 128, 114);
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
@@ -56,7 +59,6 @@ pub fn color_scheme_monochrome() -> HashMap<char, Color> {
 }
 
 pub fn color_scheme_lesk() -> HashMap<char, Color> {
-    let orange = Color::Rgb(255, 165, 0);
     HashMap::from([
         ('G', orange),
         ('A', orange),
