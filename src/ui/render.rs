@@ -1,7 +1,7 @@
 use std::cmp::min;
 
 use ratatui::{
-    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
+    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
@@ -91,8 +91,8 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let seq_area_height: usize = ui.seq_para_height().into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
@@ -110,12 +110,15 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
 fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let ratio = ui.h_ratio().min(ui.v_ratio());
+    let num_seq: usize = ui.app.num_seq() as usize;
+    let aln_len: usize = ui.app.aln_len() as usize;
     let num_retained_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
     let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
 
     let mut ztext: Vec<Line> = Vec::new();
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_retained_seq, ui.seq_para_height().into());
-    let retained_cols_ndx: Vec<usize> = every_nth(num_retained_cols, ui.seq_para_width().into());
+    // This seems wrong - should sample from the _whole aln_
+    let retained_cols_ndx: Vec<usize> = every_nth(aln_len, num_retained_cols);
+    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, num_retained_seq);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
@@ -460,10 +463,18 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
     f.render_widget(corner_para, corner_chunk);
 }
 
+fn mark_consensus_zb_pos(consensus: &mut [Span], retained_pos: &[usize]) {
+    let highlight = Style::default().reversed();
+    for pos in retained_pos {
+        let retained_span = consensus[*pos].clone().patch_style(highlight);
+        let _ = std::mem::replace(&mut consensus[*pos], retained_span);
+    }
+}
+
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
 
-    let coloured_consensus: Vec<Span> = ui
+    let mut coloured_consensus: Vec<Span> = ui
         .app
         .alignment
         .consensus
@@ -475,6 +486,15 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             )
         })
         .collect();
+
+    if ZoomLevel::ZoomedIn != ui.zoom_level {
+        let aln_len: usize = ui.app.aln_len() as usize;
+        let seq_area_width: usize = ui.seq_para_width().into();
+        let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
+
+        mark_consensus_zb_pos(&mut coloured_consensus,
+            &retained_cols_ndx);
+    }
 
     let btm_text: Vec<Line> = vec![
         Line::from(coloured_consensus),
