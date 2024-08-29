@@ -1,7 +1,7 @@
 use std::cmp::min;
 
 use ratatui::{
-    prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
+    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
@@ -71,6 +71,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
                 break;
             } // ", horizontal
             let cur_seq_ref = &ui.app.alignment.sequences[i];
+            // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(
                 cur_char.to_string(),
@@ -86,7 +87,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
-    let seq_area_width: usize = ui.seq_para_width().into(); 
+    let seq_area_width: usize = ui.seq_para_width().into();
     let seq_area_height: usize = ui.seq_para_height().into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
@@ -232,7 +233,11 @@ fn mark_zoombox_AR(seq_para: &mut [Line], ui: &UI) {
         let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
     }
 
-    debug!("[MZAR] seq_para length: {} index: {}", seq_para.len(), zb_bottom-1);
+    debug!(
+        "[MZAR] seq_para length: {} index: {}",
+        seq_para.len(),
+        zb_bottom - 1
+    );
     l = &mut seq_para[zb_bottom - 1];
     for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
@@ -403,6 +408,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
             // debug!("v_bar: {:#?}", v_scrollbar_state);
             // debug!("t_max: {}", ui.max_top_line());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+                .style(Color::Cyan)
                 .begin_symbol(None)
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -424,6 +430,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .viewport_content_length((ui.seq_para_width() - 2).into())
                 .position(ui.leftmost_col.into());
             let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
+                .style(Color::Cyan)
                 .begin_symbol(None)
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -453,8 +460,16 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
 
+    let coloured_consensus: Vec<Span> = ui
+        .app
+        .alignment
+        .consensus
+        .chars()
+        .map(|c| Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap_or(&Color::White)))
+        .collect();
+
     let btm_text: Vec<Line> = vec![
-        Line::from(ui.app.alignment.consensus.clone()),
+        Line::from(coloured_consensus),
         Line::from(values_barchart(&product(
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),

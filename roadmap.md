@@ -549,6 +549,8 @@ Miscellaneous Ideas
 * Make the labels panel part of a more general left pane, which could contain
   other "by-sequence" panes such as length and conservation (WRT consensus)
 * Reinstate the "blinky" consensus, at least optionally
+* In the zoomed-out modes, highlight which residues in the consensus are shown
+  in the zoom box.
 
 TODO
 ====
@@ -556,11 +558,15 @@ TODO
 Urgent
 ------
 
-1. When the horizontal scrollbar is visible, pushing the labels pane all the way
-   to the right causes a panic.
-
 Normal
 ------
+
+1. [ ] Color the scrollbars and conservation metric
+
+1. [x] Apply color scheme to consensus sequence
+
+1. [ ] When the horizontal scrollbar is visible, pushing the labels pane all the
+   way to the right (admittedly not a very frequent situation) causes a panic.
 
 1. [x] Disable right (resp. bottom) scrollbar for alignments that are short
    (resp. narrow) enough to fit. Test on `./data/{tall,wide}.msa`
