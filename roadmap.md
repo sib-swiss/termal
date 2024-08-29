@@ -549,8 +549,6 @@ Miscellaneous Ideas
 * Make the labels panel part of a more general left pane, which could contain
   other "by-sequence" panes such as length and conservation (WRT consensus)
 * Reinstate the "blinky" consensus, at least optionally
-* In the zoomed-out modes, highlight which residues in the consensus are shown
-  in the zoom box.
 
 TODO
 ====
@@ -558,10 +556,24 @@ TODO
 Urgent
 ------
 
+1. [ ] Highlighting of retained columns (those in the zoombox) still doesn't
+   work for "tall" alignments in AR mode - try with `tall.msa`: in zoomed-out
+   mode, the box is as wide as the complete sequence (namely, 41 residues), and
+   accordingly all 41 positions in the consensus are (correctly) highlighted; in
+   AR mode, the box is about 1/4 the width of the alignment (11 residues) , but
+   all consensus residues are still highlighted (there should only be 11 (give
+   or take 1, depending on rounding). NOTE: this depends on screen size, of
+   course.
+
 Normal
 ------
 
-1. [ ] Color the scrollbars and conservation metric
+1. [x] In the zoomed-out modes, highlight which residues in the consensus are
+   shown in the zoom box. => Tried several styles, the best IMHO is reverse
+   video. This was also very useful in confirming that the sampling was wrong in
+   AR mode - something I had suspected but couldn't quite convince myself of.
+
+1. [x] Color the scrollbars and conservation metric
 
 1. [x] Apply color scheme to consensus sequence
 
@@ -571,10 +583,12 @@ Normal
 1. [x] Disable right (resp. bottom) scrollbar for alignments that are short
    (resp. narrow) enough to fit. Test on `./data/{tall,wide}.msa`
 
-1. [ ] Use `Option` for _all_ UI fields that cannot be initialized on
-   construction, e.g. like `label_pane_width`. This applies e.g. to  
+1. [x] Use `Option` for _all_ and _only_ UI fields that cannot be initialized on
+   construction, e.g. like `frame_size` (which depends on the terminal size) but
+   not `label_pane_width` (which can be given a default (currently 15)). This
+   applies e.g. to  
 
-1. [.] Refactor long functions, especially `ui()` -> New module `render`.
+1. [x] Refactor long functions, especially `ui()` -> New module `render`.
 
 1. [x] Add an option to disable scrollbars, so that pre-scrollbar tests don't
    fail.
@@ -583,6 +597,7 @@ Normal
    the whole alignment. They should NOT be shown when in zoomed-out mode, as the
    zoom box already carries the same information.
    * [x] vertical scrollbar +- ok.
+   * [x] horizontal scrollbar +- ok.
 
 1. [x] Add labels for the bottom panel (Consensus, etc.) in the corner panel.
 
@@ -646,9 +661,9 @@ Normal
 1. [x] Add tick marks to the bottom panel (every 10th residue); zoomed-in only
    for now. 
 
-1. [x] Show the bottom panel (for now, fixed-width).
+1. [x] Show the bottom panel (for now, fixed-height).
 
-1. [x] Allow `<` and `>`to set the size of the label pane
+1. [x] Allow `<` and `>`to adjust the size of the label pane
 
 1. [x] Make label pane work in zoomed-out mode.
 
@@ -664,9 +679,9 @@ Normal
    the original problem though, so restoring simple variables for h_ratio and
    v_ratio is not off the table).
 
-1. [x] Represent the view port in zoomed-out mode.
+1. [x] Represent the zoom box in zoomed-out mode.
 
-1. [ ] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
+1. [x] UI-related variables (top line, zoom ratio, etc.) should go in ...UI (not
    App). In fact, the "App" structure does not really seem to be useful, at
    least not as long as the alignment is read-only. We'll keep it because later
    on we may add functions that _change_ the alignment, and that should not be
@@ -687,12 +702,14 @@ Normal
 1. [x] Provide a monochrome mode to simplify tests with Expect (otherwise I'll have
    to deal with ANSI colour sequences for _every_ residue)
 
-1. [x] CLI args: now uses Clap; may specify fixed height and width.
+1. [x] CLI args: now uses Clap; may specify fixed height and width (useful for
+   testing with Expect)..
 
-1. [x] Enabble toggling between zoomed-in and zoomed-out, using key 'z'.
+1. [x] Enable toggling between zoomed-in and zoomed-out, using key 'z'.
 
 1. [x] See about computing a "summary" screen. This should toggle between
-   summary and residue views.
+   summary and residue views. => Eventually, this was named the ZoomedOut mode
+   (or "level")..
    * [x] implement a "every-nth" function that selects _n_ indices out of _l_ so as
      to spread them as evenly as possible. This will be used to select sequences
      and columns for the zoom-out.
@@ -718,7 +735,7 @@ Normal
 1. [x] Try constructing Paragraph only from the parts of the sequences that have
    to be displayed --- this should avoid `clone()`s.
 
-1. [ ] Try putting the whole alignment into a Paragraph upfront, then scrolling
+1. [-] Try putting the whole alignment into a Paragraph upfront, then scrolling
    it into position => Not sure if this is possible. The constructors for Span,
    Line, and Paragraph all seem to consume their arguments; I tried WidgetRefs
    and StatefulWidgetRefs, to no avail.
@@ -730,7 +747,7 @@ Normal
 1. [x] Prevent scrolling down (right) if the bottom line (rightmost column) is
    visible.
 
-1. [x] Prevent scrolling past the top or left margins (corrdinates become
+1. [x] Prevent scrolling past the top or left margins (coordinates become
    negative, which causes a panic as they are usize).
 
 1. [x] See if using a separate `ui()` function might solve the closure problem.
