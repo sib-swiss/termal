@@ -409,6 +409,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
             // debug!("t_max: {}", ui.max_top_line());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
                 .style(Color::Cyan)
+                .thumb_style(Color::Cyan)
                 .begin_symbol(None)
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -432,6 +433,8 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
             let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
                 .style(Color::Cyan)
                 .begin_symbol(None)
+                .thumb_style(Color::Cyan)
+                .thumb_symbol("🬹")
                 .end_symbol(None);
             f.render_stateful_widget(
                 h_scrollbar,
