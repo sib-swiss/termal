@@ -164,6 +164,12 @@ fn main() -> Result<()> {
 
                             // Zoom
                             KeyCode::Char('z') => app_ui.cycle_zoom(),
+                            // Since there are 3 zoom levels, cycling twice amounts to cycling
+                            // backwards.
+                            KeyCode::Char('Z') => {
+                                app_ui.cycle_zoom();
+                                app_ui.cycle_zoom();
+                            }
 
                             // Exit
                             KeyCode::Char('q') => break,
