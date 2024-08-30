@@ -99,6 +99,7 @@ fn retained_col_ndx(ui: &UI) -> Vec<usize> {
 }
 
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    // TODO rm unneeded vars when retained_col_ndx(), etc. are shown to work.
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
     let seq_area_width: usize = ui.seq_para_width().into();
@@ -137,8 +138,8 @@ fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
-        for j in &retained_cols_ndx {
-            let c: char = seq_chars[*j];
+        for j in retained_col_ndx(ui) {
+            let c: char = seq_chars[j];
             let span = Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap());
             spans.push(span);
         }
