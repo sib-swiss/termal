@@ -84,6 +84,20 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     text
 }
 
+fn retained_col_ndx(ui: &UI) -> Vec<usize> {
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            panic!("should not be called in zoomed-in mode")
+        }
+        ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.seq_para_width().into()),
+        ZoomLevel::ZoomedOutAR => {
+            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
+            every_nth(ui.app.aln_len() as usize, num_retained_cols)
+        }
+    }
+}
+
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
@@ -97,8 +111,8 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let seq: &String = &ui.app.alignment.sequences[*i];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
-        for j in &retained_cols_ndx {
-            let c: char = seq_chars[*j];
+        for j in retained_col_ndx(ui) {
+            let c: char = seq_chars[j];
             let span = Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap());
             spans.push(span);
         }
@@ -490,8 +504,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         let seq_area_width: usize = ui.seq_para_width().into();
         let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
 
-        mark_consensus_zb_pos(&mut coloured_consensus,
-            &retained_cols_ndx);
+        mark_consensus_zb_pos(&mut coloured_consensus, &retained_cols_ndx);
     }
 
     let btm_text: Vec<Line> = vec![
