@@ -503,7 +503,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     if ZoomLevel::ZoomedIn != ui.zoom_level {
         let aln_len: usize = ui.app.aln_len() as usize;
         let seq_area_width: usize = ui.seq_para_width().into();
-        let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
+        let retained_cols_ndx = retained_col_ndx(ui);
 
         mark_consensus_zb_pos(&mut coloured_consensus, &retained_cols_ndx);
     }
