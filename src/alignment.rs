@@ -1,7 +1,3 @@
-// NOTE the gotcha: declaring the module in this file (only) results in an unresolved import.
-// Declaring it in main.rs, i.e. at the crate root, makes it "visible" to the whole crate.
-//
-//mod vec_f64_aux;
 use std::collections::HashMap;
 
 use rasta::FastaFile;
@@ -254,7 +250,7 @@ mod tests {
 
     #[test]
     fn test_to_freq_distrib() {
-        let ε = 0.001;
+        let eps = 0.001;
         let counts: ResidueCounts = HashMap::from([
             ('K', 3),
             ('L', 3),
@@ -262,34 +258,34 @@ mod tests {
             ('-', 6),
         ]);
         let rfreqs = to_freq_distrib(&counts);
-        assert_relative_eq!(0.25, *rfreqs.get(&'K').unwrap(), epsilon = ε);
-        assert_relative_eq!(0.25, *rfreqs.get(&'L').unwrap(), epsilon = ε);
-        assert_relative_eq!(0.5, *rfreqs.get(&'G').unwrap(), epsilon = ε);
+        assert_relative_eq!(0.25, *rfreqs.get(&'K').unwrap(), epsilon = eps);
+        assert_relative_eq!(0.25, *rfreqs.get(&'L').unwrap(), epsilon = eps);
+        assert_relative_eq!(0.5, *rfreqs.get(&'G').unwrap(), epsilon = eps);
     }
 
     #[test]
     fn test_entropy_1() {
-        let ε = 0.00001;
+        let eps = 0.00001;
         let distrib: ResidueDistribution = ResidueDistribution::from([('A', 1.0)]);
-        assert_relative_eq!(0.0, entropy(&distrib), epsilon = ε);
+        assert_relative_eq!(0.0, entropy(&distrib), epsilon = eps);
     }
 
     #[test]
     fn test_entropy_2() {
-        let ε = 0.00001;
+        let eps = 0.00001;
         let distrib: ResidueDistribution = ResidueDistribution::from([
             ('A', 0.5), ('F', 0.5),
         ]);
-        assert_relative_eq!(0.6931471805599453, entropy(&distrib), epsilon = ε);
+        assert_relative_eq!(0.6931471805599453, entropy(&distrib), epsilon = eps);
     }
 
     #[test]
     fn test_entropy_3() {
-        let ε = 0.00001;
+        let eps = 0.00001;
         let distrib: ResidueDistribution = ResidueDistribution::from([
             ('A', 0.5), ('F', 0.25), ('T', 0.25)
         ]);
-        assert_relative_eq!(1.0397207708399179, entropy(&distrib), epsilon = ε);
+        assert_relative_eq!(1.0397207708399179, entropy(&distrib), epsilon = eps);
     }
 
     #[test]
@@ -297,11 +293,11 @@ mod tests {
         let fasta2 = read_fasta_file("data/test-cons.fas").unwrap();
         let aln2 = Alignment::new(fasta2);
         let entrs = entropies(&aln2.sequences);
-        let ε = 0.001;
-        assert_relative_eq!(0.0,    entrs[0], epsilon = ε);
-        assert_relative_eq!(0.4505, entrs[1], epsilon = ε);
-        assert_relative_eq!(1.5607, entrs[2], epsilon = ε);
-        assert_relative_eq!(0.6365, entrs[3], epsilon = ε);
+        let eps = 0.001;
+        assert_relative_eq!(0.0,    entrs[0], epsilon = eps);
+        assert_relative_eq!(0.4505, entrs[1], epsilon = eps);
+        assert_relative_eq!(1.5607, entrs[2], epsilon = eps);
+        assert_relative_eq!(0.6365, entrs[3], epsilon = eps);
     }
 
     #[test]

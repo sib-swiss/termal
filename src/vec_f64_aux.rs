@@ -18,6 +18,7 @@ pub fn product(v1: &[f64], v2: &[f64]) -> Vec<f64> {
     v1.iter().zip(v2).map(|(v, w)| v * w).collect()
 }
 
+#[cfg(test)]
 mod test {
     
     use approx::assert_relative_eq;
