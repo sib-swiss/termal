@@ -29,7 +29,8 @@ pub fn values_barchart(values: &Vec<f64>) -> String {
 }
 
 mod test {
-use crate::ui::conservation::values_barchart;
+
+    use crate::ui::conservation::values_barchart;
 
     #[test]
     fn test_values_barchart() {

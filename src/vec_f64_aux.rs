@@ -19,12 +19,11 @@ pub fn product(v1: &[f64], v2: &[f64]) -> Vec<f64> {
 }
 
 mod test {
+    
     use approx::assert_relative_eq;
-    use crate::vec_f64_aux::{
-        normalize,
-        ones_complement,
-        product,
-    };
+    use crate::vec_f64_aux::product;
+    use crate::vec_f64_aux::ones_complement;
+    use crate::vec_f64_aux::normalize;
 
     #[test]
     fn test_normalize_1() {

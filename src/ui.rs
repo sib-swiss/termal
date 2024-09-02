@@ -6,7 +6,6 @@ use std::collections::HashMap;
 
 use bitflags::bitflags;
 
-use log::{debug};
 
 use ratatui::{
     layout::Size,
