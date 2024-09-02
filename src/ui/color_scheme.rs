@@ -6,8 +6,8 @@ use ratatui::prelude::Color;
 // want to look at perfect hash functions - see e.g https://crates.io/crates/phf
 
 
-pub const orange: Color = Color::Rgb(255, 165, 0);
-pub const salmon: Color = Color::Rgb(250, 128, 114);
+pub const ORANGE: Color = Color::Rgb(255, 165, 0);
+pub const SALMON: Color = Color::Rgb(250, 128, 114);
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
@@ -60,10 +60,10 @@ pub fn color_scheme_monochrome() -> HashMap<char, Color> {
 
 pub fn color_scheme_lesk() -> HashMap<char, Color> {
     HashMap::from([
-        ('G', orange),
-        ('A', orange),
-        ('S', orange),
-        ('T', orange),
+        ('G', ORANGE),
+        ('A', ORANGE),
+        ('S', ORANGE),
+        ('T', ORANGE),
         ('C', Color::Green),
         ('V', Color::Green),
         ('I', Color::Green),
@@ -80,10 +80,10 @@ pub fn color_scheme_lesk() -> HashMap<char, Color> {
         ('E', Color::Red),
         ('K', Color::Blue),
         ('R', Color::Blue),
-        ('g', orange),
-        ('a', orange),
-        ('s', orange),
-        ('t', orange),
+        ('g', ORANGE),
+        ('a', ORANGE),
+        ('s', ORANGE),
+        ('t', ORANGE),
         ('c', Color::Green),
         ('v', Color::Green),
         ('i', Color::Green),

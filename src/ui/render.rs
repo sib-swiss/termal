@@ -10,7 +10,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{color_scheme::salmon, conservation::values_barchart, AlnWRTSeqPane},
+    ui::{color_scheme::SALMON, conservation::values_barchart, AlnWRTSeqPane},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -41,7 +41,7 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn zoom_out_AR_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+fn zoom_out_ar_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let ratio = ui.h_ratio().min(ui.v_ratio());
     let mut ztext: Vec<Line> = Vec::new();
     let num_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
@@ -101,12 +101,8 @@ fn retained_col_ndx(ui: &UI) -> Vec<usize> {
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     // TODO rm unneeded vars when retained_col_ndx(), etc. are shown to work.
     let num_seq: usize = ui.app.num_seq() as usize;
-    let aln_len: usize = ui.app.aln_len() as usize;
-    let seq_area_width: usize = ui.seq_para_width().into();
     let seq_area_height: usize = ui.seq_para_height().into(); // "
     let mut ztext: Vec<Line> = Vec::new();
-    debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
-    let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
@@ -123,16 +119,12 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let ratio = ui.h_ratio().min(ui.v_ratio());
     let num_seq: usize = ui.app.num_seq() as usize;
-    let aln_len: usize = ui.app.aln_len() as usize;
     let num_retained_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
-    let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
 
     let mut ztext: Vec<Line> = Vec::new();
-    // This seems wrong - should sample from the _whole aln_
-    let retained_cols_ndx: Vec<usize> = every_nth(aln_len, num_retained_cols);
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, num_retained_seq);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
@@ -209,7 +201,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 
 // Draws the zoombox, but preserving aspect ratio
 //
-fn mark_zoombox_AR(seq_para: &mut [Line], ui: &UI) {
+fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
     let ratio = ui.h_ratio().min(ui.v_ratio());
     debug!("[MZAR] ratio: {}", ratio);
 
@@ -355,7 +347,7 @@ fn compute_title(ui: &UI) -> String {
     title
 }
 
-fn compute_aln_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> {
+fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let mut sequences: Vec<Line>;
 
     match ui.zoom_level {
@@ -369,9 +361,9 @@ fn compute_aln_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> 
             }
         }
         ZoomLevel::ZoomedOutAR => {
-            sequences = zoom_out_AR_seq_text(ui);
+            sequences = zoom_out_ar_seq_text(ui);
             if ui.show_zoombox {
-                mark_zoombox_AR(&mut sequences, ui);
+                mark_zoombox_ar(&mut sequences, ui);
             }
         }
     }
@@ -383,7 +375,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let labels: Vec<Line> = match ui.zoom_level {
         ZoomLevel::ZoomedIn => zoom_in_lbl_text(ui),
         ZoomLevel::ZoomedOut => zoom_out_lbl_text(ui),
-        ZoomLevel::ZoomedOutAR => zoom_out_AR_lbl_text(ui),
+        ZoomLevel::ZoomedOutAR => zoom_out_ar_lbl_text(ui),
     };
 
     labels
@@ -407,7 +399,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     let title = compute_title(ui);
-    let seq = compute_aln_pane_text(f.size(), ui);
+    let seq = compute_aln_pane_text(ui);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
@@ -501,11 +493,8 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .collect();
 
     if ZoomLevel::ZoomedIn != ui.zoom_level {
-        let aln_len: usize = ui.app.aln_len() as usize;
-        let seq_area_width: usize = ui.seq_para_width().into();
-        let retained_cols_ndx = retained_col_ndx(ui);
-
-        mark_consensus_zb_pos(&mut coloured_consensus, &retained_cols_ndx);
+        mark_consensus_zb_pos(&mut coloured_consensus,
+            &retained_col_ndx(ui));
     }
 
     let btm_text: Vec<Line> = vec![
@@ -514,7 +503,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
         )))
-        .style(salmon),
+        .style(SALMON),
         Line::from(tick_marks(ui.app.aln_len() as usize)),
         Line::from(tick_position(ui.app.aln_len() as usize)),
     ];
