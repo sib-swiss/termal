@@ -21,6 +21,38 @@ use crate::{
  * for all zoom levels
 *****************************************************************/
 
+// Indices of columns retained in the zoomed-out and zoomed-out-AR modes.
+fn retained_col_ndx(ui: &UI) -> Vec<usize> {
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            panic!("should not be called in zoomed-in mode")
+        }
+        ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.seq_para_width().into()),
+        ZoomLevel::ZoomedOutAR => {
+            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let aln_len = ui.app.aln_len();
+            let num_retained_cols: usize = (aln_len as f64 * ratio).round() as usize;
+            every_nth(aln_len as usize, num_retained_cols)
+        }
+    }
+}
+
+// Indices of sequences retained in the zoomed-out and zoomed-out-AR modes.
+fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            panic!("should not be called in zoomed-in mode")
+        }
+        ZoomLevel::ZoomedOut => every_nth(ui.app.num_seq() as usize, ui.seq_para_height().into()),
+        ZoomLevel::ZoomedOutAR => {
+            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let num_seq = ui.app.num_seq();
+            let num_retained_seqs: usize = (num_seq as f64 * ratio).round() as usize;
+            every_nth(num_seq as usize, num_retained_seqs)
+        }
+    }
+}
+
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app
         .alignment
@@ -32,10 +64,10 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
 fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
-    let num_seq: usize = ui.app.num_seq() as usize;
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
-    for i in &retained_seqs_ndx {
-        ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
+    //let num_seq: usize = ui.app.num_seq() as usize;
+    //let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
+    for i in retained_seq_ndx(ui) {
+        ztext.push(Line::from(ui.app.alignment.headers[i].clone()));
     }
 
     ztext
@@ -84,29 +116,15 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     text
 }
 
-fn retained_col_ndx(ui: &UI) -> Vec<usize> {
-    match ui.zoom_level {
-        ZoomLevel::ZoomedIn => {
-            panic!("should not be called in zoomed-in mode")
-        }
-        ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.seq_para_width().into()),
-        ZoomLevel::ZoomedOutAR => {
-            let ratio = ui.h_ratio().min(ui.v_ratio());
-            let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
-            every_nth(ui.app.aln_len() as usize, num_retained_cols)
-        }
-    }
-}
-
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     // TODO rm unneeded vars when retained_col_ndx(), etc. are shown to work.
     let num_seq: usize = ui.app.num_seq() as usize;
     let aln_len: usize = ui.app.aln_len() as usize;
-    let seq_area_width: usize = ui.seq_para_width().into();
+    //let seq_area_width: usize = ui.seq_para_width().into();
     let seq_area_height: usize = ui.seq_para_height().into(); // "
     let mut ztext: Vec<Line> = Vec::new();
     debug!("ZO: num seq: {}, num cols: {}\n", num_seq, aln_len);
-    let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
+    //let retained_cols_ndx: Vec<usize> = every_nth(aln_len, seq_area_width);
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
@@ -126,13 +144,13 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 fn zoom_out_AR_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let ratio = ui.h_ratio().min(ui.v_ratio());
     let num_seq: usize = ui.app.num_seq() as usize;
-    let aln_len: usize = ui.app.aln_len() as usize;
+    //let aln_len: usize = ui.app.aln_len() as usize;
     let num_retained_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
-    let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
+    //let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
 
     let mut ztext: Vec<Line> = Vec::new();
     // This seems wrong - should sample from the _whole aln_
-    let retained_cols_ndx: Vec<usize> = every_nth(aln_len, num_retained_cols);
+    //let retained_cols_ndx: Vec<usize> = every_nth(aln_len, num_retained_cols);
     let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, num_retained_seq);
     for i in &retained_seqs_ndx {
         let seq: &String = &ui.app.alignment.sequences[*i];
@@ -355,7 +373,7 @@ fn compute_title(ui: &UI) -> String {
     title
 }
 
-fn compute_aln_pane_text<'a>(frame_size: Rect, ui: &'a UI<'a>) -> Vec<Line<'a>> {
+fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let mut sequences: Vec<Line>;
 
     match ui.zoom_level {
@@ -390,8 +408,8 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
-    /* Labels pane */
     let labels = compute_labels_pane_text(ui);
+
     let lbl_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
@@ -407,7 +425,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     let title = compute_title(ui);
-    let seq = compute_aln_pane_text(f.size(), ui);
+    let seq = compute_aln_pane_text(ui);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
@@ -501,11 +519,9 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .collect();
 
     if ZoomLevel::ZoomedIn != ui.zoom_level {
-        let aln_len: usize = ui.app.aln_len() as usize;
-        let seq_area_width: usize = ui.seq_para_width().into();
-        let retained_cols_ndx = retained_col_ndx(ui);
-
-        mark_consensus_zb_pos(&mut coloured_consensus, &retained_cols_ndx);
+        // We can directly pass the indices of the retained columns, because the consensus is
+        // always as long as the alignment. Tihs is NOT the case for the labels pane!
+        mark_consensus_zb_pos(&mut coloured_consensus, &retained_col_ndx(ui));
     }
 
     let btm_text: Vec<Line> = vec![

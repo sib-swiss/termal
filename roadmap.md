@@ -548,6 +548,7 @@ Miscellaneous Ideas
 
 * Make the labels panel part of a more general left pane, which could contain
   other "by-sequence" panes such as length and conservation (WRT consensus)
+
 * Reinstate the "blinky" consensus, at least optionally
 
 TODO
@@ -556,7 +557,10 @@ TODO
 Urgent
 ------
 
-1. [ ] Highlighting of retained columns (those in the zoombox) still doesn't
+Normal
+------
+
+1. [x] Highlighting of retained columns (those in the zoombox) still doesn't
    work for "tall" alignments in AR mode - try with `tall.msa`: in zoomed-out
    mode, the box is as wide as the complete sequence (namely, 41 residues), and
    accordingly all 41 positions in the consensus are (correctly) highlighted; in
@@ -564,9 +568,6 @@ Urgent
    all consensus residues are still highlighted (there should only be 11 (give
    or take 1, depending on rounding). NOTE: this depends on screen size, of
    course.
-
-Normal
-------
 
 1. [x] In the zoomed-out modes, highlight which residues in the consensus are
    shown in the zoom box. => Tried several styles, the best IMHO is reverse
