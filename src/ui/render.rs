@@ -69,16 +69,6 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-// FIXME: this fn is now identical to the previous one.
-fn zoom_out_ar_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let mut ztext: Vec<Line> = Vec::new();
-    for i in retained_seq_ndx(ui) {
-        ztext.push(Line::from(ui.app.alignment.headers[i].clone()));
-    }
-
-    ztext
-}
-
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let top_i = ui.top_line as usize;
     let bot_i = (ui.top_line + ui.seq_para_height()) as usize;
@@ -377,8 +367,7 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let labels: Vec<Line> = match ui.zoom_level {
         ZoomLevel::ZoomedIn => zoom_in_lbl_text(ui),
-        ZoomLevel::ZoomedOut => zoom_out_lbl_text(ui),
-        ZoomLevel::ZoomedOutAR => zoom_out_ar_lbl_text(ui),
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => zoom_out_lbl_text(ui),
     };
 
     labels

@@ -556,17 +556,23 @@ TODO
 Urgent
 ------
 
-1. [ ] Highlighting of retained columns (those in the zoombox) still doesn't
+Normal
+------
+
+1. [ ] It should be able to switch the highlighting of retained columns on or
+   off. Maybe 'H' could be used for this.
+
+1. [x] Highlighting of retained columns (those in the zoombox) still doesn't
    work for "tall" alignments in AR mode - try with `tall.msa`: in zoomed-out
    mode, the box is as wide as the complete sequence (namely, 41 residues), and
    accordingly all 41 positions in the consensus are (correctly) highlighted; in
    AR mode, the box is about 1/4 the width of the alignment (11 residues) , but
    all consensus residues are still highlighted (there should only be 11 (give
    or take 1, depending on rounding). NOTE: this depends on screen size, of
-   course.
-
-Normal
-------
+   course. => Fixed, among others by refactoring the code that computes the
+   retained indexes into a separate function (that does it right) and calling
+   that function everywhere instead of re-computing said indxes every time (and
+   getting it wrong at least once).
 
 1. [x] In the zoomed-out modes, highlight which residues in the consensus are
    shown in the zoom box. => Tried several styles, the best IMHO is reverse
