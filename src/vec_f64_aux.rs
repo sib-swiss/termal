@@ -19,7 +19,7 @@ pub fn product(v1: &[f64], v2: &[f64]) -> Vec<f64> {
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     
     use approx::assert_relative_eq;
     use crate::vec_f64_aux::product;
