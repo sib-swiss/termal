@@ -21,6 +21,35 @@ use crate::{
  * for all zoom levels
 *****************************************************************/
 
+fn retained_col_ndx(ui: &UI) -> Vec<usize> {
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            panic!("should not be called in zoomed-in mode")
+        }
+        ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.seq_para_width().into()),
+        ZoomLevel::ZoomedOutAR => {
+            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
+            every_nth(ui.app.aln_len() as usize, num_retained_cols)
+        }
+    }
+}
+
+fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => {
+            panic!("should not be called in zoomed-in mode")
+        }
+        ZoomLevel::ZoomedOut => every_nth(ui.app.num_seq() as usize, ui.seq_para_height().into()),
+        ZoomLevel::ZoomedOutAR => {
+            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let num_retained_seqs: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
+            every_nth(ui.app.num_seq() as usize, num_retained_seqs)
+        }
+
+    }
+}
+
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app
         .alignment
@@ -32,22 +61,19 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
 fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
-    let num_seq: usize = ui.app.num_seq() as usize;
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
-    for i in &retained_seqs_ndx {
-        ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
+
+    for i in retained_seq_ndx(ui) {
+        ztext.push(Line::from(ui.app.alignment.headers[i].clone()));
     }
 
     ztext
 }
 
+// FIXME: this fn is now identical to the previous one.
 fn zoom_out_ar_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let ratio = ui.h_ratio().min(ui.v_ratio());
     let mut ztext: Vec<Line> = Vec::new();
-    let num_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, ui.seq_para_height().into());
-    for i in &retained_seqs_ndx {
-        ztext.push(Line::from(ui.app.alignment.headers[*i].clone()));
+    for i in retained_seq_ndx(ui) {
+        ztext.push(Line::from(ui.app.alignment.headers[i].clone()));
     }
 
     ztext
@@ -84,28 +110,10 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     text
 }
 
-fn retained_col_ndx(ui: &UI) -> Vec<usize> {
-    match ui.zoom_level {
-        ZoomLevel::ZoomedIn => {
-            panic!("should not be called in zoomed-in mode")
-        }
-        ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.seq_para_width().into()),
-        ZoomLevel::ZoomedOutAR => {
-            let ratio = ui.h_ratio().min(ui.v_ratio());
-            let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
-            every_nth(ui.app.aln_len() as usize, num_retained_cols)
-        }
-    }
-}
-
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    // TODO rm unneeded vars when retained_col_ndx(), etc. are shown to work.
-    let num_seq: usize = ui.app.num_seq() as usize;
-    let seq_area_height: usize = ui.seq_para_height().into(); // "
     let mut ztext: Vec<Line> = Vec::new();
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, seq_area_height);
-    for i in &retained_seqs_ndx {
-        let seq: &String = &ui.app.alignment.sequences[*i];
+    for i in retained_seq_ndx(ui) {
+        let seq: &String = &ui.app.alignment.sequences[i];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
@@ -120,14 +128,9 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let ratio = ui.h_ratio().min(ui.v_ratio());
-    let num_seq: usize = ui.app.num_seq() as usize;
-    let num_retained_seq: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
-
     let mut ztext: Vec<Line> = Vec::new();
-    let retained_seqs_ndx: Vec<usize> = every_nth(num_seq, num_retained_seq);
-    for i in &retained_seqs_ndx {
-        let seq: &String = &ui.app.alignment.sequences[*i];
+    for i in retained_seq_ndx(ui) {
+        let seq: &String = &ui.app.alignment.sequences[i];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
