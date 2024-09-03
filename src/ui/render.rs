@@ -46,7 +46,6 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
             let num_retained_seqs: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
             every_nth(ui.app.num_seq() as usize, num_retained_seqs)
         }
-
     }
 }
 
@@ -484,9 +483,8 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         })
         .collect();
 
-    if ZoomLevel::ZoomedIn != ui.zoom_level {
-        mark_consensus_zb_pos(&mut coloured_consensus,
-            &retained_col_ndx(ui));
+    if ZoomLevel::ZoomedIn != ui.zoom_level && ui.highlight_retained_cols {
+        mark_consensus_zb_pos(&mut coloured_consensus, &retained_col_ndx(ui));
     }
 
     let btm_text: Vec<Line> = vec![

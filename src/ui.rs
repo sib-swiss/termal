@@ -1,28 +1,19 @@
-mod conservation;
 mod color_scheme;
+mod conservation;
 pub mod render;
 
 use std::collections::HashMap;
 
 use bitflags::bitflags;
 
-
-use ratatui::{
-    layout::Size,
-    prelude::{
-        Color,
-    },
-};
+use ratatui::{layout::Size, prelude::Color};
 
 use crate::{
+    ui::color_scheme::{color_scheme_lesk, color_scheme_monochrome},
     App,
-    ui::color_scheme::{
-        color_scheme_lesk,
-        color_scheme_monochrome,
-    },
 };
 
-#[derive(Clone,Copy,PartialEq)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum ZoomLevel {
     ZoomedIn,
     ZoomedOut,
@@ -44,11 +35,12 @@ bitflags! {
 
 pub struct UI<'a> {
     app: &'a App,
-    colour_map: HashMap<char, Color>, 
+    colour_map: HashMap<char, Color>,
     zoom_level: ZoomLevel,
     // What to show
     show_zoombox: bool,
     show_scrollbars: bool,
+    highlight_retained_cols: bool,
     top_line: u16,
     leftmost_col: u16,
     label_pane_width: u16,
@@ -57,11 +49,10 @@ pub struct UI<'a> {
     // possible that they need not be stored at all, as they can in principle be computed when the
     // layout is known.
     aln_pane_size: Option<Size>,
-    frame_size: Option<Size>,     // whole app
+    frame_size: Option<Size>, // whole app
 }
 
 impl<'a> UI<'a> {
-
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
@@ -69,16 +60,17 @@ impl<'a> UI<'a> {
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             show_scrollbars: true,
+            highlight_retained_cols: false,
             top_line: 0,
             leftmost_col: 0,
-            label_pane_width: 15,     // Reasonable default, I'd say...
+            label_pane_width: 15, // Reasonable default, I'd say...
             bottom_pane_height: 5,
             aln_pane_size: None,
             frame_size: None,
         }
     }
 
-    // **************************************************************** 
+    // ****************************************************************
     /*
      * Dimensions
      *
@@ -86,17 +78,18 @@ impl<'a> UI<'a> {
      * affects the maximal top line and leftmost column, etc.
      * */
 
-    fn seq_para_height(& self) -> u16 {
+    fn seq_para_height(&self) -> u16 {
         let height = self.aln_pane_size.unwrap().height;
-        if height >= 2 {  // border, should later be a constant or a field of UI
-             height - 2
+        if height >= 2 {
+            // border, should later be a constant or a field of UI
+            height - 2
         } else {
             // Set to null (prevents display) if not enough room
-             0
+            0
         }
     }
 
-    fn seq_para_width(& self) -> u16 {
+    fn seq_para_width(&self) -> u16 {
         let width = self.aln_pane_size.unwrap().width;
         if width >= 2 {
             width - 2
@@ -113,8 +106,12 @@ impl<'a> UI<'a> {
     // l_max, etc.
 
     pub fn adjust_seq_pane_position(&mut self) {
-        if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
-        if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
+        if self.leftmost_col > self.max_leftmost_col() {
+            self.leftmost_col = self.max_leftmost_col();
+        }
+        if self.top_line > self.max_top_line() {
+            self.top_line = self.max_top_line();
+        }
     }
 
     /* The following are only called internally. */
@@ -136,7 +133,7 @@ impl<'a> UI<'a> {
     }
     //
     // Side panel dimensions
-    
+
     pub fn set_label_pane_width(&mut self, width: u16) {
         self.label_pane_width = width;
     }
@@ -163,8 +160,7 @@ impl<'a> UI<'a> {
         }
     }
 
-
-    // **************************************************************** 
+    // ****************************************************************
     // Zooming
 
     // Determines if the alignment fits on the screen or is too wide or tall (it can be both).
@@ -182,7 +178,9 @@ impl<'a> UI<'a> {
     }
 
     // TODO: is this accessor needed?
-    pub fn zoom_level(&self) -> ZoomLevel { self.zoom_level }
+    pub fn zoom_level(&self) -> ZoomLevel {
+        self.zoom_level
+    }
 
     pub fn cycle_zoom(&mut self) {
         self.zoom_level = match self.zoom_level {
@@ -193,8 +191,8 @@ impl<'a> UI<'a> {
                 } else {
                     ZoomLevel::ZoomedOut
                 }
-            },
-            ZoomLevel::ZoomedOut =>  ZoomLevel::ZoomedOutAR,
+            }
+            ZoomLevel::ZoomedOut => ZoomLevel::ZoomedOutAR,
             ZoomLevel::ZoomedOutAR => ZoomLevel::ZoomedIn,
         }
     }
@@ -207,88 +205,106 @@ impl<'a> UI<'a> {
         self.seq_para_height() as f64 / self.app.num_seq() as f64
     }
 
-    pub fn set_zoombox(&mut self, state: bool) { self.show_zoombox = state; }
+    pub fn set_zoombox(&mut self, state: bool) {
+        self.show_zoombox = state;
+    }
 
-    // **************************************************************** 
+    pub fn toggle_hl_retained_cols(&mut self) {
+        self.highlight_retained_cols = !self.highlight_retained_cols;
+    }
+
+    // ****************************************************************
     // Color scheme
 
     pub fn set_monochrome(&mut self) {
         self.colour_map = color_scheme_monochrome();
     }
 
-    // **************************************************************** 
+    // ****************************************************************
 
-    pub fn disable_scrollbars(&mut self) { self.show_scrollbars = false; }
-
-
+    pub fn disable_scrollbars(&mut self) {
+        self.show_scrollbars = false;
+    }
 
     // Scrolling
 
     pub fn scroll_one_line_up(&mut self) {
-        if self.top_line > 0 { self.top_line -= 1; }
+        if self.top_line > 0 {
+            self.top_line -= 1;
+        }
     }
 
     pub fn scroll_one_col_left(&mut self) {
-        if self.leftmost_col > 0 { self.leftmost_col -= 1; }
+        if self.leftmost_col > 0 {
+            self.leftmost_col -= 1;
+        }
     }
 
     pub fn scroll_one_line_down(&mut self) {
-      if self.top_line < self.max_top_line() { self.top_line += 1; }
+        if self.top_line < self.max_top_line() {
+            self.top_line += 1;
+        }
     }
 
     pub fn scroll_one_col_right(&mut self) {
-        if self.leftmost_col < self.max_leftmost_col() { self.leftmost_col += 1; }
+        if self.leftmost_col < self.max_leftmost_col() {
+            self.leftmost_col += 1;
+        }
     }
 
     pub fn scroll_one_screen_up(&mut self) {
-       if self.top_line > self.seq_para_height()  {
-           self.top_line -= self.seq_para_height();
-       } else {
-           self.top_line = 0;
-       }
+        if self.top_line > self.seq_para_height() {
+            self.top_line -= self.seq_para_height();
+        } else {
+            self.top_line = 0;
+        }
     }
 
     pub fn scroll_one_screen_left(&mut self) {
-       if self.leftmost_col > self.seq_para_width()  {
-           self.leftmost_col -= self.seq_para_width();
-       } else {
-           self.leftmost_col = 0;
-       }
+        if self.leftmost_col > self.seq_para_width() {
+            self.leftmost_col -= self.seq_para_width();
+        } else {
+            self.leftmost_col = 0;
+        }
     }
 
     pub fn scroll_one_screen_down(&mut self) {
-       if self.top_line + self.seq_para_height() < self.max_top_line() {
-           self.top_line += self.seq_para_height();
-       } else {
-           self.top_line = self.max_top_line();
-       }
+        if self.top_line + self.seq_para_height() < self.max_top_line() {
+            self.top_line += self.seq_para_height();
+        } else {
+            self.top_line = self.max_top_line();
+        }
     }
 
     pub fn scroll_one_screen_right(&mut self) {
-       if self.leftmost_col + self.seq_para_width() < self.max_leftmost_col() {
-           self.leftmost_col += self.seq_para_width();
-       } else {
-           self.leftmost_col = self.max_leftmost_col();
-       }
+        if self.leftmost_col + self.seq_para_width() < self.max_leftmost_col() {
+            self.leftmost_col += self.seq_para_width();
+        } else {
+            self.leftmost_col = self.max_leftmost_col();
+        }
     }
 
     pub fn scroll_zoombox_one_line_down(&mut self) {
         self.top_line += (1.0 / self.v_ratio()).round() as u16;
-        if self.top_line > self.max_top_line() { self.top_line = self.max_top_line(); }
+        if self.top_line > self.max_top_line() {
+            self.top_line = self.max_top_line();
+        }
     }
-    
+
     pub fn scroll_zoombox_one_line_up(&mut self) {
         let lines_to_skip = (1.0 / self.v_ratio()).round() as u16;
         if lines_to_skip < self.top_line {
             self.top_line -= lines_to_skip;
         } else {
-            self.top_line = 0; 
+            self.top_line = 0;
         }
     }
 
     pub fn scroll_zoombox_one_col_right(&mut self) {
         self.leftmost_col += (1.0 / self.h_ratio()).round() as u16;
-        if self.leftmost_col > self.max_leftmost_col() { self.leftmost_col = self.max_leftmost_col(); }
+        if self.leftmost_col > self.max_leftmost_col() {
+            self.leftmost_col = self.max_leftmost_col();
+        }
     }
 
     pub fn scroll_zoombox_one_col_left(&mut self) {
@@ -296,17 +312,25 @@ impl<'a> UI<'a> {
         if cols_to_skip < self.leftmost_col {
             self.leftmost_col -= cols_to_skip;
         } else {
-            self.leftmost_col = 0; 
+            self.leftmost_col = 0;
         }
     }
 
-    pub fn jump_to_top(&mut self) { self.top_line = 0 }
+    pub fn jump_to_top(&mut self) {
+        self.top_line = 0
+    }
 
-    pub fn jump_to_begin(&mut self) { self.leftmost_col = 0 }
+    pub fn jump_to_begin(&mut self) {
+        self.leftmost_col = 0
+    }
 
-    pub fn jump_to_bottom(&mut self) { self.top_line = self.max_top_line() }
+    pub fn jump_to_bottom(&mut self) {
+        self.top_line = self.max_top_line()
+    }
 
-    pub fn jump_to_end(&mut self) { self.leftmost_col = self.max_leftmost_col() }
+    pub fn jump_to_end(&mut self) {
+        self.leftmost_col = self.max_leftmost_col()
+    }
 
     // Debugging
 
@@ -316,12 +340,19 @@ impl<'a> UI<'a> {
         if self.seq_para_width() > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
-            assert!(self.max_leftmost_col() + self.seq_para_width() == self.app.aln_len(),
+            assert!(
+                self.max_leftmost_col() + self.seq_para_width() == self.app.aln_len(),
                 "l_max: {} + w_p: {} == w_a: {} failed",
-                self.max_leftmost_col(), self.seq_para_width(), self.app.aln_len()
+                self.max_leftmost_col(),
+                self.seq_para_width(),
+                self.app.aln_len()
             );
         }
-        assert!(self.leftmost_col <= self.max_leftmost_col(), 
-            "l: {}<= l_max: {}", self.leftmost_col, self.max_leftmost_col())
+        assert!(
+            self.leftmost_col <= self.max_leftmost_col(),
+            "l: {}<= l_max: {}",
+            self.leftmost_col,
+            self.max_leftmost_col()
+        )
     }
 }

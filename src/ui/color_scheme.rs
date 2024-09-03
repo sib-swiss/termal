@@ -5,7 +5,6 @@ use ratatui::prelude::Color;
 // NOTE: if it turns out that these hash maps are not efficient (didn't benchmark yet), we might
 // want to look at perfect hash functions - see e.g https://crates.io/crates/phf
 
-
 pub const ORANGE: Color = Color::Rgb(255, 165, 0);
 pub const SALMON: Color = Color::Rgb(250, 128, 114);
 
@@ -55,7 +54,7 @@ pub fn color_scheme_monochrome() -> HashMap<char, Color> {
         ('k', Color::White),
         ('r', Color::White),
         ('-', Color::White),
-        ])
+    ])
 }
 
 pub fn color_scheme_lesk() -> HashMap<char, Color> {
@@ -101,6 +100,5 @@ pub fn color_scheme_lesk() -> HashMap<char, Color> {
         ('k', Color::Blue),
         ('r', Color::Blue),
         ('-', Color::Gray),
-        ])
+    ])
 }
-

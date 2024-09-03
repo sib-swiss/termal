@@ -158,7 +158,8 @@ fn main() -> Result<()> {
 
                             // Label Pane width
                             // NOTE: for these methods I'm using a more general approach than for
-                            // motion: pass the argument instead of having 
+                            // motion: pass the argument instead of having separate functions for
+                            // each increment.
                             KeyCode::Char('>') => app_ui.widen_label_pane(1),
                             KeyCode::Char('<') => app_ui.reduce_label_pane(1),
 
@@ -171,6 +172,8 @@ fn main() -> Result<()> {
                                 app_ui.cycle_zoom();
                             }
 
+                            // Mark consensus positions that are retained in the zoom box
+                            KeyCode::Char('r') => app_ui.toggle_hl_retained_cols(),
                             // Exit
                             KeyCode::Char('q') => break,
                             KeyCode::Char('Q') => break,
