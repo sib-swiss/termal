@@ -133,11 +133,103 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
+// Auxiliary fn for mark_zoombox() - _could_ use an internal fn or a closure, but that would make
+// the function too long for my taste.
+//
+fn mark_zoombox_general_case(
+    seq_para: &mut [Line],
+    zb_top: usize,
+    zb_bottom: usize,
+    zb_left: usize,
+    zb_right: usize,
+) {
+    let mut l: &mut Line = &mut seq_para[zb_top];
+    for c in zb_left + 1..zb_right {
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
+    }
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("┌"));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┐"));
+
+    // NOTE: Clippy suggests using an iterator here, but if I want, say, residues 600-680, then
+    // there are going to be 600 useless iterations. I imagine indexing is faster, though
+    // admittedly I did not benchmark it... except with my eye-o-meter, which indeed did not detect
+    // any difference on a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz machine running WSL2, and
+    // a 144-column by 33-lines terminal.
+
+    // mine
+    /*
+    for s in zb_top+1 .. zb_bottom {
+        l = &mut seq_para[s];
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[zb_right-1], Span::raw("│"));
+    }
+    */
+
+    // Clippy
+    // /*
+    for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
+        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
+    }
+    //*/
+    l = &mut seq_para[zb_bottom - 1];
+    //FIXME: it should not be necessary to iterate _twice_ from zb_left+1 to zb_right
+    for c in zb_left + 1..zb_right {
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
+    }
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("└"));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┘"));
+}
+
+// Auxiliary fn for mark_zoombox() - see remarks on previous fn.
+
+fn mark_zoombox_zero_height(
+    seq_para: &mut [Line],
+    zb_top: usize, // zb_bottom == zb_top
+    zb_left: usize,
+    zb_right: usize,
+) {
+    let l: &mut Line = &mut seq_para[zb_top];
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("╾"));
+    for c in zb_left + 1..zb_right {
+        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
+    }
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("╼"));
+}
+
+// Auxiliary fn for mark_zoombox() - see remarks on previous fn.
+
+fn mark_zoombox_zero_width(
+    seq_para: &mut [Line],
+    zb_top: usize, 
+    zb_bottom: usize,    
+    zb_left: usize,  // zb_right == zb_left
+) {
+    let mut l: &mut Line = &mut seq_para[zb_top];
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("╿"));
+
+    for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
+    }
+
+    l = &mut seq_para[zb_bottom - 1];
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("╽"));
+}
+
+// Auxiliary fn for mark_zoombox() - see remarks on previous fn.
+//
+fn mark_zoombox_point(
+    seq_para: &mut [Line],
+    zb_top: usize, 
+    zb_left: usize,  // zb_bottom == zb_top, zb_right == zb_left
+) {
+    let l: &mut Line = &mut seq_para[zb_top];
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("▯"));
+}
+
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
 //
 fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
-
-
     let zb_top: usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
     let mut zb_bottom: usize =
         (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
@@ -154,50 +246,26 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
         zb_right = ui.app.aln_len() as usize;
     }
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ui.h_ratio());
-    debug!("ZB_top: {}, ZB_bot: {}, ZB_lft: {}, ZB: rgt: {}\n", zb_top, zb_bottom, zb_left, zb_right);
+    debug!(
+        "ZB_top: {}, ZB_bot: {}, ZB_lft: {}, ZB_rgt: {}\n",
+        zb_top, zb_bottom, zb_left, zb_right
+    );
     ui.assert_invariants();
 
     // General case: height and width both > 1
-
-    let mut general_case = || {
-        let mut l: &mut Line = &mut seq_para[zb_top];
-        for c in zb_left + 1..zb_right {
-            let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
+    if zb_bottom - zb_top < 2 {
+        if zb_right - zb_left < 2 {
+            mark_zoombox_point(seq_para, zb_top, zb_left);
+        } else {
+            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right);
         }
-        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("┌"));
-        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┐"));
-
-        // NOTE: Clippy suggests using an iterator here, but if I want, say, residues 600-680, then
-        // there are going to be 600 useless iterations. I imagine indexing is faster, though
-        // admittedly I did not benchmark it... except with my eye-o-meter, which indeed did not detect
-        // any difference on a 11th Gen Intel(R) Core(TM) i7-11850H @ 2.50GHz machine running WSL2, and
-        // a 144-column by 33-lines terminal.
-
-        // mine
-        /*
-        for s in zb_top+1 .. zb_bottom {
-            l = &mut seq_para[s];
-            let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
-            let _ = std::mem::replace(&mut l.spans[zb_right-1], Span::raw("│"));
+    } else {
+        if zb_right - zb_left < 2 {
+            mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
+        } else {
+            mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
         }
-        */
-
-        // Clippy
-        // /*
-        for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
-            let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
-            let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
-        }
-        //*/
-        l = &mut seq_para[zb_bottom - 1];
-        for c in zb_left + 1..zb_right {
-            let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
-        }
-        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("└"));
-        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┘"));
-    };
-
-    general_case();
+    }
 }
 
 // Draws the zoombox, but preserving aspect ratio
@@ -232,6 +300,10 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ratio);
     ui.assert_invariants();
 
+    // TODO: the rest of this fn looks similar to what mark_zoombox() (not AR, that is) previously
+    // did (before it handled special cases with separate functions). These functions should be
+    // re-used here.
+    //
     let mut l: &mut Line = &mut seq_para[zb_top];
     for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));

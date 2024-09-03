@@ -556,8 +556,10 @@ TODO
 Urgent
 ------
 
-* panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`; press `z`. Note:
+* BUG B0001 - panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`; press `z`. Note:
   doesn't happen when the zoom box is disabled.
+
+* BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`: press `zG`
 
 Normal
 ------
