@@ -53,12 +53,12 @@ struct Cli {
     #[arg(short='B', long,)]
     hide_bottom_pane: bool,
 
-    /// Show debug panel
+    /// (Currently no effect)
     #[arg(short='D', long)]
     debug: bool,
 
     /// Disable colour
-    #[arg(short='C')]
+    #[arg(short='C', long="no-colour")]
     no_colour: bool,
 
     /// Disable scrollbars (mostly for testing)
@@ -73,7 +73,7 @@ struct Cli {
     #[clap(long="panic")]
     panic: bool,
 
-    /// Disable zoom box (but not zoom itself)
+    /// Do not show zoom box (zooming itself is not disabled)
     #[arg(long="no-zoom-box")]
     no_zoombox: bool,
 }

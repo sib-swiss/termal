@@ -138,7 +138,7 @@ expect {
 }
 send -- "q"
 expect eof
-	
+
 # Gets the exit code of the spawned process, so that this script fails IFF it 
 # did. 
 catch wait result 

@@ -55,7 +55,7 @@ set pwt $params(w)
 set timeout $params(t)
 
 
-spawn ../target/debug/termal --poll-wait-time $pwt -w 9 -t 7 --no-zoom-box data/test-aln-03.fas
+spawn ../target/debug/termal --poll-wait-time $pwt -w 9 -t 7 --no-zoom-box -LB data/test-aln-03.fas
 match_max 100000
 expect {
 	expect -exact "\[?1049h\[1;1H\[J\[2;1H\[J\[3;1H\[J\[4;1H\[J\[5;1H\[J\[6;1H\[J\[7;1H\[J\[1;1H\[38;5;15m┌ data/t┐\[2;1H│\[38;5;4mK\[38;2;255;165;0mAAAAAA\[38;5;15m│\[3;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[4;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[5;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[6;1H│\[38;5;5mH\[38;5;2mLLLLLL\[38;5;15m│\[7;1H└───────┘\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l\[39m\[49m\[59m\[0m\[?25l" {} 
@@ -68,3 +68,9 @@ expect {
 }
 send -- "q"
 expect eof
+
+# Gets the exit code of the spawned process, so that this script fails IFF it 
+# did. 
+catch wait result 
+set prog_exit_code [lindex $result 3] 
+exit $prog_exit_code

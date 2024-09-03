@@ -152,6 +152,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
         zb_right = ui.app.aln_len() as usize;
     }
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ui.h_ratio());
+    debug!("ZB_top: {}, ZB_bot: {}, ZB_lft: {}, ZB: rgt: {}\n", zb_top, zb_bottom, zb_left, zb_right);
     ui.assert_invariants();
 
     let mut l: &mut Line = &mut seq_para[zb_top];

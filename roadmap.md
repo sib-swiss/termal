@@ -556,6 +556,9 @@ TODO
 Urgent
 ------
 
+* panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`; press `z`. Note:
+  doesn't happen when the zoom box is disabled.
+
 Normal
 ------
 
