@@ -262,17 +262,20 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     );
     ui.assert_invariants();
 
-    // General case: height and width both > 1
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
+            // Zoom box is on a single line & column
             mark_zoombox_point(seq_para, zb_top, zb_left);
         } else {
+            // Zoom box has a height of 1 line
             mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right);
         }
     } else {
         if zb_right - zb_left < 2 {
+            // Zoom box has a width of 1 column
             mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
         } else {
+            // General case: height and width both > 1
             mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
         }
     }
@@ -288,7 +291,15 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
      * retained sequences (which are in seq_para), and (ii) the alignment panel's height. */
     let aln_para_height = min(seq_para.len() as u16, ui.seq_para_height());
     debug!("[MZAR] aln para height: {}", aln_para_height);
-    let zb_top: usize = ((ui.top_line as f64) * ratio).round() as usize;
+    let zb_top: usize = {
+        let zb_top = ((ui.top_line as f64) * ratio).round() as usize;
+        // Rounding can push zb_top to aln_para_height, if zoom box has zero height
+        if zb_top >= aln_para_height.into() {
+            (aln_para_height - 1).into()
+        } else {
+            zb_top
+        }
+    };
     let mut zb_bottom: usize =
         (((ui.top_line + ui.seq_para_height()) as f64) * ratio).round() as usize;
     // If h_a < h_p
@@ -314,6 +325,26 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
     // did (before it handled special cases with separate functions). These functions should be
     // re-used here.
     //
+
+    if zb_bottom - zb_top < 2 {
+        if zb_right - zb_left < 2 {
+            // Zoom box is on a single line & column
+            mark_zoombox_point(seq_para, zb_top, zb_left);
+        } else {
+            // Zoom box has a height of 1 line
+            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right);
+        }
+    } else {
+        if zb_right - zb_left < 2 {
+            // Zoom box has a width of 1 column
+            mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
+        } else {
+            // General case: height and width both > 1
+            mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
+        }
+    }
+
+    /*
     let mut l: &mut Line = &mut seq_para[zb_top];
     for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
@@ -326,17 +357,13 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
         let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
     }
 
-    debug!(
-        "[MZAR] seq_para length: {} index: {}",
-        seq_para.len(),
-        zb_bottom - 1
-    );
     l = &mut seq_para[zb_bottom - 1];
     for c in zb_left + 1..zb_right {
         let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
     }
     let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("└"));
     let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┘"));
+    */
 }
 
 /****************************************************************
