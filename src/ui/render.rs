@@ -270,14 +270,12 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
             // Zoom box has a height of 1 line
             mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right);
         }
+    } else if zb_right - zb_left < 2 {
+        // Zoom box has a width of 1 column
+        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
     } else {
-        if zb_right - zb_left < 2 {
-            // Zoom box has a width of 1 column
-            mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
-        } else {
-            // General case: height and width both > 1
-            mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
-        }
+        // General case: height and width both > 1
+        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
     }
 }
 
@@ -321,11 +319,6 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ratio);
     ui.assert_invariants();
 
-    // TODO: the rest of this fn looks similar to what mark_zoombox() (not AR, that is) previously
-    // did (before it handled special cases with separate functions). These functions should be
-    // re-used here.
-    //
-
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
             // Zoom box is on a single line & column
@@ -334,36 +327,13 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
             // Zoom box has a height of 1 line
             mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right);
         }
+    } else if zb_right - zb_left < 2 {
+        // Zoom box has a width of 1 column
+        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
     } else {
-        if zb_right - zb_left < 2 {
-            // Zoom box has a width of 1 column
-            mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
-        } else {
-            // General case: height and width both > 1
-            mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
-        }
+        // General case: height and width both > 1
+        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
     }
-
-    /*
-    let mut l: &mut Line = &mut seq_para[zb_top];
-    for c in zb_left + 1..zb_right {
-        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
-    }
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("┌"));
-    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┐"));
-
-    for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
-        let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("│"));
-        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("│"));
-    }
-
-    l = &mut seq_para[zb_bottom - 1];
-    for c in zb_left + 1..zb_right {
-        let _ = std::mem::replace(&mut l.spans[c], Span::raw("─"));
-    }
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("└"));
-    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::raw("┘"));
-    */
 }
 
 /****************************************************************

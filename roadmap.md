@@ -556,14 +556,15 @@ TODO
 Urgent
 ------
 
-* BUG B0003 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`: press `zG`
-
 Normal
 ------
 
-1.  BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500
-    ../data/aln5.pep`: press `zG` => fixed by keeping `zb_top` below
-    `seq_para.len()` - see `7571603`.
+1. BUG B0003 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`:
+   press `zz` => fixed in the same way as B0001 (`f2deb98b0dde`).
+
+1. BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`:
+   press `zG` => fixed by keeping `zb_top` below `seq_para.len()` - see
+   `7571603`.
 
 1. BUG B0001 - panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`;
    press `z`. Note: doesn't happen when the zoom box is disabled. => Occurres
