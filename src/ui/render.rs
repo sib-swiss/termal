@@ -189,6 +189,7 @@ fn mark_zoombox_zero_height(
     zb_left: usize,
     zb_right: usize,
 ) {
+    debug!("zb_top: {}\n", zb_top);
     let l: &mut Line = &mut seq_para[zb_top];
     let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("╾"));
     for c in zb_left + 1..zb_right {
@@ -201,9 +202,9 @@ fn mark_zoombox_zero_height(
 
 fn mark_zoombox_zero_width(
     seq_para: &mut [Line],
-    zb_top: usize, 
-    zb_bottom: usize,    
-    zb_left: usize,  // zb_right == zb_left
+    zb_top: usize,
+    zb_bottom: usize,
+    zb_left: usize, // zb_right == zb_left
 ) {
     let mut l: &mut Line = &mut seq_para[zb_top];
     let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("╿"));
@@ -220,8 +221,8 @@ fn mark_zoombox_zero_width(
 //
 fn mark_zoombox_point(
     seq_para: &mut [Line],
-    zb_top: usize, 
-    zb_left: usize,  // zb_bottom == zb_top, zb_right == zb_left
+    zb_top: usize,
+    zb_left: usize, // zb_bottom == zb_top, zb_right == zb_left
 ) {
     let l: &mut Line = &mut seq_para[zb_top];
     let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("▯"));
@@ -230,7 +231,16 @@ fn mark_zoombox_point(
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
 //
 fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
-    let zb_top: usize = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
+    // I want zb_top to be immutable, but I may need to change it just after intialization
+    let zb_top: usize = {
+        let zb_top = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
+        // Rounding can push zb_top to seq_para.len(), if zoom box has zero height
+        if zb_top >= seq_para.len() {
+            seq_para.len() - 1
+        } else {
+            zb_top
+        }
+    };
     let mut zb_bottom: usize =
         (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
     // If h_a < h_p
