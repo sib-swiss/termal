@@ -556,13 +556,19 @@ TODO
 Urgent
 ------
 
-* BUG B0001 - panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`; press `z`. Note:
-  doesn't happen when the zoom box is disabled.
-
-* BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`: press `zG`
+* BUG B0003 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`: press `zG`
 
 Normal
 ------
+
+1.  BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500
+    ../data/aln5.pep`: press `zG` => fixed by keeping `zb_top` below
+    `seq_para.len()` - see `7571603`.
+
+1. BUG B0001 - panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`;
+   press `z`. Note: doesn't happen when the zoom box is disabled. => Occurres
+   when the zoom box had zero height (`zb_top` == `zb_bottom`) or width (or
+   both). Fixed in `d2e333af`.
 
 1. [ ] It should be able to switch the highlighting of retained columns on or
    off. Maybe 'H' could be used for this.
