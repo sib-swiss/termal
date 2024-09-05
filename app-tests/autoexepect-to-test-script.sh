@@ -10,8 +10,19 @@ set -u
 # I delete lines 3-42 not because I don't like them, but because I don't need
 # them in _all_ the test scripts.
 
+# Then I define and parse options -t and -w, which pass Expect timeout and
+# Crossterm poll wait time, respectively.
+
+# Next, if the autoexpect command wasn't passed --poll-wait-time, I add it,
+# using the value of pwt as an argument (this is just the argument to -t as
+# passed to the Expect script). IOW, the wait time passed to the Expect script
+# via -t gets passed to termal vial --poll-wait-time.
+
 # Then I add a `default` clause to all `expect` commands, so that the test
 # _fails_ (instead of blithely proceeding) if an expect is not met.
+
+# And finally I add a few lines that catch the exit code of termal and exit with
+# it, so that if termal fails, so does the Expect script.
 
 sed '{
 	3,42d;
@@ -28,6 +39,9 @@ array set params [::cmdline::getoptions argv $options $usage]\
 set pwt $params(w)\
 set timeout $params(t)\
 
+/\/debug\/termal/{
+    /--poll-wait-time/!s/termal/termal --poll-wait-time $pwt/
+}
 s/^expect -exact \(.*\)$/expect {\n\texpect -exact \1 {} \n\tdefault { exit 1 }\n}/
 $a\
 \
