@@ -7,6 +7,7 @@ spawn ../target/debug/termal -i data/test-aln-04.fas
 expect "name: data/test-aln-04.fas"
 expect "nb_sequences: 226"
 expect "nb_columns: 1054"
+expect eof
 
 # Gets the exit code of the spawned process, so that this script fails IFF it 
 # did. 

@@ -37,6 +37,11 @@ struct Cli {
     /// Alignment file
     aln_fname: String,
 
+    /// Info mode (no TUI)
+    #[arg(short, long)]
+    info: bool,
+
+    // FIXME: why do these need to be Options and not just u16?
     /// Fixed terminal width (mostly used for testing/debugging)
     #[arg(short, long, requires="height")]
     width: Option<u16>,
@@ -86,6 +91,13 @@ fn main() -> Result<()> {
     if cli.panic { panic!("User-requested panic"); }
 
     let fasta_file: &str = &cli.aln_fname;
+    let app = App::new(fasta_file)?;
+
+    if cli.info {
+        info!("Running in debug mode.");
+        app.output_info();
+        return Ok(());
+    }
 
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
@@ -104,7 +116,6 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
     terminal.clear()?;
 
-    let app = App::new(fasta_file)?;
     let mut app_ui = UI::new(&app);
     if cli.no_scrollbars { app_ui.disable_scrollbars(); }
     if cli.no_colour { app_ui.set_monochrome(); }
