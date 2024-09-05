@@ -1,0 +1,15 @@
+#!/usr/bin/expect -f
+#
+
+
+spawn ../target/debug/termal -i data/test-aln-04.fas
+
+expect "name: data/test-aln-04.fas"
+expect "nb_sequences: 226"
+expect "nb_columns: 1054"
+
+# Gets the exit code of the spawned process, so that this script fails IFF it 
+# did. 
+catch wait result 
+set prog_exit_code [lindex $result 3] 
+exit $prog_exit_code
