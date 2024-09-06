@@ -563,6 +563,9 @@ Urgent
 Normal
 ------
 
+1. [x] Refactor key-handling code in `main.rs` into a separate module. =>
+   `src/ui/key_handling.rs`.
+
 1. [x] Introduce an "info" mode (`-i`, `--info`) that doesn't launch the TUI but
    prints out stats about the alignment to stdout. => For now: name, #seq,
    #cols.
