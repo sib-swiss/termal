@@ -5,6 +5,9 @@ roadmap.pdf: roadmap.md meta.yaml
 				--filter pandoc-crossref --citeproc --number-sections \
 				--output $@ $<
 
+release:
+	cargo build --release
+
 test:
 	cargo test 2> /dev/null
 	make -C app-tests/ test
