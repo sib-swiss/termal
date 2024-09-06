@@ -548,7 +548,11 @@ Miscellaneous Ideas
 
 * Make the labels panel part of a more general left pane, which could contain
   other "by-sequence" panes such as length and conservation (WRT consensus)
+
 * Reinstate the "blinky" consensus, at least optionally
+
+* For "wide" alignments, let the empty lines below the sequences and above the
+  bottompanel prolong the axis ticks, aiding the reading of the positions.
 
 TODO
 ====
@@ -559,19 +563,24 @@ Urgent
 Normal
 ------
 
-1. BUG B0003 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`:
-   press `zz` => fixed in the same way as B0001 (`f2deb98b0dde`).
+1. [x] Introduce an "info" mode (`-i`, `--info`) that doesn't launch the TUI but
+   prints out stats about the alignment to stdout. => For now: name, #seq,
+   #cols.
 
-1. BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500 ../data/aln5.pep`:
-   press `zG` => fixed by keeping `zb_top` below `seq_para.len()` - see
-   `7571603`.
+1. [x] BUG B0003 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500
+   ../data/aln5.pep`: press `zz` => fixed in the same way as B0001
+   (`f2deb98b0dde`).
 
-1. BUG B0001 - panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`;
+1. [x] BUG B0002 - panic: `cr -- -t 15 -w 80 --poll-wait-time 500
+   ../data/aln5.pep`: press `zG` => fixed by keeping `zb_top` below
+   `seq_para.len()` - see `7571603`.
+
+1. [x] BUG B0001 - panic: `../target/debug/termal -t 15 -w 50 ../data/aln5.pep`;
    press `z`. Note: doesn't happen when the zoom box is disabled. => Occurres
    when the zoom box had zero height (`zb_top` == `zb_bottom`) or width (or
    both). Fixed in `d2e333af`.
 
-1. [ ] It should be able to switch the highlighting of retained columns on or
+1. [x] It should be able to switch the highlighting of retained columns on or
    off. Maybe 'H' could be used for this.
 
 1. [x] Highlighting of retained columns (those in the zoombox) still doesn't
