@@ -34,7 +34,6 @@ impl Alignment {
         for record in fasta {
             headers.push(record.header);
             sequences.push(record.sequence);
-
         }
         let consensus = consensus(&sequences);
         let entropies = entropies(&sequences);
@@ -49,14 +48,16 @@ impl Alignment {
         }
     }
 
-    pub fn num_seq(&self) -> usize { self.sequences.len() }
+    pub fn num_seq(&self) -> usize {
+        self.sequences.len()
+    }
 
-    pub fn aln_len(&self) -> usize { self.sequences[0].len() }
-
-
+    pub fn aln_len(&self) -> usize {
+        self.sequences[0].len()
+    }
 }
 
-fn res_count(sequences: &Vec<String>, col: usize) ->  ResidueCounts {
+fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
     let mut freqs: ResidueCounts = HashMap::new();
     for seq in sequences {
         let residue = seq.as_bytes()[col] as char;
@@ -67,7 +68,7 @@ fn res_count(sequences: &Vec<String>, col: usize) ->  ResidueCounts {
 
 pub fn consensus(sequences: &Vec<String>) -> String {
     let mut consensus = String::new();
-    for j in 0 .. sequences[0].len() {
+    for j in 0..sequences[0].len() {
         let dist = res_count(sequences, j);
         let br = best_residue(&dist);
         let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
@@ -77,7 +78,7 @@ pub fn consensus(sequences: &Vec<String>) -> String {
             if br.residue.is_alphabetic() {
                 consensus.push((br.residue as u8 + 97 - 65) as char);
             } else {
-                consensus.push('-'); 
+                consensus.push('-');
             }
         } else {
             consensus.push('.');
@@ -88,7 +89,7 @@ pub fn consensus(sequences: &Vec<String>) -> String {
 
 pub fn entropies(sequences: &Vec<String>) -> Vec<f64> {
     let mut entropies: Vec<f64> = Vec::new();
-    for j in 0 .. sequences[0].len() {
+    for j in 0..sequences[0].len() {
         let dist = res_count(sequences, j);
         let freq = to_freq_distrib(&dist);
         let e = entropy(&freq);
@@ -101,23 +102,26 @@ pub fn col_density(sequences: &Vec<String>, col: usize) -> f64 {
     let mut mass = 0;
     for seq in sequences {
         match seq.as_bytes()[col] as char {
-            'a' ..= 'z' | 'A' ..= 'Z' => { mass += 1 }
+            'a'..='z' | 'A'..='Z' => mass += 1,
             '-' => {}
-            other => { panic!("Character {other} unexpected in an alignment."); }
+            other => {
+                panic!("Character {other} unexpected in an alignment.");
+            }
         }
     }
     mass as f64 / sequences.len() as f64
 }
 
 pub fn densities(sequences: &Vec<String>) -> Vec<f64> {
-    (0 .. sequences[0].len()).map(|col| {
-        col_density(sequences, col)
-    }).collect()
+    (0..sequences[0].len())
+        .map(|col| col_density(sequences, col))
+        .collect()
 }
 
 fn best_residue(dist: &ResidueCounts) -> BestResidue {
     let max_freq = dist.values().max().unwrap();
-    let most_frequent_residue = dist.keys()
+    let most_frequent_residue = dist
+        .keys()
         .find(|&&k| dist.get(&k) == Some(max_freq))
         .unwrap();
 
@@ -132,14 +136,17 @@ fn best_residue(dist: &ResidueCounts) -> BestResidue {
 // (in particular because they make litle sense when computing entropy).
 //
 fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
-    let total_counts: u64 = counts.iter()
+    let total_counts: u64 = counts
+        .iter()
         .filter(|(res, _count)| **res != '-')
         .map(|(_res, count)| count)
         .sum();
     let mut distrib = ResidueDistribution::new();
     for (residue, count) in counts.iter() {
-        if *residue == '-' { continue; }
-        distrib.insert(*residue, *count as f64 / total_counts as f64 );
+        if *residue == '-' {
+            continue;
+        }
+        distrib.insert(*residue, *count as f64 / total_counts as f64);
     }
     distrib
 }
@@ -147,24 +154,25 @@ fn to_freq_distrib(counts: &ResidueCounts) -> ResidueDistribution {
 fn entropy(freqs: &ResidueDistribution) -> f64 {
     // Discard '-'s
     let residues: Vec<&char> = freqs.keys().filter(|&&r| r != '-').collect();
-    let sum: f64 = residues.into_iter().map(|res| {
-        let p = *freqs.get(res).unwrap();
-        p * p.ln()
-    })
-    .sum();
+    let sum: f64 = residues
+        .into_iter()
+        .map(|res| {
+            let p = *freqs.get(res).unwrap();
+            p * p.ln()
+        })
+        .sum();
     -1.0 * sum
 }
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
-    use rasta::read_fasta_file;
     use crate::alignment::{
-        Alignment, BestResidue, best_residue,
-            consensus, densities, entropies, entropy, ResidueCounts,
-            ResidueDistribution, res_count, to_freq_distrib,
+        best_residue, consensus, densities, entropies, entropy, res_count, to_freq_distrib,
+        Alignment, BestResidue, ResidueCounts, ResidueDistribution,
     };
     use approx::assert_relative_eq;
+    use rasta::read_fasta_file;
+    use std::collections::HashMap;
 
     #[test]
     fn test_read_aln() {
@@ -200,10 +208,10 @@ mod tests {
 
         let mut d2: ResidueCounts = HashMap::new();
         d2.insert('W', 2);
-        d2.insert('I', 1); 
-        d2.insert('S', 1); 
-        d2.insert('D', 1); 
-        d2.insert('F', 1); 
+        d2.insert('I', 1);
+        d2.insert('S', 1);
+        d2.insert('D', 1);
+        d2.insert('F', 1);
         assert_eq!(d2, res_count(&aln2.sequences, 2));
 
         let mut d3: ResidueCounts = HashMap::new();
@@ -211,52 +219,45 @@ mod tests {
         d3.insert('K', 2);
         d3.insert('L', 1);
         assert_eq!(d3, res_count(&aln2.sequences, 3));
-
     }
 
     #[test]
     fn test_most_frequent_residue() {
         let d0: ResidueCounts = HashMap::from([('A', 6)]);
-        let mut exp: BestResidue = BestResidue { residue: 'A', frequency: 6 };
+        let mut exp: BestResidue = BestResidue {
+            residue: 'A',
+            frequency: 6,
+        };
         assert_eq!(exp, best_residue(&d0));
 
-        let d1: ResidueCounts = HashMap::from([
-        	('Q', 5),
-        	('T', 1),
-        ]);
-        exp = BestResidue { residue: 'Q', frequency: 5 };
+        let d1: ResidueCounts = HashMap::from([('Q', 5), ('T', 1)]);
+        exp = BestResidue {
+            residue: 'Q',
+            frequency: 5,
+        };
         assert_eq!(exp, best_residue(&d1));
 
-        let d2: ResidueCounts = HashMap::from([
-        	('W', 2),
-        	('I', 1), 
-        	('S', 1), 
-        	('D', 1), 
-        	('F', 1), 
-        ]);
-        exp = BestResidue { residue: 'W', frequency: 2 };
+        let d2: ResidueCounts = HashMap::from([('W', 2), ('I', 1), ('S', 1), ('D', 1), ('F', 1)]);
+        exp = BestResidue {
+            residue: 'W',
+            frequency: 2,
+        };
         assert_eq!(exp, best_residue(&d2));
 
         // col 3 cannot be tested <- ties
 
-        let d4: ResidueCounts = HashMap::from([
-        	('-', 3),
-        	('K', 2),
-        	('L', 1),
-        ]);
-        exp = BestResidue { residue: '-', frequency: 3 };
+        let d4: ResidueCounts = HashMap::from([('-', 3), ('K', 2), ('L', 1)]);
+        exp = BestResidue {
+            residue: '-',
+            frequency: 3,
+        };
         assert_eq!(exp, best_residue(&d4));
     }
 
     #[test]
     fn test_to_freq_distrib() {
         let eps = 0.001;
-        let counts: ResidueCounts = HashMap::from([
-            ('K', 3),
-            ('L', 3),
-            ('G', 6),
-            ('-', 6),
-        ]);
+        let counts: ResidueCounts = HashMap::from([('K', 3), ('L', 3), ('G', 6), ('-', 6)]);
         let rfreqs = to_freq_distrib(&counts);
         assert_relative_eq!(0.25, *rfreqs.get(&'K').unwrap(), epsilon = eps);
         assert_relative_eq!(0.25, *rfreqs.get(&'L').unwrap(), epsilon = eps);
@@ -273,18 +274,15 @@ mod tests {
     #[test]
     fn test_entropy_2() {
         let eps = 0.00001;
-        let distrib: ResidueDistribution = ResidueDistribution::from([
-            ('A', 0.5), ('F', 0.5),
-        ]);
+        let distrib: ResidueDistribution = ResidueDistribution::from([('A', 0.5), ('F', 0.5)]);
         assert_relative_eq!(0.6931471805599453, entropy(&distrib), epsilon = eps);
     }
 
     #[test]
     fn test_entropy_3() {
         let eps = 0.00001;
-        let distrib: ResidueDistribution = ResidueDistribution::from([
-            ('A', 0.5), ('F', 0.25), ('T', 0.25)
-        ]);
+        let distrib: ResidueDistribution =
+            ResidueDistribution::from([('A', 0.5), ('F', 0.25), ('T', 0.25)]);
         assert_relative_eq!(1.0397207708399179, entropy(&distrib), epsilon = eps);
     }
 
@@ -294,7 +292,7 @@ mod tests {
         let aln2 = Alignment::new(fasta2);
         let entrs = entropies(&aln2.sequences);
         let eps = 0.001;
-        assert_relative_eq!(0.0,    entrs[0], epsilon = eps);
+        assert_relative_eq!(0.0, entrs[0], epsilon = eps);
         assert_relative_eq!(0.4505, entrs[1], epsilon = eps);
         assert_relative_eq!(1.5607, entrs[2], epsilon = eps);
         assert_relative_eq!(0.6365, entrs[3], epsilon = eps);
@@ -312,5 +310,4 @@ mod tests {
         assert_eq!(0.2, dens[4]);
         assert_eq!(0.0, dens[5]);
     }
-
 }

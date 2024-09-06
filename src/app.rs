@@ -18,9 +18,13 @@ impl App {
 
     // Computed properties (TODO: could be set in a struct member, as they do not change)
 
-    pub fn num_seq(&self) -> u16 { self.alignment.num_seq().try_into().unwrap() }
+    pub fn num_seq(&self) -> u16 {
+        self.alignment.num_seq().try_into().unwrap()
+    }
 
-    pub fn aln_len(&self) -> u16 { self.alignment.aln_len().try_into().unwrap() }
+    pub fn aln_len(&self) -> u16 {
+        self.alignment.aln_len().try_into().unwrap()
+    }
 
     pub fn output_info(&self) {
         println!("name: {}", self.filename);
