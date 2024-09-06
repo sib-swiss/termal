@@ -1,6 +1,7 @@
 mod color_scheme;
 mod conservation;
 pub mod render;
+pub mod key_handling;
 
 use std::collections::HashMap;
 
