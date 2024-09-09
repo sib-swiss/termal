@@ -81,7 +81,7 @@ pub fn consensus(sequences: &Vec<String>) -> String {
                 consensus.push('-');
             }
         } else {
-            consensus.push('.');
+            consensus.push('*');
         }
     }
     consensus

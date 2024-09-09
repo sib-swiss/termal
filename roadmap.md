@@ -22,6 +22,10 @@ Urgent
 Normal
 ------
 
+1. [x] When reading the ocnsensus, I got fooled into thinking that there was an
+   error because I mistook a '.' (low conservation) for a '-'. Changed the '.'
+   to an asterisk (`1708304`).
+
 1. [x] Refactor key-handling code in `main.rs` into a separate module. =>
    `src/ui/key_handling.rs`.
 
