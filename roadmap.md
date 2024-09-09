@@ -22,9 +22,12 @@ Urgent
 Normal
 ------
 
-1. [x] When reading the ocnsensus, I got fooled into thinking that there was an
+1. [ ] Experiment with putting tick marks and position _first_ (on top), and
+   consensus and conservation below.
+
+1. [x] When reading the consensus, I got fooled into thinking that there was an
    error because I mistook a '.' (low conservation) for a '-'. Changed the '.'
-   to an asterisk (`1708304`).
+   to an asterisk (`be5cd667`).
 
 1. [x] Refactor key-handling code in `main.rs` into a separate module. =>
    `src/ui/key_handling.rs`.
