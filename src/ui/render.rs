@@ -607,10 +607,10 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
     let corner_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
     let corner_text = Text::from(vec![
-        "Consensus".into(),
-        "Conservation".into(),
         "".into(),
         "Position".into(),
+        "Consensus".into(),
+        "Conservation".into(),
     ]);
     let corner_para = Paragraph::new(corner_text).block(corner_block);
     f.render_widget(corner_para, corner_chunk);
