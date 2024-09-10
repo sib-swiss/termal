@@ -495,6 +495,11 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             sequences = zoom_in_seq_text(ui);
+            for _ in sequences.len()..ui.seq_para_height() as usize {
+                let mut ticks = tick_marks(ui.app.aln_len() as usize, Some('.'), None);
+                ticks.drain(.. ui.leftmost_col as usize);
+                sequences.push(Line::from(ticks));
+            }
         }
         ZoomLevel::ZoomedOut => {
             sequences = zoom_out_seq_text(ui);
