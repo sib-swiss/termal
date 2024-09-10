@@ -574,14 +574,14 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     }
 
     let btm_text: Vec<Line> = vec![
+        Line::from(tick_marks(ui.app.aln_len() as usize, None, Some(':'))),
+        Line::from(tick_position(ui.app.aln_len() as usize)),
         Line::from(coloured_consensus),
         Line::from(values_barchart(&product(
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
         )))
         .style(SALMON),
-        Line::from(tick_marks(ui.app.aln_len() as usize)),
-        Line::from(tick_position(ui.app.aln_len() as usize)),
     ];
 
     let btm_para = Paragraph::new(btm_text)
