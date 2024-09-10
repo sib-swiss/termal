@@ -370,12 +370,14 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     }
 }
 
-// Ticks and tick marks for bottom pane
+// Ticks and tick marks (e.g. for bottom pane)
 
-fn tick_marks(aln_length: usize) -> String {
+fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char> ) -> String {
     let mut ticks = String::with_capacity(aln_length);
     for i in 0..aln_length {
-        ticks.push(if i % 10 == 0 { '|' } else { ' ' });
+        ticks.push(if i % 10 == 0 { primary.unwrap_or('|') }
+            else if i % 5 == 0 { secondary.unwrap_or(' ') }
+            else { ' ' });
     }
 
     ticks
@@ -482,8 +484,6 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
-    //f.render_widget(Paragraph::default(), layout_panes.sequence);
-    // debug!("h_z: {}", every_nth(ui.app.num_seq().into(), ui.seq_para_height().into()).len());
 
     if ui.zoom_level == ZoomLevel::ZoomedIn && ui.show_scrollbars {
         // vertical scrollbar
@@ -494,8 +494,6 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .content_length((ui.app.num_seq() - ui.seq_para_height()).into())
                 .viewport_content_length((ui.seq_para_height() - 2).into())
                 .position(ui.top_line.into());
-            // debug!("v_bar: {:#?}", v_scrollbar_state);
-            // debug!("t_max: {}", ui.max_top_line());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
                 .thumb_style(Color::Cyan)
                 .begin_symbol(None)
@@ -647,7 +645,7 @@ pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
 
 #[cfg(test)]
 mod tests {
-    use crate::ui::render::every_nth;
+    use crate::ui::render::{every_nth, tick_marks};
 
     #[test]
     fn test_every_nth_1() {
@@ -668,4 +666,17 @@ mod tests {
     fn test_every_nth_4() {
         assert_eq!(vec![0, 1, 2, 3, 4], every_nth(5, 10));
     }
+
+    #[test]
+    fn test_tick_marks_01() {
+        let tm = tick_marks(21, None, None);
+        assert_eq!(tm, "|         |         |");
+    }
+
+    #[test]
+    fn test_tick_marks_02() {
+        let tm = tick_marks(21, Some(':'), Some('.'));
+        assert_eq!(tm, ":    .    :    .    :");
+    }
+
 }
