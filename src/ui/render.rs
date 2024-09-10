@@ -357,9 +357,11 @@ struct Panes {
 }
 
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
+
     let constraints: Vec<Constraint> =
-        vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)];
+        vec![Constraint::Max(ui.app.num_seq()), Constraint::Max(ui.bottom_pane_height)];
     let v_panes = Layout::new(Direction::Vertical, constraints).split(f.size());
+
     let upper_panes = Layout::new(
         Direction::Horizontal,
         vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
