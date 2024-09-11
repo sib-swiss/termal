@@ -266,6 +266,29 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     }
 }
 
+// Draws guides from the scale to the zoom box (hence, only meaningful in one of the zoomed-out
+// modes, and only if there are empty lines).
+//
+fn draw_zoombox_guides(seq_para: &mut [Line], ui: &UI) {
+    let zb_left: usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
+    let mut zb_right: usize =
+        (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
+    // If w_a < w_p
+    if zb_right > ui.app.aln_len() as usize {
+        zb_right = ui.app.aln_len() as usize;
+    }
+    debug!( "ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
+
+    let mut guide = String::new();
+    for i in 0..ui.seq_para_width() {
+        if usize::from(i) == zb_left || usize::from(i) == zb_right {
+            guide.push('.');
+        } else {
+            guide.push(' ');
+        }
+    }
+}
+
 // Draws the zoombox, but preserving aspect ratio
 //
 fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
