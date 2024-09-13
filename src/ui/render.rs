@@ -266,10 +266,25 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     }
 }
 
+fn g(l: usize, h: usize, b: usize, j: usize) -> usize {
+    let left_zb_pos = l as f64;
+    let bottom_empty_line = h as f64;
+    let nb_empty_lines = (h - b) as f64;
+    let slope = left_zb_pos / nb_empty_lines;
+
+    (-slope * j as f64 + slope * bottom_empty_line).round() as usize
+}
+
 // Draws guides from the scale to the zoom box (hence, only meaningful in one of the zoomed-out
 // modes, and only if there are empty lines).
 //
-fn draw_zoombox_guides(seq_para: &mut [Line], ui: &UI) {
+fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
+    let mut zb_bottom: usize =
+        (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
+    // If h_a < h_p
+    if zb_bottom > ui.app.num_seq() as usize {
+        zb_bottom = ui.app.num_seq() as usize;
+    }
     let zb_left: usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
     let mut zb_right: usize =
         (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
@@ -277,15 +292,18 @@ fn draw_zoombox_guides(seq_para: &mut [Line], ui: &UI) {
     if zb_right > ui.app.aln_len() as usize {
         zb_right = ui.app.aln_len() as usize;
     }
-    debug!( "ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
+    debug!("ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
 
-    let mut guide = String::new();
-    for i in 0..ui.seq_para_width() {
-        if usize::from(i) == zb_left || usize::from(i) == zb_right {
-            guide.push('.');
-        } else {
-            guide.push(' ');
+    for j in zb_bottom + 1..ui.seq_para_height() as usize {
+        let mut line = String::new();
+        for i in 0..ui.seq_para_width() {
+            if usize::from(i) == g(zb_left, ui.seq_para_height().into(), zb_bottom, j) {
+                line.push('.');
+            } else {
+                line.push(' ');
+            }
         }
+        seq_para.push(Line::from(line));
     }
 }
 
@@ -361,12 +379,16 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
 
 // Ticks and tick marks (e.g. for bottom pane)
 
-fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char> ) -> String {
+fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char>) -> String {
     let mut ticks = String::with_capacity(aln_length);
     for i in 0..aln_length {
-        ticks.push(if i % 10 == 0 { primary.unwrap_or('|') }
-            else if i % 5 == 0 { secondary.unwrap_or(' ') }
-            else { ' ' });
+        ticks.push(if i % 10 == 0 {
+            primary.unwrap_or('|')
+        } else if i % 5 == 0 {
+            secondary.unwrap_or(' ')
+        } else {
+            ' '
+        });
     }
 
     ticks
@@ -430,6 +452,8 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
             if ui.show_zoombox {
                 mark_zoombox(&mut sequences, ui);
             }
+            // TODO: condition on option ui.show_zoombox_guides; also do in AR
+            draw_zoombox_guides(&mut sequences, ui);
         }
         ZoomLevel::ZoomedOutAR => {
             sequences = zoom_out_ar_seq_text(ui);
@@ -668,4 +692,17 @@ mod tests {
         assert_eq!(tm, ":    .    :    .    :");
     }
 
+    use crate::ui::render::g;
+
+    #[test]
+    fn test_g() {
+        let b: usize = 0;
+        let l: usize = 4;
+        let h: usize = b + 4;
+        assert_eq!(g(l, h, b, 0), 4);
+        assert_eq!(g(l, h, b, 1), 3);
+        assert_eq!(g(l, h, b, 2), 2);
+        assert_eq!(g(l, h, b, 3), 1);
+        assert_eq!(g(l, h, b, 4), 0);
+    }
 }
