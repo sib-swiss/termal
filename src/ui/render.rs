@@ -266,11 +266,23 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     }
 }
 
+// TODO: put inside draw_zoombox_guides(), once tested (possibly as a closure, in fact)
 fn g(l: usize, h: usize, b: usize, j: usize) -> usize {
     let left_zb_pos = l as f64;
     let bottom_empty_line = h as f64;
     let nb_empty_lines = (h - b) as f64;
-    let slope = left_zb_pos / nb_empty_lines;
+    let slope = left_zb_pos / nb_empty_lines; // actually -slope...
+
+    (-slope * j as f64 + slope * bottom_empty_line).round() as usize
+}
+
+// TODO: put inside draw_zoombox_guides(), once tested (possibly as a closure, in fact)
+fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
+    let sp_width = w as f64;
+    let right_zb_pos = r as f64;
+    let bottom_zb_pos = b as f64;
+    let nb_empty_lines = (h - b) as f64;
+let slope = (sp_width - right_zb_pos) / nb_empty_lines;
 
     (-slope * j as f64 + slope * bottom_empty_line).round() as usize
 }
@@ -705,4 +717,16 @@ mod tests {
         assert_eq!(g(l, h, b, 3), 1);
         assert_eq!(g(l, h, b, 4), 0);
     }
+
+    fn test_rg() {
+        let w: usize = 8;
+        let r: usize = 4;
+        let b: usize = 0;
+        let h: usize = 4;
+        assert_eq!(rg(w, r, h, b, 0), 4);
+        assert_eq!(rg(w, r, h, b, 1), 5);
+        assert_eq!(rg(w, r, h, b, 2), 6);
+        assert_eq!(rg(w, r, h, b, 3), 7);
+    }
+
 }
