@@ -282,8 +282,8 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
 
     // position of right guide
     fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
-        let sp_width = w as f64;
-        let right_zb_pos = r as f64;
+        let sp_width = w as f64 - 1.0;
+        let right_zb_pos = r as f64 - 1.0;
         let bottom_zb_pos = b as f64;
         let nb_empty_lines = (h - b) as f64;
         let slope = (sp_width - right_zb_pos) / nb_empty_lines;
