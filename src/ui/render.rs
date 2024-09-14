@@ -309,11 +309,12 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
 
     for j in zb_bottom + 1..ui.seq_para_height() as usize {
         let mut line = String::new();
-        for i in 0..ui.seq_para_width() {
-            if usize::from(i) == g(zb_left, ui.seq_para_height().into(), zb_bottom, j) {
+        let left_guide_col = g(zb_left, ui.seq_para_height().into(), zb_bottom, j);
+        let right_guide_col = rg(ui.seq_para_width().into(), zb_right, ui.seq_para_height().into(), zb_bottom, j);
+        for i in 0..ui.seq_para_width() as usize {
+            if i == left_guide_col {
                 line.push('.');
-            } else if usize::from(i) == rg(ui.seq_para_width().into(), zb_right,
-                                            ui.seq_para_height().into(), zb_bottom, j) {
+            } else if i == right_guide_col {
                 line.push('.');
             } else {
                 line.push(' ');
