@@ -266,32 +266,31 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     }
 }
 
-// TODO: put inside draw_zoombox_guides(), once tested (possibly as a closure, in fact)
-fn g(l: usize, h: usize, b: usize, j: usize) -> usize {
-    let left_zb_pos = l as f64;
-    let bottom_empty_line = h as f64;
-    let nb_empty_lines = (h - b) as f64;
-    let slope = left_zb_pos / nb_empty_lines; // actually -slope...
-
-    (-slope * j as f64 + slope * bottom_empty_line).round() as usize
-}
-
-// TODO: put inside draw_zoombox_guides(), once tested (possibly as a closure, in fact)
-fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
-    let sp_width = w as f64;
-    let right_zb_pos = r as f64;
-    let bottom_zb_pos = b as f64;
-    let nb_empty_lines = (h - b) as f64;
-    let slope = (sp_width - right_zb_pos) / nb_empty_lines;
-    let y_int = right_zb_pos - bottom_zb_pos * slope;
-
-    (slope * j as f64 + y_int).round() as usize
-}
-
 // Draws guides from the scale to the zoom box (hence, only meaningful in one of the zoomed-out
 // modes, and only if there are empty lines).
 //
 fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
+
+    // position of left guide
+    fn lg(l: usize, h: usize, b: usize, j: usize) -> usize {
+        let left_zb_pos = l as f64;
+        let bottom_empty_line = h as f64;
+        let nb_empty_lines = (h - b) as f64;
+        let slope = left_zb_pos / nb_empty_lines; // actually -slope...
+        (-slope * j as f64 + slope * bottom_empty_line).round() as usize
+    }
+
+    // position of right guide
+    fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
+        let sp_width = w as f64;
+        let right_zb_pos = r as f64;
+        let bottom_zb_pos = b as f64;
+        let nb_empty_lines = (h - b) as f64;
+        let slope = (sp_width - right_zb_pos) / nb_empty_lines;
+        let y_int = right_zb_pos - bottom_zb_pos * slope;
+        (slope * j as f64 + y_int).round() as usize
+    }
+
     let mut zb_bottom: usize =
         (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
     // If h_a < h_p
@@ -309,7 +308,7 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
 
     for j in zb_bottom + 1..ui.seq_para_height() as usize {
         let mut line = String::new();
-        let left_guide_col = g(zb_left, ui.seq_para_height().into(), zb_bottom, j);
+        let left_guide_col = lg(zb_left, ui.seq_para_height().into(), zb_bottom, j);
         let right_guide_col = rg(ui.seq_para_width().into(), zb_right, ui.seq_para_height().into(), zb_bottom, j);
         for i in 0..ui.seq_para_width() as usize {
             if i == left_guide_col {
@@ -708,32 +707,4 @@ mod tests {
         let tm = tick_marks(21, Some(':'), Some('.'));
         assert_eq!(tm, ":    .    :    .    :");
     }
-
-    use crate::ui::render::g;
-    use crate::ui::render::rg;
-
-    #[test]
-    fn test_g() {
-        let b: usize = 0;
-        let l: usize = 4;
-        let h: usize = b + 4;
-        assert_eq!(g(l, h, b, 0), 4);
-        assert_eq!(g(l, h, b, 1), 3);
-        assert_eq!(g(l, h, b, 2), 2);
-        assert_eq!(g(l, h, b, 3), 1);
-        assert_eq!(g(l, h, b, 4), 0);
-    }
-
-    #[test]
-    fn test_rg() {
-        let w: usize = 8;
-        let r: usize = 4;
-        let b: usize = 0;
-        let h: usize = 4;
-        assert_eq!(rg(w, r, h, b, 0), 4);
-        assert_eq!(rg(w, r, h, b, 1), 5);
-        assert_eq!(rg(w, r, h, b, 2), 6);
-        assert_eq!(rg(w, r, h, b, 3), 7);
-    }
-
 }
