@@ -282,9 +282,10 @@ fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
     let right_zb_pos = r as f64;
     let bottom_zb_pos = b as f64;
     let nb_empty_lines = (h - b) as f64;
-let slope = (sp_width - right_zb_pos) / nb_empty_lines;
+    let slope = (sp_width - right_zb_pos) / nb_empty_lines;
+    let y_int = right_zb_pos - bottom_zb_pos * slope;
 
-    (-slope * j as f64 + slope * bottom_empty_line).round() as usize
+    (slope * j as f64 + y_int).round() as usize
 }
 
 // Draws guides from the scale to the zoom box (hence, only meaningful in one of the zoomed-out
@@ -310,6 +311,9 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
         let mut line = String::new();
         for i in 0..ui.seq_para_width() {
             if usize::from(i) == g(zb_left, ui.seq_para_height().into(), zb_bottom, j) {
+                line.push('.');
+            } else if usize::from(i) == rg(ui.seq_para_width().into(), zb_right,
+                                            ui.seq_para_height().into(), zb_bottom, j) {
                 line.push('.');
             } else {
                 line.push(' ');
@@ -705,6 +709,7 @@ mod tests {
     }
 
     use crate::ui::render::g;
+    use crate::ui::render::rg;
 
     #[test]
     fn test_g() {
@@ -718,6 +723,7 @@ mod tests {
         assert_eq!(g(l, h, b, 4), 0);
     }
 
+    #[test]
     fn test_rg() {
         let w: usize = 8;
         let r: usize = 4;
