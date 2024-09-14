@@ -45,6 +45,7 @@ pub struct UI<'a> {
     zoom_level: ZoomLevel,
     // What to show
     show_zoombox: bool,
+    show_zb_guides: bool,
     show_scrollbars: bool,
     highlight_retained_cols: bool,
     top_line: u16,
@@ -65,6 +66,7 @@ impl<'a> UI<'a> {
             colour_map: color_scheme_lesk(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
+            show_zb_guides: true,
             show_scrollbars: true,
             highlight_retained_cols: false,
             top_line: 0,

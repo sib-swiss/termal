@@ -467,14 +467,18 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
             sequences = zoom_out_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox(&mut sequences, ui);
+                if ui.show_zb_guides {
+                    draw_zoombox_guides(&mut sequences, ui);
+                }
             }
-            // TODO: condition on option ui.show_zoombox_guides; also do in AR
-            draw_zoombox_guides(&mut sequences, ui);
         }
         ZoomLevel::ZoomedOutAR => {
             sequences = zoom_out_ar_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox_ar(&mut sequences, ui);
+                if ui.show_zb_guides {
+                    draw_zoombox_guides(&mut sequences, ui);
+                }
             }
         }
     }
