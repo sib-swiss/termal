@@ -1,5 +1,3 @@
-use std::cmp::min;
-
 use ratatui::{
     prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
     style::Stylize,
@@ -232,23 +230,11 @@ fn mark_zoombox_point(
 //
 fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     // I want zb_top to be immutable, but I may need to change it just after intialization
-    let zb_top: usize = {
-        let zb_top = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
-        // Rounding can push zb_top to seq_para.len(), if zoom box has zero height
-        if zb_top >= seq_para.len() {
-            seq_para.len() - 1
-        } else {
-            zb_top
-        }
-    };
-    let mut zb_bottom: usize =
-        (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
-    // If h_a < h_p
-    if zb_bottom > ui.app.num_seq() as usize {
-        zb_bottom = ui.app.num_seq() as usize;
-    }
-
-    let zb_left: usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
+    let zb_top = ui.zoombox_top(seq_para.len());
+    let zb_bottom = ui.zoombox_bottom(seq_para.len());
+    let zb_left = ui.zoombox_left();
+    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
+    /*
     let mut zb_right: usize =
         (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
     // If w_a < w_p
@@ -261,6 +247,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
         zb_top, zb_bottom, zb_left, zb_right
     );
     ui.assert_invariants();
+    */
 
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
@@ -282,40 +269,19 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 // Draws the zoombox, but preserving aspect ratio
 //
 fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
-    let ratio = ui.h_ratio().min(ui.v_ratio());
-    debug!("[MZAR] ratio: {}", ratio);
+    let zb_top = ui.zoombox_top(seq_para.len());
+    let zb_bottom = ui.zoombox_bottom(seq_para.len());
 
-    /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the number of
-     * retained sequences (which are in seq_para), and (ii) the alignment panel's height. */
-    let aln_para_height = min(seq_para.len() as u16, ui.seq_para_height());
-    debug!("[MZAR] aln para height: {}", aln_para_height);
-    let zb_top: usize = {
-        let zb_top = ((ui.top_line as f64) * ratio).round() as usize;
-        // Rounding can push zb_top to aln_para_height, if zoom box has zero height
-        if zb_top >= aln_para_height.into() {
-            (aln_para_height - 1).into()
-        } else {
-            zb_top
-        }
-    };
-    let mut zb_bottom: usize =
-        (((ui.top_line + ui.seq_para_height()) as f64) * ratio).round() as usize;
-    // If h_a < h_p
-    if zb_bottom > aln_para_height as usize {
-        zb_bottom = aln_para_height as usize;
-    }
-    debug!("[MZAR] zb_top: {}, zb_bottom: {}", zb_top, zb_bottom);
-
-    /* IN AR mode, the width of the alignment paragraph is the smallest of (i) the number of
-     * retained columns, and (ii) the alignment panel's width. */
-    let aln_para_width = min((seq_para[0]).width() as u16, ui.seq_para_width());
-    let zb_left: usize = ((ui.leftmost_col as f64) * ratio).round() as usize;
+    let zb_left = ui.zoombox_left();
+    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
+    /*
     let mut zb_right: usize =
         (((ui.leftmost_col + ui.seq_para_width()) as f64) * ratio).round() as usize;
     // If w_a < w_p
     if zb_right > aln_para_width as usize {
         zb_right = aln_para_width as usize;
     }
+    */
     // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.seq_para_width(), ratio);
     ui.assert_invariants();
 

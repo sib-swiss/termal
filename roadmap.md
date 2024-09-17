@@ -22,10 +22,14 @@ Urgent
 1. [x] `zb_top` and friends get computed at several places, perhaps there should
    be a single function which could also handle checking for the zoom mode. This
    might bake it possible to dispense wit hdifferent `*_ar` versions of some
-   functions.
+   functions. => done for `zb_top` and `zb_bottom` (ui::zoombox_top(),
+   ui::zoombox_bottom()); still TODO for left and right.
 
 Normal
 ------
+
+1. The code in render.rs seems to hesitate between u16 and usize, try to sort
+   this out.
 
 1. [x] Try adding visual guides to the zoom box, provoding a, well, zoom effect.
 
