@@ -270,28 +270,6 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 // modes, and only if there are empty lines).
 //
 fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
-
-    // position of left guide
-    fn lg(l: usize, h: usize, b: usize, j: usize) -> usize {
-        let left_zb_pos = l as f64;
-        let bottom_empty_line = h as f64;
-        let nb_empty_lines = (h - b) as f64;
-        let slope = left_zb_pos / nb_empty_lines; // actually -slope...
-        (-slope * j as f64 + slope * bottom_empty_line).round() as usize
-    }
-
-
-    // position of right guide
-    fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
-        let sp_width = w as f64 - 1.0;
-        let right_zb_pos = r as f64 - 1.0;
-        let bottom_zb_pos = b as f64;
-        let nb_empty_lines = (h - b) as f64;
-        let slope = (sp_width - right_zb_pos) / nb_empty_lines;
-        let y_int = right_zb_pos - bottom_zb_pos * slope;
-        (slope * j as f64 + y_int).round() as usize
-    }
-
     let mut zb_bottom: usize =
         (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
     // If h_a < h_p
@@ -305,19 +283,27 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
     if zb_right > ui.app.aln_len() as usize {
         zb_right = ui.app.aln_len() as usize;
     }
-    debug!("ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
+    // debug!("ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
 
     let left_guide_pos = |j: usize| {
-        let left_zb_pos = zb_left as f64;
         let h = ui.seq_para_height() as f64;
-        let slope = zb_left as f64 / (h - zb_bottom as f64); // actually -slope...
-        (-slope * j as f64 + slope * h).round() as usize
+        let slope = zb_left as f64 / (zb_bottom as f64 - h);
+        (slope * j as f64 - slope * h).round() as usize
+    };
+
+    // position of right guide
+    let right_guide_pos = |j: usize| {
+        let right_zb_pos = zb_right as f64 - 1.0;
+        let slope = ((ui.seq_para_width() as f64 - 1.0) - right_zb_pos)
+            / (ui.seq_para_height() as usize - zb_bottom) as f64;
+        let y_int = right_zb_pos - zb_bottom as f64 * slope;
+        (slope * j as f64 + y_int).round() as usize
     };
 
     for j in zb_bottom + 1..ui.seq_para_height() as usize {
         let mut line = String::new();
         let left_guide_col = left_guide_pos(j);
-        let right_guide_col = rg(ui.seq_para_width().into(), zb_right, ui.seq_para_height().into(), zb_bottom, j);
+        let right_guide_col = right_guide_pos(j);
         for i in 0..ui.seq_para_width() as usize {
             if i == left_guide_col {
                 line.push('.');
