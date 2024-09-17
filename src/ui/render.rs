@@ -280,6 +280,7 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
         (-slope * j as f64 + slope * bottom_empty_line).round() as usize
     }
 
+
     // position of right guide
     fn rg(w: usize, r: usize, h: usize, b: usize, j: usize) -> usize {
         let sp_width = w as f64 - 1.0;
@@ -306,9 +307,16 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
     }
     debug!("ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
 
+    let left_guide_pos = |j: usize| {
+        let left_zb_pos = zb_left as f64;
+        let h = ui.seq_para_height() as f64;
+        let slope = zb_left as f64 / (h - zb_bottom as f64); // actually -slope...
+        (-slope * j as f64 + slope * h).round() as usize
+    };
+
     for j in zb_bottom + 1..ui.seq_para_height() as usize {
         let mut line = String::new();
-        let left_guide_col = lg(zb_left, ui.seq_para_height().into(), zb_bottom, j);
+        let left_guide_col = left_guide_pos(j);
         let right_guide_col = rg(ui.seq_para_width().into(), zb_right, ui.seq_para_height().into(), zb_bottom, j);
         for i in 0..ui.seq_para_width() as usize {
             if i == left_guide_col {
