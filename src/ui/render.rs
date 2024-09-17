@@ -293,8 +293,9 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
 
     // position of right guide
     let right_guide_pos = |j: usize| {
-        let right_zb_pos = zb_right as f64 - 1.0;
-        let slope = ((ui.seq_para_width() as f64 - 1.0) - right_zb_pos)
+        // -1: align the right guide to the last col of the alignment.
+        let right_zb_pos = (zb_right - 1) as f64;
+        let slope = ((ui.seq_para_width() - 1) as f64  - right_zb_pos)
             / (ui.seq_para_height() as usize - zb_bottom) as f64;
         let y_int = right_zb_pos - zb_bottom as f64 * slope;
         (slope * j as f64 + y_int).round() as usize
