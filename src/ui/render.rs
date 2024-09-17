@@ -270,21 +270,11 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 // modes, and only if there are empty lines).
 //
 fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
-    let mut zb_bottom: usize =
-        (((ui.top_line + ui.seq_para_height()) as f64) * ui.v_ratio()).round() as usize;
-    // If h_a < h_p
-    if zb_bottom > ui.app.num_seq() as usize {
-        zb_bottom = ui.app.num_seq() as usize;
-    }
-    let zb_left: usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
-    let mut zb_right: usize =
-        (((ui.leftmost_col + ui.seq_para_width()) as f64) * ui.h_ratio()).round() as usize;
-    // If w_a < w_p
-    if zb_right > ui.app.aln_len() as usize {
-        zb_right = ui.app.aln_len() as usize;
-    }
-    // debug!("ZB_lft: {}, ZB_rgt: {}\n", zb_left, zb_right);
+    let zb_bottom = ui.zoombox_bottom(seq_para.len());
+    let zb_left = ui.zoombox_left();
+    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
 
+    // position of left guide
     let left_guide_pos = |j: usize| {
         let h = ui.seq_para_height() as f64;
         let slope = zb_left as f64 / (zb_bottom as f64 - h);
@@ -320,6 +310,7 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
 
 // Draws the zoombox, but preserving aspect ratio
 //
+//// TODO: this fn is now prolly identical with mark_zoombox()... keep only 1.
 fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
     let zb_top = ui.zoombox_top(seq_para.len());
     let zb_bottom = ui.zoombox_bottom(seq_para.len());
