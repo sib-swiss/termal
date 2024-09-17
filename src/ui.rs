@@ -316,6 +316,100 @@ impl<'a> UI<'a> {
 
     }
 
+    // TODO: do we really need seq_para_len? Or can we just use self.app.num_seq?
+    pub fn zoombox_top(&self, seq_para_len: usize) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                let zb_top = ((self.top_line as f64) * self.v_ratio()).round() as usize;
+                // Rounding can push zb_top to seq_para_len, if zoom box has zero height
+                if zb_top >= seq_para_len {
+                    seq_para_len - 1
+                } else {
+                    zb_top
+                }
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the
+                 * number of retained sequences (which are in seq_para), and (ii) the alignment
+                 * panel's height. */
+                let aln_para_height = min(seq_para_len as u16, self.seq_para_height());
+                let zb_top = ((self.top_line as f64) * ratio).round() as usize;
+                // Rounding can push zb_top to aln_para_height, if zoom box has zero height
+                if zb_top >= aln_para_height.into() {
+                    (aln_para_height - 1).into()
+                } else {
+                    zb_top
+                }
+            },
+            _ => panic!("zoombox_top() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn zoombox_bottom(&self, seq_para_len: usize) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                let mut zb_bottom: usize =
+                    (((self.top_line + self.seq_para_height()) as f64) * self.v_ratio()).round() as usize;
+                // If h_a < h_p
+                if zb_bottom > self.app.num_seq() as usize {
+                    zb_bottom = self.app.num_seq() as usize;
+                }
+                zb_bottom
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                let aln_para_height = min(seq_para_len as u16, self.seq_para_height());
+                let mut zb_bottom = (((self.top_line + self.seq_para_height()) as f64) * ratio).round() as usize;
+                // If h_a < h_p
+                if zb_bottom > aln_para_height as usize {
+                    zb_bottom = aln_para_height as usize;
+                }
+                zb_bottom
+            },
+            _ => panic!("zoombox_bottom() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn zoombox_left(&self) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                ((self.leftmost_col as f64) * self.h_ratio()).round() as usize
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                ((self.leftmost_col as f64) * ratio).round() as usize
+            },
+            _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn zoombox_right(&self, seq_para_width_ar: usize) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                let mut zb_right =
+                    (((self.leftmost_col + self.seq_para_width()) as f64) * self.h_ratio()).round() as usize;
+                // If w_a < w_p
+                if zb_right > self.app.aln_len() as usize {
+                    zb_right = self.app.aln_len() as usize;
+                }
+                zb_right
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                let aln_para_width = min(seq_para_width_ar as u16, self.seq_para_width());
+                let mut zb_right =
+                    (((self.leftmost_col + self.seq_para_width()) as f64) * ratio).round() as usize;
+                // If w_a < w_p
+                if zb_right > aln_para_width as usize {
+                    zb_right = aln_para_width as usize;
+                }
+                zb_right
+            },
+            _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
     pub fn toggle_hl_retained_cols(&mut self) {
         self.highlight_retained_cols = !self.highlight_retained_cols;
     }
