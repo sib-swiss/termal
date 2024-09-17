@@ -19,8 +19,15 @@ TODO
 Urgent
 ------
 
+1. [x] `zb_top` and friends get computed at several places, perhaps there should
+   be a single function which could also handle checking for the zoom mode. This
+   might bake it possible to dispense wit hdifferent `*_ar` versions of some
+   functions.
+
 Normal
 ------
+
+1. [x] Try adding visual guides to the zoom box, provoding a, well, zoom effect.
 
 1. [x] Experiment with (i) sticking the bottom directly below the alignment pane
    when there is unused space, and (ii) keeping the unused space, but providing
