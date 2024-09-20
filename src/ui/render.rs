@@ -61,6 +61,14 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
     }
 }
 
+fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let numbers = (0 .. ui.app.num_seq()).map(|n| Line::from(format!("{:>2}", n))).collect();
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => numbers,
+        _ => todo!(),
+    }
+}
+
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app
         .alignment
@@ -531,10 +539,6 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     };
 
     labels
-}
-
-fn compute_label_numbers<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
-    vec!["1".into(), "2".into(), "3".into()]
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
