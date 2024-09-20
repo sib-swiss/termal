@@ -364,10 +364,12 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
 ****************************************************************/
 
 struct Panes {
-    sequence: Rect,
+    lbl_num: Rect,
     labels: Rect,
-    bottom: Rect,
+    sequence: Rect,
+
     corner: Rect,
+    bottom: Rect,
 }
 
 // Height for Max constraint below (used in Adjacent bottom panel mode). In Zoomed In and ZoomedOut
@@ -427,6 +429,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
         vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
     )
     .split(v_panes[0]);
+    let lbl_pane = Layout::new(Direction::Horizontal, vec![Constraint::Length(3), Constraint::Fill(1)]).split(upper_panes[0]);
     let lower_panes = Layout::new(
         Direction::Horizontal,
         vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
@@ -434,7 +437,8 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     .split(v_panes[1]);
 
     Panes {
-        labels: upper_panes[0],
+        lbl_num: lbl_pane[0],
+        labels: lbl_pane[1],
         sequence: upper_panes[1],
         corner: lower_panes[0],
         bottom: lower_panes[1],
@@ -527,6 +531,17 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     };
 
     labels
+}
+
+fn compute_label_numbers<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
+    vec!["1".into(), "2".into(), "3".into()]
+}
+
+fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
+    let lbl_nums = compute_label_numbers(ui);
+    let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
+    let lbl_num_para = Paragraph::new(lbl_nums).white().block(lbl_num_block);
+    f.render_widget(lbl_num_para, num_chunk);
 }
 
 fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
@@ -706,6 +721,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     ui.assert_invariants();
 
     /* Render panes */
+    render_label_nums_pane(f, layout_panes.lbl_num, ui);
     render_labels_pane(f, layout_panes.labels, ui);
     render_alignment_pane(f, layout_panes.sequence, ui);
     render_corner_pane(f, layout_panes.corner);
