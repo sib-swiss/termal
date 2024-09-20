@@ -62,10 +62,19 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
 }
 
 fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let numbers = (0 .. ui.app.num_seq()).map(|n| Line::from(format!("{:>2}", n))).collect();
+    let num_cols = ui.app.num_seq().ilog10() as usize + 1;
+    let numbers = (0..ui.app.num_seq())
+        .map(|n| Line::from(format!("{:1$}!", n+1, num_cols))) // n+1 -> 1-based (for humans...)
+        .collect();
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => numbers,
-        _ => todo!(),
+        ZoomLevel:: ZoomedOut | ZoomLevel::ZoomedOutAR => {
+            let mut result: Vec<Line> = Vec::new();
+            for i in retained_seq_ndx(ui) { 
+                result.push(numbers[i].clone());
+            }
+            result
+        }
     }
 }
 
@@ -437,7 +446,18 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
         vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
     )
     .split(v_panes[0]);
-    let lbl_pane = Layout::new(Direction::Horizontal, vec![Constraint::Length(3), Constraint::Fill(1)]).split(upper_panes[0]);
+    // number of columns for the label number pane :-)
+    // which is 1 + the log_10 of the number of sequences (rounded down), plus room for the left
+    // border.
+    let lbl_num_pane_num_cols = ui.app.num_seq().ilog10() + 2;
+    let lbl_pane = Layout::new(
+        Direction::Horizontal,
+        vec![
+            Constraint::Length(lbl_num_pane_num_cols.try_into().unwrap()),
+            Constraint::Fill(1),
+        ],
+    )
+    .split(upper_panes[0]);
     let lower_panes = Layout::new(
         Direction::Horizontal,
         vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
@@ -544,7 +564,15 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
     let lbl_nums = compute_label_numbers(ui);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
-    let lbl_num_para = Paragraph::new(lbl_nums).white().block(lbl_num_block);
+    let top_lbl_line = match ui.zoom_level() {
+        ZoomLevel::ZoomedIn => ui.top_line,
+        ZoomLevel::ZoomedOut => 0,
+        ZoomLevel::ZoomedOutAR => 0,
+    };
+    let lbl_num_para = Paragraph::new(lbl_nums)
+        .white()
+        .scroll((top_lbl_line, 0))
+        .block(lbl_num_block);
     f.render_widget(lbl_num_para, num_chunk);
 }
 
