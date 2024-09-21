@@ -55,6 +55,10 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             ui.cycle_zoom();
             ui.cycle_zoom();
         }
+        // Toggle zoom box guides
+        KeyCode::Char('v') => {
+            ui.set_zoombox_guides(! ui.show_zb_guides);
+        }
 
         // Mark consensus positions that are retained in the zoom box
         KeyCode::Char('r') => ui.toggle_hl_retained_cols(),

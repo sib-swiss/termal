@@ -311,6 +311,11 @@ impl<'a> UI<'a> {
         }
     }
 
+    pub fn set_zoombox_guides(&mut self, state: bool) {
+        self.show_zb_guides = state;
+
+    }
+
     pub fn toggle_hl_retained_cols(&mut self) {
         self.highlight_retained_cols = !self.highlight_retained_cols;
     }
