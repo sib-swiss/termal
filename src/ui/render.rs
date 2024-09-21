@@ -360,7 +360,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
 
     let constraints: Vec<Constraint> = match ui.bottom_pane_position {
         BottomPanePosition::Adjacent => vec![Constraint::Max(ui.app.num_seq()), Constraint::Max(ui.bottom_pane_height)],
-        BottomPanePosition::ScreenBottom => todo!(),
+        BottomPanePosition::ScreenBottom => vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)],
     };
     let v_panes = Layout::new(Direction::Vertical, constraints).split(f.size());
 

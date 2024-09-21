@@ -318,6 +318,13 @@ impl<'a> UI<'a> {
         }
     }
 
+    pub fn cycle_bottom_pane_position(&mut self) {
+        self.bottom_pane_position = match self.bottom_pane_position {
+            BottomPanePosition::Adjacent => BottomPanePosition::ScreenBottom,
+            BottomPanePosition::ScreenBottom => BottomPanePosition::Adjacent,
+        }
+    }
+
     pub fn set_zoombox_guides(&mut self, state: bool) {
         self.show_zb_guides = state;
 
