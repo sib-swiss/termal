@@ -8,7 +8,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{color_scheme::SALMON, conservation::values_barchart, AlnWRTSeqPane},
+    ui::{BottomPanePosition, color_scheme::SALMON, conservation::values_barchart, AlnWRTSeqPane},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -358,8 +358,10 @@ struct Panes {
 
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
 
-    let constraints: Vec<Constraint> =
-        vec![Constraint::Max(ui.app.num_seq()), Constraint::Max(ui.bottom_pane_height)];
+    let constraints: Vec<Constraint> = match ui.bottom_pane_position {
+        BottomPanePosition::Adjacent => vec![Constraint::Max(ui.app.num_seq()), Constraint::Max(ui.bottom_pane_height)],
+        BottomPanePosition::ScreenBottom => todo!(),
+    };
     let v_panes = Layout::new(Direction::Vertical, constraints).split(f.size());
 
     let upper_panes = Layout::new(

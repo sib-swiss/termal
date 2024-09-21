@@ -26,6 +26,11 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
+enum BottomPanePosition {
+    Adjacent,
+    ScreenBottom,
+}
+
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
 // tall, both, or neither.
 
@@ -52,6 +57,7 @@ pub struct UI<'a> {
     leftmost_col: u16,
     label_pane_width: u16,
     bottom_pane_height: u16,
+    bottom_pane_position: BottomPanePosition,
     // These cannot be known when the structure is initialized, so they are Options -- but it is
     // possible that they need not be stored at all, as they can in principle be computed when the
     // layout is known.
@@ -73,6 +79,7 @@ impl<'a> UI<'a> {
             leftmost_col: 0,
             label_pane_width: 15, // Reasonable default, I'd say...
             bottom_pane_height: 5,
+            bottom_pane_position: BottomPanePosition::Adjacent,
             aln_pane_size: None,
             frame_size: None,
         }
