@@ -41,9 +41,19 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
         ZoomLevel::ZoomedOut => every_nth(ui.app.num_seq() as usize, ui.max_nb_seq_shown().into()),
         ZoomLevel::ZoomedOutAR => {
             let ratio = ui.h_ratio().min(ui.v_ratio());
-            debug!("h-ratio: {}, v-ratio: {} -> Ratio: {ratio}", ui.h_ratio(), ui.v_ratio());
+            debug!(
+                "h-ratio: {}, v-ratio: {} -> Ratio: {ratio}",
+                ui.h_ratio(),
+                ui.v_ratio()
+            );
             let num_retained_seqs: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
-            debug!("Num retained seqs: {} (total: {})", num_retained_seqs, ui.app.num_seq());
+            debug!(
+                "Num retained seqs: {} * {} = {} (total: {})",
+                ui.app.num_seq(),
+                ratio,
+                num_retained_seqs,
+                ui.app.num_seq()
+            );
             every_nth(ui.app.num_seq() as usize, num_retained_seqs)
         }
     }
@@ -61,11 +71,9 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
 
-    debug!("Computing ZoomedOut lbl text");
     for i in retained_seq_ndx(ui) {
         ztext.push(Line::from(ui.app.alignment.headers[i].clone()));
     }
-    debug!("Computed ZoomedOut lbl text");
 
     ztext
 }
@@ -191,7 +199,6 @@ fn mark_zoombox_zero_height(
     zb_left: usize,
     zb_right: usize,
 ) {
-    debug!("zb_top: {}\n", zb_top);
     let l: &mut Line = &mut seq_para[zb_top];
     let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("╾"));
     for c in zb_left + 1..zb_right {
@@ -245,11 +252,6 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     if zb_right > ui.app.aln_len() as usize {
         zb_right = ui.app.aln_len() as usize;
     }
-    // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.max_nb_col_shown(), ui.h_ratio());
-    debug!(
-        "ZB_top: {}, ZB_bot: {}, ZB_lft: {}, ZB_rgt: {}\n",
-        zb_top, zb_bottom, zb_left, zb_right
-    );
     ui.assert_invariants();
     */
 
@@ -377,29 +379,28 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
             )
             .split(top_chunk)[1];
 
-            debug!("1st-pass seq area: {:?}", aln_pane);
-            let v_ratio = (aln_pane.height - 2)  as f64 / ui.app.num_seq() as f64;
-            debug!("1st-pass v-ratio: {}", v_ratio);
+            //debug!("1st-pass seq area: {:?}", aln_pane);
+            let v_ratio = (aln_pane.height - 2) as f64 / ui.app.num_seq() as f64;
+            //debug!("1st-pass v-ratio: {}", v_ratio);
             // This is WRONG - need to discount left panes' width
             let h_ratio = (aln_pane.width - 2) as f64 / ui.app.aln_len() as f64;
-            debug!("1st-pass h-ratio: {}", h_ratio);
+            //debug!("1st-pass h-ratio: {}", h_ratio);
             let ratio = h_ratio.min(v_ratio);
-            debug!("1st-pass ratio: {}", ratio);
-            debug!("max #seq: {}", (ui.app.num_seq() as f64 * ratio).round() as u16);
+            //debug!("1st-pass ratio: {}", ratio);
+            debug!(
+                "max #seq: {}",
+                (ui.app.num_seq() as f64 * ratio).round() as u16
+            );
             let mut max_num_seq = (ui.app.num_seq() as f64 * ratio).round() as u16;
-            // If we allow a height less than 3 for the pane, then seq_para_height() will set the
-            // paragraph's height to 0 (because the paragraph is surrounded by borders), which can
-            // cause all manner of problems (and is probably not a good idea).
-            if max_num_seq < 3 { 
-                max_num_seq = 3;
-            }
-            max_num_seq
+            
+            max_num_seq + 2 // borders
         }
     }
 }
 
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
     let mns = max_num_seq(f, ui);
+    debug!("max num seq: {}", mns);
     let constraints: Vec<Constraint> = match ui.bottom_pane_position {
         BottomPanePosition::Adjacent => vec![
             Constraint::Max(mns),
@@ -521,6 +522,11 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
         }
     }
 
+    debug!(
+        "compute_aln_pane_text(): {}s x {}c",
+        sequences.len(),
+        sequences[0].spans.len()
+    );
     sequences
 }
 
@@ -535,22 +541,18 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 
 fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
     /* Labels pane */
-    debug!("Start rendering of labels pane.");
     let labels = compute_labels_pane_text(ui);
-    debug!("Computed lbl pane text");
     let lbl_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
         ZoomLevel::ZoomedOut => 0,
         ZoomLevel::ZoomedOutAR => 0,
     };
-    debug!("UTH");
     let lbl_para = Paragraph::new(labels)
         .white()
         .scroll((top_lbl_line, 0))
         .block(lbl_block);
     f.render_widget(lbl_para, seq_chunk);
-    debug!("Rendered labels pane.");
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
@@ -666,11 +668,8 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 }
 
 pub fn render_ui(f: &mut Frame, ui: &mut UI) {
-    debug!("About to call make_layout()");
     let layout_panes = make_layout(f, ui);
-    debug!("After calling make_layout()");
 
-    // debug!("seq pane size (w/ borders): {:?}", layout_panes.sequence.as_size());
     /*
      * Many aspects of the UI depend on the alignment pane's dimensions, e.g. whether the whole
      * alignment fits in it, the horizontal and vertical ratios when zooming, the top line and
@@ -700,11 +699,8 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
 
     /* Render panes */
     render_labels_pane(f, layout_panes.labels, ui);
-    debug!("About to render sequence panes");
     render_alignment_pane(f, layout_panes.sequence, ui);
-    debug!("About to render corner panes");
     render_corner_pane(f, layout_panes.corner);
-    debug!("About to render bottom panes");
     render_bottom_pane(f, layout_panes.bottom, ui);
 }
 
@@ -712,7 +708,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
  * the first (0) and last (l-1) indexes. If n >= l, then return 0 .. l. */
 
 pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
-    debug!("Computing {} indexes out of {}.", n, l);
+    //debug!("Computing {} indexes out of {}.", n, l);
     if n >= l {
         (0..l).collect()
     } else {

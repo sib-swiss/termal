@@ -140,7 +140,7 @@ fn main() -> Result<()> {
 
     // main loop
     loop {
-        debug!("**** Draw Iteration ****");
+        debug!("\n**** Draw Iteration ****");
         debug!("terminal size: {:?}", terminal.size().unwrap());
         terminal.draw(|f| render_ui(f, &mut app_ui))?;
         // handle events

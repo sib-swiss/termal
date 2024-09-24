@@ -1,5 +1,7 @@
 use crossterm::event::{KeyCode, KeyEvent};
 
+use log::debug;
+
 use crate::{ZoomLevel, UI};
 
 pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
@@ -64,6 +66,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         // are possible).
         KeyCode::Char('b') => {
             ui.cycle_bottom_pane_position();
+            debug!("-- Toggling bottom pane position - now {:?}  --", ui.bottom_pane_position);
         }
 
         // Mark consensus positions that are retained in the zoom box

@@ -26,6 +26,7 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
+#[derive(Debug)]
 enum BottomPanePosition {
     Adjacent,
     ScreenBottom,
@@ -100,6 +101,10 @@ impl<'a> UI<'a> {
             height - 2
         } else {
             // Set to null (prevents display) if not enough room
+            // NOTE: this causes v_ratio() to return 0, which in turn causes the number of retained
+            // sequences to be 0, causing render::every_nth() to crash. Maybe the minimum should be
+            // 2, not 0. TODO: prepare more tests (esp. w/ small sets), change to 2, and check.
+            // Then do the same for seq_para_width().
             0
         }
     }
@@ -407,11 +412,6 @@ impl<'a> UI<'a> {
 
     pub fn scroll_zoombox_one_line_down(&mut self) {
         self.top_line += (1.0 / self.v_ratio()).round() as u16;
-        debug!(
-            "top_line: {} (max: {})\n",
-            self.top_line,
-            self.max_top_line()
-        );
         if self.top_line > self.max_top_line() {
             self.top_line = self.max_top_line();
         }
@@ -461,8 +461,6 @@ impl<'a> UI<'a> {
     // Debugging
 
     pub fn assert_invariants(&self) {
-        // debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.max_nb_col_shown());
-        // debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.max_nb_seq_shown());
         if self.max_nb_col_shown() > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
