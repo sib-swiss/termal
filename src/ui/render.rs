@@ -464,35 +464,21 @@ fn tick_position(aln_length: usize) -> String {
 // Draw UI
 ****************************************************************/
 
-fn compute_title(ui: &UI) -> String {
-    let title: String = match ui.zoom_level {
-        ZoomLevel::ZoomedIn => {
-            format!(
-                " {} - {}s x {}c ",
-                ui.app.filename,
-                ui.app.num_seq(),
-                ui.app.aln_len()
-            )
+fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
+    let title = format!(
+        " {} - {}/{}s x {}/{}c ",
+        ui.app.filename,
+        aln_para.len(), ui.app.num_seq(),
+        aln_para[0].spans.len(), ui.app.aln_len()
+    );
+    format!("{} - {}",
+        title,
+        match ui.zoom_level {
+            ZoomLevel::ZoomedIn => "",
+            ZoomLevel::ZoomedOut => "fully zoomed out ",
+            ZoomLevel::ZoomedOutAR => "fully zoomed out, preserving aspect ratio ",
         }
-        ZoomLevel::ZoomedOut => {
-            format!(
-                " {} - {}s x {}c - fully zoomed out ",
-                ui.app.filename,
-                ui.app.num_seq(),
-                ui.app.aln_len()
-            )
-        }
-        ZoomLevel::ZoomedOutAR => {
-            format!(
-                " {} - {}s x {}c - fully zoomed out, preserving aspect ratio ",
-                ui.app.filename,
-                ui.app.num_seq(),
-                ui.app.aln_len()
-            )
-        }
-    };
-
-    title
+    )
 }
 
 fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
@@ -556,8 +542,8 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
-    let title = compute_title(ui);
     let seq = compute_aln_pane_text(ui);
+    let title = compute_title(ui, &seq);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);

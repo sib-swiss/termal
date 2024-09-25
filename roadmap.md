@@ -19,14 +19,28 @@ TODO
 Urgent
 ------
 
+1. (`ar_adjbp`) `draw_zoombox_guides()` should be called _outside_ of
+   `compute_aln_pane_text()`, so that the latter function returns only the
+   alignment --- the guides being a different object. In the current situation,
+   we can no longer use the length of the vector returned by
+   `compute_aln_pane_text()` to count the number of displayed sequences, which
+   is unfortunate.
+
+Normal
+------
+
+1. [x] "Adjacent" bottom panel now also works (well, almost) in AR mode
+   (previously only in zoomed-in and (non-AR) zoomed-out). This required
+   computing the number of lines that _would_ be displayed in "ScreenBottom"
+   mode, and then using this to compute the layout for "Adjacent". IOW, two
+   layouts need to be computed, the second of which is the one actually used on
+   the disaply, and the first supplying the crucial parameter to the second.
+
 1. [x] `zb_top` and friends get computed at several places, perhaps there should
    be a single function which could also handle checking for the zoom mode. This
    might bake it possible to dispense wit hdifferent `*_ar` versions of some
    functions. => done for `zb_top` and `zb_bottom` (ui::zoombox_top(),
    ui::zoombox_bottom()); still TODO for left and right.
-
-Normal
-------
 
 1. The code in render.rs seems to hesitate between u16 and usize, try to sort
    this out.
