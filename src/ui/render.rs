@@ -273,12 +273,13 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 }
 
 // Draws guides from the scale to the zoom box (hence, only meaningful in one of the zoomed-out
-// modes, and only if there are empty lines).
+// modes, and only if there are empty lines). TODO: to avoid having to specify a lifetime, try
+// passing relevant info (i.e., seq_para's length, zoombox's left and right cols, etc.)
 //
-fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
-    let aln_bottom = seq_para.len();
+fn draw_zoombox_guides<'a>(aln_bottom: usize, aln_len: usize, ui: &'a UI<'a>) -> Vec<Line<'a>>{
+    let mut guides: Vec<Line> = Vec::new();
     let zb_left = ui.zoombox_left();
-    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
+    let zb_right = ui.zoombox_right(aln_len);
 
     // position of left guide
     let left_guide_pos = |j: usize| {
@@ -310,8 +311,10 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
                 line.push(' ');
             }
         }
-        seq_para.push(Line::from(line));
+        guides.push(Line::from(line));
     }
+
+    guides
 }
 
 // Draws the zoombox, but preserving aspect ratio
@@ -391,7 +394,7 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
                 "max #seq: {}",
                 (ui.app.num_seq() as f64 * ratio).round() as u16
             );
-            let mut max_num_seq = (ui.app.num_seq() as f64 * ratio).round() as u16;
+            let max_num_seq = (ui.app.num_seq() as f64 * ratio).round() as u16;
             
             max_num_seq + 2 // borders
         }
@@ -492,18 +495,12 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
             sequences = zoom_out_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox(&mut sequences, ui);
-                if ui.show_zb_guides {
-                    draw_zoombox_guides(&mut sequences, ui);
-                }
             }
         }
         ZoomLevel::ZoomedOutAR => {
             sequences = zoom_out_ar_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox_ar(&mut sequences, ui);
-                if ui.show_zb_guides {
-                    draw_zoombox_guides(&mut sequences, ui);
-                }
             }
         }
     }
@@ -542,9 +539,13 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
-    let seq = compute_aln_pane_text(ui);
+    let mut seq = compute_aln_pane_text(ui);
     let title = compute_title(ui, &seq);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
+    if ui.show_zb_guides {
+            let mut guides = draw_zoombox_guides(seq.len(), seq[0].spans.len(), ui);
+            seq.append(&mut guides);
+    }
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
 
