@@ -81,7 +81,7 @@ impl<'a> UI<'a> {
      * affects the maximal top line and leftmost column, etc.
      * */
 
-    fn seq_para_height(&self) -> u16 {
+    fn max_nb_seq_shown(&self) -> u16 {
         let height = self.aln_pane_size.unwrap().height;
         if height >= 2 {
             // border, should later be a constant or a field of UI
@@ -92,7 +92,7 @@ impl<'a> UI<'a> {
         }
     }
 
-    fn seq_para_width(&self) -> u16 {
+    fn max_nb_col_shown(&self) -> u16 {
         let width = self.aln_pane_size.unwrap().width;
         if width >= 2 {
             width - 2
@@ -120,16 +120,16 @@ impl<'a> UI<'a> {
     /* The following are only called internally. */
 
     fn max_top_line(&self) -> u16 {
-        if self.app.num_seq() >= self.seq_para_height() {
-            self.app.num_seq() - self.seq_para_height()
+        if self.app.num_seq() >= self.max_nb_seq_shown() {
+            self.app.num_seq() - self.max_nb_seq_shown()
         } else {
             0
         }
     }
 
     fn max_leftmost_col(&self) -> u16 {
-        if self.app.aln_len() >= self.seq_para_width() {
-            self.app.aln_len() - self.seq_para_width()
+        if self.app.aln_len() >= self.max_nb_col_shown() {
+            self.app.aln_len() - self.max_nb_col_shown()
         } else {
             0
         }
@@ -170,10 +170,10 @@ impl<'a> UI<'a> {
     // TODO: might be an inner function of cycle_zoom, as it is not used anywhere else.
     fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
         let mut rel = AlnWRTSeqPane::Fits;
-        if self.app.aln_len() > self.seq_para_width() {
+        if self.app.aln_len() > self.max_nb_col_shown() {
             rel |= AlnWRTSeqPane::TooWide;
         }
-        if self.app.num_seq() > self.seq_para_height() {
+        if self.app.num_seq() > self.max_nb_seq_shown() {
             rel |= AlnWRTSeqPane::TooTall;
         }
 
@@ -201,11 +201,11 @@ impl<'a> UI<'a> {
     }
 
     pub fn h_ratio(&self) -> f64 {
-        self.seq_para_width() as f64 / self.app.aln_len() as f64
+        self.max_nb_col_shown() as f64 / self.app.aln_len() as f64
     }
 
     pub fn v_ratio(&self) -> f64 {
-        self.seq_para_height() as f64 / self.app.num_seq() as f64
+        self.max_nb_seq_shown() as f64 / self.app.num_seq() as f64
     }
 
     pub fn set_zoombox(&mut self, state: bool) {
@@ -256,32 +256,32 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_one_screen_up(&mut self) {
-        if self.top_line > self.seq_para_height() {
-            self.top_line -= self.seq_para_height();
+        if self.top_line > self.max_nb_seq_shown() {
+            self.top_line -= self.max_nb_seq_shown();
         } else {
             self.top_line = 0;
         }
     }
 
     pub fn scroll_one_screen_left(&mut self) {
-        if self.leftmost_col > self.seq_para_width() {
-            self.leftmost_col -= self.seq_para_width();
+        if self.leftmost_col > self.max_nb_col_shown() {
+            self.leftmost_col -= self.max_nb_col_shown();
         } else {
             self.leftmost_col = 0;
         }
     }
 
     pub fn scroll_one_screen_down(&mut self) {
-        if self.top_line + self.seq_para_height() < self.max_top_line() {
-            self.top_line += self.seq_para_height();
+        if self.top_line + self.max_nb_seq_shown() < self.max_top_line() {
+            self.top_line += self.max_nb_seq_shown();
         } else {
             self.top_line = self.max_top_line();
         }
     }
 
     pub fn scroll_one_screen_right(&mut self) {
-        if self.leftmost_col + self.seq_para_width() < self.max_leftmost_col() {
-            self.leftmost_col += self.seq_para_width();
+        if self.leftmost_col + self.max_nb_col_shown() < self.max_leftmost_col() {
+            self.leftmost_col += self.max_nb_col_shown();
         } else {
             self.leftmost_col = self.max_leftmost_col();
         }
@@ -343,16 +343,16 @@ impl<'a> UI<'a> {
     // Debugging
 
     pub fn assert_invariants(&self) {
-        // debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.seq_para_width());
-        // debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.seq_para_height());
-        if self.seq_para_width() > self.app.aln_len() {
+        // debug!("w_a: {}, w_p: {}", self.app.aln_len(), self.max_nb_col_shown());
+        // debug!("h_a: {}, h_p: {}", self.app.num_seq(), self.max_nb_seq_shown());
+        if self.max_nb_col_shown() > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
             assert!(
-                self.max_leftmost_col() + self.seq_para_width() == self.app.aln_len(),
+                self.max_leftmost_col() + self.max_nb_col_shown() == self.app.aln_len(),
                 "l_max: {} + w_p: {} == w_a: {} failed",
                 self.max_leftmost_col(),
-                self.seq_para_width(),
+                self.max_nb_col_shown(),
                 self.app.aln_len()
             );
         }
