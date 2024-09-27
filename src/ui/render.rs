@@ -539,10 +539,11 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
+    debug!("render_alignment_pane(): seq_para_height = {}", ui.seq_para_height());
     let mut seq = compute_aln_pane_text(ui);
     let title = compute_title(ui, &seq);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-    if ui.show_zb_guides {
+    if ui.zoom_level != ZoomLevel::ZoomedIn && ui.show_zb_guides {
             let mut guides = draw_zoombox_guides(seq.len(), seq[0].spans.len(), ui);
             seq.append(&mut guides);
     }
@@ -663,6 +664,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
      * leftmost column, etc.
      */
     ui.aln_pane_size = Some(layout_panes.sequence.as_size());
+    debug!("render_ui(): seq_para_height = {}", ui.seq_para_height());
     // Handle resizing
     ui.adjust_seq_pane_position();
     /* NOTE: the docs (https://docs.rs/ratatui/latest/ratatui/struct.Frame.html#method.area) say
