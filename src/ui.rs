@@ -104,7 +104,7 @@ impl<'a> UI<'a> {
             // NOTE: this causes v_ratio() to return 0, which in turn causes the number of retained
             // sequences to be 0, causing render::every_nth() to crash. Maybe the minimum should be
             // 2, not 0. TODO: prepare more tests (esp. w/ small sets), change to 2, and check.
-            // Then do the same for seq_para_width().
+            // Then do the same for max_nb_col_shown().
             0
         }
     }

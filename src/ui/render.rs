@@ -292,7 +292,7 @@ fn draw_zoombox_guides<'a>(aln_bottom: usize, aln_len: usize, ui: &'a UI<'a>) ->
     let right_guide_pos = |j: usize| {
         // -1: align the right guide to the last col of the alignment.
         let right_zb_pos = (zb_right - 1) as f64;
-        let slope = ((ui.max_nb_col_shown() - 1) as f64  - right_zb_pos)
+        let slope = ((ui.max_nb_col_shown() - 1) as f64 - right_zb_pos)
             / (ui.max_nb_seq_shown() as usize - aln_bottom) as f64;
         let y_int = right_zb_pos - aln_bottom as f64 * slope;
         (slope * j as f64 + y_int).round() as usize
@@ -539,7 +539,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
-    debug!("render_alignment_pane(): seq_para_height = {}", ui.seq_para_height());
+    debug!("render_alignment_pane(): max_nb_seq_shown = {}", ui.max_nb_seq_shown());
     let mut seq = compute_aln_pane_text(ui);
     let title = compute_title(ui, &seq);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
@@ -664,7 +664,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
      * leftmost column, etc.
      */
     ui.aln_pane_size = Some(layout_panes.sequence.as_size());
-    debug!("render_ui(): seq_para_height = {}", ui.seq_para_height());
+    debug!("render_ui(): max_nb_seq_shown = {}", ui.max_nb_seq_shown());
     // Handle resizing
     ui.adjust_seq_pane_position();
     /* NOTE: the docs (https://docs.rs/ratatui/latest/ratatui/struct.Frame.html#method.area) say
