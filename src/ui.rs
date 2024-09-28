@@ -241,7 +241,7 @@ impl<'a> UI<'a> {
                 /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the
                  * number of retained sequences (which are in seq_para), and (ii) the alignment
                  * panel's height. */
-                let aln_para_height = min(seq_para_len as u16, self.seq_para_height());
+                let aln_para_height = min(seq_para_len as u16, self.max_nb_seq_shown());
                 let zb_top = ((self.top_line as f64) * ratio).round() as usize;
                 // Rounding can push zb_top to aln_para_height, if zoom box has zero height
                 if zb_top >= aln_para_height.into() {
@@ -258,7 +258,7 @@ impl<'a> UI<'a> {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
                 let mut zb_bottom: usize =
-                    (((self.top_line + self.seq_para_height()) as f64) * self.v_ratio()).round() as usize;
+                    (((self.top_line + self.max_nb_seq_shown()) as f64) * self.v_ratio()).round() as usize;
                 // If h_a < h_p
                 if zb_bottom > self.app.num_seq() as usize {
                     zb_bottom = self.app.num_seq() as usize;
@@ -267,8 +267,8 @@ impl<'a> UI<'a> {
             },
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.h_ratio().min(self.v_ratio());
-                let aln_para_height = min(seq_para_len as u16, self.seq_para_height());
-                let mut zb_bottom = (((self.top_line + self.seq_para_height()) as f64) * ratio).round() as usize;
+                let aln_para_height = min(seq_para_len as u16, self.max_nb_seq_shown());
+                let mut zb_bottom = (((self.top_line + self.max_nb_seq_shown()) as f64) * ratio).round() as usize;
                 // If h_a < h_p
                 if zb_bottom > aln_para_height as usize {
                     zb_bottom = aln_para_height as usize;
@@ -292,11 +292,11 @@ impl<'a> UI<'a> {
         }
     }
 
-    pub fn zoombox_right(&self, seq_para_width_ar: usize) -> usize {
+    pub fn zoombox_right(&self, max_nb_col_shown_ar: usize) -> usize {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
                 let mut zb_right =
-                    (((self.leftmost_col + self.seq_para_width()) as f64) * self.h_ratio()).round() as usize;
+                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * self.h_ratio()).round() as usize;
                 // If w_a < w_p
                 if zb_right > self.app.aln_len() as usize {
                     zb_right = self.app.aln_len() as usize;
@@ -305,9 +305,9 @@ impl<'a> UI<'a> {
             },
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.h_ratio().min(self.v_ratio());
-                let aln_para_width = min(seq_para_width_ar as u16, self.seq_para_width());
+                let aln_para_width = min(max_nb_col_shown_ar as u16, self.max_nb_col_shown());
                 let mut zb_right =
-                    (((self.leftmost_col + self.seq_para_width()) as f64) * ratio).round() as usize;
+                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio).round() as usize;
                 // If w_a < w_p
                 if zb_right > aln_para_width as usize {
                     zb_right = aln_para_width as usize;

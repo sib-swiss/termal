@@ -276,7 +276,7 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
 
     // position of left guide
     let left_guide_pos = |j: usize| {
-        let h = ui.seq_para_height() as f64;
+        let h = ui.max_nb_seq_shown() as f64;
         let slope = zb_left as f64 / (aln_bottom as f64 - h);
         (slope * j as f64 - slope * h).round() as usize
     };
@@ -285,17 +285,17 @@ fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
     let right_guide_pos = |j: usize| {
         // -1: align the right guide to the last col of the alignment.
         let right_zb_pos = (zb_right - 1) as f64;
-        let slope = ((ui.seq_para_width() - 1) as f64  - right_zb_pos)
-            / (ui.seq_para_height() as usize - aln_bottom) as f64;
+        let slope = ((ui.max_nb_col_shown() - 1) as f64  - right_zb_pos)
+            / (ui.max_nb_seq_shown() as usize - aln_bottom) as f64;
         let y_int = right_zb_pos - aln_bottom as f64 * slope;
         (slope * j as f64 + y_int).round() as usize
     };
 
-    for j in aln_bottom + 1..ui.seq_para_height() as usize {
+    for j in aln_bottom + 1..ui.max_nb_seq_shown() as usize {
         let mut line = String::new();
         let left_guide_col = left_guide_pos(j);
         let right_guide_col = right_guide_pos(j);
-        for i in 0..ui.seq_para_width() as usize {
+        for i in 0..ui.max_nb_col_shown() as usize {
             if i == left_guide_col {
                 line.push('.');
             } else if i == right_guide_col {
