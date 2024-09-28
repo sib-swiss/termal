@@ -11,7 +11,7 @@ Miscellaneous Ideas
 * Reinstate the "blinky" consensus, at least optionally
 
 * For "wide" alignments, let the empty lines below the sequences and above the
-  bottompanel prolong the axis ticks, aiding the reading of the positions.
+  bottom panel prolong the axis ticks, aiding the reading of the positions.
 
 TODO
 ====
