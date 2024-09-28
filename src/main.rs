@@ -77,6 +77,10 @@ struct Cli {
     /// Do not show zoom box (zooming itself is not disabled)
     #[arg(long = "no-zoom-box")]
     no_zoombox: bool,
+
+    /// Do not show zoom box guides (only useful if zoom box not shown)
+    #[arg(long = "no-zb-guides")]
+    no_zb_guides: bool,
 }
 
 fn main() -> Result<()> {
@@ -123,6 +127,9 @@ fn main() -> Result<()> {
     }
     if cli.no_zoombox {
         app_ui.set_zoombox(false);
+    }
+    if cli.no_zb_guides {
+        app_ui.set_zoombox_guides(false);
     }
     if cli.hide_labels_pane {
         app_ui.set_label_pane_width(0);

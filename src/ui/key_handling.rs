@@ -55,6 +55,16 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             ui.cycle_zoom();
             ui.cycle_zoom();
         }
+        // Toggle zoom box guides
+        KeyCode::Char('v') => {
+            ui.set_zoombox_guides(! ui.show_zb_guides);
+        }
+
+        // Bottom pane position (i.e., bottom of screen or stuck to the alignment - when both
+        // are possible).
+        KeyCode::Char('b') => {
+            ui.cycle_bottom_pane_position();
+        }
 
         // Mark consensus positions that are retained in the zoom box
         KeyCode::Char('r') => ui.toggle_hl_retained_cols(),

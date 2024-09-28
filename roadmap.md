@@ -19,11 +19,30 @@ TODO
 Urgent
 ------
 
+1. [x] `zb_top` and friends get computed at several places, perhaps there should
+   be a single function which could also handle checking for the zoom mode. This
+   might bake it possible to dispense wit hdifferent `*_ar` versions of some
+   functions. => done for `zb_top` and `zb_bottom` (ui::zoombox_top(),
+   ui::zoombox_bottom()); still TODO for left and right.
+
 Normal
 ------
 
-1. [ ] Experiment with putting tick marks and position _first_ (on top), and
-   consensus and conservation below.
+1. The code in render.rs seems to hesitate between u16 and usize, try to sort
+   this out.
+
+1. [x] Try adding visual guides to the zoom box, provoding a, well, zoom effect.
+
+1. [x] Experiment with (i) sticking the bottom directly below the alignment pane
+   when there is unused space, and (ii) keeping the unused space, but providing
+   visual guides. => Both work, and (i) is better IMHO, BUT it doesn't really
+   work in AR mode, because the number of sequences shown will depend on the
+   sequence panel's height, so making that height depend on the number of
+   sequencs shown would introduce a circular dependency. In the end, all three
+   modes should be available - let the user decide.
+
+1. [x] Experiment with putting tick marks and position _first_ (on top), and
+   consensus and conservation below. => Better, keeping this.
 
 1. [x] When reading the consensus, I got fooled into thinking that there was an
    error because I mistook a '.' (low conservation) for a '-'. Changed the '.'

@@ -3,7 +3,10 @@ mod conservation;
 pub mod render;
 pub mod key_handling;
 
-use std::collections::HashMap;
+use std::{
+    cmp::min,
+    collections::HashMap
+};
 
 use log::debug;
 
@@ -16,11 +19,16 @@ use crate::{
     App,
 };
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum ZoomLevel {
     ZoomedIn,
     ZoomedOut,
     ZoomedOutAR,
+}
+
+enum BottomPanePosition {
+    Adjacent,
+    ScreenBottom,
 }
 
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
@@ -42,12 +50,14 @@ pub struct UI<'a> {
     zoom_level: ZoomLevel,
     // What to show
     show_zoombox: bool,
+    show_zb_guides: bool,
     show_scrollbars: bool,
     highlight_retained_cols: bool,
     top_line: u16,
     leftmost_col: u16,
     label_pane_width: u16,
     bottom_pane_height: u16,
+    bottom_pane_position: BottomPanePosition,
     // These cannot be known when the structure is initialized, so they are Options -- but it is
     // possible that they need not be stored at all, as they can in principle be computed when the
     // layout is known.
@@ -62,12 +72,14 @@ impl<'a> UI<'a> {
             colour_map: color_scheme_lesk(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
+            show_zb_guides: true,
             show_scrollbars: true,
             highlight_retained_cols: false,
             top_line: 0,
             leftmost_col: 0,
             label_pane_width: 15, // Reasonable default, I'd say...
             bottom_pane_height: 5,
+            bottom_pane_position: BottomPanePosition::Adjacent,
             aln_pane_size: None,
             frame_size: None,
         }
@@ -210,6 +222,112 @@ impl<'a> UI<'a> {
 
     pub fn set_zoombox(&mut self, state: bool) {
         self.show_zoombox = state;
+    }
+
+    // TODO: do we really need seq_para_len? Or can we just use self.app.num_seq?
+    pub fn zoombox_top(&self, seq_para_len: usize) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                let zb_top = ((self.top_line as f64) * self.v_ratio()).round() as usize;
+                // Rounding can push zb_top to seq_para_len, if zoom box has zero height
+                if zb_top >= seq_para_len {
+                    seq_para_len - 1
+                } else {
+                    zb_top
+                }
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the
+                 * number of retained sequences (which are in seq_para), and (ii) the alignment
+                 * panel's height. */
+                let aln_para_height = min(seq_para_len as u16, self.seq_para_height());
+                let zb_top = ((self.top_line as f64) * ratio).round() as usize;
+                // Rounding can push zb_top to aln_para_height, if zoom box has zero height
+                if zb_top >= aln_para_height.into() {
+                    (aln_para_height - 1).into()
+                } else {
+                    zb_top
+                }
+            },
+            _ => panic!("zoombox_top() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn zoombox_bottom(&self, seq_para_len: usize) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                let mut zb_bottom: usize =
+                    (((self.top_line + self.seq_para_height()) as f64) * self.v_ratio()).round() as usize;
+                // If h_a < h_p
+                if zb_bottom > self.app.num_seq() as usize {
+                    zb_bottom = self.app.num_seq() as usize;
+                }
+                zb_bottom
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                let aln_para_height = min(seq_para_len as u16, self.seq_para_height());
+                let mut zb_bottom = (((self.top_line + self.seq_para_height()) as f64) * ratio).round() as usize;
+                // If h_a < h_p
+                if zb_bottom > aln_para_height as usize {
+                    zb_bottom = aln_para_height as usize;
+                }
+                zb_bottom
+            },
+            _ => panic!("zoombox_bottom() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn zoombox_left(&self) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                ((self.leftmost_col as f64) * self.h_ratio()).round() as usize
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                ((self.leftmost_col as f64) * ratio).round() as usize
+            },
+            _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn zoombox_right(&self, seq_para_width_ar: usize) -> usize {
+        match self.zoom_level {
+            ZoomLevel::ZoomedOut => {
+                let mut zb_right =
+                    (((self.leftmost_col + self.seq_para_width()) as f64) * self.h_ratio()).round() as usize;
+                // If w_a < w_p
+                if zb_right > self.app.aln_len() as usize {
+                    zb_right = self.app.aln_len() as usize;
+                }
+                zb_right
+            },
+            ZoomLevel::ZoomedOutAR => {
+                let ratio = self.h_ratio().min(self.v_ratio());
+                let aln_para_width = min(seq_para_width_ar as u16, self.seq_para_width());
+                let mut zb_right =
+                    (((self.leftmost_col + self.seq_para_width()) as f64) * ratio).round() as usize;
+                // If w_a < w_p
+                if zb_right > aln_para_width as usize {
+                    zb_right = aln_para_width as usize;
+                }
+                zb_right
+            },
+            _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
+        }
+    }
+
+    pub fn cycle_bottom_pane_position(&mut self) {
+        self.bottom_pane_position = match self.bottom_pane_position {
+            BottomPanePosition::Adjacent => BottomPanePosition::ScreenBottom,
+            BottomPanePosition::ScreenBottom => BottomPanePosition::Adjacent,
+        }
+    }
+
+    pub fn set_zoombox_guides(&mut self, state: bool) {
+        self.show_zb_guides = state;
+
     }
 
     pub fn toggle_hl_retained_cols(&mut self) {

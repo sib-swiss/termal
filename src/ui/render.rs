@@ -1,5 +1,3 @@
-use std::cmp::min;
-
 use ratatui::{
     prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
     style::Stylize,
@@ -10,7 +8,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{color_scheme::SALMON, conservation::values_barchart, AlnWRTSeqPane},
+    ui::{BottomPanePosition, color_scheme::SALMON, conservation::values_barchart, AlnWRTSeqPane},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -232,23 +230,11 @@ fn mark_zoombox_point(
 //
 fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     // I want zb_top to be immutable, but I may need to change it just after intialization
-    let zb_top: usize = {
-        let zb_top = ((ui.top_line as f64) * ui.v_ratio()).round() as usize;
-        // Rounding can push zb_top to seq_para.len(), if zoom box has zero height
-        if zb_top >= seq_para.len() {
-            seq_para.len() - 1
-        } else {
-            zb_top
-        }
-    };
-    let mut zb_bottom: usize =
-        (((ui.top_line + ui.max_nb_seq_shown()) as f64) * ui.v_ratio()).round() as usize;
-    // If h_a < h_p
-    if zb_bottom > ui.app.num_seq() as usize {
-        zb_bottom = ui.app.num_seq() as usize;
-    }
-
-    let zb_left: usize = ((ui.leftmost_col as f64) * ui.h_ratio()).round() as usize;
+    let zb_top = ui.zoombox_top(seq_para.len());
+    let zb_bottom = ui.zoombox_bottom(seq_para.len());
+    let zb_left = ui.zoombox_left();
+    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
+    /*
     let mut zb_right: usize =
         (((ui.leftmost_col + ui.max_nb_col_shown()) as f64) * ui.h_ratio()).round() as usize;
     // If w_a < w_p
@@ -261,6 +247,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
         zb_top, zb_bottom, zb_left, zb_right
     );
     ui.assert_invariants();
+    */
 
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
@@ -279,44 +266,65 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     }
 }
 
+// Draws guides from the scale to the zoom box (hence, only meaningful in one of the zoomed-out
+// modes, and only if there are empty lines).
+//
+fn draw_zoombox_guides(seq_para: &mut Vec<Line>, ui: &UI) {
+    let aln_bottom = seq_para.len();
+    let zb_left = ui.zoombox_left();
+    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
+
+    // position of left guide
+    let left_guide_pos = |j: usize| {
+        let h = ui.seq_para_height() as f64;
+        let slope = zb_left as f64 / (aln_bottom as f64 - h);
+        (slope * j as f64 - slope * h).round() as usize
+    };
+
+    // position of right guide
+    let right_guide_pos = |j: usize| {
+        // -1: align the right guide to the last col of the alignment.
+        let right_zb_pos = (zb_right - 1) as f64;
+        let slope = ((ui.seq_para_width() - 1) as f64  - right_zb_pos)
+            / (ui.seq_para_height() as usize - aln_bottom) as f64;
+        let y_int = right_zb_pos - aln_bottom as f64 * slope;
+        (slope * j as f64 + y_int).round() as usize
+    };
+
+    for j in aln_bottom + 1..ui.seq_para_height() as usize {
+        let mut line = String::new();
+        let left_guide_col = left_guide_pos(j);
+        let right_guide_col = right_guide_pos(j);
+        for i in 0..ui.seq_para_width() as usize {
+            if i == left_guide_col {
+                line.push('.');
+            } else if i == right_guide_col {
+                line.push('.');
+            } else {
+                line.push(' ');
+            }
+        }
+        seq_para.push(Line::from(line));
+    }
+}
+
 // Draws the zoombox, but preserving aspect ratio
 //
+//// TODO: this fn is now prolly identical with mark_zoombox()... keep only 1.
 fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
-    let ratio = ui.h_ratio().min(ui.v_ratio());
-    debug!("[MZAR] ratio: {}", ratio);
+    let zb_top = ui.zoombox_top(seq_para.len());
+    let zb_bottom = ui.zoombox_bottom(seq_para.len());
 
-    /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the number of
-     * retained sequences (which are in seq_para), and (ii) the alignment panel's height. */
-    let aln_para_height = min(seq_para.len() as u16, ui.max_nb_seq_shown());
-    debug!("[MZAR] aln para height: {}", aln_para_height);
-    let zb_top: usize = {
-        let zb_top = ((ui.top_line as f64) * ratio).round() as usize;
-        // Rounding can push zb_top to aln_para_height, if zoom box has zero height
-        if zb_top >= aln_para_height.into() {
-            (aln_para_height - 1).into()
-        } else {
-            zb_top
-        }
-    };
-    let mut zb_bottom: usize =
-        (((ui.top_line + ui.max_nb_seq_shown()) as f64) * ratio).round() as usize;
-    // If h_a < h_p
-    if zb_bottom > aln_para_height as usize {
-        zb_bottom = aln_para_height as usize;
-    }
-    debug!("[MZAR] zb_top: {}, zb_bottom: {}", zb_top, zb_bottom);
-
-    /* IN AR mode, the width of the alignment paragraph is the smallest of (i) the number of
-     * retained columns, and (ii) the alignment panel's width. */
-    let aln_para_width = min((seq_para[0]).width() as u16, ui.max_nb_col_shown());
-    let zb_left: usize = ((ui.leftmost_col as f64) * ratio).round() as usize;
+    let zb_left = ui.zoombox_left();
+    let zb_right = ui.zoombox_right(seq_para[0].spans.len());
+    /*
     let mut zb_right: usize =
         (((ui.leftmost_col + ui.max_nb_col_shown()) as f64) * ratio).round() as usize;
     // If w_a < w_p
     if zb_right > aln_para_width as usize {
         zb_right = aln_para_width as usize;
     }
-    // debug!("w_a: {}, w_p: {}, r_h: {}", ui.app.aln_len(), ui.max_nb_col_shown(), ratio);
+    */
     ui.assert_invariants();
 
     if zb_bottom - zb_top < 2 {
@@ -348,9 +356,13 @@ struct Panes {
 }
 
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
-    let constraints: Vec<Constraint> =
-        vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)];
+
+    let constraints: Vec<Constraint> = match ui.bottom_pane_position {
+        BottomPanePosition::Adjacent => vec![Constraint::Max(ui.app.num_seq()), Constraint::Max(ui.bottom_pane_height)],
+        BottomPanePosition::ScreenBottom => vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)],
+    };
     let v_panes = Layout::new(Direction::Vertical, constraints).split(f.size());
+
     let upper_panes = Layout::new(
         Direction::Horizontal,
         vec![Constraint::Max(ui.label_pane_width), Constraint::Fill(1)],
@@ -372,12 +384,16 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
 
 // Ticks and tick marks (e.g. for bottom pane)
 
-fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char> ) -> String {
+fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char>) -> String {
     let mut ticks = String::with_capacity(aln_length);
     for i in 0..aln_length {
-        ticks.push(if i % 10 == 0 { primary.unwrap_or('|') }
-            else if i % 5 == 0 { secondary.unwrap_or(' ') }
-            else { ' ' });
+        ticks.push(if i % 10 == 0 {
+            primary.unwrap_or('|')
+        } else if i % 5 == 0 {
+            secondary.unwrap_or(' ')
+        } else {
+            ' '
+        });
     }
 
     ticks
@@ -440,12 +456,18 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
             sequences = zoom_out_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox(&mut sequences, ui);
+                if ui.show_zb_guides {
+                    draw_zoombox_guides(&mut sequences, ui);
+                }
             }
         }
         ZoomLevel::ZoomedOutAR => {
             sequences = zoom_out_ar_seq_text(ui);
             if ui.show_zoombox {
                 mark_zoombox_ar(&mut sequences, ui);
+                if ui.show_zb_guides {
+                    draw_zoombox_guides(&mut sequences, ui);
+                }
             }
         }
     }
@@ -678,5 +700,4 @@ mod tests {
         let tm = tick_marks(21, Some(':'), Some('.'));
         assert_eq!(tm, ":    .    :    .    :");
     }
-
 }
