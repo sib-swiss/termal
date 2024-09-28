@@ -396,7 +396,7 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
             );
             let max_num_seq = (ui.app.num_seq() as f64 * ratio).round() as u16;
             
-            max_num_seq + 2 // borders
+            max_num_seq 
         }
     }
 }
@@ -406,7 +406,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     debug!("max num seq: {}", mns);
     let constraints: Vec<Constraint> = match ui.bottom_pane_position {
         BottomPanePosition::Adjacent => vec![
-            Constraint::Max(mns),
+            Constraint::Max(mns + 2), // + 2 <- borders
             // Constraint::Max(ui.app.num_seq()),
             Constraint::Max(ui.bottom_pane_height),
         ],
@@ -663,6 +663,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
      * alignment fits in it, the horizontal and vertical ratios when zooming, the top line and
      * leftmost column, etc.
      */
+    debug!("render_ui(): aln_pane_size = {:?}", layout_panes.sequence.as_size());
     ui.aln_pane_size = Some(layout_panes.sequence.as_size());
     debug!("render_ui(): max_nb_seq_shown = {}", ui.max_nb_seq_shown());
     // Handle resizing
