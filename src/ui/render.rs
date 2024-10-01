@@ -26,7 +26,7 @@ fn retained_col_ndx(ui: &UI) -> Vec<usize> {
         }
         ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.max_nb_col_shown().into()),
         ZoomLevel::ZoomedOutAR => {
-            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let ratio = ui.common_ratio();
             let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
             every_nth(ui.app.aln_len() as usize, num_retained_cols)
         }
@@ -40,7 +40,7 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
         }
         ZoomLevel::ZoomedOut => every_nth(ui.app.num_seq() as usize, ui.max_nb_seq_shown().into()),
         ZoomLevel::ZoomedOutAR => {
-            let ratio = ui.h_ratio().min(ui.v_ratio());
+            let ratio = ui.common_ratio();
             debug!(
                 "h-ratio: {}, v-ratio: {} -> Ratio: {ratio}",
                 ui.h_ratio(),
@@ -234,6 +234,7 @@ fn mark_zoombox_point(
     zb_left: usize, // zb_bottom == zb_top, zb_right == zb_left
 ) {
     let l: &mut Line = &mut seq_para[zb_top];
+    debug!("mark_zoombox_point(): zb_left = {zb_left}");
     let _ = std::mem::replace(&mut l.spans[zb_left], Span::raw("▯"));
 }
 
@@ -320,6 +321,8 @@ fn draw_zoombox_guides<'a>(aln_bottom: usize, aln_len: usize, ui: &'a UI<'a>) ->
 // Draws the zoombox, but preserving aspect ratio
 //
 //// TODO: this fn is now prolly identical with mark_zoombox()... keep only 1.
+//
+/*
 fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
     let zb_top = ui.zoombox_top(seq_para.len());
     let zb_bottom = ui.zoombox_bottom(seq_para.len());
@@ -352,6 +355,7 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
         mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
     }
 }
+*/
 
 /****************************************************************
 * Layout
@@ -501,7 +505,7 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
         ZoomLevel::ZoomedOutAR => {
             sequences = zoom_out_ar_seq_text(ui);
             if ui.show_zoombox {
-                mark_zoombox_ar(&mut sequences, ui);
+                mark_zoombox(&mut sequences, ui);
             }
         }
     }

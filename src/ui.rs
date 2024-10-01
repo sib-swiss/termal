@@ -269,7 +269,7 @@ impl<'a> UI<'a> {
                 }
             },
             ZoomLevel::ZoomedOutAR => {
-                let ratio = self.h_ratio().min(self.v_ratio());
+                let ratio = self.common_ratio();
                 /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the
                  * number of retained sequences (which are in seq_para), and (ii) the alignment
                  * panel's height. */
@@ -298,7 +298,7 @@ impl<'a> UI<'a> {
                 zb_bottom
             },
             ZoomLevel::ZoomedOutAR => {
-                let ratio = self.h_ratio().min(self.v_ratio());
+                let ratio = self.common_ratio();
                 let aln_para_height = min(seq_para_len as u16, self.max_nb_seq_shown());
                 let mut zb_bottom = (((self.top_line + self.max_nb_seq_shown()) as f64) * ratio).round() as usize;
                 // If h_a < h_p
@@ -314,11 +314,11 @@ impl<'a> UI<'a> {
     pub fn zoombox_left(&self) -> usize {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
-                ((self.leftmost_col as f64) * self.h_ratio()).round() as usize
+                ((self.leftmost_col as f64) * self.h_ratio()).floor() as usize
             },
             ZoomLevel::ZoomedOutAR => {
-                let ratio = self.h_ratio().min(self.v_ratio());
-                ((self.leftmost_col as f64) * ratio).round() as usize
+                let ratio = self.common_ratio();
+                ((self.leftmost_col as f64) * ratio).floor() as usize
             },
             _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
         }
@@ -336,7 +336,7 @@ impl<'a> UI<'a> {
                 zb_right
             },
             ZoomLevel::ZoomedOutAR => {
-                let ratio = self.h_ratio().min(self.v_ratio());
+                let ratio = self.common_ratio();
                 let aln_para_width = min(max_nb_col_shown_ar as u16, self.max_nb_col_shown());
                 let mut zb_right =
                     (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio).round() as usize;

@@ -19,16 +19,23 @@ TODO
 Urgent
 ------
 
-1. [ ] The expression `let ratio = ui.h_ratio().min(ui.v_ratio());` (or its
+1. [ ] In many cases, using `round()` may cause an out-of-bounds error. Say I
+   need the element at 0.95 times the length of an array. If my array has length
+   100, that would be element 95 - no problem (well, except that I might really
+   want element 94, but at least that won't exceed the array's bounds). But but
+   if my array has 10 elements, then 0.95 * 10 will be rounded to 10 - out of
+     bounds! So one should use `floor()` instead.
+
+Normal
+------
+
+1. [x] The expression `let ratio = ui.h_ratio().min(ui.v_ratio());` (or its
    equivalent with `self` instead of `ui`) appears 6 times. This should be
    replaced with a function in `crate::ui.rs`, and this function should return
    the minimum _unless the whole alignment would still fit when using the
    maximum_ (see pt. below).
 
-Normal
-------
-
-1. [ ] BUG B0004. In AR mode, the (common) ratio used is currently the _minimum_
+1. [x] BUG B0004. In AR mode, the (common) ratio used is currently the _minimum_
    of the horizontal and vertical ratios. This does ensure that the alignment
    fits on screen; however in some cases (such as with `wide.msa`, which is very
    much wider than it is tall), using the minimum results in unoccupied space on
