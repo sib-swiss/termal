@@ -225,6 +225,33 @@ impl<'a> UI<'a> {
         self.max_nb_seq_shown() as f64 / self.app.num_seq() as f64
     }
 
+    // ZoomLevel::ZoomedOutAR mode uses a _single_ ratio, which is usually the minimum of the
+    // vertical and horizontal ratios, but it _can_ use the mmaximum if the resulting alignment
+    // still fits. 
+    pub fn common_ratio(&self) -> f64 {
+        let min_ratio = self.h_ratio().min(self.v_ratio());
+        let max_ratio = self.h_ratio().max(self.v_ratio());
+        let min_r_cols = (self.app.aln_len() as f64 * min_ratio).round() as u16;
+        let min_r_seqs = (self.app.num_seq() as f64 * min_ratio).round() as u16;
+        let max_r_cols = (self.app.aln_len() as f64 * max_ratio).round() as u16;
+        let max_r_seqs = (self.app.num_seq() as f64 * max_ratio).round() as u16;
+
+        debug!("  ***");
+        debug!("  max shown cols: {}, max shown seqs: {}",
+            self.max_nb_col_shown(), self.max_nb_seq_shown());
+        debug!("  h_r: {:.2}, v_r: {:.2}, min_r: {:.2}, max_r: {:.2}",
+            self.h_ratio(), self.v_ratio(),
+            min_ratio, max_ratio,);
+        debug!("  min ratio ({:.2}): {} seqs x {} cols",  min_ratio, min_r_seqs, min_r_cols);
+        debug!("  max ratio ({:.2}): {} seqs x {} cols",  max_ratio, max_r_seqs, max_r_cols);
+
+        if max_r_cols == self.max_nb_col_shown() && max_r_seqs == self.max_nb_seq_shown() {
+            max_ratio
+        } else {
+            min_ratio
+        }
+    }
+
     pub fn set_zoombox(&mut self, state: bool) {
         self.show_zoombox = state;
     }
