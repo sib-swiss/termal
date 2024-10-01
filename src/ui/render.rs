@@ -469,10 +469,10 @@ fn tick_position(aln_length: usize) -> String {
 
 fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
     let title = format!(
-        " {} - {}/{}s x {}/{}c ",
+        " {} - {}/{}s ({:.2}) x {}/{}c ({:.2})",
         ui.app.filename,
-        aln_para.len(), ui.app.num_seq(),
-        aln_para[0].spans.len(), ui.app.aln_len()
+        aln_para.len(), ui.app.num_seq(), aln_para.len() as f64 /  ui.app.num_seq() as f64,
+        aln_para[0].spans.len(), ui.app.aln_len(), aln_para[0].spans.len() as f64 /  ui.app.aln_len() as f64,
     );
     format!("{} - {}",
         title,
@@ -541,6 +541,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     debug!("render_alignment_pane(): max_nb_seq_shown = {}", ui.max_nb_seq_shown());
     let mut seq = compute_aln_pane_text(ui);
+    debug!("render_alignment_pane(): aln width={}", seq[0].spans.len());
     let title = compute_title(ui, &seq);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
     if ui.zoom_level != ZoomLevel::ZoomedIn && ui.show_zb_guides {

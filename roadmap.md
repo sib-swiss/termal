@@ -19,15 +19,28 @@ TODO
 Urgent
 ------
 
-1. (`ar_adjbp`) `draw_zoombox_guides()` should be called _outside_ of
+1. [ ] The expression `let ratio = ui.h_ratio().min(ui.v_ratio());` (or its
+   equivalent with `self` instead of `ui`) appears 6 times. This should be
+   replaced with a function in `crate::ui.rs`, and this function should return
+   the minimum _unless the whole alignment would still fit when using the
+   maximum_ (see pt. below).
+
+Normal
+------
+
+1. [ ] BUG B0004. In AR mode, the (common) ratio used is currently the _minimum_
+   of the horizontal and vertical ratios. This does ensure that the alignment
+   fits on screen; however in some cases (such as with `wide.msa`, which is very
+   much wider than it is tall), using the minimum results in unoccupied space on
+   the right of the alignment. In this case, the max would work better. So the
+   rul eshould be to use the max if the alignment still fits.
+
+1. [x] (`ar_adjbp`) `draw_zoombox_guides()` should be called _outside_ of
    `compute_aln_pane_text()`, so that the latter function returns only the
    alignment --- the guides being a different object. In the current situation,
    we can no longer use the length of the vector returned by
    `compute_aln_pane_text()` to count the number of displayed sequences, which
    is unfortunate.
-
-Normal
-------
 
 1. [x] "Adjacent" bottom panel now also works (well, almost) in AR mode
    (previously only in zoomed-in and (non-AR) zoomed-out). This required
