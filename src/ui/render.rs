@@ -495,11 +495,6 @@ fn compute_aln_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             sequences = zoom_in_seq_text(ui);
-            for _ in sequences.len()..ui.max_nb_seq_shown() as usize {
-                let mut ticks = tick_marks(ui.app.aln_len() as usize, Some('.'), None);
-                ticks.drain(.. ui.leftmost_col as usize);
-                sequences.push(Line::from(ticks));
-            }
         }
         ZoomLevel::ZoomedOut => {
             sequences = zoom_out_seq_text(ui);
@@ -554,10 +549,20 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     debug!("render_alignment_pane(): aln width={}", seq[0].spans.len());
     let title = compute_title(ui, &seq);
     let aln_block = Block::default().title(title).borders(Borders::ALL);
-    if ui.zoom_level != ZoomLevel::ZoomedIn && ui.show_zb_guides {
-            let mut guides = draw_zoombox_guides(seq.len(), seq[0].spans.len(), ui);
-            seq.append(&mut guides);
+
+    if ui.show_zb_guides {
+        if ui.zoom_level == ZoomLevel::ZoomedIn {
+            for _ in seq.len()..ui.max_nb_seq_shown() as usize {
+                let mut ticks = tick_marks(ui.app.aln_len() as usize, Some('.'), None);
+                ticks.drain(.. ui.leftmost_col as usize);
+                seq.push(Line::from(ticks));
+            }
+        } else {
+                let mut guides = draw_zoombox_guides(seq.len(), seq[0].spans.len(), ui);
+                seq.append(&mut guides);
+        }
     }
+
     let seq_para = Paragraph::new(seq).white().block(aln_block);
     f.render_widget(seq_para, aln_chunk);
 
