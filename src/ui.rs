@@ -231,10 +231,10 @@ impl<'a> UI<'a> {
     pub fn common_ratio(&self) -> f64 {
         let min_ratio = self.h_ratio().min(self.v_ratio());
         let max_ratio = self.h_ratio().max(self.v_ratio());
-        let min_r_cols = (self.app.aln_len() as f64 * min_ratio).round() as u16;
-        let min_r_seqs = (self.app.num_seq() as f64 * min_ratio).round() as u16;
-        let max_r_cols = (self.app.aln_len() as f64 * max_ratio).round() as u16;
-        let max_r_seqs = (self.app.num_seq() as f64 * max_ratio).round() as u16;
+        let min_r_cols = (self.app.aln_len() as f64 * min_ratio).floor() as u16;
+        let min_r_seqs = (self.app.num_seq() as f64 * min_ratio).floor() as u16;
+        let max_r_cols = (self.app.aln_len() as f64 * max_ratio).floor() as u16;
+        let max_r_seqs = (self.app.num_seq() as f64 * max_ratio).floor() as u16;
 
         debug!("  ***");
         debug!("  max shown cols: {}, max shown seqs: {}",
