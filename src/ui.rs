@@ -312,7 +312,7 @@ impl<'a> UI<'a> {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
                 let mut zb_right =
-                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * self.h_ratio()).round() as usize;
+                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * self.h_ratio()).floor() as usize;
                 // If w_a < w_p
                 if zb_right > self.app.aln_len() as usize {
                     zb_right = self.app.aln_len() as usize;
@@ -323,7 +323,7 @@ impl<'a> UI<'a> {
                 let ratio = self.common_ratio();
                 let aln_para_width = min(max_nb_col_shown_ar as u16, self.max_nb_col_shown());
                 let mut zb_right =
-                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio).round() as usize;
+                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio).floor() as usize;
                 // If w_a < w_p
                 if zb_right > aln_para_width as usize {
                     zb_right = aln_para_width as usize;
