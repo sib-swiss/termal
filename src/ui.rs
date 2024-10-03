@@ -257,30 +257,14 @@ impl<'a> UI<'a> {
     }
 
     // TODO: do we really need seq_para_len? Or can we just use self.app.num_seq?
-    pub fn zoombox_top(&self, seq_para_len: usize) -> usize {
+    pub fn zoombox_top(&self) -> usize {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
-                let zb_top = ((self.top_line as f64) * self.v_ratio()).round() as usize;
-                // Rounding can push zb_top to seq_para_len, if zoom box has zero height
-                if zb_top >= seq_para_len {
-                    seq_para_len - 1
-                } else {
-                    zb_top
-                }
+                ((self.top_line as f64) * self.v_ratio()).floor() as usize
             },
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
-                /* IN AR mode, the height of the alignment paragraph is the smallest of (i) the
-                 * number of retained sequences (which are in seq_para), and (ii) the alignment
-                 * panel's height. */
-                let aln_para_height = min(seq_para_len as u16, self.max_nb_seq_shown());
-                let zb_top = ((self.top_line as f64) * ratio).round() as usize;
-                // Rounding can push zb_top to aln_para_height, if zoom box has zero height
-                if zb_top >= aln_para_height.into() {
-                    (aln_para_height - 1).into()
-                } else {
-                    zb_top
-                }
+                ((self.top_line as f64) * ratio).floor() as usize
             },
             _ => panic!("zoombox_top() should not be called in {:?} mode\n", self.zoom_level),
         }

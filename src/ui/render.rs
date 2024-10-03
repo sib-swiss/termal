@@ -242,7 +242,7 @@ fn mark_zoombox_point(
 //
 fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     // I want zb_top to be immutable, but I may need to change it just after intialization
-    let zb_top = ui.zoombox_top(seq_para.len());
+    let zb_top = ui.zoombox_top();
     let zb_bottom = ui.zoombox_bottom(seq_para.len());
     let zb_left = ui.zoombox_left();
     let zb_right = ui.zoombox_right(seq_para[0].spans.len());
