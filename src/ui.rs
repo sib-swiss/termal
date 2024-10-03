@@ -274,7 +274,7 @@ impl<'a> UI<'a> {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
                 let mut zb_bottom: usize =
-                    (((self.top_line + self.max_nb_seq_shown()) as f64) * self.v_ratio()).round() as usize;
+                    (((self.top_line + self.max_nb_seq_shown()) as f64) * self.v_ratio()).floor() as usize;
                 // If h_a < h_p
                 if zb_bottom > self.app.num_seq() as usize {
                     zb_bottom = self.app.num_seq() as usize;
@@ -284,7 +284,7 @@ impl<'a> UI<'a> {
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
                 let aln_para_height = min(seq_para_len as u16, self.max_nb_seq_shown());
-                let mut zb_bottom = (((self.top_line + self.max_nb_seq_shown()) as f64) * ratio).round() as usize;
+                let mut zb_bottom = (((self.top_line + self.max_nb_seq_shown()) as f64) * ratio).floor() as usize;
                 // If h_a < h_p
                 if zb_bottom > aln_para_height as usize {
                     zb_bottom = aln_para_height as usize;
