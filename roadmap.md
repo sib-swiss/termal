@@ -29,6 +29,11 @@ Urgent
 Normal
 ------
 
+1. [ ] It's not clear that the guides are very useful, as the "Adjacent" mode
+   for the bottom panel seems very natural. Their main advantage is to make it
+     very clear that the coordinates apply to the zoom box (so this leaves the
+     vertical guides in zoomed-in mode without a clear purpose).
+
 1. [x] The expression `let ratio = ui.h_ratio().min(ui.v_ratio());` (or its
    equivalent with `self` instead of `ui`) appears 6 times. This should be
    replaced with a function in `crate::ui.rs`, and this function should return
