@@ -27,6 +27,7 @@ fn retained_col_ndx(ui: &UI) -> Vec<usize> {
         ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.max_nb_col_shown().into()),
         ZoomLevel::ZoomedOutAR => {
             let ratio = ui.common_ratio();
+            // This call to round() is ok as it is not an indx into an array. 
             let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
             every_nth(ui.app.aln_len() as usize, num_retained_cols)
         }
@@ -46,6 +47,7 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
                 ui.h_ratio(),
                 ui.v_ratio()
             );
+            // This call to round() is ok as it is not an indx into an array. 
             let num_retained_seqs: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
             debug!(
                 "Num retained seqs: {} * {} = {} (total: {})",
