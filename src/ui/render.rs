@@ -703,9 +703,14 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         mark_consensus_zb_pos(&mut coloured_consensus, &retained_col_ndx(ui));
     }
 
+    let pos_color = match ui.zoom_level {
+        ZoomLevel::ZoomedIn => Color::White,
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => Color::Cyan,
+    };
+
     let btm_text: Vec<Line> = vec![
-        Line::from(tick_marks(ui.app.aln_len() as usize, None, Some(':'))),
-        Line::from(tick_position(ui.app.aln_len() as usize)),
+        Line::from(Span::styled(tick_marks(ui.app.aln_len() as usize, None, Some(':')), pos_color)),
+        Line::from(Span::styled(tick_position(ui.app.aln_len() as usize), pos_color)),
         Line::from(coloured_consensus),
         Line::from(values_barchart(&product(
             &ui.app.alignment.densities,
