@@ -171,13 +171,14 @@ fn mark_zoombox_general_case(
     zb_bottom: usize,
     zb_left: usize,
     zb_right: usize,
+    zb_style: Style,
 ) {
     let mut l: &mut Line = &mut seq_para[zb_top];
     for c in zb_left + 1..zb_right {
-        let _ = std::mem::replace(&mut l.spans[c], Span::styled("─", Color::Cyan));
+        let _ = std::mem::replace(&mut l.spans[c], Span::styled("─", zb_style));
     }
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("┌", Color::Cyan));
-    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("┐", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("┌", zb_style));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("┐", zb_style));
 
     // NOTE: Clippy suggests using an iterator here, but if I want, say, residues 600-680, then
     // there are going to be 600 useless iterations. I imagine indexing is faster, though
@@ -197,17 +198,17 @@ fn mark_zoombox_general_case(
     // Clippy
     // /*
     for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
-        let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("│", Color::Cyan));
-        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("│", Color::Cyan));
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("│", zb_style));
+        let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("│", zb_style));
     }
     //*/
     l = &mut seq_para[zb_bottom - 1];
     //FIXME: it should not be necessary to iterate _twice_ from zb_left+1 to zb_right
     for c in zb_left + 1..zb_right {
-        let _ = std::mem::replace(&mut l.spans[c], Span::styled("─", Color::Cyan));
+        let _ = std::mem::replace(&mut l.spans[c], Span::styled("─", zb_style));
     }
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("└", Color::Cyan));
-    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("┘", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("└", zb_style));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("┘", zb_style));
 }
 
 // Auxiliary fn for mark_zoombox() - see remarks on previous fn.
@@ -217,13 +218,14 @@ fn mark_zoombox_zero_height(
     zb_top: usize, // zb_bottom == zb_top
     zb_left: usize,
     zb_right: usize,
+    zb_style: Style,
 ) {
     let l: &mut Line = &mut seq_para[zb_top];
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("╾", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("╾", zb_style));
     for c in zb_left + 1..zb_right {
-        let _ = std::mem::replace(&mut l.spans[c], Span::styled("─", Color::Cyan));
+        let _ = std::mem::replace(&mut l.spans[c], Span::styled("─", zb_style));
     }
-    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("╼", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("╼", zb_style));
 }
 
 // Auxiliary fn for mark_zoombox() - see remarks on previous fn.
@@ -233,16 +235,17 @@ fn mark_zoombox_zero_width(
     zb_top: usize,
     zb_bottom: usize,
     zb_left: usize, // zb_right == zb_left
+    zb_style: Style,
 ) {
     let mut l: &mut Line = &mut seq_para[zb_top];
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("╿", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("╿", zb_style));
 
     for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
-        let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("│", Color::Cyan));
+        let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("│", zb_style));
     }
 
     l = &mut seq_para[zb_bottom - 1];
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("╽", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("╽", zb_style));
 }
 
 // Auxiliary fn for mark_zoombox() - see remarks on previous fn.
@@ -251,10 +254,11 @@ fn mark_zoombox_point(
     seq_para: &mut [Line],
     zb_top: usize,
     zb_left: usize, // zb_bottom == zb_top, zb_right == zb_left
+    zb_style: Style,
 ) {
     let l: &mut Line = &mut seq_para[zb_top];
     debug!("mark_zoombox_point(): zb_left = {zb_left}");
-    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("▯", Color::Cyan));
+    let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("▯", zb_style));
 }
 
 // Draws the zoombox (just overwrites the sequence area with box-drawing characters).
@@ -278,17 +282,17 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
             // Zoom box is on a single line & column
-            mark_zoombox_point(seq_para, zb_top, zb_left);
+            mark_zoombox_point(seq_para, zb_top, zb_left, ui.zoombox_style);
         } else {
             // Zoom box has a height of 1 line
-            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right);
+            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right, ui.zoombox_style);
         }
     } else if zb_right - zb_left < 2 {
         // Zoom box has a width of 1 column
-        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left);
+        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left, ui.zoombox_style);
     } else {
         // General case: height and width both > 1
-        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right);
+        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right, ui.zoombox_style);
     }
 }
 

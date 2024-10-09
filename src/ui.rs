@@ -12,7 +12,8 @@ use log::debug;
 
 use bitflags::bitflags;
 
-use ratatui::{layout::Size, prelude::Color};
+use ratatui::{layout::Size, prelude::Color, style::{
+    Style, Stylize}};
 
 use crate::{
     ui::color_scheme::{color_scheme_lesk, color_scheme_monochrome},
@@ -49,8 +50,8 @@ pub struct UI<'a> {
     app: &'a App,
     colour_map: HashMap<char, Color>,
     zoom_level: ZoomLevel,
-    // What to show
     show_zoombox: bool,
+    zoombox_style: Style,
     show_zb_guides: bool,
     show_scrollbars: bool,
     highlight_retained_cols: bool,
@@ -73,6 +74,7 @@ impl<'a> UI<'a> {
             colour_map: color_scheme_lesk(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
+            zoombox_style: Style::new().fg(Color::Cyan),
             show_zb_guides: true,
             show_scrollbars: true,
             highlight_retained_cols: false,

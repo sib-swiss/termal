@@ -28,9 +28,14 @@ Urgent
 Normal
 ------
 
-1. [ ] The cyan zoombox is not very visible. Its style should be experimented
+1. [ ] Other styles (such as the scrollbars' and zoombox positions' and tick
+   marks') should also be de-hard-coded, like the zoom box's (see below).
+
+1. [x] The cyan zoombox is not very visible. Its style should be experimented
    with, and possibly settable by the user. Which means that it should not be
-   hard-coded, but rather be an element of the UI struct.
+   hard-coded, but rather be an element of the UI struct. => UI now has a
+   zoombox_style member. Setting it to bold has no effect, OTOH setting it to
+   reverse video makes it stand out (perhaps too much, in fact).
 
 1. [x] In many cases, using `round()` may cause an out-of-bounds error. Say I
    need the element at 0.95 times the length of an array. If my array has length
