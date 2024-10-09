@@ -5,6 +5,12 @@ title: "Termal: Roadmap"
 Miscellaneous Ideas
 ===================
 
+* Despite the nonnegligible effort I put into them, it's not clear that the
+  guides are very useful, as the "Adjacent" mode for the bottom panel seems very
+  natural. Their main advantage is to make it very clear that the coordinates
+  apply to the zoom box (so this leaves the vertical guides in zoomed-in mode
+  without a clear purpose).
+
 * Make the labels panel part of a more general left pane, which could contain
   other "by-sequence" panes such as length and conservation (WRT consensus)
 
@@ -19,20 +25,19 @@ TODO
 Urgent
 ------
 
-1. [ ] In many cases, using `round()` may cause an out-of-bounds error. Say I
+Normal
+------
+
+1. [ ] The cyan zoombox is not very visible. Its style should be experimented
+   with, and possibly settable by the user. Which means that it should not be
+   hard-coded, but rather be an element of the UI struct.
+
+1. [x] In many cases, using `round()` may cause an out-of-bounds error. Say I
    need the element at 0.95 times the length of an array. If my array has length
    100, that would be element 95 - no problem (well, except that I might really
    want element 94, but at least that won't exceed the array's bounds). But but
    if my array has 10 elements, then 0.95 * 10 will be rounded to 10 - out of
      bounds! So one should use `floor()` instead.
-
-Normal
-------
-
-1. [ ] It's not clear that the guides are very useful, as the "Adjacent" mode
-   for the bottom panel seems very natural. Their main advantage is to make it
-     very clear that the coordinates apply to the zoom box (so this leaves the
-     vertical guides in zoomed-in mode without a clear purpose).
 
 1. [x] The expression `let ratio = ui.h_ratio().min(ui.v_ratio());` (or its
    equivalent with `self` instead of `ui`) appears 6 times. This should be
