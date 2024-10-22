@@ -566,7 +566,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let lbl_nums = compute_label_numbers(ui);
+    let lbl_nums = Text::from(compute_label_numbers(ui)).light_green();
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,

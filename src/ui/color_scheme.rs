@@ -7,6 +7,7 @@ use ratatui::prelude::Color;
 
 pub const ORANGE: Color = Color::Rgb(255, 165, 0);
 pub const SALMON: Color = Color::Rgb(250, 128, 114);
+//pub const DARK_GREEN: Color = Color::Rgb(
 
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
