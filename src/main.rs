@@ -58,9 +58,9 @@ struct Cli {
     #[arg(short = 'D', long)]
     debug: bool,
 
-    /// Disable colour
-    #[arg(short = 'C', long = "no-colour")]
-    no_colour: bool,
+    /// Disable color
+    #[arg(short = 'C', long = "no-color")]
+    no_color: bool,
 
     /// Disable scrollbars (mostly for testing)
     #[arg(long = "no-scrollbars")]
@@ -122,7 +122,7 @@ fn main() -> Result<()> {
     if cli.no_scrollbars {
         app_ui.disable_scrollbars();
     }
-    if cli.no_colour {
+    if cli.no_color {
         app_ui.set_monochrome();
     }
     if cli.no_zoombox {

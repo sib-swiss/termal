@@ -71,7 +71,8 @@ impl<'a> UI<'a> {
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
-            colour_map: color_map_lesk(),
+            color_map: color_map_lesk(),
+            color_scheme: ColorScheme::default(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             zoombox_style: Style::new().fg(Color::Cyan),
@@ -355,7 +356,7 @@ impl<'a> UI<'a> {
     // Color scheme
 
     pub fn set_monochrome(&mut self) {
-        self.colour_map = color_map_monochrome();
+        self.color_map = color_map_monochrome();
     }
 
     // ****************************************************************

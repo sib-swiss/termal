@@ -119,7 +119,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(
                 cur_char.to_string(),
-                *ui.colour_map.get(&cur_char).unwrap(),
+                *ui.color_map.get(&cur_char).unwrap(),
             ));
         }
         text.push(Line::from(spans));
@@ -136,7 +136,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap());
+            let span = Span::styled(c.to_string(), *ui.color_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -153,7 +153,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), *ui.colour_map.get(&c).unwrap());
+            let span = Span::styled(c.to_string(), *ui.color_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -690,7 +690,7 @@ fn mark_consensus_zb_pos(consensus: &mut [Span], retained_pos: &[usize]) {
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
 
-    let mut coloured_consensus: Vec<Span> = ui
+    let mut colored_consensus: Vec<Span> = ui
         .app
         .alignment
         .consensus
@@ -698,13 +698,13 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                *ui.colour_map.get(&c).unwrap_or(&Color::White),
+                *ui.color_map.get(&c).unwrap_or(&Color::White),
             )
         })
         .collect();
 
     if ZoomLevel::ZoomedIn != ui.zoom_level && ui.highlight_retained_cols {
-        mark_consensus_zb_pos(&mut coloured_consensus, &retained_col_ndx(ui));
+        mark_consensus_zb_pos(&mut colored_consensus, &retained_col_ndx(ui));
     }
 
     let pos_color = match ui.zoom_level {
@@ -715,7 +715,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_text: Vec<Line> = vec![
         Line::from(Span::styled(tick_marks(ui.app.aln_len() as usize, None, Some(':')), pos_color)),
         Line::from(Span::styled(tick_position(ui.app.aln_len() as usize), pos_color)),
-        Line::from(coloured_consensus),
+        Line::from(colored_consensus),
         Line::from(values_barchart(&product(
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
