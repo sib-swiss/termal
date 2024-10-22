@@ -9,6 +9,9 @@ pub const ORANGE: Color = Color::Rgb(255, 165, 0);
 pub const SALMON: Color = Color::Rgb(250, 128, 114);
 //pub const DARK_GREEN: Color = Color::Rgb(
 
+// NOTE, although these maps do not vary, we cannot dclare them as constants, because they involve
+// a function call (namely, to HashMap::from()).
+
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
 

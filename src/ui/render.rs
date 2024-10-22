@@ -119,7 +119,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(
                 cur_char.to_string(),
-                *ui.color_map.get(&cur_char).unwrap(),
+                *ui.color_scheme.residue_color_map.get(&cur_char).unwrap(),
             ));
         }
         text.push(Line::from(spans));
@@ -136,7 +136,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), *ui.color_map.get(&c).unwrap());
+            let span = Span::styled(c.to_string(), *ui.color_scheme.residue_color_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -153,7 +153,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), *ui.color_map.get(&c).unwrap());
+            let span = Span::styled(c.to_string(), *ui.color_scheme.residue_color_map.get(&c).unwrap());
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -282,17 +282,17 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
             // Zoom box is on a single line & column
-            mark_zoombox_point(seq_para, zb_top, zb_left, ui.zoombox_style);
+            mark_zoombox_point(seq_para, zb_top, zb_left, Style::new().fg(ui.color_scheme.zoombox_color));
         } else {
             // Zoom box has a height of 1 line
-            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right, ui.zoombox_style);
+            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right, Style::new().fg(ui.color_scheme.zoombox_color));
         }
     } else if zb_right - zb_left < 2 {
         // Zoom box has a width of 1 column
-        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left, ui.zoombox_style);
+        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left, Style::new().fg(ui.color_scheme.zoombox_color));
     } else {
         // General case: height and width both > 1
-        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right, ui.zoombox_style);
+        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right, Style::new().fg(ui.color_scheme.zoombox_color));
     }
 }
 
@@ -698,7 +698,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                *ui.color_map.get(&c).unwrap_or(&Color::White),
+                *ui.color_scheme.residue_color_map.get(&c).unwrap_or(&Color::White),
             )
         })
         .collect();

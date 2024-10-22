@@ -1,4 +1,5 @@
 mod color_map;
+mod color_scheme;
 mod conservation;
 pub mod render;
 pub mod key_handling;
@@ -17,6 +18,7 @@ use ratatui::{layout::Size, prelude::Color, style::{
 
 use crate::{
     ui::color_map::{color_map_lesk, color_map_monochrome},
+    ui::color_scheme::{ColorScheme, color_scheme_default},
     App,
 };
 
@@ -48,10 +50,10 @@ bitflags! {
 
 pub struct UI<'a> {
     app: &'a App,
-    colour_map: HashMap<char, Color>,
+    color_scheme: ColorScheme,
     zoom_level: ZoomLevel,
     show_zoombox: bool,
-    zoombox_style: Style,
+    //zoombox_color: Style,
     show_zb_guides: bool,
     show_scrollbars: bool,
     highlight_retained_cols: bool,
@@ -71,11 +73,9 @@ impl<'a> UI<'a> {
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
-            color_map: color_map_lesk(),
-            color_scheme: ColorScheme::default(),
+            color_scheme: color_scheme_default(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
-            zoombox_style: Style::new().fg(Color::Cyan),
             show_zb_guides: true,
             show_scrollbars: true,
             highlight_retained_cols: false,
@@ -356,7 +356,7 @@ impl<'a> UI<'a> {
     // Color scheme
 
     pub fn set_monochrome(&mut self) {
-        self.color_map = color_map_monochrome();
+        self.color_scheme.residue_color_map = color_map_monochrome();
     }
 
     // ****************************************************************
