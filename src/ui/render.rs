@@ -8,7 +8,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{color_scheme::SALMON, conservation::values_barchart, AlnWRTSeqPane, BottomPanePosition},
+    ui::{color_map::SALMON, conservation::values_barchart, AlnWRTSeqPane, BottomPanePosition},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };

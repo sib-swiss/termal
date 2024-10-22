@@ -12,7 +12,7 @@ pub const SALMON: Color = Color::Rgb(250, 128, 114);
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
 
-pub fn color_scheme_monochrome() -> HashMap<char, Color> {
+pub fn color_map_monochrome() -> HashMap<char, Color> {
     HashMap::from([
         ('G', Color::White),
         ('A', Color::White),
@@ -58,7 +58,7 @@ pub fn color_scheme_monochrome() -> HashMap<char, Color> {
     ])
 }
 
-pub fn color_scheme_lesk() -> HashMap<char, Color> {
+pub fn color_map_lesk() -> HashMap<char, Color> {
     HashMap::from([
         ('G', ORANGE),
         ('A', ORANGE),

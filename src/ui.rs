@@ -1,4 +1,4 @@
-mod color_scheme;
+mod color_map;
 mod conservation;
 pub mod render;
 pub mod key_handling;
@@ -16,7 +16,7 @@ use ratatui::{layout::Size, prelude::Color, style::{
     Style, Stylize}};
 
 use crate::{
-    ui::color_scheme::{color_scheme_lesk, color_scheme_monochrome},
+    ui::color_map::{color_map_lesk, color_map_monochrome},
     App,
 };
 
@@ -71,7 +71,7 @@ impl<'a> UI<'a> {
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
-            colour_map: color_scheme_lesk(),
+            colour_map: color_map_lesk(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             zoombox_style: Style::new().fg(Color::Cyan),
@@ -355,7 +355,7 @@ impl<'a> UI<'a> {
     // Color scheme
 
     pub fn set_monochrome(&mut self) {
-        self.colour_map = color_scheme_monochrome();
+        self.colour_map = color_map_monochrome();
     }
 
     // ****************************************************************
