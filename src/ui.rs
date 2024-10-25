@@ -6,15 +6,14 @@ pub mod key_handling;
 
 use std::{
     cmp::min,
-    collections::HashMap
 };
 
 use log::debug;
 
 use bitflags::bitflags;
 
-use ratatui::{layout::Size, prelude::Color, style::{
-    Style, Stylize}};
+use ratatui::layout::Size;
+    
 
 use crate::{
     ui::color_map::{color_map_lesk, color_map_monochrome},

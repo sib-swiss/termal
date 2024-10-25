@@ -2,12 +2,10 @@ use std::collections::HashMap;
 
 use ratatui::prelude::Color;
 
+use crate::ui::color_scheme::ORANGE;
+
 // NOTE: if it turns out that these hash maps are not efficient (didn't benchmark yet), we might
 // want to look at perfect hash functions - see e.g https://crates.io/crates/phf
-
-pub const ORANGE: Color = Color::Rgb(255, 165, 0);
-pub const SALMON: Color = Color::Rgb(250, 128, 114);
-//pub const DARK_GREEN: Color = Color::Rgb(
 
 // NOTE, although these maps do not vary, we cannot dclare them as constants, because they involve
 // a function call (namely, to HashMap::from()).

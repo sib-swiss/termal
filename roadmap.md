@@ -16,10 +16,6 @@ Miscellaneous Ideas
 
 * Reinstate the "blinky" consensus, at least optionally
 
-* Group all colours under a color scheme struct, and have `UI` contain one such
-  member for all colors. This should include the residue->color map, but also
-  the zoombox, label number, and conservation colours.
-
 TODO
 ====
 
@@ -29,7 +25,11 @@ Urgent
 Normal
 ------
 
-1. [ ] Add colour to label numbers.
+1. [x] Group all colours under a color scheme struct, and have `UI` contain one
+   such member for all colors. This should include the residue->color map, but
+   also the zoombox, label number, and conservation colours.
+
+1. [x] Add colour to label numbers.
 
 1. [ ] Other styles (such as the scrollbars' and zoombox positions' and tick
    marks') should also be de-hard-coded, like the zoom box's (see below).

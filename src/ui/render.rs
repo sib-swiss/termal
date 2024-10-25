@@ -1,5 +1,5 @@
 use ratatui::{
-    prelude::{Color, Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
+    prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
     style::Stylize,
     widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
@@ -8,7 +8,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{color_map::SALMON, conservation::values_barchart, AlnWRTSeqPane, BottomPanePosition},
+    ui::{conservation::values_barchart, AlnWRTSeqPane, BottomPanePosition},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -27,7 +27,7 @@ fn retained_col_ndx(ui: &UI) -> Vec<usize> {
         ZoomLevel::ZoomedOut => every_nth(ui.app.aln_len() as usize, ui.max_nb_col_shown().into()),
         ZoomLevel::ZoomedOutAR => {
             let ratio = ui.common_ratio();
-            // This call to round() is ok as it is not an indx into an array. 
+            // This call to round() is ok as it is not an indx into an array.
             let num_retained_cols: usize = (ui.app.aln_len() as f64 * ratio).round() as usize;
             every_nth(ui.app.aln_len() as usize, num_retained_cols)
         }
@@ -47,7 +47,7 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
                 ui.h_ratio(),
                 ui.v_ratio()
             );
-            // This call to round() is ok as it is not an indx into an array. 
+            // This call to round() is ok as it is not an indx into an array.
             let num_retained_seqs: usize = (ui.app.num_seq() as f64 * ratio).round() as usize;
             debug!(
                 "Num retained seqs: {} * {} = {} (total: {})",
@@ -64,13 +64,13 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
 fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
     let num_cols = ui.app.num_seq().ilog10() as usize + 1;
     let numbers = (0..ui.app.num_seq())
-        .map(|n| Line::from(format!("{:1$}!", n+1, num_cols))) // n+1 -> 1-based (for humans...)
+        .map(|n| Line::from(format!("{:1$}!", n + 1, num_cols))) // n+1 -> 1-based (for humans...)
         .collect();
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => numbers,
-        ZoomLevel:: ZoomedOut | ZoomLevel::ZoomedOutAR => {
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
             let mut result: Vec<Line> = Vec::new();
-            for i in retained_seq_ndx(ui) { 
+            for i in retained_seq_ndx(ui) {
                 result.push(numbers[i].clone());
             }
             result
@@ -136,7 +136,10 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), *ui.color_scheme.residue_color_map.get(&c).unwrap());
+            let span = Span::styled(
+                c.to_string(),
+                *ui.color_scheme.residue_color_map.get(&c).unwrap(),
+            );
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -153,7 +156,10 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), *ui.color_scheme.residue_color_map.get(&c).unwrap());
+            let span = Span::styled(
+                c.to_string(),
+                *ui.color_scheme.residue_color_map.get(&c).unwrap(),
+            );
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -282,17 +288,41 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
             // Zoom box is on a single line & column
-            mark_zoombox_point(seq_para, zb_top, zb_left, Style::new().fg(ui.color_scheme.zoombox_color));
+            mark_zoombox_point(
+                seq_para,
+                zb_top,
+                zb_left,
+                Style::new().fg(ui.color_scheme.zoombox_color),
+            );
         } else {
             // Zoom box has a height of 1 line
-            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right, Style::new().fg(ui.color_scheme.zoombox_color));
+            mark_zoombox_zero_height(
+                seq_para,
+                zb_top,
+                zb_left,
+                zb_right,
+                Style::new().fg(ui.color_scheme.zoombox_color),
+            );
         }
     } else if zb_right - zb_left < 2 {
         // Zoom box has a width of 1 column
-        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left, Style::new().fg(ui.color_scheme.zoombox_color));
+        mark_zoombox_zero_width(
+            seq_para,
+            zb_top,
+            zb_bottom,
+            zb_left,
+            Style::new().fg(ui.color_scheme.zoombox_color),
+        );
     } else {
         // General case: height and width both > 1
-        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right, Style::new().fg(ui.color_scheme.zoombox_color));
+        mark_zoombox_general_case(
+            seq_para,
+            zb_top,
+            zb_bottom,
+            zb_left,
+            zb_right,
+            Style::new().fg(ui.color_scheme.zoombox_color),
+        );
     }
 }
 
@@ -300,7 +330,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
 // modes, and only if there are empty lines). TODO: to avoid having to specify a lifetime, try
 // passing relevant info (i.e., seq_para's length, zoombox's left and right cols, etc.)
 //
-fn draw_zoombox_guides<'a>(aln_bottom: usize, aln_len: usize, ui: &'a UI<'a>) -> Vec<Line<'a>>{
+fn draw_zoombox_guides<'a>(aln_bottom: usize, aln_len: usize, ui: &'a UI<'a>) -> Vec<Line<'a>> {
     let mut guides: Vec<Line> = Vec::new();
     let zb_left = ui.zoombox_left();
     let zb_right = ui.zoombox_right(aln_len);
@@ -424,8 +454,8 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
                 (ui.app.num_seq() as f64 * ratio).round() as u16
             );
             let max_num_seq = (ui.app.num_seq() as f64 * ratio).round() as u16;
-            
-            max_num_seq 
+
+            max_num_seq
         }
     }
 }
@@ -514,10 +544,15 @@ fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
     let title = format!(
         " {} - {}/{}s ({:.2}) x {}/{}c ({:.2})",
         ui.app.filename,
-        aln_para.len(), ui.app.num_seq(), aln_para.len() as f64 /  ui.app.num_seq() as f64,
-        aln_para[0].spans.len(), ui.app.aln_len(), aln_para[0].spans.len() as f64 /  ui.app.aln_len() as f64,
+        aln_para.len(),
+        ui.app.num_seq(),
+        aln_para.len() as f64 / ui.app.num_seq() as f64,
+        aln_para[0].spans.len(),
+        ui.app.aln_len(),
+        aln_para[0].spans.len() as f64 / ui.app.aln_len() as f64,
     );
-    format!("{} - {}",
+    format!(
+        "{} - {}",
         title,
         match ui.zoom_level {
             ZoomLevel::ZoomedIn => "",
@@ -566,7 +601,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let lbl_nums = Text::from(compute_label_numbers(ui)).style(Color::LightGreen);
+    let lbl_nums = Text::from(compute_label_numbers(ui)).style(ui.color_scheme.label_num_color);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
@@ -597,7 +632,10 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
-    debug!("render_alignment_pane(): max_nb_seq_shown = {}", ui.max_nb_seq_shown());
+    debug!(
+        "render_alignment_pane(): max_nb_seq_shown = {}",
+        ui.max_nb_seq_shown()
+    );
     let mut seq = compute_aln_pane_text(ui);
     debug!("render_alignment_pane(): aln width={}", seq[0].spans.len());
     let title = compute_title(ui, &seq);
@@ -607,12 +645,12 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
         if ui.zoom_level == ZoomLevel::ZoomedIn {
             for _ in seq.len()..ui.max_nb_seq_shown() as usize {
                 let mut ticks = tick_marks(ui.app.aln_len() as usize, Some('.'), None);
-                ticks.drain(.. ui.leftmost_col as usize);
+                ticks.drain(..ui.leftmost_col as usize);
                 seq.push(Line::from(ticks));
             }
         } else {
-                let mut guides = draw_zoombox_guides(seq.len(), seq[0].spans.len(), ui);
-                seq.append(&mut guides);
+            let mut guides = draw_zoombox_guides(seq.len(), seq[0].spans.len(), ui);
+            seq.append(&mut guides);
         }
     }
 
@@ -629,7 +667,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .viewport_content_length((ui.max_nb_seq_shown() - 2).into())
                 .position(ui.top_line.into());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-                .thumb_style(Color::Cyan)
+                .thumb_style(ui.color_scheme.zoombox_color)
                 .begin_symbol(None)
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -652,7 +690,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .position(ui.leftmost_col.into());
             let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
                 .begin_symbol(None)
-                .thumb_style(Color::Cyan)
+                .thumb_style(ui.color_scheme.zoombox_color)
                 .thumb_symbol("🬹")
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -698,7 +736,10 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                *ui.color_scheme.residue_color_map.get(&c).unwrap_or(&Color::White),
+                *ui.color_scheme
+                    .residue_color_map
+                    .get(&c)
+                    .unwrap_or(&ui.color_scheme.consensus_default_color),
             )
         })
         .collect();
@@ -708,19 +749,25 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     }
 
     let pos_color = match ui.zoom_level {
-        ZoomLevel::ZoomedIn => Color::White,
-        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => Color::Cyan,
+        ZoomLevel::ZoomedIn => ui.color_scheme.position_color,
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.color_scheme.zoombox_color,
     };
 
     let btm_text: Vec<Line> = vec![
-        Line::from(Span::styled(tick_marks(ui.app.aln_len() as usize, None, Some(':')), pos_color)),
-        Line::from(Span::styled(tick_position(ui.app.aln_len() as usize), pos_color)),
+        Line::from(Span::styled(
+            tick_marks(ui.app.aln_len() as usize, None, Some(':')),
+            pos_color,
+        )),
+        Line::from(Span::styled(
+            tick_position(ui.app.aln_len() as usize),
+            pos_color,
+        )),
         Line::from(colored_consensus),
         Line::from(values_barchart(&product(
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
         )))
-        .style(SALMON),
+        .style(ui.color_scheme.conservation_color),
     ];
 
     let btm_para = Paragraph::new(btm_text)
@@ -737,7 +784,10 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
      * alignment fits in it, the horizontal and vertical ratios when zooming, the top line and
      * leftmost column, etc.
      */
-    debug!("render_ui(): aln_pane_size = {:?}", layout_panes.sequence.as_size());
+    debug!(
+        "render_ui(): aln_pane_size = {:?}",
+        layout_panes.sequence.as_size()
+    );
     ui.aln_pane_size = Some(layout_panes.sequence.as_size());
     debug!("render_ui(): max_nb_seq_shown = {}", ui.max_nb_seq_shown());
     // Handle resizing
