@@ -22,6 +22,9 @@ TODO
 Urgent
 ------
 
+* BUG B0005: The zoom box does not reach the bottom line, and is squashed by one
+  line when reaching the top. 94fb5b (master). 
+
 Normal
 ------
 
