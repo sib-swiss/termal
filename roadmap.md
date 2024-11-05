@@ -22,11 +22,13 @@ TODO
 Urgent
 ------
 
-* BUG B0005: The zoom box does not reach the bottom line, and is squashed by one
-  line when reaching the top. 94fb5b (master). 
-
 Normal
 ------
+
+1. BUG B0005: The zoom box does not reach the bottom line, and is squashed by
+   one line when reaching the top. 94fb5b (master). <- Was caused by an
+   erroneous call to `floor()` instead of `round()`, introduced in `6a04f93cb4`.
+   Fixed in `e4c948e`.
 
 1. [x] Group all colours under a color scheme struct, and have `UI` contain one
    such member for all colors. This should include the residue->color map, but
@@ -46,9 +48,10 @@ Normal
 1. [x] In many cases, using `round()` may cause an out-of-bounds error. Say I
    need the element at 0.95 times the length of an array. If my array has length
    100, that would be element 95 - no problem (well, except that I might really
-   want element 94, but at least that won't exceed the array's bounds). But but
-   if my array has 10 elements, then 0.95 * 10 will be rounded to 10 - out of
-     bounds! So one should use `floor()` instead.
+   want element 94, but at least that won't exceed the array's bounds). But if
+   my array has 10 elements, then 0.95 * 10 will be rounded to 10 - out of
+   bounds! So one should use `floor()` instead. OTOH, using `floor()` everywhere
+   is wrong too: the bottom position of the zoom box needs `round()`.
 
 1. [x] The expression `let ratio = ui.h_ratio().min(ui.v_ratio());` (or its
    equivalent with `self` instead of `ui`) appears 6 times. This should be
