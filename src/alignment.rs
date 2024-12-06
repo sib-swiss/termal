@@ -1,3 +1,5 @@
+mod permutation;
+
 use std::collections::HashMap;
 
 use rasta::FastaFile;
@@ -314,14 +316,15 @@ mod tests {
     }
 
     #[test]
-    fn test_read_aln() {
-        let fasta1 = read_fasta_file("./data/test2.fas").unwrap();
-        let aln1 = Alignment::new(fasta1);
-        assert_eq!("seq1", aln1.headers[0]);
-        assert_eq!("seq2", aln1.headers[1]);
-        assert_eq!("seq3", aln1.headers[2]);
-        assert_eq!("TTGCCG-CGA", aln1.sequences[0]);
-        assert_eq!("TTCCCGGCGA", aln1.sequences[1]);
-        assert_eq!("TTACCG-CAA", aln1.sequences[2]);
+    fn test_order_aln() {
+        let fasta = read_fasta_file("./data/test4.aln").unwrap();
+        let aln1 = Alignment::new(fasta);
+        // Check original order
+        assert_eq!("Zea_001", aln1.headers[0]);
+        assert_eq!("Rana_002", aln1.headers[1]);
+        assert_eq!("Panthera_050", aln1.headers[49]);
+        assert_eq!("tgctgttcgtcaaAgtaggcc", aln1.sequences[0]);
+        assert_eq!("tgctgttAgAcaaagtaggcc", aln1.sequences[1]);
+        assert_eq!("tgctgttcgtcaaagtaggcc", aln1.sequences[49]);
     }
 }
