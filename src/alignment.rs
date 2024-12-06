@@ -57,6 +57,8 @@ impl Alignment {
     }
 }
 
+// TODO should these be methods of Alignment?
+
 fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
     let mut freqs: ResidueCounts = HashMap::new();
     for seq in sequences {
@@ -309,5 +311,17 @@ mod tests {
         assert_eq!(0.4, dens[3]);
         assert_eq!(0.2, dens[4]);
         assert_eq!(0.0, dens[5]);
+    }
+
+    #[test]
+    fn test_read_aln() {
+        let fasta1 = read_fasta_file("./data/test2.fas").unwrap();
+        let aln1 = Alignment::new(fasta1);
+        assert_eq!("seq1", aln1.headers[0]);
+        assert_eq!("seq2", aln1.headers[1]);
+        assert_eq!("seq3", aln1.headers[2]);
+        assert_eq!("TTGCCG-CGA", aln1.sequences[0]);
+        assert_eq!("TTCCCGGCGA", aln1.sequences[1]);
+        assert_eq!("TTACCG-CAA", aln1.sequences[2]);
     }
 }
