@@ -22,6 +22,8 @@ TODO
 Urgent
 ------
 
+* B0006: crash. To reproduce: `cr data/CD00377_ICL-PEPM_wDesc.msa`; then G L
+
 Normal
 ------
 
