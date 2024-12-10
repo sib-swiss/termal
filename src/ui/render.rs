@@ -119,7 +119,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(
                 cur_char.to_string(),
-                *ui.color_scheme.residue_color_map.get(&cur_char).unwrap(),
+                *ui.color_scheme.residue_color_map.get(&cur_char).expect(format!("unexpected character '{}'", cur_char).as_str()),
             ));
         }
         text.push(Line::from(spans));

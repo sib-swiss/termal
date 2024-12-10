@@ -22,10 +22,13 @@ TODO
 Urgent
 ------
 
-* B0006: crash. To reproduce: `cr data/CD00377_ICL-PEPM_wDesc.msa`; then G L
-
 Normal
 ------
+
+1. B0006: crash. To reproduce: `cr data/CD00377_ICL-PEPM_wDesc.msa`; then G L =>
+   Fixed - was caused by an 'X' in the alignment, which was not a key in any
+   color map. Color maps now accept 'X' (and 'x'), and color them white. Also
+   changed unwrap() to expect(), so we get a more informative error message.
 
 1. BUG B0005: The zoom box does not reach the bottom line, and is squashed by
    one line when reaching the top. 94fb5b (master). <- Was caused by an

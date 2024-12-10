@@ -35,6 +35,7 @@ pub fn color_map_monochrome() -> HashMap<char, Color> {
         ('E', Color::White),
         ('K', Color::White),
         ('R', Color::White),
+        ('X', Color::White),
         ('g', Color::White),
         ('a', Color::White),
         ('s', Color::White),
@@ -55,6 +56,7 @@ pub fn color_map_monochrome() -> HashMap<char, Color> {
         ('e', Color::White),
         ('k', Color::White),
         ('r', Color::White),
+        ('x', Color::White),
         ('-', Color::White),
     ])
 }
@@ -81,6 +83,7 @@ pub fn color_map_lesk() -> HashMap<char, Color> {
         ('E', Color::Red),
         ('K', Color::Blue),
         ('R', Color::Blue),
+        ('X', Color::White),
         ('g', ORANGE),
         ('a', ORANGE),
         ('s', ORANGE),
@@ -101,6 +104,7 @@ pub fn color_map_lesk() -> HashMap<char, Color> {
         ('e', Color::Red),
         ('k', Color::Blue),
         ('r', Color::Blue),
+        ('x', Color::White),
         ('-', Color::Gray),
     ])
 }
