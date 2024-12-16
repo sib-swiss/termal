@@ -22,6 +22,8 @@ TODO
 Urgent
 ------
 
+* B0007: the consensus is shorter than the alignment in `CD00377_ICL-PEPM_wDesc.msa`
+
 Normal
 ------
 
