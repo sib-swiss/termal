@@ -1,5 +1,7 @@
 mod permutation;
 
+use log::debug; // TODO: rm when debugged
+
 use std::collections::HashMap;
 
 use rasta::FastaFile;
@@ -38,6 +40,7 @@ impl Alignment {
             sequences.push(record.sequence);
         }
         let consensus = consensus(&sequences);
+        debug!("Alignment::new() consensus length: {}", consensus.len());
         let entropies = entropies(&sequences);
         let densities = densities(&sequences);
 
@@ -72,14 +75,20 @@ fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
 
 pub fn consensus(sequences: &Vec<String>) -> String {
     let mut consensus = String::new();
+    debug!("Alignment::consensus(): length of 1st seq: {}",
+        sequences[0].len());
     for j in 0..sequences[0].len() {
+        debug!("   j: {}, len: {}", j, consensus.len());
         let dist = res_count(sequences, j);
         let br = best_residue(&dist);
         let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
         if rel_freq >= 0.8 {
+            debug!("    rf >= 0.8, pushing {}", br.residue);
             consensus.push(br.residue);
         } else if rel_freq >= 0.2 {
             if br.residue.is_alphabetic() {
+                debug!("    dist: {:#?}", dist);
+                debug!("    0.2 <= rf < 0.8, pushing '{}'", (br.residue as u8 + 97 - 65));
                 consensus.push((br.residue as u8 + 97 - 65) as char);
             } else {
                 consensus.push('-');
@@ -88,6 +97,8 @@ pub fn consensus(sequences: &Vec<String>) -> String {
             consensus.push('*');
         }
     }
+    debug!("Alignment::consensus(): length of consensus before return: {}",
+        consensus.len());
     consensus
 }
 

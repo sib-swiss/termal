@@ -22,7 +22,12 @@ TODO
 Urgent
 ------
 
-* B0007: the consensus is shorter than the alignment in `CD00377_ICL-PEPM_wDesc.msa`
+* B0007: the consensus is shorter than the alignment in
+  `CD00377_ICL-PEPM_wDesc.msa`. This is due to sevral cases of non-letter
+  characters being pushed onto the consensus; the first one is at position 271,
+  and has ASCII code 129 (note that lowercase 'z' is 122; in fact no letter
+  should be above 127. IDK if this is in the original data or an artifact of my
+  computation of the residue frequencies.
 
 Normal
 ------

@@ -744,6 +744,9 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         })
         .collect();
 
+    // TODO: rm when debug
+    debug!("[Aln] consensus length: {}", ui.app.alignment.consensus.len());
+
     if ZoomLevel::ZoomedIn != ui.zoom_level && ui.highlight_retained_cols {
         mark_consensus_zb_pos(&mut colored_consensus, &retained_col_ndx(ui));
     }
