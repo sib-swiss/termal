@@ -22,15 +22,20 @@ TODO
 Urgent
 ------
 
-* B0007: the consensus is shorter than the alignment in
-  `CD00377_ICL-PEPM_wDesc.msa`. This is due to sevral cases of non-letter
-  characters being pushed onto the consensus; the first one is at position 271,
-  and has ASCII code 129 (note that lowercase 'z' is 122; in fact no letter
-  should be above 127. IDK if this is in the original data or an artifact of my
-  computation of the residue frequencies.
-
 Normal
 ------
+
+1. B0007: the consensus is shorter than the alignment in
+   `CD00377_ICL-PEPM_wDesc.msa`. This is due to sevral cases of non-letter
+   characters being pushed onto the consensus; the first one is at position 271,
+   and has ASCII code 129 (note that lowercase 'z' is 122; in fact no letter
+   should be above 127. IDK if this is in the original data or an artifact of my
+   computation of the residue frequencies.  => Fixed. This was due to a kludgy
+   conversion to lowercase: `br.residue as u8 + 97 - 65`. This works if the
+   residue is _uppercase_, but if it is already lowercase, it doesn't return the
+   same character - worse, it it will yield a value > 127, which will be
+   interpreted as a non-ASCII character. At the time of writing, we still only
+   considered uppercase residues in the alignments.
 
 1. B0006: crash. To reproduce: `cr data/CD00377_ICL-PEPM_wDesc.msa`; then G L =>
    Fixed - was caused by an 'X' in the alignment, which was not a key in any
