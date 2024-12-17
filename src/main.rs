@@ -28,119 +28,133 @@ use crate::ui::{
 };
 
 #[derive(Debug, Parser)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about = None,
+after_help="
+Key Bindings:
+------------
+
+* h,j,k,l: move view port / zoom box left, down, up, right
+* H,J,K,L: like h,j,k,l, but large motions
+* ^,G,g,$: full left, bottom, top, full right
+* z,Z    : cycle through zoom modes
+* r      : highlight zoom box residues in consensus
+* v      : show view guides
+* <,>    : widen/narrow label pane
+* Q,q    : quit
+")
+]
 struct Cli {
-    /// Alignment file
-    aln_fname: String,
+/// Alignment file
+aln_fname: String,
 
-    /// Info mode (no TUI)
-    #[arg(short, long)]
-    info: bool,
+/// Info mode (no TUI)
+#[arg(short, long)]
+info: bool,
 
-    // FIXME: why do these need to be Options and not just u16?
-    /// Fixed terminal width (mostly used for testing/debugging)
-    #[arg(short, long, requires = "height")]
-    width: Option<u16>,
+// FIXME: why do these need to be Options and not just u16?
+/// Fixed terminal width (mostly used for testing/debugging)
+#[arg(short, long, requires = "height")]
+width: Option<u16>,
 
-    /// Fixed terminal height ("tall" -- -h is already used)
-    #[arg(short = 't', long, requires = "width")]
-    height: Option<u16>,
+/// Fixed terminal height ("tall" -- -h is already used)
+#[arg(short = 't', long, requires = "width")]
+height: Option<u16>,
 
-    /// Start with labels pane hidden
-    #[arg(short = 'L', long)]
-    hide_labels_pane: bool,
+/// Start with labels pane hidden
+#[arg(short = 'L', long)]
+hide_labels_pane: bool,
 
-    /// Start with bottom pane hidden
-    #[arg(short = 'B', long)]
-    hide_bottom_pane: bool,
+/// Start with bottom pane hidden
+#[arg(short = 'B', long)]
+hide_bottom_pane: bool,
 
-    /// (Currently no effect)
-    #[arg(short = 'D', long)]
-    debug: bool,
+/// (Currently no effect)
+#[arg(short = 'D', long)]
+debug: bool,
 
-    /// Disable color
-    #[arg(short = 'C', long = "no-color")]
-    no_color: bool,
+/// Disable color
+#[arg(short = 'C', long = "no-color")]
+no_color: bool,
 
-    /// Disable scrollbars (mostly for testing)
-    #[arg(long = "no-scrollbars")]
-    no_scrollbars: bool,
+/// Disable scrollbars (mostly for testing)
+#[arg(long = "no-scrollbars")]
+no_scrollbars: bool,
 
-    /// Poll wait time [ms]
-    #[clap(long = "poll-wait-time", default_value_t = 100)]
-    poll_wait_time: u64,
+/// Poll wait time [ms]
+#[clap(long = "poll-wait-time", default_value_t = 100)]
+poll_wait_time: u64,
 
-    /// Panic (for testing)
-    #[clap(long = "panic")]
-    panic: bool,
+/// Panic (for testing)
+#[clap(long = "panic")]
+panic: bool,
 
-    /// Do not show zoom box (zooming itself is not disabled)
-    #[arg(long = "no-zoom-box")]
-    no_zoombox: bool,
+/// Do not show zoom box (zooming itself is not disabled)
+#[arg(long = "no-zoom-box")]
+no_zoombox: bool,
 
-    /// Do not show zoom box guides (only useful if zoom box not shown)
-    #[arg(long = "no-zb-guides")]
-    no_zb_guides: bool,
+/// Do not show zoom box guides (only useful if zoom box not shown)
+#[arg(long = "no-zb-guides")]
+no_zb_guides: bool,
 }
 
 fn main() -> Result<()> {
-    env_logger::init();
-    info!("Starting log");
+env_logger::init();
+info!("Starting log");
 
-    let cli = Cli::parse();
-    if cli.panic {
-        panic!("User-requested panic");
-    }
+let cli = Cli::parse();
+if cli.panic {
+    panic!("User-requested panic");
+}
 
-    let fasta_file: &str = &cli.aln_fname;
-    let app = App::new(fasta_file)?;
+let fasta_file: &str = &cli.aln_fname;
+let app = App::new(fasta_file)?;
 
-    if cli.info {
-        info!("Running in debug mode.");
-        app.output_info();
-        return Ok(());
-    }
+if cli.info {
+    info!("Running in debug mode.");
+    app.output_info();
+    return Ok(());
+}
 
-    stdout().execute(EnterAlternateScreen)?;
-    enable_raw_mode()?;
-    //let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
-    let backend = CrosstermBackend::new(stdout());
-    let viewport: Viewport;
-    // Fix viewport dimensions IFF supplied (mainly for tests)
-    //
-    if let Some(width) = cli.width {
-        // height must be defined too (see 'requires' in struct Cli above)
-        let height = cli.height.unwrap();
-        viewport = Viewport::Fixed(Rect::new(0, 0, width, height));
-    } else {
-        viewport = Viewport::Fullscreen;
-    }
-    let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
-    terminal.clear()?;
+stdout().execute(EnterAlternateScreen)?;
+enable_raw_mode()?;
+//let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
+let backend = CrosstermBackend::new(stdout());
+let viewport: Viewport;
+// Fix viewport dimensions IFF supplied (mainly for tests)
+//
+if let Some(width) = cli.width {
+    // height must be defined too (see 'requires' in struct Cli above)
+    let height = cli.height.unwrap();
+    viewport = Viewport::Fixed(Rect::new(0, 0, width, height));
+} else {
+    viewport = Viewport::Fullscreen;
+}
+let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
+terminal.clear()?;
 
-    let mut app_ui = UI::new(&app);
-    if cli.no_scrollbars {
-        app_ui.disable_scrollbars();
-    }
-    if cli.no_color {
-        app_ui.set_monochrome();
-    }
-    if cli.no_zoombox {
-        app_ui.set_zoombox(false);
-    }
-    if cli.no_zb_guides {
-        app_ui.set_zoombox_guides(false);
-    }
-    if cli.hide_labels_pane {
-        app_ui.set_label_pane_width(0);
-    }
-    if cli.hide_bottom_pane {
-        app_ui.set_bottom_pane_height(0);
-    }
+let mut app_ui = UI::new(&app);
+if cli.no_scrollbars {
+    app_ui.disable_scrollbars();
+}
+if cli.no_color {
+    app_ui.set_monochrome();
+}
+if cli.no_zoombox {
+    app_ui.set_zoombox(false);
+}
+if cli.no_zb_guides {
+    app_ui.set_zoombox_guides(false);
+}
+if cli.hide_labels_pane {
+    app_ui.set_label_pane_width(0);
+}
+if cli.hide_bottom_pane {
+    app_ui.set_bottom_pane_height(0);
+}
 
-    // main loop
-    loop {
-        debug!("\n**** Draw Iteration ****");
+// main loop
+loop {
+    debug!("\n**** Draw Iteration ****");
         debug!("terminal size: {:?}", terminal.size().unwrap());
         terminal.draw(|f| render_ui(f, &mut app_ui))?;
         // handle events
