@@ -16,6 +16,11 @@ Miscellaneous Ideas
 
 * Reinstate the "blinky" consensus, at least optionally
 
+* Some CLI flags such as "hide bottom pane" etc. should have runtime
+  equivalents, i.e. it should be possible to interactively hiede and unhide the
+  bottom and left panes. Maybe also switch to monochrome and back, and perhaps
+  hide just the sequence numbers.
+
 TODO
 ====
 
@@ -24,6 +29,9 @@ Urgent
 
 Normal
 ------
+
+1. Sequence numbers start at 1, but positions start at 0. Make up your mind,
+   dude...
 
 1. B0007: the consensus is shorter than the alignment in
    `CD00377_ICL-PEPM_wDesc.msa`. This is due to sevral cases of non-letter
