@@ -3,7 +3,7 @@
 RUST_SOURCES = $(shell find src -name '*.rs')
 TERMAL_BINARY = ./target/release/termal
 
-$(TERMAL_BINARY):
+$(TERMAL_BINARY): $(RUST_SOURCES)
 	cargo build --release
 
 tags: $(RUST_SOURCES)
