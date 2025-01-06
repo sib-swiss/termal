@@ -56,6 +56,9 @@ Secondary
 Example
 =======
 
+```bash
+$ termal data/aln4.pep
+```
 ```
 ┌──┌───────────┌ data/aln4.pep - 16/16s (1.00) x 70/561c (0.12) - ────────────────────┐
 │ 1│Abro_00865 │ELTDGFHLIIDALKLNGLNTIYGVPGIPITDFGRMAQAEGIRVLSFRHEQNAGYAASIAGFLTK-KPGVC│
@@ -74,10 +77,16 @@ Example
 │14│Osp1_01723 │ELTDGFHVLKDVLKVNGIDTMYGVVGIPITNLARLWEQDGQKFYSFRHEQHAGYAASIAGYIHGDKPGVC│
 │15│Osp2_01577 │ELTDGFHVLMDTLKMNDIDTMYGVVGIPITNLARLWEQDGQKFYSFRHEQHAGYAASIAGYIQGDKPGVC│
 │16│Osp3_01912 │ELTDGFHVLIDALKMNDIDTMYGVVGIPITNLARLWQDDGQRFYSFRHEQHAGYAASIAGYIEG-KPGVC│
-└──└───────────└🬹🬹🬹🬹🬹🬹🬹🬹🬹═════════════════════════════════════════════════════════════┘
+└──└───────────└🬹🬹🬹🬹🬹🬹🬹🬹🬹═══════════════════════════════════════════════════════┘
 │              │|    :    |    :    |    :    |    :    |    :    |    :    |    :    │
 │Position      │0        10        20        30        40        50        60        7│
 │Consensus     │elTDGFHlvIDALKlNgIdtiYGvpGIPITdLaRlaqadGmrviSFRHEQnAGyAAaIAGyltk-KPGVC│
 │Conservation  │▅▅█████▄▄▆█▆▆█▄█▅▇▃▆▄▇▅▆▄███▆▇▅▆▄█▅▄▅▃▂▇▄▆▅▄▆████▇▅██▄██▅▇▇█▅▄▄▃▁▇██▆█│
 └──────────────└──────────────────────────────────────────────────────────────────────┘
 ```
+
+**Notes**
+
+1. The above example appears in monochrome due to Markdown rendring, but by default Termal uses colours, e.g. to reflect amino acid chemistry.
+2. The above example had to be slightly tweaked because the separation line between the main and bottom panel is rendered too wide in some Markdown engines.
+
