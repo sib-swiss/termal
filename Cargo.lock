@@ -402,6 +402,7 @@ dependencies = [
 [[package]]
 name = "rasta"
 version = "0.1.0"
+source = "git+https://github.com/juniert/rasta.git#2d2122c487a79b320179f5363e117ec8ac4148d6"
 
 [[package]]
 name = "ratatui"
