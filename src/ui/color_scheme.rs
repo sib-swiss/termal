@@ -11,7 +11,7 @@ pub const SALMON: Color = Color::Rgb(250, 128, 114);
 pub struct ColorScheme {
     pub label_num_color: Color,
 
-    pub residue_color_map: HashMap<char, Color>, 
+    pub residue_color_map: HashMap<char, Color>,
 
     pub zoombox_color: Color,
 
@@ -20,9 +20,8 @@ pub struct ColorScheme {
     pub consensus_default_color: Color,
 }
 
-
 pub fn color_scheme_default() -> ColorScheme {
-    ColorScheme{
+    ColorScheme {
         label_num_color: Color::LightGreen,
         residue_color_map: color_map_lesk(),
         zoombox_color: Color::Cyan,

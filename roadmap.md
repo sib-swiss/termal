@@ -16,11 +16,6 @@ Miscellaneous Ideas
 
 * Reinstate the "blinky" consensus, at least optionally
 
-* Some CLI flags such as "hide bottom pane" etc. should have runtime
-  equivalents, i.e. it should be possible to interactively hiede and unhide the
-  bottom and left panes. Maybe also switch to monochrome and back, and perhaps
-  hide just the sequence numbers.
-
 TODO
 ====
 
@@ -30,10 +25,17 @@ Urgent
 Normal
 ------
 
-1. Sequence numbers start at 1, but positions start at 0. Make up your mind,
+1. [ ] Some CLI flags such as "hide bottom pane" etc. should have runtime
+   equivalents, i.e. it should be possible to interactively hide and unhide the
+   bottom and left panes. Maybe also switch to monochrome and back, and perhaps
+   hide just the sequence numbers.
+
+1. [x] Added a help dialog, accessible through '?' (since 'h' is already used).
+
+1. [ ] Sequence numbers start at 1, but positions start at 0. Make up your mind,
    dude...
 
-1. B0007: the consensus is shorter than the alignment in
+1. [x] B0007: the consensus is shorter than the alignment in
    `CD00377_ICL-PEPM_wDesc.msa`. This is due to sevral cases of non-letter
    characters being pushed onto the consensus; the first one is at position 271,
    and has ASCII code 129 (note that lowercase 'z' is 122; in fact no letter
@@ -45,12 +47,12 @@ Normal
    interpreted as a non-ASCII character. At the time of writing, we still only
    considered uppercase residues in the alignments.
 
-1. B0006: crash. To reproduce: `cr data/CD00377_ICL-PEPM_wDesc.msa`; then G L =>
+1. [x] B0006: crash. To reproduce: `cr data/CD00377_ICL-PEPM_wDesc.msa`; then G L =>
    Fixed - was caused by an 'X' in the alignment, which was not a key in any
    color map. Color maps now accept 'X' (and 'x'), and color them white. Also
    changed unwrap() to expect(), so we get a more informative error message.
 
-1. BUG B0005: The zoom box does not reach the bottom line, and is squashed by
+1. [x] BUG B0005: The zoom box does not reach the bottom line, and is squashed by
    one line when reaching the top. 94fb5b (master). <- Was caused by an
    erroneous call to `floor()` instead of `round()`, introduced in `6a04f93cb4`.
    Fixed in `e4c948e`.

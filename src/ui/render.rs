@@ -119,7 +119,10 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(
                 cur_char.to_string(),
-                *ui.color_scheme.residue_color_map.get(&cur_char).expect(format!("unexpected character '{}'", cur_char).as_str()),
+                *ui.color_scheme
+                    .residue_color_map
+                    .get(&cur_char)
+                    .expect(format!("unexpected character '{}'", cur_char).as_str()),
             ));
         }
         text.push(Line::from(spans));
@@ -471,17 +474,17 @@ fn delineate_help_pane(frame_area: Rect) -> Rect {
     let dialog_v_layout = Layout::default()
         .direction(Direction::Vertical)
         .constraints(vec![
-                     Constraint::Percentage(10),
-                     Constraint::Percentage(80),
-                     Constraint::Percentage(10),
+            Constraint::Percentage(10),
+            Constraint::Percentage(80),
+            Constraint::Percentage(10),
         ])
         .split(frame_area);
     let dialog_h_layout = Layout::default()
         .direction(Direction::Horizontal)
         .constraints(vec![
-                     Constraint::Percentage(10),
-                     Constraint::Percentage(80),
-                     Constraint::Percentage(10),
+            Constraint::Percentage(10),
+            Constraint::Percentage(80),
+            Constraint::Percentage(10),
         ])
         .split(dialog_v_layout[1]);
 
@@ -778,7 +781,10 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .collect();
 
     // TODO: rm when debug
-    debug!("[Aln] consensus length: {}", ui.app.alignment.consensus.len());
+    debug!(
+        "[Aln] consensus length: {}",
+        ui.app.alignment.consensus.len()
+    );
 
     if ZoomLevel::ZoomedIn != ui.zoom_level && ui.highlight_retained_cols {
         mark_consensus_zb_pos(&mut colored_consensus, &retained_col_ndx(ui));
@@ -831,8 +837,7 @@ fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
     ];
     let dialog_para = Paragraph::new(Text::from_iter(text))
         .block(dialog_block)
-        .style(Style::new().white().on_black())
-        ;
+        .style(Style::new().white().on_black());
     f.render_widget(Clear, dialog_chunk);
     f.render_widget(dialog_para, dialog_chunk);
 }
@@ -879,7 +884,9 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     render_corner_pane(f, layout_panes.corner);
     render_bottom_pane(f, layout_panes.bottom, ui);
 
-    if ui.show_help { render_help_dialog(f, layout_panes.dialog); }
+    if ui.show_help {
+        render_help_dialog(f, layout_panes.dialog);
+    }
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include

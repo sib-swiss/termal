@@ -1,23 +1,20 @@
 mod color_map;
 mod color_scheme;
 mod conservation;
-pub mod render;
 pub mod key_handling;
+pub mod render;
 
-use std::{
-    cmp::min,
-};
+use std::cmp::min;
 
 use log::debug;
 
 use bitflags::bitflags;
 
 use ratatui::layout::Size;
-    
 
 use crate::{
     ui::color_map::{color_map_lesk, color_map_monochrome},
-    ui::color_scheme::{ColorScheme, color_scheme_default},
+    ui::color_scheme::{color_scheme_default, ColorScheme},
     App,
 };
 
@@ -231,7 +228,7 @@ impl<'a> UI<'a> {
 
     // ZoomLevel::ZoomedOutAR mode uses a _single_ ratio, which is usually the minimum of the
     // vertical and horizontal ratios, but it _can_ use the mmaximum if the resulting alignment
-    // still fits. 
+    // still fits.
     pub fn common_ratio(&self) -> f64 {
         let min_ratio = self.h_ratio().min(self.v_ratio());
         let max_ratio = self.h_ratio().max(self.v_ratio());
@@ -241,13 +238,26 @@ impl<'a> UI<'a> {
         let max_r_seqs = (self.app.num_seq() as f64 * max_ratio).floor() as u16;
 
         debug!("  ***");
-        debug!("  max shown cols: {}, max shown seqs: {}",
-            self.max_nb_col_shown(), self.max_nb_seq_shown());
-        debug!("  h_r: {:.2}, v_r: {:.2}, min_r: {:.2}, max_r: {:.2}",
-            self.h_ratio(), self.v_ratio(),
-            min_ratio, max_ratio,);
-        debug!("  min ratio ({:.2}): {} seqs x {} cols",  min_ratio, min_r_seqs, min_r_cols);
-        debug!("  max ratio ({:.2}): {} seqs x {} cols",  max_ratio, max_r_seqs, max_r_cols);
+        debug!(
+            "  max shown cols: {}, max shown seqs: {}",
+            self.max_nb_col_shown(),
+            self.max_nb_seq_shown()
+        );
+        debug!(
+            "  h_r: {:.2}, v_r: {:.2}, min_r: {:.2}, max_r: {:.2}",
+            self.h_ratio(),
+            self.v_ratio(),
+            min_ratio,
+            max_ratio,
+        );
+        debug!(
+            "  min ratio ({:.2}): {} seqs x {} cols",
+            min_ratio, min_r_seqs, min_r_cols
+        );
+        debug!(
+            "  max ratio ({:.2}): {} seqs x {} cols",
+            max_ratio, max_r_seqs, max_r_cols
+        );
 
         if max_r_cols == self.max_nb_col_shown() && max_r_seqs == self.max_nb_seq_shown() {
             max_ratio
@@ -263,78 +273,89 @@ impl<'a> UI<'a> {
     // TODO: do we really need seq_para_len? Or can we just use self.app.num_seq?
     pub fn zoombox_top(&self) -> usize {
         match self.zoom_level {
-            ZoomLevel::ZoomedOut => {
-                ((self.top_line as f64) * self.v_ratio()).floor() as usize
-            },
+            ZoomLevel::ZoomedOut => ((self.top_line as f64) * self.v_ratio()).floor() as usize,
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
                 ((self.top_line as f64) * ratio).floor() as usize
-            },
-            _ => panic!("zoombox_top() should not be called in {:?} mode\n", self.zoom_level),
+            }
+            _ => panic!(
+                "zoombox_top() should not be called in {:?} mode\n",
+                self.zoom_level
+            ),
         }
     }
 
     pub fn zoombox_bottom(&self, seq_para_len: usize) -> usize {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
-                let mut zb_bottom: usize =
-                    (((self.top_line + self.max_nb_seq_shown()) as f64) * self.v_ratio()).round() as usize;
+                let mut zb_bottom: usize = (((self.top_line + self.max_nb_seq_shown()) as f64)
+                    * self.v_ratio())
+                .round() as usize;
                 // If h_a < h_p
                 if zb_bottom > self.app.num_seq() as usize {
                     zb_bottom = self.app.num_seq() as usize;
                 }
                 zb_bottom
-            },
+            }
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
                 let aln_para_height = min(seq_para_len as u16, self.max_nb_seq_shown());
-                let mut zb_bottom = (((self.top_line + self.max_nb_seq_shown()) as f64) * ratio).round() as usize;
+                let mut zb_bottom =
+                    (((self.top_line + self.max_nb_seq_shown()) as f64) * ratio).round() as usize;
                 // If h_a < h_p
                 if zb_bottom > aln_para_height as usize {
                     zb_bottom = aln_para_height as usize;
                 }
                 zb_bottom
-            },
-            _ => panic!("zoombox_bottom() should not be called in {:?} mode\n", self.zoom_level),
+            }
+            _ => panic!(
+                "zoombox_bottom() should not be called in {:?} mode\n",
+                self.zoom_level
+            ),
         }
     }
 
     pub fn zoombox_left(&self) -> usize {
         match self.zoom_level {
-            ZoomLevel::ZoomedOut => {
-                ((self.leftmost_col as f64) * self.h_ratio()).floor() as usize
-            },
+            ZoomLevel::ZoomedOut => ((self.leftmost_col as f64) * self.h_ratio()).floor() as usize,
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
                 ((self.leftmost_col as f64) * ratio).floor() as usize
-            },
-            _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
+            }
+            _ => panic!(
+                "zoombox_left() should not be called in {:?} mode\n",
+                self.zoom_level
+            ),
         }
     }
 
     pub fn zoombox_right(&self, max_nb_col_shown_ar: usize) -> usize {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
-                let mut zb_right =
-                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * self.h_ratio()).floor() as usize;
+                let mut zb_right = (((self.leftmost_col + self.max_nb_col_shown()) as f64)
+                    * self.h_ratio())
+                .floor() as usize;
                 // If w_a < w_p
                 if zb_right > self.app.aln_len() as usize {
                     zb_right = self.app.aln_len() as usize;
                 }
                 zb_right
-            },
+            }
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
                 let aln_para_width = min(max_nb_col_shown_ar as u16, self.max_nb_col_shown());
-                let mut zb_right =
-                    (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio).floor() as usize;
+                let mut zb_right = (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio)
+                    .floor() as usize;
                 // If w_a < w_p
                 if zb_right > aln_para_width as usize {
                     zb_right = aln_para_width as usize;
                 }
                 zb_right
-            },
-            _ => panic!("zoombox_left() should not be called in {:?} mode\n", self.zoom_level),
+            }
+            _ => panic!(
+                "zoombox_left() should not be called in {:?} mode\n",
+                self.zoom_level
+            ),
         }
     }
 
