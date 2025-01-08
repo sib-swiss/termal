@@ -435,7 +435,7 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedIn => ui.app.num_seq(),
         ZoomLevel::ZoomedOutAR => {
             let v_constraints = vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)];
-            let top_chunk = Layout::new(Direction::Vertical, v_constraints).split(f.size())[0];
+            let top_chunk = Layout::new(Direction::Vertical, v_constraints).split(f.area())[0];
 
             let aln_pane = Layout::new(
                 Direction::Horizontal,
@@ -462,6 +462,32 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
     }
 }
 
+fn delineate_help_pane(frame_area: Rect) -> Rect {
+    // We take all the screen except the top, bottom, left and right 10%. This means dividing the
+    // screen in three vertically, taking the middle 80%, and then dividing that in three and
+    // taking its middle 80%.
+    // NOTE here I'm using the builder style, might want to apply it elsewhere, if only for
+    // consistency.
+    let dialog_v_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(vec![
+                     Constraint::Percentage(10),
+                     Constraint::Percentage(80),
+                     Constraint::Percentage(10),
+        ])
+        .split(frame_area);
+    let dialog_h_layout = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(vec![
+                     Constraint::Percentage(10),
+                     Constraint::Percentage(80),
+                     Constraint::Percentage(10),
+        ])
+        .split(dialog_v_layout[1]);
+
+    dialog_h_layout[1]
+}
+
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
     let mns = max_num_seq(f, ui);
     debug!("max num seq: {}", mns);
@@ -475,7 +501,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
             vec![Constraint::Fill(1), Constraint::Max(ui.bottom_pane_height)]
         }
     };
-    let v_panes = Layout::new(Direction::Vertical, constraints).split(f.size());
+    let v_panes = Layout::new(Direction::Vertical, constraints).split(f.area());
 
     let upper_panes = Layout::new(
         Direction::Horizontal,
@@ -500,28 +526,8 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     )
     .split(v_panes[1]);
 
-    // The dialog is only used in help mode, but we compute its position now all the same. We
-    // take all the screen except the top, bottom, left and right 10%. This means dividing the
-    // screen in three vertically, taking the middle 80%, and then dividing that in three and
-    // taking its middle 80%.
-    // NOTE here I'm using the builder style, might want to apply it elsewhere, if only for
-    // consistency.
-    let dialog_v_layout = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints(vec![
-                     Constraint::Percentage(10),
-                     Constraint::Percentage(80),
-                     Constraint::Percentage(10),
-        ])
-        .split(f.size());
-    let dialog_h_layout = Layout::default()
-        .direction(Direction::Horizontal)
-        .constraints(vec![
-                     Constraint::Percentage(10),
-                     Constraint::Percentage(80),
-                     Constraint::Percentage(10),
-        ])
-        .split(dialog_v_layout[1]);
+    // The dialog is only used in help mode, but we compute its position now all the same.
+    let help_dialog_pane = delineate_help_pane(f.area());
 
     Panes {
         lbl_num: lbl_pane[0],
@@ -529,7 +535,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
         sequence: upper_panes[1],
         corner: lower_panes[0],
         bottom: lower_panes[1],
-        dialog: dialog_h_layout[1],
+        dialog: help_dialog_pane,
     }
 }
 
@@ -698,7 +704,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .end_symbol(None);
             f.render_stateful_widget(
                 v_scrollbar,
-                aln_chunk.inner(&Margin {
+                aln_chunk.inner(Margin {
                     vertical: 1,
                     horizontal: 0,
                 }),
@@ -721,7 +727,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .end_symbol(None);
             f.render_stateful_widget(
                 h_scrollbar,
-                aln_chunk.inner(&Margin {
+                aln_chunk.inner(Margin {
                     vertical: 0,
                     horizontal: 1,
                 }),
@@ -843,7 +849,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
        checksum = "a564a852040e82671dc50a37d88f3aa83bbc690dfc6844cfe7a2591620206a80"
     */
     //ui.frame_size = Some(f.area().as_size());
-    ui.frame_size = Some(f.size().as_size());
+    ui.frame_size = Some(f.area().as_size());
 
     ui.assert_invariants();
 
