@@ -815,7 +815,19 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
     let dialog_block = Block::default().borders(Borders::ALL);
     let text = vec![
-        "Key Bindings".to_string()
+        "Key Bindings",
+        "============",
+        "",
+        "* h,j,k,l: move view port / zoom box left, down, up, right",
+        "* H,J,K,L: like h,j,k,l, but large motions",
+        "* ^,G,g,$: full left, bottom, top, full right",
+        "* z,Z    : cycle through zoom modes",
+        "* r      : highlight zoom box residues in consensus",
+        "* v      : show view guides",
+        "* <,>    : widen/narrow label pane",
+        "* Q,q    : quit",
+        "",
+        "Press any key to close this window.",
     ];
     let dialog_para = Paragraph::new(Text::from_iter(text))
         .block(dialog_block)
@@ -867,8 +879,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     render_corner_pane(f, layout_panes.corner);
     render_bottom_pane(f, layout_panes.bottom, ui);
 
-    // TODO: make this conditional on 'help mode'
-    render_help_dialog(f, layout_panes.dialog);
+    if ui.show_help { render_help_dialog(f, layout_panes.dialog); }
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
