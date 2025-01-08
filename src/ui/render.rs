@@ -1,7 +1,7 @@
 use ratatui::{
     prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
     style::Stylize,
-    widgets::{Block, Borders, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
+    widgets::{Block, Borders, Clear, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
 };
 
@@ -421,6 +421,8 @@ struct Panes {
 
     corner: Rect,
     bottom: Rect,
+
+    dialog: Rect,
 }
 
 // Height for Max constraint below (used in Adjacent bottom panel mode). In Zoomed In and ZoomedOut
@@ -498,12 +500,36 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     )
     .split(v_panes[1]);
 
+    // The dialog is only used in help mode, but we compute its position now all the same. We
+    // take all the screen except the top, bottom, left and right 10%. This means dividing the
+    // screen in three vertically, taking the middle 80%, and then dividing that in three and
+    // taking its middle 80%.
+    // NOTE here I'm using the builder style, might want to apply it elsewhere, if only for
+    // consistency.
+    let dialog_v_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(vec![
+                     Constraint::Percentage(10),
+                     Constraint::Percentage(80),
+                     Constraint::Percentage(10),
+        ])
+        .split(f.size());
+    let dialog_h_layout = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(vec![
+                     Constraint::Percentage(10),
+                     Constraint::Percentage(80),
+                     Constraint::Percentage(10),
+        ])
+        .split(dialog_v_layout[1]);
+
     Panes {
         lbl_num: lbl_pane[0],
         labels: lbl_pane[1],
         sequence: upper_panes[1],
         corner: lower_panes[0],
         bottom: lower_panes[1],
+        dialog: dialog_h_layout[1],
     }
 }
 
@@ -779,6 +805,13 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     f.render_widget(btm_para, bottom_chunk);
 }
 
+fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
+    let dialog_block = Block::default().borders(Borders::ALL);
+    //let dialog_para = Paragraph::
+    f.render_widget(Clear, dialog_chunk);
+    f.render_widget(dialog_block, dialog_chunk);
+}
+
 pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     let layout_panes = make_layout(f, ui);
 
@@ -820,6 +853,9 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     render_alignment_pane(f, layout_panes.sequence, ui);
     render_corner_pane(f, layout_panes.corner);
     render_bottom_pane(f, layout_panes.bottom, ui);
+
+    // TODO: make this conditional on 'help mode'
+    render_help_dialog(f, layout_panes.dialog);
 }
 
 /* Computes n indexes out of l. The indexes are as evenly spaced as possible, and always include
