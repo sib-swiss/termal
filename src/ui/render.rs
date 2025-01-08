@@ -489,6 +489,7 @@ fn delineate_help_pane(frame_area: Rect) -> Rect {
 }
 
 fn make_layout(f: &Frame, ui: &UI) -> Panes {
+    // TODO: refactor into several fns; perhaps in a separate module
     let mns = max_num_seq(f, ui);
     debug!("max num seq: {}", mns);
     let constraints: Vec<Constraint> = match ui.bottom_pane_position {
@@ -813,9 +814,15 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 
 fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
     let dialog_block = Block::default().borders(Borders::ALL);
-    //let dialog_para = Paragraph::
+    let text = vec![
+        "Key Bindings".to_string()
+    ];
+    let dialog_para = Paragraph::new(Text::from_iter(text))
+        .block(dialog_block)
+        .style(Style::new().white().on_black())
+        ;
     f.render_widget(Clear, dialog_chunk);
-    f.render_widget(dialog_block, dialog_chunk);
+    f.render_widget(dialog_para, dialog_chunk);
 }
 
 pub fn render_ui(f: &mut Frame, ui: &mut UI) {
