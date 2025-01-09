@@ -40,6 +40,7 @@ Key Bindings:
 * r      : highlight zoom box residues in consensus
 * v      : show view guides
 * <,>    : widen/narrow label pane
+* a      : hide/show label pane
 * Q,q    : quit
 ")
 ]

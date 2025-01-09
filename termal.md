@@ -68,13 +68,29 @@ OPTIONS
 KEY BINDINGS
 ============
 
+Motion
+------
+
 * h,j,k,l: move view port / zoom box left, down, up, right
 * H,J,K,L: like h,j,k,l, but large motions
 * ^,G,g,$: full left, bottom, top, full right
+
+Zooming
+-------
+
 * z,Z    : cycle through zoom modes
 * r      : highlight zoom box residues in consensus
 * v      : show view guides
+
+Pane Size
+---------
+
 * <,>    : widen/narrow label pane
+* a      : hide/show label pane
+
+Other
+-----
+
 * Q,q    : quit
 
 BUGS AND LIMITATIONS

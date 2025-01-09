@@ -9,7 +9,7 @@ $(TERMAL_BINARY): $(RUST_SOURCES)
 	cargo build --release
 
 termal.1.gz: termal.1
-	gzip $<
+	gzip -f $<
 
 termal.1: termal.md
 	pandoc --standalone --to=man $< > $@
@@ -32,3 +32,6 @@ test:
 
 clean:
 	$(RM) termal.1
+
+mrproper: clean
+	cargo clean

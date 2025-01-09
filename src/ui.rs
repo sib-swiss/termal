@@ -56,6 +56,7 @@ pub struct UI<'a> {
     top_line: u16,
     leftmost_col: u16,
     label_pane_width: u16,
+    previous_label_pane_width: u16, // To restore width after hiding pane
     bottom_pane_height: u16,
     bottom_pane_position: BottomPanePosition,
     // These cannot be known when the structure is initialized, so they are Options -- but it is
@@ -79,6 +80,7 @@ impl<'a> UI<'a> {
             top_line: 0,
             leftmost_col: 0,
             label_pane_width: 15, // Reasonable default, I'd say...
+            previous_label_pane_width: 0,
             bottom_pane_height: 5,
             bottom_pane_position: BottomPanePosition::Adjacent,
             aln_pane_size: None,
@@ -157,6 +159,16 @@ impl<'a> UI<'a> {
 
     pub fn set_label_pane_width(&mut self, width: u16) {
         self.label_pane_width = width;
+    }
+
+    // Also stores previous width
+    pub fn hide_label_pane(&mut self) {
+        self.previous_label_pane_width = self.label_pane_width;
+        self.label_pane_width = 0;
+    }
+
+    pub fn show_label_pane(&mut self) {
+        self.label_pane_width = self.previous_label_pane_width;
     }
 
     pub fn set_bottom_pane_height(&mut self, height: u16) {

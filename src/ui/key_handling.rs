@@ -15,6 +15,18 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             KeyCode::Char('?') => {
                 ui.show_help = true;
             }
+
+            // ----- Hide/Show panes -----
+
+            // Left pane
+            KeyCode::Char('a') => {
+                if ui.label_pane_width == 0 {
+                    ui.show_label_pane();
+                } else {
+                    ui.hide_label_pane();
+                }
+            }
+
             // ----- Motion -----
 
             // Down
