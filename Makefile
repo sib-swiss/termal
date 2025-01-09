@@ -22,7 +22,7 @@ roadmap.pdf: roadmap.md meta.yaml
 				--filter pandoc-crossref --citeproc --number-sections \
 				--output $@ $<
 
-install: $(TERMAL_BINARY)
+install: all
 	install -m 755 $(TERMAL_BINARY) /usr/local/bin
 	install -m 644 termal.1.gz /usr/share/man/man1
 
