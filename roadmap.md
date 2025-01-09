@@ -25,10 +25,16 @@ Urgent
 Normal
 ------
 
-1. [ ] Some CLI flags such as "hide bottom pane" etc. should have runtime
+1. [x] Experimental "Press '?' for help" in the last line of the bottom panel.
+   Maybe this could be switched off when the user hits a key, or when the help
+   display has been shown at least once.
+
+1. [.] Some CLI flags such as "hide bottom pane" etc. should have runtime
    equivalents, i.e. it should be possible to interactively hide and unhide the
    bottom and left panes. Maybe also switch to monochrome and back, and perhaps
-   hide just the sequence numbers.
+   hide just the sequence numbers. => Done this for the left panel (labels),
+   which can now be toggled on/off by pressing 'a' ('l' and 'L' being already in
+   use for motion).
 
 1. [x] Added a help dialog, accessible through '?' (since 'h' is already used).
 

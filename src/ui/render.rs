@@ -762,7 +762,11 @@ fn mark_consensus_zb_pos(consensus: &mut [Span], retained_pos: &[usize]) {
 }
 
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
-    let btm_block = Block::default().borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM);
+    let btm_block = Block::default()
+        .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
+        .title_bottom(" Press '?' for help ")
+        .title_style(Style::new().bold())
+        ;
 
     let mut colored_consensus: Vec<Span> = ui
         .app
