@@ -58,6 +58,7 @@ pub struct UI<'a> {
     label_pane_width: u16,
     previous_label_pane_width: u16, // To restore width after hiding pane
     bottom_pane_height: u16,
+    previous_bottom_pane_height: u16,
     bottom_pane_position: BottomPanePosition,
     // These cannot be known when the structure is initialized, so they are Options -- but it is
     // possible that they need not be stored at all, as they can in principle be computed when the
@@ -82,6 +83,7 @@ impl<'a> UI<'a> {
             label_pane_width: 15, // Reasonable default, I'd say...
             previous_label_pane_width: 0,
             bottom_pane_height: 5,
+            previous_bottom_pane_height: 0,
             bottom_pane_position: BottomPanePosition::Adjacent,
             aln_pane_size: None,
             frame_size: None,
@@ -154,7 +156,7 @@ impl<'a> UI<'a> {
             0
         }
     }
-    //
+
     // Side panel dimensions
 
     pub fn set_label_pane_width(&mut self, width: u16) {
@@ -171,9 +173,6 @@ impl<'a> UI<'a> {
         self.label_pane_width = self.previous_label_pane_width;
     }
 
-    pub fn set_bottom_pane_height(&mut self, height: u16) {
-        self.bottom_pane_height = height;
-    }
 
     pub fn widen_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
@@ -191,6 +190,21 @@ impl<'a> UI<'a> {
         } else {
             0
         }
+    }
+
+    // Bottom pane dimenaions
+
+    pub fn set_bottom_pane_height(&mut self, height: u16) {
+        self.bottom_pane_height = height;
+    }
+
+    pub fn hide_bottom_pane(&mut self) {
+        self.previous_bottom_pane_height = self.bottom_pane_height;
+        self.bottom_pane_height = 0;
+    }
+
+    pub fn show_bottom_pane(&mut self) {
+        self.bottom_pane_height = 5;
     }
 
     // ****************************************************************

@@ -27,6 +27,15 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 }
             }
 
+            // Bottom pane
+            KeyCode::Char('c') => {
+                if ui.bottom_pane_height == 0 {
+                    ui.show_bottom_pane();
+                } else {
+                    ui.hide_bottom_pane();
+                }
+            }
+
             // ----- Motion -----
 
             // Down
