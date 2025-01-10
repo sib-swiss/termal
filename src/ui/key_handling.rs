@@ -118,7 +118,19 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             // Exit
             KeyCode::Char('q') => done = true,
             KeyCode::Char('Q') => done = true,
-            _ => {}
+
+            _ => {
+                // let the user know this key is not bound
+                //
+                // TODO: there are pros and cons about this - first, the user can probably guess
+                // that if nothing happens then the key isn't bound. Second, the message should be
+                // disabled after the user presses a bound key, which would force us to either add
+                // code to that effect for _every single_ key binding, or do a first match on every
+                // valid key (to disable the message) and then match on each individual key to
+                // launch the desired action. Not sure it's worth it, frankly.
+                //
+                // ui.message = format!("Key '{:#?}' is not bound.", key_event.code);
+            }
         }
     }
 

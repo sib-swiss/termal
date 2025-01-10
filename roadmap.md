@@ -25,11 +25,19 @@ Urgent
 Normal
 ------
 
-1. [x] Experimental "Press '?' for help" in the last line of the bottom panel.
-   Maybe this could be switched off when the user hits a key, or when the help
-   display has been shown at least once.
+1. [ ] Provide at least one more color scheme, for nucleotides. Ideally, the
+   type of macromolecule should be detected automatically. Provide a key binding
+   for cycling through the schemes (and show the current scheme in the message)
+     ; if eventually we end up with a large number of schemes, then allow
+     selection via a dialog. Check out
+     [Gecos](https://gecos.biotite-python.org/intro.html); as a matter of fact,
+     consider allowing inverse video with black on a collored background.
 
-1. [ ] Add a keybinding to switch to monochrome and back. 
+1. [x] Experimental "Press '?' for help" in the last line of the bottom panel.
+   This is now switched off when the help display has been shown at least once.
+
+1. [ ] Add a keybinding to switch to monochrome and back (is this really
+   useful?)
 
 1. [x] It should be possible to interactively hide and unhide the bottom and
    left panes. => Done this for the left panel (labels), which can now
