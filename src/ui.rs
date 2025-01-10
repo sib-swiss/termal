@@ -66,6 +66,8 @@ pub struct UI<'a> {
     aln_pane_size: Option<Size>,
     frame_size: Option<Size>, // whole app
     show_help: bool,
+    full_screen: bool,
+    message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
 }
 
 impl<'a> UI<'a> {
@@ -88,6 +90,8 @@ impl<'a> UI<'a> {
             aln_pane_size: None,
             frame_size: None,
             show_help: false,
+            full_screen: false,
+            message: " Press '?' for help ".into(),
         }
     }
 

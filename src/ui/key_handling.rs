@@ -36,6 +36,19 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 }
             }
 
+            // Both panes
+            KeyCode::Char('f') => {
+                if ui.full_screen {
+                    ui.show_label_pane();
+                    ui.show_bottom_pane();
+                    ui.full_screen = false;
+                } else {
+                    ui.hide_label_pane();
+                    ui.hide_bottom_pane();
+                    ui.full_screen = true;
+                }
+            }
+
             // ----- Motion -----
 
             // Down

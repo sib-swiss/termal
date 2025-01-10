@@ -29,12 +29,13 @@ Normal
    Maybe this could be switched off when the user hits a key, or when the help
    display has been shown at least once.
 
-1. [.] Some CLI flags such as "hide bottom pane" etc. should have runtime
-   equivalents, i.e. it should be possible to interactively hide and unhide the
-   bottom and left panes. Maybe also switch to monochrome and back, and perhaps
-   hide just the sequence numbers. => Done this for the left panel (labels),
-   which can now be toggled on/off by pressing 'a' ('l' and 'L' being already in
-   use for motion).
+1. [ ] Add a keybinding to switch to monochrome and back. 
+
+1. [x] It should be possible to interactively hide and unhide the bottom and
+   left panes. => Done this for the left panel (labels), which can now
+   be toggled on/off by pressing 'a' ('l' and 'L' being already in use for
+   motion), as well as for the bottom panel ('c', since 'b' is used to toggle
+   its position). Also added 'f' ("fullscreen"), which toggles _both_ panels.
 
 1. [x] Added a help dialog, accessible through '?' (since 'h' is already used).
 

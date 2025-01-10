@@ -764,7 +764,7 @@ fn mark_consensus_zb_pos(consensus: &mut [Span], retained_pos: &[usize]) {
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default()
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
-        .title_bottom(" Press '?' for help ")
+        .title_bottom(&*ui.message)
         .title_style(Style::new().bold())
         ;
 
@@ -891,6 +891,8 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
 
     if ui.show_help {
         render_help_dialog(f, layout_panes.dialog);
+        // after the first display of the help dialog, remove the message
+        ui.message = "".into();
     }
 }
 
