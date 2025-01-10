@@ -1,16 +1,20 @@
-mod color_map;
+pub mod color_map;
 mod color_scheme;
 mod conservation;
 pub mod key_handling;
 pub mod render;
 
-use std::cmp::min;
+use std::{
+    cmp::min,
+    collections::HashMap,
+};
 
 use log::debug;
 
 use bitflags::bitflags;
 
 use ratatui::layout::Size;
+use ratatui::style::Color;
 
 use crate::{
     ui::color_map::{color_map_lesk, color_map_monochrome},
@@ -409,6 +413,10 @@ impl<'a> UI<'a> {
 
     pub fn set_monochrome(&mut self) {
         self.color_scheme.residue_color_map = color_map_monochrome();
+    }
+
+    pub fn set_colormap(&mut self, color_map: HashMap<char, Color>) {
+        self.color_scheme.residue_color_map = color_map;
     }
 
     // ****************************************************************

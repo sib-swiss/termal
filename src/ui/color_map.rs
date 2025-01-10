@@ -1,6 +1,15 @@
-use std::collections::HashMap;
+use std::{
+    collections::HashMap,
+    io::BufReader,
+    iter::Map,
+    fs::File,
+};
 
 use ratatui::prelude::Color;
+use hex_color::HexColor;
+
+use serde_json::Value;
+use serde_json::Value::Object;
 
 use crate::ui::color_scheme::ORANGE;
 
@@ -107,4 +116,28 @@ pub fn color_map_lesk() -> HashMap<char, Color> {
         ('x', Color::White),
         ('-', Color::Gray),
     ])
+}
+
+pub fn colormap_gecos() -> HashMap<char, Color> {
+    let path = "./src/ui/colormaps/gecos_default.json";
+    let file = File::open(path).unwrap();
+    let reader = BufReader::new(file);
+    let cm: serde_json::Value = serde_json::from_reader(reader).unwrap();
+
+    //println!("{:#?}", cm["colors"]);
+    let mut color_map: HashMap<char, Color> = HashMap::new();
+    let orig_map =  &cm["colors"];
+    if let Object(map) = orig_map {
+        //println!("Found map: {:#?}", map);
+        for (k, v) in map {
+            let color_str = serde_json::from_value::<String>(v.clone()).unwrap();
+            let hex_color = HexColor::parse_rgb(&color_str).unwrap();
+            let color = Color::Rgb(hex_color.r, hex_color.g, hex_color.b);
+            color_map.insert(k.chars().collect::<Vec<char>>()[0], color);
+            //println!("{} -> {}", k.chars().collect::<Vec<char>>()[0], color);
+        }
+        color_map.insert('-', Color::Gray);
+    }
+
+    color_map
 }

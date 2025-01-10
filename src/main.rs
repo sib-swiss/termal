@@ -6,6 +6,7 @@ mod vec_f64_aux;
 use log::{debug, info};
 
 use std::io::{stdout, Result};
+use std::process::exit;
 
 use clap::{arg, command, Parser};
 
@@ -22,6 +23,7 @@ use ratatui::{
 
 use crate::app::App;
 use crate::ui::{
+    color_map::colormap_gecos,
     key_handling::handle_key_press,
     render::render_ui,
     {ZoomLevel, UI},
@@ -99,6 +101,7 @@ struct Cli {
 }
 
 fn main() -> Result<()> {
+
     env_logger::init();
     info!("Starting log");
 
@@ -115,6 +118,9 @@ fn main() -> Result<()> {
         app.output_info();
         return Ok(());
     }
+
+    // Read JSON color maps
+    let cmap = colormap_gecos();
 
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
@@ -152,6 +158,7 @@ fn main() -> Result<()> {
     if cli.hide_bottom_pane {
         app_ui.set_bottom_pane_height(0);
     }
+    app_ui.set_colormap(cmap);
 
     // main loop
     loop {
