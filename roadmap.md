@@ -25,8 +25,10 @@ Urgent
 Normal
 ------
 
+1. [ ] Add lowercase capability to Gecos maps.
+
 1. [x] Can now read and use [Gecos](https://gecos.biotite-python.org/intro.html)
-   colour maps, supplied by option `-c/--color-map`.
+   colour maps (uppercase only!), supplied by option `-c/--color-map`.
 
 1. [ ] Provide at least one more color map, for nucleotides. Ideally, the
    type of macromolecule should be detected automatically. The right way to do
