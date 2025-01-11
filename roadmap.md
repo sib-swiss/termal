@@ -25,19 +25,30 @@ Urgent
 Normal
 ------
 
-1. [ ] Provide at least one more color scheme, for nucleotides. Ideally, the
-   type of macromolecule should be detected automatically. Provide a key binding
-   for cycling through the schemes (and show the current scheme in the message)
-     ; if eventually we end up with a large number of schemes, then allow
-     selection via a dialog. Check out
-     [Gecos](https://gecos.biotite-python.org/intro.html); as a matter of fact,
-     consider allowing inverse video with black on a collored background.
+1. [.] Can now read and use [Gecos](https://gecos.biotite-python.org/intro.html)
+   colour maps, but actual JSON file is still hard-coded. A custom map (Gecos or
+   other) should be an optional parameter.
+
+1. [ ] Provide at least one more color map, for nucleotides. Ideally, the
+   type of macromolecule should be detected automatically. The right way to do
+   this, I think, would be to compute residue frequencies according to a protein
+   vs. a nucleotide model (incuding IUPAC ambiguity codes, which can also be
+   mistaken for amino acids). Then determine which model is most probable using
+   Bayes factors.
+
+1. [.] Provide a key binding
+   for cycling through the maps (and show the current map in the message);
+   if eventually we end up with a large number of maps, then allow selection
+   via a dialog. 
+
+1. [ ] Allow inverse video with black on a colored background.
 
 1. [x] Experimental "Press '?' for help" in the last line of the bottom panel.
    This is now switched off when the help display has been shown at least once.
 
 1. [ ] Add a keybinding to switch to monochrome and back (is this really
-   useful?)
+   useful?) This should be a separate color scheme, with monochrome as a color
+   map.
 
 1. [x] It should be possible to interactively hide and unhide the bottom and
    left panes. => Done this for the left panel (labels), which can now

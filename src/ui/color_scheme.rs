@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use ratatui::prelude::Color;
 
+use crate::ui::color_map::ColorMap;
 use crate::ui::color_map_lesk;
 
 pub const ORANGE: Color = Color::Rgb(255, 165, 0);
@@ -11,7 +12,7 @@ pub const SALMON: Color = Color::Rgb(250, 128, 114);
 pub struct ColorScheme {
     pub label_num_color: Color,
 
-    pub residue_color_map: HashMap<char, Color>,
+    pub residue_color_map: ColorMap,
 
     pub zoombox_color: Color,
 

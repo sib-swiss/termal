@@ -13,6 +13,35 @@ use serde_json::Value::Object;
 
 use crate::ui::color_scheme::ORANGE;
 
+pub struct ColorMap {
+    pub name: String,
+    map: HashMap<char, Color>,
+}
+
+impl ColorMap {
+
+    pub fn new(name: String, map: HashMap<char, Color>) -> ColorMap {
+        ColorMap{
+            name,
+            map,
+        }
+    }
+
+    pub fn get(&self, residue: char) -> Color {
+        if let Some(color) = self.map.get(&residue) {
+            *color
+        } else {
+            Color::White
+        }
+    }
+
+    pub fn insert(&mut self, residue: char, color: Color) {
+        self.map.insert(residue, color);
+    }
+}
+
+
+
 // NOTE: if it turns out that these hash maps are not efficient (didn't benchmark yet), we might
 // want to look at perfect hash functions - see e.g https://crates.io/crates/phf
 
@@ -70,7 +99,9 @@ pub fn color_map_monochrome() -> HashMap<char, Color> {
     ])
 }
 
-pub fn color_map_lesk() -> HashMap<char, Color> {
+pub fn color_map_lesk() -> ColorMap {
+    ColorMap::new(
+        "Lesk".into(),
     HashMap::from([
         ('G', ORANGE),
         ('A', ORANGE),
@@ -116,6 +147,7 @@ pub fn color_map_lesk() -> HashMap<char, Color> {
         ('x', Color::White),
         ('-', Color::Gray),
     ])
+        )
 }
 
 pub fn colormap_gecos() -> HashMap<char, Color> {
