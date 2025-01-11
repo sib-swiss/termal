@@ -17,7 +17,7 @@ use ratatui::layout::Size;
 use ratatui::style::Color;
 
 use crate::{
-    ui::color_map::{color_map_lesk, color_map_monochrome},
+    ui::color_map::{ColorMap, color_map_lesk, color_map_monochrome},
     ui::color_scheme::{color_scheme_default, ColorScheme},
     App,
 };
@@ -415,7 +415,7 @@ impl<'a> UI<'a> {
         self.color_scheme.residue_color_map = color_map_monochrome();
     }
 
-    pub fn set_colormap(&mut self, color_map: HashMap<char, Color>) {
+    pub fn set_colormap(&mut self, color_map: ColorMap) {
         self.color_scheme.residue_color_map = color_map;
     }
 

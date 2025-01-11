@@ -51,7 +51,9 @@ impl ColorMap {
 // It's prolly easier to have a no-op colorscheme than to decide at every iteration if we do a
 // lookup or not.
 
-pub fn color_map_monochrome() -> HashMap<char, Color> {
+pub fn color_map_monochrome() -> ColorMap {
+    ColorMap::new(
+        "Monochrome".into(),
     HashMap::from([
         ('G', Color::White),
         ('A', Color::White),
@@ -96,7 +98,7 @@ pub fn color_map_monochrome() -> HashMap<char, Color> {
         ('r', Color::White),
         ('x', Color::White),
         ('-', Color::White),
-    ])
+    ]))
 }
 
 pub fn color_map_lesk() -> ColorMap {
@@ -150,8 +152,7 @@ pub fn color_map_lesk() -> ColorMap {
         )
 }
 
-pub fn colormap_gecos() -> HashMap<char, Color> {
-    let path = "./src/ui/colormaps/gecos_default.json";
+pub fn colormap_gecos(path: String) -> ColorMap {
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
     let cm: serde_json::Value = serde_json::from_reader(reader).unwrap();
@@ -171,5 +172,5 @@ pub fn colormap_gecos() -> HashMap<char, Color> {
         color_map.insert('-', Color::Gray);
     }
 
-    color_map
+    ColorMap::new("custom".into(), color_map)
 }

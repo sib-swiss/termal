@@ -25,9 +25,8 @@ Urgent
 Normal
 ------
 
-1. [.] Can now read and use [Gecos](https://gecos.biotite-python.org/intro.html)
-   colour maps, but actual JSON file is still hard-coded. A custom map (Gecos or
-   other) should be an optional parameter.
+1. [x] Can now read and use [Gecos](https://gecos.biotite-python.org/intro.html)
+   colour maps, supplied by option `-c/--color-map`.
 
 1. [ ] Provide at least one more color map, for nucleotides. Ideally, the
    type of macromolecule should be detected automatically. The right way to do

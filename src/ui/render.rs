@@ -119,10 +119,9 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             spans.push(Span::styled(
                 cur_char.to_string(),
-                *ui.color_scheme
+                ui.color_scheme
                     .residue_color_map
-                    .get(&cur_char)
-                    .expect(format!("unexpected character '{}'", cur_char).as_str()),
+                    .get(cur_char)
             ));
         }
         text.push(Line::from(spans));
@@ -141,7 +140,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
             let c: char = seq_chars[j];
             let span = Span::styled(
                 c.to_string(),
-                *ui.color_scheme.residue_color_map.get(&c).unwrap(),
+                ui.color_scheme.residue_color_map.get(c)
             );
             spans.push(span);
         }
@@ -161,7 +160,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
             let c: char = seq_chars[j];
             let span = Span::styled(
                 c.to_string(),
-                *ui.color_scheme.residue_color_map.get(&c).unwrap(),
+                ui.color_scheme.residue_color_map.get(c),
             );
             spans.push(span);
         }
@@ -776,10 +775,9 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                *ui.color_scheme
+                ui.color_scheme
                     .residue_color_map
-                    .get(&c)
-                    .unwrap_or(&ui.color_scheme.consensus_default_color),
+                    .get(c)
             )
         })
         .collect();

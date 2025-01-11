@@ -54,7 +54,10 @@ struct Cli {
     #[arg(short, long)]
     info: bool,
 
-    // FIXME: why do these need to be Options and not just u16?
+    /// Gecos color map
+    #[arg(short, long = "color-map")]
+    color_map: Option<String>,
+
     /// Fixed terminal width (mostly used for testing/debugging)
     #[arg(short, long, requires = "height")]
     width: Option<u16>,
@@ -119,12 +122,9 @@ fn main() -> Result<()> {
         return Ok(());
     }
 
-    // Read JSON color maps
-    let cmap = colormap_gecos();
-
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
-    //let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
+
     let backend = CrosstermBackend::new(stdout());
     let viewport: Viewport;
     // Fix viewport dimensions IFF supplied (mainly for tests)
@@ -158,7 +158,11 @@ fn main() -> Result<()> {
     if cli.hide_bottom_pane {
         app_ui.set_bottom_pane_height(0);
     }
-    app_ui.set_colormap(cmap);
+
+    if let Some(path) = cli.color_map {
+        let cmap = colormap_gecos(path.into());
+        app_ui.set_colormap(cmap);
+    }
 
     // main loop
     loop {
