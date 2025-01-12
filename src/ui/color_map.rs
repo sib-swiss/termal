@@ -166,7 +166,10 @@ pub fn colormap_gecos(path: String) -> ColorMap {
             let color_str = serde_json::from_value::<String>(v.clone()).unwrap();
             let hex_color = HexColor::parse_rgb(&color_str).unwrap();
             let color = Color::Rgb(hex_color.r, hex_color.g, hex_color.b);
-            color_map.insert(k.chars().collect::<Vec<char>>()[0], color);
+            let residue = k.chars().collect::<Vec<char>>()[0];
+            let residue_lc = residue.to_ascii_lowercase();
+            color_map.insert(residue, color);
+            color_map.insert(residue_lc, color);
             //println!("{} -> {}", k.chars().collect::<Vec<char>>()[0], color);
         }
         color_map.insert('-', Color::Gray);
