@@ -1,6 +1,6 @@
 use ratatui::{
     prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
-    style::Stylize,
+    style::{Modifier,Stylize},
     widgets::{Block, Borders, Clear, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
 };
@@ -117,11 +117,15 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_seq_ref = &ui.app.alignment.sequences[i];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
+            let style = if ui.inverse {
+                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                    .add_modifier(Modifier::REVERSED)
+            } else {
+                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+            };
             spans.push(Span::styled(
                 cur_char.to_string(),
-                ui.color_scheme
-                    .residue_color_map
-                    .get(cur_char)
+                style,
             ));
         }
         text.push(Line::from(spans));
@@ -137,11 +141,14 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
-            let c: char = seq_chars[j];
-            let span = Span::styled(
-                c.to_string(),
-                ui.color_scheme.residue_color_map.get(c)
-            );
+            let cur_char: char = seq_chars[j];
+            let style = if ui.inverse {
+                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                    .add_modifier(Modifier::REVERSED)
+            } else {
+                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+            };
+            let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -158,10 +165,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let c: char = seq_chars[j];
-            let span = Span::styled(
-                c.to_string(),
-                ui.color_scheme.residue_color_map.get(c),
-            );
+            let span = Span::styled(c.to_string(), ui.color_scheme.residue_color_map.get(c));
             spans.push(span);
         }
         ztext.push(Line::from(spans));
@@ -206,6 +210,7 @@ fn mark_zoombox_general_case(
     // Clippy
     // /*
     for l in seq_para.iter_mut().take(zb_bottom).skip(zb_top + 1) {
+        // let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("│", zb_style));
         let _ = std::mem::replace(&mut l.spans[zb_left], Span::styled("│", zb_style));
         let _ = std::mem::replace(&mut l.spans[zb_right - 1], Span::styled("│", zb_style));
     }
@@ -287,6 +292,8 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     ui.assert_invariants();
     */
 
+    let zb_style = Style::new().fg(ui.color_scheme.zoombox_color);
+
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
             // Zoom box is on a single line & column
@@ -294,7 +301,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
                 seq_para,
                 zb_top,
                 zb_left,
-                Style::new().fg(ui.color_scheme.zoombox_color),
+                zb_style,
             );
         } else {
             // Zoom box has a height of 1 line
@@ -303,7 +310,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
                 zb_top,
                 zb_left,
                 zb_right,
-                Style::new().fg(ui.color_scheme.zoombox_color),
+                zb_style,
             );
         }
     } else if zb_right - zb_left < 2 {
@@ -313,7 +320,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
             zb_top,
             zb_bottom,
             zb_left,
-            Style::new().fg(ui.color_scheme.zoombox_color),
+            zb_style,
         );
     } else {
         // General case: height and width both > 1
@@ -323,7 +330,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
             zb_bottom,
             zb_left,
             zb_right,
-            Style::new().fg(ui.color_scheme.zoombox_color),
+            zb_style,
         );
     }
 }
@@ -764,22 +771,14 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let btm_block = Block::default()
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .title_bottom(&*ui.message)
-        .title_style(Style::new().bold())
-        ;
+        .title_style(Style::new().bold());
 
     let mut colored_consensus: Vec<Span> = ui
         .app
         .alignment
         .consensus
         .chars()
-        .map(|c| {
-            Span::styled(
-                c.to_string(),
-                ui.color_scheme
-                    .residue_color_map
-                    .get(c)
-            )
-        })
+        .map(|c| Span::styled(c.to_string(), ui.color_scheme.residue_color_map.get(c)))
         .collect();
 
     // TODO: rm when debug

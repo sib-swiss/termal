@@ -104,7 +104,6 @@ struct Cli {
 }
 
 fn main() -> Result<()> {
-
     env_logger::init();
     info!("Starting log");
 

@@ -115,7 +115,13 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // Mark consensus positions that are retained in the zoom box
             KeyCode::Char('r') => ui.toggle_hl_retained_cols(),
+
+            // Inverse video
+            KeyCode::Char('i') => {
+                ui.inverse = !ui.inverse;
+            }
             // Exit
+
             KeyCode::Char('q') => done = true,
             KeyCode::Char('Q') => done = true,
 

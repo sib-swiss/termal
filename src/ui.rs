@@ -4,10 +4,7 @@ mod conservation;
 pub mod key_handling;
 pub mod render;
 
-use std::{
-    cmp::min,
-    collections::HashMap,
-};
+use std::{cmp::min, collections::HashMap};
 
 use log::debug;
 
@@ -17,7 +14,7 @@ use ratatui::layout::Size;
 use ratatui::style::Color;
 
 use crate::{
-    ui::color_map::{ColorMap, color_map_lesk, color_map_monochrome},
+    ui::color_map::{color_map_lesk, color_map_monochrome, ColorMap},
     ui::color_scheme::{color_scheme_default, ColorScheme},
     App,
 };
@@ -72,6 +69,7 @@ pub struct UI<'a> {
     show_help: bool,
     full_screen: bool,
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
+    inverse: bool, // invert bg/fg
 }
 
 impl<'a> UI<'a> {
@@ -96,6 +94,7 @@ impl<'a> UI<'a> {
             show_help: false,
             full_screen: false,
             message: " Press '?' for help ".into(),
+            inverse: false,
         }
     }
 
@@ -180,7 +179,6 @@ impl<'a> UI<'a> {
     pub fn show_label_pane(&mut self) {
         self.label_pane_width = self.previous_label_pane_width;
     }
-
 
     pub fn widen_label_pane(&mut self, amount: u16) {
         // TODO: heed the border width (not sure if we'll keep them)
