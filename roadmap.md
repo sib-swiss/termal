@@ -25,7 +25,7 @@ Urgent
 Normal
 ------
 
-1. [ ] Add lowercase capability to Gecos maps.
+1. [x] Add lowercase capability to Gecos maps.
 
 1. [x] Can now read and use [Gecos](https://gecos.biotite-python.org/intro.html)
    colour maps (uppercase only!), supplied by option `-c/--color-map`.
@@ -42,7 +42,7 @@ Normal
    if eventually we end up with a large number of maps, then allow selection
    via a dialog. 
 
-1. [ ] Allow inverse video with black on a colored background.
+1. [.] Allow inverse video with black on a colored background.
 
 1. [x] Experimental "Press '?' for help" in the last line of the bottom panel.
    This is now switched off when the help display has been shown at least once.
