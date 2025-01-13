@@ -39,12 +39,11 @@ Normal
    e.g. https://dergipark.org.tr/en/download/article-file/2904099 for amino
    acids), but they can be computed.
 
-1. [.] Provide a key binding
-   for cycling through the maps (and show the current map in the message);
-   if eventually we end up with a large number of maps, then allow selection
-   via a dialog. 
+1. [ ] Provide a key binding for cycling through the maps (and show the current
+   map in the message); if eventually we end up with a large number of maps,
+   then allow selection via a dialog. 
 
-1. [.] Allow inverse video with black on a colored background.
+1. [x] Allow inverse video with black on a colored background.
 
 1. [x] Experimental "Press '?' for help" in the last line of the bottom panel.
    This is now switched off when the help display has been shown at least once.
