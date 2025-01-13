@@ -164,8 +164,14 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
-            let c: char = seq_chars[j];
-            let span = Span::styled(c.to_string(), ui.color_scheme.residue_color_map.get(c));
+            let cur_char: char = seq_chars[j];
+            let style = if ui.inverse {
+                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                    .add_modifier(Modifier::REVERSED)
+            } else {
+                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+            };
+            let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
         ztext.push(Line::from(spans));
