@@ -765,8 +765,13 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
     f.render_widget(corner_para, corner_chunk);
 }
 
-fn mark_consensus_zb_pos(consensus: &mut [Span], retained_pos: &[usize]) {
-    let highlight = Style::default().reversed();
+fn mark_consensus_zb_pos(consensus: &mut [Span], ui: &UI) {
+    let retained_pos = &retained_col_ndx(ui);
+    let highlight = if ui.inverse {
+        Style::new().remove_modifier(Modifier::REVERSED)
+    } else {
+        Style::new().reversed()
+    };
     for pos in retained_pos {
         let retained_span = consensus[*pos].clone().patch_style(highlight);
         let _ = std::mem::replace(&mut consensus[*pos], retained_span);
@@ -779,22 +784,23 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .title_bottom(&*ui.message)
         .title_style(Style::new().bold());
 
+    let fg_bg_style = if ui.inverse {
+        Style::new().reversed()
+    } else {
+        Style::new()
+    };
+
     let mut colored_consensus: Vec<Span> = ui
         .app
         .alignment
         .consensus
         .chars()
-        .map(|c| Span::styled(c.to_string(), ui.color_scheme.residue_color_map.get(c)))
+        .map(|c| Span::styled(c.to_string(),
+            Style::new().fg(ui.color_scheme.residue_color_map.get(c)).patch(fg_bg_style)))
         .collect();
 
-    // TODO: rm when debug
-    debug!(
-        "[Aln] consensus length: {}",
-        ui.app.alignment.consensus.len()
-    );
-
     if ZoomLevel::ZoomedIn != ui.zoom_level && ui.highlight_retained_cols {
-        mark_consensus_zb_pos(&mut colored_consensus, &retained_col_ndx(ui));
+        mark_consensus_zb_pos(&mut colored_consensus, ui);
     }
 
     let pos_color = match ui.zoom_level {
