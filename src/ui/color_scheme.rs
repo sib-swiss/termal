@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use ratatui::prelude::Color;
 
 use crate::ui::color_map::ColorMap;
-use crate::ui::color_map_lesk;
+use crate::ui::{color_map_lesk, color_map_clustalx};
 
 // In-house colors
 pub const ORANGE: Color = Color::Rgb(255, 165, 0);
@@ -36,6 +36,17 @@ pub fn color_scheme_default() -> ColorScheme {
     ColorScheme {
         label_num_color: Color::LightGreen,
         residue_color_map: color_map_lesk(),
+        zoombox_color: Color::Cyan,
+        position_color: Color::White,
+        conservation_color: SALMON,
+        consensus_default_color: Color::White,
+    }
+}
+
+pub fn color_scheme_clustalx() -> ColorScheme {
+    ColorScheme {
+        label_num_color: Color::LightGreen,
+        residue_color_map: color_map_clustalx(),
         zoombox_color: Color::Cyan,
         position_color: Color::White,
         conservation_color: SALMON,

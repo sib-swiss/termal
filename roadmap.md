@@ -35,7 +35,9 @@ Normal
    this, I think, would be to compute residue frequencies according to a protein
    vs. a nucleotide model (incuding IUPAC ambiguity codes, which can also be
    mistaken for amino acids). Then determine which model is most probable using
-   Bayes factors.
+   Bayes factors. Such distributions are not as easy to find as I hoped (but see
+   e.g. https://dergipark.org.tr/en/download/article-file/2904099 for amino
+   acids), but they can be computed.
 
 1. [.] Provide a key binding
    for cycling through the maps (and show the current map in the message);

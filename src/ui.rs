@@ -14,8 +14,8 @@ use ratatui::layout::Size;
 use ratatui::style::Color;
 
 use crate::{
-    ui::color_map::{color_map_lesk, color_map_monochrome, ColorMap},
-    ui::color_scheme::{color_scheme_default, ColorScheme},
+    ui::color_map::{color_map_lesk, color_map_clustalx, color_map_monochrome, ColorMap},
+    ui::color_scheme::{color_scheme_default, color_scheme_clustalx, ColorScheme},
     App,
 };
 
@@ -76,7 +76,7 @@ impl<'a> UI<'a> {
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
-            color_scheme: color_scheme_default(),
+            color_scheme: color_scheme_clustalx(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             show_zb_guides: true,

@@ -6,7 +6,17 @@ use ratatui::prelude::Color;
 use serde_json::Value;
 use serde_json::Value::Object;
 
-use crate::ui::color_scheme::ORANGE;
+use crate::ui::color_scheme::{
+    ORANGE,
+    CLUSTALX_RED,
+    CLUSTALX_BLUE,
+    CLUSTALX_GREEN,
+    CLUSTALX_CYAN,
+    CLUSTALX_PINK,
+    CLUSTALX_MAGENTA,
+    CLUSTALX_YELLOW,
+    CLUSTALX_ORANGE,
+};
 
 pub struct ColorMap {
     pub name: String,
@@ -136,6 +146,57 @@ pub fn color_map_lesk() -> ColorMap {
             ('e', Color::Red),
             ('k', Color::Blue),
             ('r', Color::Blue),
+            ('x', Color::White),
+            ('-', Color::Gray),
+        ]),
+    )
+}
+
+pub fn color_map_clustalx() -> ColorMap {
+    ColorMap::new(
+        "ClustalX".into(),
+        HashMap::from([
+            ('G', CLUSTALX_ORANGE),
+            ('A', CLUSTALX_BLUE),
+            ('S', CLUSTALX_GREEN),
+            ('T', CLUSTALX_GREEN),
+            ('C', CLUSTALX_PINK),
+            ('V', CLUSTALX_BLUE),
+            ('I', CLUSTALX_BLUE),
+            ('L', CLUSTALX_BLUE),
+            ('P', CLUSTALX_YELLOW),
+            ('F', CLUSTALX_BLUE),
+            ('Y', CLUSTALX_CYAN),
+            ('M', CLUSTALX_BLUE),
+            ('W', CLUSTALX_BLUE),
+            ('N', CLUSTALX_GREEN),
+            ('Q', CLUSTALX_GREEN),
+            ('H', CLUSTALX_CYAN),
+            ('D', CLUSTALX_MAGENTA),
+            ('E', CLUSTALX_MAGENTA),
+            ('K', CLUSTALX_RED),
+            ('R', CLUSTALX_RED),
+            ('X', Color::White),
+            ('g', CLUSTALX_ORANGE),
+            ('a', CLUSTALX_BLUE),
+            ('s', CLUSTALX_GREEN),
+            ('t', CLUSTALX_GREEN),
+            ('c', CLUSTALX_PINK),
+            ('v', CLUSTALX_BLUE),
+            ('i', CLUSTALX_BLUE),
+            ('l', CLUSTALX_BLUE),
+            ('p', CLUSTALX_YELLOW),
+            ('f', CLUSTALX_BLUE),
+            ('y', CLUSTALX_CYAN),
+            ('m', CLUSTALX_BLUE),
+            ('w', CLUSTALX_BLUE),
+            ('n', CLUSTALX_GREEN),
+            ('q', CLUSTALX_GREEN),
+            ('h', CLUSTALX_CYAN),
+            ('d', CLUSTALX_MAGENTA),
+            ('e', CLUSTALX_MAGENTA),
+            ('k', CLUSTALX_RED),
+            ('r', CLUSTALX_RED),
             ('x', Color::White),
             ('-', Color::Gray),
         ]),
