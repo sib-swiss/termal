@@ -113,6 +113,8 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 );
             }
 
+            // ---- Visuals ----
+
             // Mark consensus positions that are retained in the zoom box
             KeyCode::Char('r') => ui.toggle_hl_retained_cols(),
 
@@ -120,7 +122,12 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             KeyCode::Char('i') => {
                 ui.inverse = !ui.inverse;
             }
-            // Exit
+
+            // Cycle through colormaps
+            KeyCode::Char('m') => { ui.cycle_colormap() }
+
+            // ----  Exit ----
+
             KeyCode::Char('q') => done = true,
             KeyCode::Char('Q') => done = true,
 

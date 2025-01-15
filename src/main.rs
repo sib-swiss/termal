@@ -160,7 +160,7 @@ fn main() -> Result<()> {
 
     if let Some(path) = cli.color_map {
         let cmap = colormap_gecos(path.into());
-        app_ui.set_colormap(cmap);
+        // TODO: add to colormaps
     }
 
     // main loop

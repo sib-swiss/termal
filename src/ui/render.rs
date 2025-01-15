@@ -104,6 +104,10 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let rgt_j = (ui.leftmost_col + ui.max_nb_col_shown()) as usize;
 
     let mut text: Vec<Line> = Vec::new();
+    // TODO: would it be possible to add a method to UI that returns a ref to the current colormap?
+    // Or, failing that, to ask UI itself for the color to apply to a given char? If so, also apply
+    // to zoom_out_lbl_text() and zoom_out_ar_seq_text().
+    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
 
     for i in top_i..bot_i {
         if i >= ui.app.num_seq().into() {
@@ -119,10 +123,10 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             let style = if ui.inverse {
                 Style::new()
-                    .fg(ui.color_scheme.residue_color_map.get(cur_char))
+                    .fg(colormap.get(cur_char))
                     .add_modifier(Modifier::REVERSED)
             } else {
-                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                Style::new().fg(colormap.get(cur_char))
             };
             spans.push(Span::styled(cur_char.to_string(), style));
         }
@@ -133,6 +137,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
         let seq: &String = &ui.app.alignment.sequences[i];
@@ -142,10 +147,10 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
             let cur_char: char = seq_chars[j];
             let style = if ui.inverse {
                 Style::new()
-                    .fg(ui.color_scheme.residue_color_map.get(cur_char))
+                    .fg(colormap.get(cur_char))
                     .add_modifier(Modifier::REVERSED)
             } else {
-                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                Style::new().fg(colormap.get(cur_char))
             };
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
@@ -157,6 +162,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
         let seq: &String = &ui.app.alignment.sequences[i];
@@ -166,10 +172,10 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
             let cur_char: char = seq_chars[j];
             let style = if ui.inverse {
                 Style::new()
-                    .fg(ui.color_scheme.residue_color_map.get(cur_char))
+                    .fg(colormap.get(cur_char))
                     .add_modifier(Modifier::REVERSED)
             } else {
-                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                Style::new().fg(colormap.get(cur_char))
             };
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
@@ -755,6 +761,7 @@ fn mark_consensus_zb_pos(consensus: &mut [Span], ui: &UI) {
 }
 
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
+    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
     let btm_block = Block::default()
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .title_bottom(&*ui.message)
@@ -775,7 +782,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             Span::styled(
                 c.to_string(),
                 Style::new()
-                    .fg(ui.color_scheme.residue_color_map.get(c))
+                    .fg(colormap.get(c))
                     .patch(fg_bg_style),
             )
         })

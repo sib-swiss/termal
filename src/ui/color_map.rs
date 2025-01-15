@@ -11,6 +11,8 @@ use crate::ui::color_scheme::{
     CLUSTALX_RED, CLUSTALX_YELLOW, ORANGE,
 };
 
+pub const MONOCHROME_INDEX: usize = 0;
+
 pub struct ColorMap {
     pub name: String,
     map: HashMap<char, Color>,
@@ -35,6 +37,8 @@ impl ColorMap {
 }
 
 pub fn builtin_colormaps() -> Vec<ColorMap> {
+    // TODO: use insert() to make sure that the monochrome map is inserted at MONOCHROME_INDEX. Do
+    // the same for the default colored map.
     vec![
         color_map_clustalx(),
         color_map_lesk(),

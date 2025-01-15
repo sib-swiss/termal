@@ -15,7 +15,7 @@ use ratatui::style::Color;
 
 use crate::{
     ui::color_map::{
-        builtin_colormaps, color_map_clustalx, color_map_lesk, color_map_monochrome, ColorMap,
+        MONOCHROME_INDEX, builtin_colormaps, color_map_clustalx, color_map_lesk, color_map_monochrome, ColorMap,
     },
     ui::color_scheme::{color_scheme_colored, color_scheme_monochrome, ColorScheme},
     App,
@@ -73,7 +73,6 @@ pub struct UI<'a> {
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
     inverse: bool,   // invert bg/fg
     colormaps: Vec<ColorMap>,
-    current_colormap_index: usize,
 }
 
 impl<'a> UI<'a> {
@@ -100,7 +99,6 @@ impl<'a> UI<'a> {
             message: " Press '?' for help ".into(),
             inverse: false,
             colormaps: builtin_colormaps(),
-            current_colormap_index: 0,
         }
     }
 
@@ -416,17 +414,17 @@ impl<'a> UI<'a> {
     // Color scheme
 
     pub fn set_monochrome(&mut self) {
-        self.color_scheme.residue_color_map = color_map_monochrome();
+        self.color_scheme.colormap_index = MONOCHROME_INDEX;
     }
 
-    pub fn set_colormap(&mut self, color_map: ColorMap) {
-        self.color_scheme.residue_color_map = color_map;
+    pub fn set_colormap(&mut self, cmap_ndx: usize) {
+        self.color_scheme.colormap_index = cmap_ndx;
     }
 
     pub fn cycle_colormap(&mut self) {
         let nb_colormaps = self.colormaps.len();
-        self.current_colormap_index = (self.current_colormap_index + 1) % nb_colormaps;
-        self.color_scheme.residue_color_map = self.colormaps[self.current_colormap_index];
+        self.color_scheme.colormap_index =
+            (self.color_scheme.colormap_index + 1) % nb_colormaps;
     }
 
     // ****************************************************************
