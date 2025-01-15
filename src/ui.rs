@@ -14,8 +14,10 @@ use ratatui::layout::Size;
 use ratatui::style::Color;
 
 use crate::{
-    ui::color_map::{color_map_lesk, color_map_clustalx, color_map_monochrome, ColorMap},
-    ui::color_scheme::{color_scheme_default, color_scheme_clustalx, ColorScheme},
+    ui::color_map::{
+        builtin_colormaps, color_map_clustalx, color_map_lesk, color_map_monochrome, ColorMap,
+    },
+    ui::color_scheme::{color_scheme_colored, color_scheme_monochrome, ColorScheme},
     App,
 };
 
@@ -69,14 +71,15 @@ pub struct UI<'a> {
     show_help: bool,
     full_screen: bool,
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
-    inverse: bool, // invert bg/fg
+    inverse: bool,   // invert bg/fg
+    colormaps: Vec<ColorMap>,
 }
 
 impl<'a> UI<'a> {
     pub fn new(app: &'a App) -> Self {
         UI {
             app,
-            color_scheme: color_scheme_clustalx(),
+            color_scheme: color_scheme_colored(),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             show_zb_guides: true,
@@ -95,6 +98,7 @@ impl<'a> UI<'a> {
             full_screen: false,
             message: " Press '?' for help ".into(),
             inverse: false,
+            colormaps: builtin_colormaps(),
         }
     }
 

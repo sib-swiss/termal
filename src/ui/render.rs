@@ -1,6 +1,6 @@
 use ratatui::{
     prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
-    style::{Modifier,Stylize},
+    style::{Modifier, Stylize},
     widgets::{Block, Borders, Clear, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
 };
@@ -118,15 +118,13 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             let style = if ui.inverse {
-                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                Style::new()
+                    .fg(ui.color_scheme.residue_color_map.get(cur_char))
                     .add_modifier(Modifier::REVERSED)
             } else {
                 Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
             };
-            spans.push(Span::styled(
-                cur_char.to_string(),
-                style,
-            ));
+            spans.push(Span::styled(cur_char.to_string(), style));
         }
         text.push(Line::from(spans));
     }
@@ -143,7 +141,8 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
             let style = if ui.inverse {
-                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                Style::new()
+                    .fg(ui.color_scheme.residue_color_map.get(cur_char))
                     .add_modifier(Modifier::REVERSED)
             } else {
                 Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
@@ -166,7 +165,8 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
             let style = if ui.inverse {
-                Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
+                Style::new()
+                    .fg(ui.color_scheme.residue_color_map.get(cur_char))
                     .add_modifier(Modifier::REVERSED)
             } else {
                 Style::new().fg(ui.color_scheme.residue_color_map.get(cur_char))
@@ -303,41 +303,17 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
             // Zoom box is on a single line & column
-            mark_zoombox_point(
-                seq_para,
-                zb_top,
-                zb_left,
-                zb_style,
-            );
+            mark_zoombox_point(seq_para, zb_top, zb_left, zb_style);
         } else {
             // Zoom box has a height of 1 line
-            mark_zoombox_zero_height(
-                seq_para,
-                zb_top,
-                zb_left,
-                zb_right,
-                zb_style,
-            );
+            mark_zoombox_zero_height(seq_para, zb_top, zb_left, zb_right, zb_style);
         }
     } else if zb_right - zb_left < 2 {
         // Zoom box has a width of 1 column
-        mark_zoombox_zero_width(
-            seq_para,
-            zb_top,
-            zb_bottom,
-            zb_left,
-            zb_style,
-        );
+        mark_zoombox_zero_width(seq_para, zb_top, zb_bottom, zb_left, zb_style);
     } else {
         // General case: height and width both > 1
-        mark_zoombox_general_case(
-            seq_para,
-            zb_top,
-            zb_bottom,
-            zb_left,
-            zb_right,
-            zb_style,
-        );
+        mark_zoombox_general_case(seq_para, zb_top, zb_bottom, zb_left, zb_right, zb_style);
     }
 }
 
@@ -795,8 +771,14 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .alignment
         .consensus
         .chars()
-        .map(|c| Span::styled(c.to_string(),
-            Style::new().fg(ui.color_scheme.residue_color_map.get(c)).patch(fg_bg_style)))
+        .map(|c| {
+            Span::styled(
+                c.to_string(),
+                Style::new()
+                    .fg(ui.color_scheme.residue_color_map.get(c))
+                    .patch(fg_bg_style),
+            )
+        })
         .collect();
 
     if ZoomLevel::ZoomedIn != ui.zoom_level && ui.highlight_retained_cols {

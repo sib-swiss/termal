@@ -121,7 +121,6 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 ui.inverse = !ui.inverse;
             }
             // Exit
-
             KeyCode::Char('q') => done = true,
             KeyCode::Char('Q') => done = true,
 

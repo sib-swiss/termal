@@ -1,4 +1,4 @@
-.PHONY: test clean install
+.PHONY: test clean install fmt
 
 RUST_SOURCES = $(shell find src -name '*.rs')
 TERMAL_BINARY = ./target/release/termal
@@ -16,6 +16,9 @@ termal.1: termal.md
 
 tags: $(RUST_SOURCES)
 	ctags -R --exclude='data/*' --exclude='target/*'
+
+fmt:
+	rustfmt src/**/*.rs
 
 roadmap.pdf: roadmap.md meta.yaml
 	pandoc --standalone --metadata-file meta.yaml --to=latex \

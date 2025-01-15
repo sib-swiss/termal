@@ -7,15 +7,8 @@ use serde_json::Value;
 use serde_json::Value::Object;
 
 use crate::ui::color_scheme::{
-    ORANGE,
-    CLUSTALX_RED,
-    CLUSTALX_BLUE,
-    CLUSTALX_GREEN,
-    CLUSTALX_CYAN,
-    CLUSTALX_PINK,
-    CLUSTALX_MAGENTA,
-    CLUSTALX_YELLOW,
-    CLUSTALX_ORANGE,
+    CLUSTALX_BLUE, CLUSTALX_CYAN, CLUSTALX_GREEN, CLUSTALX_MAGENTA, CLUSTALX_ORANGE, CLUSTALX_PINK,
+    CLUSTALX_RED, CLUSTALX_YELLOW, ORANGE,
 };
 
 pub struct ColorMap {
@@ -39,6 +32,14 @@ impl ColorMap {
     pub fn insert(&mut self, residue: char, color: Color) {
         self.map.insert(residue, color);
     }
+}
+
+pub fn builtin_colormaps() -> Vec<ColorMap> {
+    vec![
+        color_map_clustalx(),
+        color_map_lesk(),
+        color_map_monochrome(),
+    ]
 }
 
 // NOTE: if it turns out that these hash maps are not efficient (didn't benchmark yet), we might
