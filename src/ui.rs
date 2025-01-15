@@ -73,6 +73,7 @@ pub struct UI<'a> {
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
     inverse: bool,   // invert bg/fg
     colormaps: Vec<ColorMap>,
+    current_colormap_index: usize,
 }
 
 impl<'a> UI<'a> {
@@ -99,6 +100,7 @@ impl<'a> UI<'a> {
             message: " Press '?' for help ".into(),
             inverse: false,
             colormaps: builtin_colormaps(),
+            current_colormap_index: 0,
         }
     }
 
@@ -419,6 +421,12 @@ impl<'a> UI<'a> {
 
     pub fn set_colormap(&mut self, color_map: ColorMap) {
         self.color_scheme.residue_color_map = color_map;
+    }
+
+    pub fn cycle_colormap(&mut self) {
+        let nb_colormaps = self.colormaps.len();
+        self.current_colormap_index = (self.current_colormap_index + 1) % nb_colormaps;
+        self.color_scheme.residue_color_map = self.colormaps[self.current_colormap_index];
     }
 
     // ****************************************************************
