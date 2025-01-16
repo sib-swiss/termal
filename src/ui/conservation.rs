@@ -1,3 +1,6 @@
+// TODO: this module should be renamed "barchart", as it is used for purposes other than
+// conservation (such as sequence metrics).
+
 // 0 <= v <= 1
 pub fn values_barchart(values: &Vec<f64>) -> String {
     let mut blocks = String::with_capacity(values.len());

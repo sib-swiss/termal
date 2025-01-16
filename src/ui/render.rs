@@ -78,6 +78,22 @@ fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
     }
 }
 
+fn compute_seq_metrics<'a>(ui: &UI) -> Vec<Line<'a>> {
+    let numbers = (0..ui.app.num_seq())
+        .map(|n| Line::from(format!("X"))) // n+1 -> 1-based (for humans...)
+        .collect();
+    match ui.zoom_level {
+        ZoomLevel::ZoomedIn => numbers,
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
+            let mut result: Vec<Line> = Vec::new();
+            for i in retained_seq_ndx(ui) {
+                result.push(numbers[i].clone());
+            }
+            result
+        }
+    }
+}
+
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app
         .alignment
@@ -412,11 +428,17 @@ fn mark_zoombox_ar(seq_para: &mut [Line], ui: &UI) {
 ****************************************************************/
 
 struct Panes {
+    // Top-left (labels) pane
     lbl_num: Rect,
     labels: Rect,
+    seq_metrics: Rect,
+
+    // Alignment pane
     sequence: Rect,
 
     corner: Rect,
+
+    // Bottom pane: position, consensus, etc.
     bottom: Rect,
 
     dialog: Rect,
@@ -515,6 +537,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
         vec![
             Constraint::Length(lbl_num_pane_num_cols.try_into().unwrap()),
             Constraint::Fill(1),
+            Constraint::Length(3),
         ],
     )
     .split(upper_panes[0]);
@@ -530,6 +553,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     Panes {
         lbl_num: lbl_pane[0],
         labels: lbl_pane[1],
+        seq_metrics: lbl_pane[2],
         sequence: upper_panes[1],
         corner: lower_panes[0],
         bottom: lower_panes[1],
@@ -659,6 +683,21 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
         .scroll((top_lbl_line, 0))
         .block(lbl_block);
     f.render_widget(lbl_para, seq_chunk);
+}
+
+fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
+    let lbl_nums = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.label_num_color);
+    let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
+    let top_lbl_line = match ui.zoom_level() {
+        ZoomLevel::ZoomedIn => ui.top_line,
+        ZoomLevel::ZoomedOut => 0,
+        ZoomLevel::ZoomedOutAR => 0,
+    };
+    let lbl_num_para = Paragraph::new(lbl_nums)
+        .white()
+        .scroll((top_lbl_line, 0))
+        .block(lbl_num_block);
+    f.render_widget(lbl_num_para, num_chunk);
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
@@ -883,6 +922,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     /* Render panes */
     render_label_nums_pane(f, layout_panes.lbl_num, ui);
     render_labels_pane(f, layout_panes.labels, ui);
+    render_seq_metrics_pane(f, layout_panes.seq_metrics, ui);
     render_alignment_pane(f, layout_panes.sequence, ui);
     render_corner_pane(f, layout_panes.corner);
     render_bottom_pane(f, layout_panes.bottom, ui);

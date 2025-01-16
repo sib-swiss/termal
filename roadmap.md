@@ -25,6 +25,9 @@ Urgent
 Normal
 ------
 
+1. [ ] Add a column to the left panel, for showing sequence metrics (such as
+   length, or similarity to consensus).
+
 1. [x] Add lowercase capability to Gecos maps.
 
 1. [x] Can now read and use [Gecos](https://gecos.biotite-python.org/intro.html)

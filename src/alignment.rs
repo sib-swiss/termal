@@ -20,6 +20,8 @@ pub struct Alignment {
     pub consensus: String,
     pub entropies: Vec<f64>,
     pub densities: Vec<f64>,
+
+    pub id_wrt_consensus: Vec<f64>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -40,6 +42,9 @@ impl Alignment {
         let consensus = consensus(&sequences);
         let entropies = entropies(&sequences);
         let densities = densities(&sequences);
+        let id_wrt_consensus = sequences.iter()
+            .map(|seq| percent_identity(seq, &consensus))
+            .collect();
 
         Alignment {
             headers,
@@ -47,6 +52,7 @@ impl Alignment {
             consensus,
             entropies,
             densities,
+            id_wrt_consensus,
         }
     }
 
@@ -168,10 +174,17 @@ fn entropy(freqs: &ResidueDistribution) -> f64 {
     -1.0 * sum
 }
 
+fn percent_identity(s1: &str, s2: &str) -> f64 {
+    let num_identical = s1.chars().zip(s2.chars())
+        .filter(|(c1, c2)| c1.to_ascii_uppercase() == c2.to_ascii_uppercase())
+        .count();
+    num_identical as f64 / s1.len() as f64
+}
+
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, res_count, to_freq_distrib,
+        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, to_freq_distrib,
         Alignment, BestResidue, ResidueCounts, ResidueDistribution,
     };
     use approx::assert_relative_eq;
@@ -326,5 +339,25 @@ mod tests {
         assert_eq!("tgctgttcgtcaaAgtaggcc", aln1.sequences[0]);
         assert_eq!("tgctgttAgAcaaagtaggcc", aln1.sequences[1]);
         assert_eq!("tgctgttcgtcaaagtaggcc", aln1.sequences[49]);
+    }
+
+    #[test]
+    fn test_similarity_00() {
+        let s1 = "GAATTC";
+        assert_eq!(percent_identity(s1, s1), 1.0);
+    }
+
+    #[test]
+    fn test_similarity_05() {
+        let s1 = "GAATTC";
+        let s2 = "GAA---";
+        assert_eq!(percent_identity(s1, s2), 0.5);
+    }
+
+    #[test]
+    fn test_similarity_10() {
+        let s1 = "GAATTC";
+        let s2 = "gaattc";
+        assert_eq!(percent_identity(s1, s2), 1.0);
     }
 }
