@@ -29,6 +29,25 @@ pub fn values_barchart(values: &Vec<f64>) -> String {
     blocks
 }
 
+pub fn value_to_hbar(v: f64) -> char {
+        if v <= 0.1428 { // 1/7
+            ' '
+        } else if v <= 0.2857 {
+            '▏'
+        } else if v <= 0.4286 {
+            '▎'
+        } else if v <= 0.5714 {
+            '▍'
+        } else if v <= 0.7143 {
+            '▋'
+        } else if v <= 0.8571 {
+            '▊'
+        } else {
+            // -> 1.0
+            '▉'
+        }
+}
+
 #[cfg(test)]
 mod test {
 

@@ -8,7 +8,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{conservation::values_barchart, AlnWRTSeqPane, BottomPanePosition},
+    ui::{conservation::{values_barchart, value_to_hbar}, AlnWRTSeqPane, BottomPanePosition},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -79,8 +79,9 @@ fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn compute_seq_metrics<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let numbers = (0..ui.app.num_seq())
-        .map(|n| Line::from(format!("X"))) // n+1 -> 1-based (for humans...)
+    let numbers = ui.app.alignment.id_wrt_consensus
+        .iter()
+        .map(|id| Line::from(value_to_hbar(*id).to_string()))
         .collect();
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => numbers,
@@ -686,18 +687,18 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let lbl_nums = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.label_num_color);
-    let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
+    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.label_num_color);
+    let seq_metrics_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
         ZoomLevel::ZoomedOut => 0,
         ZoomLevel::ZoomedOutAR => 0,
     };
-    let lbl_num_para = Paragraph::new(lbl_nums)
+    let seq_metrics_para = Paragraph::new(seq_metrics)
         .white()
         .scroll((top_lbl_line, 0))
-        .block(lbl_num_block);
-    f.render_widget(lbl_num_para, num_chunk);
+        .block(seq_metrics_block);
+    f.render_widget(seq_metrics_para, num_chunk);
 }
 
 fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
