@@ -63,6 +63,40 @@ OPTIONS
 `-V, --version`
 :    Print version
 
+INTERFACE
+=========
+
+Termal has a purely textual interface, and is entirely keyboard-driven.
+
+Display
+-------
+
+Termal uses the entire screen and divides into three main areas, as follows:
+
+* Top left: sequence numbers and headers 
+* Top right: alignment (this is the main area)
+* Bottom right: position and consensus.
+
+The alignment area is always visible; the other two can be hidden to make room
+for it (see KEY BINDINGS).
+
+Zooming
+-------
+
+By default, Termal shows as much of the alignment as fits on the screen. Smaller
+alignments can fit entirely on screen, but it's quite common for alignments to
+be too large, at least in one dimension, sometimes both. To see more of the
+alignment, there are two options:
+
+* Scrolling: this simply shifts the displayed portion of the alignment left,
+  right, up, or down. One can move by a single line (sequence) or column
+  (position), by screenfuls, or directly to the top, bottom, leftmost, or
+  rightmost positions (see KEY BINDINGS).
+
+* Zooming Out: this shows the first and last sequences, as well as evenly-spaced
+  sequences in between so as to show as many sequences as possible. It does the
+  same for columns. For example, if the alignment has 100 sequences but only 50
+  will fit on the screen, then Termal will show every second sequence.
 
 
 KEY BINDINGS
