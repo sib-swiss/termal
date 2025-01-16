@@ -22,6 +22,7 @@ pub const CLUSTALX_ORANGE: Color = Color::Rgb(229, 153, 76);
 
 pub struct ColorScheme {
     pub label_num_color: Color,
+    pub seq_metric_color: Color,
 
     // Index into Vec of &Colormaps
     pub colormap_index: usize,
@@ -38,6 +39,9 @@ pub fn color_scheme_monochrome() -> ColorScheme {
         label_num_color: Color::White,
         colormap_index: 0,
         zoombox_color: Color::White,
+        seq_metric_color: Color:White,
+        residue_color_map: color_map_monochrome(),
+        zoombox_color: Color::White,
         position_color: Color::White,
         conservation_color: Color::White,
         consensus_default_color: Color::White,
@@ -48,6 +52,8 @@ pub fn color_scheme_colored() -> ColorScheme {
     ColorScheme {
         label_num_color: Color::LightGreen,
         colormap_index: 1,
+        seq_metric_color: Color::Cyan,
+        residue_color_map: color_map_clustalx(),
         zoombox_color: Color::Cyan,
         position_color: Color::White,
         conservation_color: SALMON,

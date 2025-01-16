@@ -687,7 +687,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.label_num_color);
+    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.seq_metric_color);
     let seq_metrics_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
