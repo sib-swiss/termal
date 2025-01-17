@@ -8,7 +8,7 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{conservation::{values_barchart, value_to_hbar}, AlnWRTSeqPane, BottomPanePosition},
+    ui::{barchart::{values_barchart, value_to_hbar}, AlnWRTSeqPane, BottomPanePosition},
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };

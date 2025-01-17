@@ -49,7 +49,7 @@ pub fn color_scheme_colored() -> ColorScheme {
     ColorScheme {
         label_num_color: Color::LightGreen,
         colormap_index: 1,
-        seq_metric_color: Color::Cyan,
+        seq_metric_color: Color::LightBlue,
         zoombox_color: Color::Cyan,
         position_color: Color::White,
         conservation_color: SALMON,

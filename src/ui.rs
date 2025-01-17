@@ -1,6 +1,6 @@
 pub mod color_map;
 mod color_scheme;
-mod conservation;
+mod barchart;
 pub mod key_handling;
 pub mod render;
 
@@ -87,7 +87,7 @@ impl<'a> UI<'a> {
             highlight_retained_cols: false,
             top_line: 0,
             leftmost_col: 0,
-            label_pane_width: 15, // Reasonable default, I'd say...
+            label_pane_width: 18, // Reasonable default, I'd say...
             previous_label_pane_width: 0,
             bottom_pane_height: 5,
             previous_bottom_pane_height: 0,
