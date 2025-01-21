@@ -17,10 +17,15 @@ pub struct Alignment {
      * in an unpredictable order, and that different calls to keys() may return them indifferent
      * orders. See best_residue().
      */
+    /* These are properties of the whole _alignment_, or at least of whole columns. They cannot be
+     * meaningfully attributed to a sequence. */
     pub consensus: String,
     pub entropies: Vec<f64>,
     pub densities: Vec<f64>,
 
+    /* By contrast, the following are properties of sequences (at least in part). Length, for
+     * example, does not depend on anything but the sequence itself, and could be a field in a
+     * struct that also contains the sequence and its header. */
     pub id_wrt_consensus: Vec<f64>,
 }
 
