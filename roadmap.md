@@ -25,7 +25,12 @@ Urgent
 Normal
 ------
 
-1. [ ] Add a column to the left panel, for showing sequence metrics (such as
+1. [x] B0008 Alignment chokes on '.' in sequence. Fix that, maybe adding an option for
+   the default gap character. => Fixed, but consensus keeps '-' even when
+   alignment has '.'; the character for blanks should be determined from the
+   alignment itself.
+
+1. [x] Add a column to the left panel, for showing sequence metrics (such as
    length, or similarity to consensus).
 
 1. [x] Add lowercase capability to Gecos maps.

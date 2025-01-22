@@ -118,7 +118,7 @@ pub fn col_density(sequences: &Vec<String>, col: usize) -> f64 {
     for seq in sequences {
         match seq.as_bytes()[col] as char {
             'a'..='z' | 'A'..='Z' => mass += 1,
-            '-' => {}
+            '-' | '.' => {}
             other => {
                 panic!("Character {other} unexpected in an alignment.");
             }
