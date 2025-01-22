@@ -22,6 +22,9 @@ TODO
 Urgent
 ------
 
+1. [ ] Sequence numbers start at 1, but positions start at 0. Make up your mind,
+   dude...
+
 Normal
 ------
 
@@ -47,9 +50,9 @@ Normal
    e.g. https://dergipark.org.tr/en/download/article-file/2904099 for amino
    acids), but they can be computed.
 
-1. [ ] Provide a key binding for cycling through the maps (and show the current
+1. [x] Provide a key binding for cycling through the maps (and show the current
    map in the message); if eventually we end up with a large number of maps,
-   then allow selection via a dialog. 
+   then allow selection via a dialog. => 'm' cycles through color maps.
 
 1. [x] Allow inverse video with black on a colored background.
 
@@ -67,9 +70,6 @@ Normal
    its position). Also added 'f' ("fullscreen"), which toggles _both_ panels.
 
 1. [x] Added a help dialog, accessible through '?' (since 'h' is already used).
-
-1. [ ] Sequence numbers start at 1, but positions start at 0. Make up your mind,
-   dude...
 
 1. [x] B0007: the consensus is shorter than the alignment in
    `CD00377_ICL-PEPM_wDesc.msa`. This is due to sevral cases of non-letter
