@@ -2,6 +2,15 @@
 title: "Termal: Roadmap"
 ---
 
+Important Points
+================
+
+* The speed of the terminal is paramount. I made (admittedly not very accurate)
+  profiling attempts with Flamegraph, and it shows that in a "slow" terminal,
+  most of the time is spent in terminal (backend) code, so optimizing Termal
+  would have little effect. In a fast terminal (Alacritty, Ghostty, WezTerm,
+  etc.), it's fast enough anyway ;) .
+
 Miscellaneous Ideas
 ===================
 
@@ -10,9 +19,6 @@ Miscellaneous Ideas
   natural. Their main advantage is to make it very clear that the coordinates
   apply to the zoom box (so this leaves the vertical guides in zoomed-in mode
   without a clear purpose).
-
-* Make the labels panel part of a more general left pane, which could contain
-  other "by-sequence" panes such as length and conservation (WRT consensus)
 
 * Reinstate the "blinky" consensus, at least optionally
 
@@ -28,7 +34,9 @@ Urgent
 Normal
 ------
 
-1. [x] B0008 Alignment chokes on '.' in sequence. Fix that, maybe adding an option for
+1. [ ] Make "inverse video" the default mode.
+
+1. [.] B0008 Alignment chokes on '.' in sequence. Fix that, maybe adding an option for
    the default gap character. => Fixed, but consensus keeps '-' even when
    alignment has '.'; the character for blanks should be determined from the
    alignment itself.
