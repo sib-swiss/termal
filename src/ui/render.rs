@@ -951,17 +951,10 @@ pub fn every_nth(l: usize, n: usize) -> Vec<usize> {
     }
 }
 
-// TODO: rm Debug req'mt when tested
-fn order(nums: Vec<T>) -> Vec<usize> {
-    let mut result: Vec<usize> = Vec::with_capacity(nums.len());
-    let init_order: Vec<usize> = (0..nums.len()).collect();
-    let zip = init_order.iter().zip(nums).collect::<usize, T>();
-    result
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::ui::render::{every_nth, order, tick_marks};
+
+    use crate::ui::render::{every_nth, tick_marks};
 
     #[test]
     fn test_every_nth_1() {
@@ -993,13 +986,5 @@ mod tests {
     fn test_tick_marks_02() {
         let tm = tick_marks(21, Some(':'), Some('.'));
         assert_eq!(tm, ":    .    :    .    :");
-    }
-
-    #[test]
-    fn test_order_00() {
-        assert_eq!(
-            vec![3,2,1],
-            order(vec![20, 15, 10])
-            );
     }
 }
