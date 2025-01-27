@@ -1,4 +1,4 @@
-use crossterm::event::{KeyCode, KeyEvent};
+use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use log::debug;
 
@@ -29,6 +29,10 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // Bottom pane
             KeyCode::Char('c') => {
+                // Exception: Ctrl-C quits
+                if key_event.modifiers == KeyModifiers::CONTROL {
+                    done = true;
+                }
                 if ui.bottom_pane_height == 0 {
                     ui.show_bottom_pane();
                 } else {
@@ -130,9 +134,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             KeyCode::Char('o') => { ui.cycle_ordering() }
 
             // ----  Exit ----
-
-            KeyCode::Char('q') => done = true,
-            KeyCode::Char('Q') => done = true,
+            KeyCode::Char('q') | KeyCode::Char('Q') => done = true,
 
             _ => {
                 // let the user know this key is not bound

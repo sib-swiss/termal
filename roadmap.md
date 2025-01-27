@@ -34,7 +34,15 @@ Urgent
 Normal
 ------
 
-1. [ ] Make "inverse video" the default mode.
+1. [x] Ctrl-C quits.
+
+1. [.] 'o' cycles through orderings, where the available oderings are "original"
+   (i.e., same as in source file), "metric" (that is, by increasing order of the
+   current metric), and by decreasing order of the metric. TODO: i) only
+   implemented for zoomed-in mode, and ii) there currently is only one metric,
+   namely %ID WRT consensus.
+
+1. [x] Make "inverse video" the default mode.
 
 1. [.] B0008 Alignment chokes on '.' in sequence. Fix that, maybe adding an option for
    the default gap character. => Fixed, but consensus keeps '-' even when
@@ -369,7 +377,7 @@ Normal
      soon as I start scrolling (in debug mode; release mode never causes fan
      whirring), as it did up to now (whether when getting the colour through a
      function or by precomputing them all). Different terminals also seem to
-     scroll better or worse (e.g.  alacritty is one of the fastest).
+     scroll better or worse (e.g. alacritty is one of the fastest).
 
 1. [-] Try storing the whole alignment's characters (with the corresponding
    Colors) in a Buffer => Won't work:: the number of Cells in a Buffer is a u16,
@@ -382,7 +390,8 @@ Normal
 1. [-] Try putting the whole alignment into a Paragraph upfront, then scrolling
    it into position => Not sure if this is possible. The constructors for Span,
    Line, and Paragraph all seem to consume their arguments; I tried WidgetRefs
-   and StatefulWidgetRefs, to no avail.
+   and StatefulWidgetRefs, to no avail. UPDATE (2025-01-17): Span::raw() takes a
+   Cow, so it _should_ be possible to pass it a &str.
 
 1. [x] Move ui code to a separate module.
 
