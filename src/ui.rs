@@ -48,7 +48,7 @@ bitflags! {
 }
 
 pub struct UI<'a> {
-    app: &'a App,
+    app: &'a mut App,
     color_scheme: ColorScheme,
     zoom_level: ZoomLevel,
     show_zoombox: bool,
@@ -76,7 +76,7 @@ pub struct UI<'a> {
 }
 
 impl<'a> UI<'a> {
-    pub fn new(app: &'a App) -> Self {
+    pub fn new(app: &'a mut App) -> Self {
         UI {
             app,
             color_scheme: color_scheme_colored(),
@@ -425,6 +425,14 @@ impl<'a> UI<'a> {
         let nb_colormaps = self.colormaps.len();
         self.color_scheme.colormap_index =
             (self.color_scheme.colormap_index + 1) % nb_colormaps;
+    }
+
+    // ****************************************************************
+    // Ordering
+
+    pub fn cycle_ordering(&mut self) {
+        // Just delegate to App
+        self.app.cycle_ordering();
     }
 
     // ****************************************************************

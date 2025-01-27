@@ -126,6 +126,9 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             // Cycle through colormaps
             KeyCode::Char('m') => { ui.cycle_colormap() }
 
+            // Sequence Order
+            KeyCode::Char('o') => { ui.cycle_ordering() }
+
             // ----  Exit ----
 
             KeyCode::Char('q') => done = true,

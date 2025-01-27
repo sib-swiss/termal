@@ -113,7 +113,7 @@ fn main() -> Result<()> {
     }
 
     let fasta_file: &str = &cli.aln_fname;
-    let app = App::new(fasta_file)?;
+    let mut app = App::new(fasta_file)?;
 
     if cli.info {
         info!("Running in debug mode.");
@@ -138,7 +138,7 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
     terminal.clear()?;
 
-    let mut app_ui = UI::new(&app);
+    let mut app_ui = UI::new(&mut app);
     if cli.no_scrollbars {
         app_ui.disable_scrollbars();
     }
