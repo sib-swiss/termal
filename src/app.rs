@@ -15,7 +15,7 @@ pub struct App {
     pub filename: String,
     pub alignment: Alignment,
     ordering_criterion: SeqOrdering,
-    ordering: Vec<usize>,
+    pub ordering: Vec<usize>,
 }
 
 impl App {
@@ -47,17 +47,14 @@ impl App {
             SOURCE_FILE => {
                 // Next criterion is according to metric
                 self.ordering_criterion = METRIC_INCR;
-                // TODO: make order() work on a &Vec<...> instead of a Vec<...>, to avoid cloning.
-                // Well, maybe we don't need to store the ordering withinh the App... though it
-                // looks like a reasonable idea.
                 self.ordering = order(&self.alignment.id_wrt_consensus);
             }
             METRIC_INCR => {
                 // Next criterion is according to metric, descending
                 self.ordering_criterion = METRIC_DECR;
-                let mut ord = self.alignment.id_wrt_consensus.clone();
+                let mut ord = order(&self.alignment.id_wrt_consensus);
                 ord.reverse();
-                self.ordering = order(&ord);
+                self.ordering = ord;
             }
             METRIC_DECR => {
                 self.ordering_criterion = SOURCE_FILE;

@@ -63,7 +63,7 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
 
 fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
     let num_cols = ui.app.num_seq().ilog10() as usize + 1;
-    let numbers = (0..ui.app.num_seq())
+    let numbers = ui.app.ordering.iter()
         .map(|n| Line::from(format!("{:1$}!", n + 1, num_cols))) // n+1 -> 1-based (for humans...)
         .collect();
     match ui.zoom_level {
@@ -79,9 +79,13 @@ fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn compute_seq_metrics<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let numbers = ui.app.alignment.id_wrt_consensus
-        .iter()
-        .map(|id| Line::from(value_to_hbar(*id).to_string()))
+    let numbers = ui.app.ordering.iter()
+        .map(|id| Line::from(
+                value_to_hbar(
+                    ui.app.alignment.id_wrt_consensus[*id]
+                    ).to_string()
+                )
+            )
         .collect();
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => numbers,
@@ -96,11 +100,12 @@ fn compute_seq_metrics<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    ui.app
-        .alignment
-        .headers
-        .iter()
-        .map(|h| Line::from(h.clone()))
+    ui.app.ordering.iter()
+        .map(|i| Line::from(Span::raw(
+            // TODO: this clne should be avoidable, since Span takes a Cow. This would of
+            // course entail some lifetime wrangling.
+            ui.app.alignment.headers[*i].clone()
+        )))
         .collect()
 }
 
@@ -125,6 +130,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     // Or, failing that, to ask UI itself for the color to apply to a given char? If so, also apply
     // to zoom_out_lbl_text() and zoom_out_ar_seq_text().
     let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let ordering = &ui.app.ordering;
 
     for i in top_i..bot_i {
         if i >= ui.app.num_seq().into() {
@@ -135,7 +141,9 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             if j >= ui.app.aln_len().into() {
                 break;
             } // ", horizontal
-            let cur_seq_ref = &ui.app.alignment.sequences[i];
+            let cur_seq_ref = &ui.app.alignment.sequences[
+                ordering[i]
+            ];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             let style = if ui.inverse {
