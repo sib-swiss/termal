@@ -56,7 +56,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 ZoomLevel::ZoomedIn => ui.scroll_one_line_down(),
                 ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.scroll_zoombox_one_line_down(),
             },
-            KeyCode::Char('J') => ui.scroll_one_screen_down(),
+            KeyCode::Char('J') | KeyCode::Char(' ') => ui.scroll_one_screen_down(),
             KeyCode::Char('G') => ui.jump_to_bottom(),
 
             // Up
