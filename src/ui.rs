@@ -97,7 +97,7 @@ impl<'a> UI<'a> {
             show_help: false,
             full_screen: false,
             message: " Press '?' for help ".into(),
-            inverse: false,
+            inverse: true,
             colormaps: builtin_colormaps(),
         }
     }
