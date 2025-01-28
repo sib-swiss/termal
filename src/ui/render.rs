@@ -113,7 +113,8 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
 
     for i in retained_seq_ndx(ui) {
-        ztext.push(Line::from(ui.app.alignment.headers[i].clone()));
+        ztext.push(Line::from(ui.app.alignment.headers[
+                              ui.app.ordering[i]].clone()));
     }
 
     ztext
@@ -163,9 +164,13 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let ordering = &ui.app.ordering;
+
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
-        let seq: &String = &ui.app.alignment.sequences[i];
+        let seq: &String = &ui.app.alignment.sequences[
+            ordering[i]
+        ];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
