@@ -193,9 +193,12 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
 fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let ordering = &ui.app.ordering;
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
-        let seq: &String = &ui.app.alignment.sequences[i];
+        let seq: &String = &ui.app.alignment.sequences[
+            ordering[i]
+        ];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
