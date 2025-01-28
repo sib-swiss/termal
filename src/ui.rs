@@ -306,6 +306,10 @@ impl<'a> UI<'a> {
         self.show_zoombox = state;
     }
 
+    pub fn toggle_zoombox(&mut self) {
+        self.show_zoombox = !self.show_zoombox;
+    }
+
     // TODO: do we really need seq_para_len? Or can we just use self.app.num_seq?
     pub fn zoombox_top(&self) -> usize {
         match self.zoom_level {

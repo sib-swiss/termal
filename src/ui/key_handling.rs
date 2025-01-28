@@ -106,6 +106,10 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             KeyCode::Char('v') => {
                 ui.set_zoombox_guides(!ui.show_zb_guides);
             }
+            // Toggle zoom box visibility
+            KeyCode::Char('B') => {
+                ui.toggle_zoombox();
+            }
 
             // Bottom pane position (i.e., bottom of screen or stuck to the alignment - when both
             // are possible).
