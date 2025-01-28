@@ -39,7 +39,7 @@ Normal
 
 1. [x] Ctrl-C quits.
 
-1. [.] 'o' cycles through orderings, where the available oderings are "original"
+1. [.] 'o' cycles through orderings, where the available orderings are "original"
    (i.e., same as in source file), "metric" (that is, by increasing order of the
    current metric), and by decreasing order of the metric. TODO: i) only
    implemented for zoomed-in mode, and ii) there currently is only one metric,
