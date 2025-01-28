@@ -582,7 +582,8 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
 
 fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char>) -> String {
     let mut ticks = String::with_capacity(aln_length);
-    for i in 0..aln_length {
+    ticks += ("    :    ");
+    for i in 10..aln_length {
         ticks.push(if i % 10 == 0 {
             primary.unwrap_or('|')
         } else if i % 5 == 0 {
@@ -596,8 +597,8 @@ fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char>)
 }
 
 fn tick_position(aln_length: usize) -> String {
-    let mut intervals: Vec<String> = vec![String::from("0")];
-    let mut tens = 10;
+    let mut intervals: Vec<String> = vec![String::from("1       10")];
+    let mut tens = 20;
     while tens < aln_length {
         let int = format!("{:>10}", tens);
         tens += 10;

@@ -28,11 +28,14 @@ TODO
 Urgent
 ------
 
-1. [ ] Sequence numbers start at 1, but positions start at 0. Make up your mind,
-   dude...
-
 Normal
 ------
+
+1. [x] Sequence numbers start at 1, but positions start at 0. Make up your mind,
+   dude... => Sequence positions in the bottom panel now start at 1.
+
+1. [x] 'B' now toggles the zoom box (Maybe not very useful; I used it  mainly to
+   check the ordering of sequences in the zoomed modes).
 
 1. [x] Ctrl-C quits.
 
