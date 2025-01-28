@@ -2,6 +2,8 @@
 
 RUST_SOURCES = $(shell find src -name '*.rs')
 TERMAL_BINARY = ./target/release/termal
+INSTALL_DIR = /usr/local/bin
+MAN_DIR = /usr/share/man
 
 all: $(TERMAL_BINARY) termal.1.gz
 
@@ -25,9 +27,9 @@ roadmap.pdf: roadmap.md meta.yaml
 				--filter pandoc-crossref --citeproc --number-sections \
 				--output $@ $<
 
-install: all
-	install -m 755 $(TERMAL_BINARY) /usr/local/bin
-	install -m 644 termal.1.gz /usr/share/man/man1
+install: 
+	install -m 755 $(TERMAL_BINARY) $(INSTALL_DIR)
+	install -m 644 termal.1.gz $(MAN_DIR)/man1
 
 test:
 	cargo test 2> /dev/null
