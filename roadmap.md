@@ -22,6 +22,14 @@ Miscellaneous Ideas
 
 * Reinstate the "blinky" consensus, at least optionally
 
+* Try computing the Spans that constitute the alignment only once, to avoid
+  incessant lookups in the colormap. Also, on a busy, distant machine, there is a
+  perceptible difference between monochrome, Lesk, and Clustal maps, even though
+  all of them have the same number of keys (but not values: clustal has the
+  most, monochrome the least (namely, 1)); interestingly, clustal is the slowest
+  and monochrome the fastest. Not sure why, but anyway these HashMap lookups are
+  mostly redundant.
+
 TODO
 ====
 
