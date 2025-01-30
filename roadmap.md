@@ -49,7 +49,6 @@ Miscellaneous Ideas
 
 * Reinstate the "blinky" consensus, at least optionally
 
-
 TODO
 ====
 
