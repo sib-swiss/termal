@@ -792,10 +792,10 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     }
 }
 
-fn render_corner_pane(f: &mut Frame, corner_chunk: Rect) {
+fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let corner_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
     let corner_text = Text::from(vec![
-        "".into(),
+        Line::from(ui.app.get_seq_ordering().to_string()),
         "Position".into(),
         "Consensus".into(),
         "Conservation".into(),
@@ -942,7 +942,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     render_labels_pane(f, layout_panes.labels, ui);
     render_seq_metrics_pane(f, layout_panes.seq_metrics, ui);
     render_alignment_pane(f, layout_panes.sequence, ui);
-    render_corner_pane(f, layout_panes.corner);
+    render_corner_pane(f, layout_panes.corner, ui);
     render_bottom_pane(f, layout_panes.bottom, ui);
 
     if ui.show_help {

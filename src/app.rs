@@ -1,3 +1,5 @@
+use std::fmt;
+
 use rasta::read_fasta_file;
 
 use crate::{
@@ -5,10 +7,22 @@ use crate::{
     app::SeqOrdering::{SOURCE_FILE, METRIC_INCR, METRIC_DECR},
 };
 
-enum SeqOrdering {
+#[derive(Clone, Copy)]
+pub enum SeqOrdering {
     SOURCE_FILE,
     METRIC_INCR,
     METRIC_DECR,
+}
+
+impl fmt::Display for SeqOrdering {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let sord = match self {
+            SOURCE_FILE => '-', 
+            METRIC_INCR => '↑',
+            METRIC_DECR => '↓',
+        };
+        write!(f, "{}", sord)
+    }
 }
 
 pub struct App {
@@ -70,6 +84,10 @@ impl App {
         println!("nb_sequences: {}", self.num_seq());
         println!("nb_columns: {}", self.aln_len());
         println!();
+    }
+
+    pub fn get_seq_ordering(&self) -> SeqOrdering {
+        self.ordering_criterion
     }
 }
 
