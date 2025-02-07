@@ -11,6 +11,33 @@ Important Points
   would have little effect. In a fast terminal (Alacritty, Ghostty, WezTerm,
   etc.), it's fast enough anyway ;) .
 
+* I tried computing the Spans that constitute the alignment only once, to avoid
+  incessant lookups in the colormap. Also, on a busy, distant machine, there is
+  a perceptible difference between monochrome, Lesk, and Clustal maps, even
+  though all of them have the same number of keys (but not values: clustal has
+  the most, monochrome the least (namely, 1)); interestingly, clustal is the
+  slowest and monochrome the fastest. Not sure why, but anyway these HashMap
+  lookups are mostly redundant. => This is done one branch `prec-spans` (only
+  for zoomed-in mode, and with a fixed colormap), but the improvement is
+    negligible (although the code is simpler and I still think this is th eway
+    to go). The problem, I as beginning to understand (or so I think), is the
+    number of changes to the screen: In the zoomed-out mode, very little changes
+    (only the zoombox frame moves), while in zoomed-in mode, any motion causes
+    the whole aln area to be redrawn. The result is that zoomed-in mode is much
+    more likely to be laggy, and the effect increases with the size of the aln
+    area (just change font size to see this). I'm not sure if double-buffering
+    helps here (Ratatui does it anyway). Rather, I'm beginning to think that I
+    should avoid redrawing the screen so many times. The way to do this would
+    seem to be to convert a string of identical single-step motion commands
+    (hjkl) into one motion of equivalent length, e.g. l l l l would be converted
+    to a single l (but four steps instead of one).
+
+    All in all, after trying it out on the cluster with large and small
+    alignments, in debug and release targets, the difference is minimal and
+    appears swamped by the connection speed and/or the machine's load average.
+    So I'm keeping branch `squev` in case we eventually decide to implement the
+    mechanism, but for now I don't merge this into `master`.
+
 Miscellaneous Ideas
 ===================
 
@@ -22,13 +49,6 @@ Miscellaneous Ideas
 
 * Reinstate the "blinky" consensus, at least optionally
 
-* Try computing the Spans that constitute the alignment only once, to avoid
-  incessant lookups in the colormap. Also, on a busy, distant machine, there is a
-  perceptible difference between monochrome, Lesk, and Clustal maps, even though
-  all of them have the same number of keys (but not values: clustal has the
-  most, monochrome the least (namely, 1)); interestingly, clustal is the slowest
-  and monochrome the fastest. Not sure why, but anyway these HashMap lookups are
-  mostly redundant.
 
 TODO
 ====
