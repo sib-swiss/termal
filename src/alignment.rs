@@ -29,6 +29,7 @@ pub struct Alignment {
      * example, does not depend on anything but the sequence itself, and could be a field in a
      * struct that also contains the sequence and its header. */
     pub id_wrt_consensus: Vec<f64>,
+    pub seq_len_ungapped: Vec<f64>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -52,6 +53,9 @@ impl Alignment {
         let id_wrt_consensus = sequences.iter()
             .map(|seq| percent_identity(seq, &consensus))
             .collect();
+        let seq_len_ungapped = sequences.iter()
+            .map(|seq| seq_len_nogaps(seq))
+            .collect();
 
         Alignment {
             headers,
@@ -60,6 +64,7 @@ impl Alignment {
             entropies,
             densities,
             id_wrt_consensus,
+            seq_len,
         }
     }
 
@@ -186,6 +191,11 @@ fn percent_identity(s1: &str, s2: &str) -> f64 {
         .filter(|(c1, c2)| c1.to_ascii_uppercase() == c2.to_ascii_uppercase())
         .count();
     num_identical as f64 / s1.len() as f64
+}
+
+fn seq_len_nogaps(s: &str) {
+    // TODO: handle ALL possible gap chars, e.g. with an is_gap() function
+    s.chars().filter(|c| c != '-'
 }
 
 #[cfg(test)]

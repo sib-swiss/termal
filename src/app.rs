@@ -5,6 +5,7 @@ use rasta::read_fasta_file;
 use crate::{
     alignment::Alignment,
     app::SeqOrdering::{SOURCE_FILE, METRIC_INCR, METRIC_DECR},
+    app::Metric::{PCT_ID_WRT_CONSENSUS, SEQ_LEN},
 };
 
 #[derive(Clone, Copy)]
@@ -25,10 +26,27 @@ impl fmt::Display for SeqOrdering {
     }
 }
 
+#[derive(Clone, Copy)]
+pub enum Metric {
+    PCT_ID_WRT_CONSENSUS,
+    SEQ_LEN,
+}
+
+impl fmt::Display for Metric {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let metric = match self {
+            PCT_ID_WRT_CONSENSUS => "%id (cons)", 
+            SEQ_LEN => "seq len",
+        };
+        write!(f, "{}", metric)
+    }
+}
+
 pub struct App {
     pub filename: String,
     pub alignment: Alignment,
     ordering_criterion: SeqOrdering,
+    metric: Metric,
     pub ordering: Vec<usize>,
 }
 
@@ -41,6 +59,7 @@ impl App {
             filename: path.to_string(),
             alignment,
             ordering_criterion: SOURCE_FILE,
+            metric: PCT_ID_WRT_CONSENSUS,
             ordering: (0..len).collect(),
         })
     }
@@ -88,6 +107,10 @@ impl App {
 
     pub fn get_seq_ordering(&self) -> SeqOrdering {
         self.ordering_criterion
+    }
+
+    pub fn get_metric(&self) -> Metric {
+        self.metric
     }
 }
 
