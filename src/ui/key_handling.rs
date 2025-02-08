@@ -28,7 +28,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             }
 
             // Bottom pane
-            KeyCode::Char('c') => {
+            KeyCode::Char('c') if => {
                 // Exception: Ctrl-C quits
                 if key_event.modifiers == KeyModifiers::CONTROL {
                     done = true;
@@ -136,6 +136,9 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // Sequence Order
             KeyCode::Char('o') => { ui.cycle_ordering() }
+
+            // Metric
+            //KeyCode::Char('m')
 
             // ----  Exit ----
             KeyCode::Char('q') | KeyCode::Char('Q') => done = true,

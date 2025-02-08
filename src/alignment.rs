@@ -29,7 +29,10 @@ pub struct Alignment {
      * example, does not depend on anything but the sequence itself, and could be a field in a
      * struct that also contains the sequence and its header. */
     pub id_wrt_consensus: Vec<f64>,
-    pub seq_len_ungapped: Vec<f64>,
+    // TODO: u32 should be ok for most aplications - 2^32 is a bit longer than 3E9, roughly the
+    // size of th ehuman genome. I don't expect to have _that_ sort of size for our alignments. I'd
+    // be surprised if anybody went past 2^16-1, actually. Thats 65535.
+    pub seq_len_ungapped: Vec<u32>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -64,7 +67,7 @@ impl Alignment {
             entropies,
             densities,
             id_wrt_consensus,
-            seq_len,
+            seq_len_ungapped,
         }
     }
 
@@ -193,9 +196,8 @@ fn percent_identity(s1: &str, s2: &str) -> f64 {
     num_identical as f64 / s1.len() as f64
 }
 
-fn seq_len_nogaps(s: &str) {
-    // TODO: handle ALL possible gap chars, e.g. with an is_gap() function
-    s.chars().filter(|c| c != '-'
+fn seq_len_nogaps(s: &str) -> u32 {
+    s.chars().filter(|c| c.is_alphabetic()).count() as u32
 }
 
 #[cfg(test)]

@@ -98,6 +98,13 @@ impl App {
         }
     }
 
+    pub fn cycle_metric(&mut self) {
+        self.metric = match self.metric {
+            PCT_ID_WRT_CONSENSUS =>  SEQ_LEN,
+            SEQ_LEN => PCT_ID_WRT_CONSENSUS,
+        }
+    }
+
     pub fn output_info(&self) {
         println!("name: {}", self.filename);
         println!("nb_sequences: {}", self.num_seq());
