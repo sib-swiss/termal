@@ -28,8 +28,8 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             }
 
             // Bottom pane
-            KeyCode::Char('c') if => {
-                // Exception: Ctrl-C quits
+            // Exception: Ctrl-C quits
+            KeyCode::Char('c') if key_event.modifiers != KeyModifiers::CONTROL => {
                 if key_event.modifiers == KeyModifiers::CONTROL {
                     done = true;
                 }
@@ -142,6 +142,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // ----  Exit ----
             KeyCode::Char('q') | KeyCode::Char('Q') => done = true,
+            KeyCode::Char('c') if key_event.modifiers == KeyModifiers::CONTROL => done = true,
 
             _ => {
                 // let the user know this key is not bound
