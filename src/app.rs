@@ -1,5 +1,7 @@
 use std::fmt;
 
+use log::debug;
+
 use rasta::read_fasta_file;
 
 use crate::{
@@ -102,7 +104,8 @@ impl App {
         self.metric = match self.metric {
             PCT_ID_WRT_CONSENSUS =>  SEQ_LEN,
             SEQ_LEN => PCT_ID_WRT_CONSENSUS,
-        }
+        };
+        debug!("metric now {}", self.metric);
     }
 
     pub fn output_info(&self) {

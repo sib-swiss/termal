@@ -795,7 +795,11 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let corner_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
     let corner_text = Text::from(vec![
-        Line::from(ui.app.get_seq_ordering().to_string()),
+        Line::from(
+            format!("{} {}",
+                   ui.app.get_metric(),
+                   ui.app.get_seq_ordering().to_string()
+                   )),
         "Position".into(),
         "Consensus".into(),
         "Conservation".into(),
