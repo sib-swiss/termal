@@ -8,7 +8,10 @@ use ratatui::{
 use log::debug;
 
 use crate::{
-    ui::{barchart::{values_barchart, value_to_hbar}, AlnWRTSeqPane, BottomPanePosition},
+    ui::{
+        barchart::{value_to_hbar, values_barchart},
+        AlnWRTSeqPane, BottomPanePosition,
+    },
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
 };
@@ -63,7 +66,10 @@ fn retained_seq_ndx(ui: &UI) -> Vec<usize> {
 
 fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
     let num_cols = ui.app.num_seq().ilog10() as usize + 1;
-    let numbers = ui.app.ordering.iter()
+    let numbers = ui
+        .app
+        .ordering
+        .iter()
         .map(|n| Line::from(format!("{:1$}!", n + 1, num_cols))) // n+1 -> 1-based (for humans...)
         .collect();
     match ui.zoom_level {
@@ -79,13 +85,12 @@ fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn compute_seq_metrics<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let numbers = ui.app.ordering.iter()
-        .map(|id| Line::from(
-                value_to_hbar(
-                    ui.app.alignment.id_wrt_consensus[*id]
-                    ).to_string()
-                )
-            )
+    let order_values = ui.app.order_values();
+    let numbers = ui
+        .app
+        .ordering
+        .iter()
+        .map(|id| Line::from(value_to_hbar(order_values[*id]).to_string()))
         .collect();
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => numbers,
@@ -100,12 +105,16 @@ fn compute_seq_metrics<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    ui.app.ordering.iter()
-        .map(|i| Line::from(Span::raw(
-            // TODO: this clne should be avoidable, since Span takes a Cow. This would of
-            // course entail some lifetime wrangling.
-            ui.app.alignment.headers[*i].clone()
-        )))
+    ui.app
+        .ordering
+        .iter()
+        .map(|i| {
+            Line::from(Span::raw(
+                // TODO: this clne should be avoidable, since Span takes a Cow. This would of
+                // course entail some lifetime wrangling.
+                ui.app.alignment.headers[*i].clone(),
+            ))
+        })
         .collect()
 }
 
@@ -113,8 +122,9 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
 
     for i in retained_seq_ndx(ui) {
-        ztext.push(Line::from(ui.app.alignment.headers[
-                              ui.app.ordering[i]].clone()));
+        ztext.push(Line::from(
+            ui.app.alignment.headers[ui.app.ordering[i]].clone(),
+        ));
     }
 
     ztext
@@ -142,9 +152,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             if j >= ui.app.aln_len().into() {
                 break;
             } // ", horizontal
-            let cur_seq_ref = &ui.app.alignment.sequences[
-                ordering[i]
-            ];
+            let cur_seq_ref = &ui.app.alignment.sequences[ordering[i]];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             let style = if ui.inverse {
@@ -168,9 +176,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
-        let seq: &String = &ui.app.alignment.sequences[
-            ordering[i]
-        ];
+        let seq: &String = &ui.app.alignment.sequences[ordering[i]];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
@@ -196,9 +202,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let ordering = &ui.app.ordering;
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
-        let seq: &String = &ui.app.alignment.sequences[
-            ordering[i]
-        ];
+        let seq: &String = &ui.app.alignment.sequences[ordering[i]];
         let seq_chars: Vec<char> = seq.chars().collect();
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
@@ -705,7 +709,8 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 
 fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
     let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.seq_metric_color);
-    let seq_metrics_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
+    let seq_metrics_block =
+        Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
         ZoomLevel::ZoomedOut => 0,
@@ -795,11 +800,11 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let corner_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
     let corner_text = Text::from(vec![
-        Line::from(
-            format!("{} {}",
-                   ui.app.get_metric(),
-                   ui.app.get_seq_ordering().to_string()
-                   )),
+        Line::from(format!(
+            "{} {}",
+            ui.app.get_metric(),
+            ui.app.get_seq_ordering().to_string()
+        )),
         "Position".into(),
         "Consensus".into(),
         "Conservation".into(),
@@ -842,9 +847,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                Style::new()
-                    .fg(colormap.get(c))
-                    .patch(fg_bg_style),
+                Style::new().fg(colormap.get(c)).patch(fg_bg_style),
             )
         })
         .collect();
@@ -1000,12 +1003,12 @@ mod tests {
     #[test]
     fn test_tick_marks_01() {
         let tm = tick_marks(21, None, None);
-        assert_eq!(tm, "|         |         |");
+        assert_eq!(tm, "    :    |         |");
     }
 
     #[test]
     fn test_tick_marks_02() {
         let tm = tick_marks(21, Some(':'), Some('.'));
-        assert_eq!(tm, ":    .    :    .    :");
+        assert_eq!(tm, "    :    :    .    :");
     }
 }

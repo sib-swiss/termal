@@ -49,6 +49,11 @@ pub struct App {
     pub alignment: Alignment,
     ordering_criterion: SeqOrdering,
     metric: Metric,
+    // Specifies in which order the aligned sequences should be displayed. The elements of this Vec
+    // are _indices_ into the Vec's of headers and sequences that together make up the alignment.
+    // By default, they are just ordered from 1 to aln-width - 1, but the user can choose to order
+    // according to the current metric, in which case the ordering becomes that of the metric's
+    // value for each sequence.
     pub ordering: Vec<usize>,
 }
 
@@ -82,12 +87,12 @@ impl App {
             SOURCE_FILE => {
                 // Next criterion is according to metric
                 self.ordering_criterion = METRIC_INCR;
-                self.ordering = order(&self.alignment.id_wrt_consensus);
+                self.ordering = order(&self.order_values());
             }
             METRIC_INCR => {
                 // Next criterion is according to metric, descending
                 self.ordering_criterion = METRIC_DECR;
-                let mut ord = order(&self.alignment.id_wrt_consensus);
+                let mut ord = order(&self.order_values());
                 ord.reverse();
                 self.ordering = ord;
             }
@@ -122,13 +127,23 @@ impl App {
     pub fn get_metric(&self) -> Metric {
         self.metric
     }
+
+    pub fn order_values(&self) -> &Vec<f64> {
+         match self.metric {
+            PCT_ID_WRT_CONSENSUS => &self.alignment.id_wrt_consensus,
+            SEQ_LEN => &self.alignment.relative_seq_len, 
+        }
+    }
 }
 
-fn order<T: PartialOrd+Copy>(nums: &Vec<T>) -> Vec<usize> {
+// Computes an ordering WRT an array, that is, an array of indices of elements of the source array,
+// after sorting. Eg [3, -2, 7] -> [1, 0, 2], because the smalllest element has index 1, the next
+// has index 0, and the largest has index 2 (in the original array).
+fn order(nums: &Vec<f64>) -> Vec<usize> {
     let mut result: Vec<usize> = Vec::with_capacity(nums.len());
     let init_order: Vec<usize> = (0..nums.len()).collect();
     let mut zip_iter = init_order.iter().zip(nums);
-    let mut unsorted_pairs: Vec<(&usize, &T)> = zip_iter.collect();
+    let mut unsorted_pairs: Vec<(&usize, &f64)> = zip_iter.collect();
     unsorted_pairs.sort_by(|(u1, t1), (u2, t2)| t1.partial_cmp(t2).expect("Unorder!"));
     unsorted_pairs.into_iter().map(|(u, t)| *u).collect::<Vec<usize>>()
 }
@@ -142,7 +157,7 @@ mod tests {
     fn test_order_00() {
         assert_eq!(
             vec![2,1,0],
-            order(&vec![20, 15, 10])
+            order(&vec![20.0, 15.0, 10.0])
             );
     }
 

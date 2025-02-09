@@ -30,7 +30,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // Bottom pane
             // Exception: Ctrl-C quits
-            KeyCode::Char('c') if ! key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+            KeyCode::Char('c') if !key_event.modifiers.contains(KeyModifiers::CONTROL) => {
                 if key_event.modifiers == KeyModifiers::CONTROL {
                     done = true;
                 }
@@ -133,19 +133,23 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             }
 
             // Cycle through colormaps
-            KeyCode::Char('m') => { ui.cycle_colormap() }
+            KeyCode::Char('m') => ui.cycle_colormap(),
 
             // Sequence Order
-            KeyCode::Char('o') => { ui.cycle_ordering() }
+            KeyCode::Char('o') => ui.cycle_ordering(),
 
             // Metric
             // TODO: this directl< calls the method in App, while the above call a method in UI
             // (which is just a wrapper around an App counterpart). Make up your mind, dude...
-            KeyCode::Char('t')  => { ui.app.cycle_metric(); }
+            KeyCode::Char('t') => {
+                ui.app.cycle_metric();
+            }
 
             // ----  Exit ----
             KeyCode::Char('q') | KeyCode::Char('Q') => done = true,
-            KeyCode::Char('c') if key_event.modifiers.contains(KeyModifiers::CONTROL) => done = true,
+            KeyCode::Char('c') if key_event.modifiers.contains(KeyModifiers::CONTROL) => {
+                done = true
+            }
 
             _ => {
                 // let the user know this key is not bound

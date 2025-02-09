@@ -33,45 +33,45 @@ pub fn value_to_hbar(v: f64) -> String {
     if v <= 0.0588 {
         "  ".to_string()
     } else if v <= 0.1176 {
-        "▏ ".to_string()     // 1/16 "217"
+        "▏ ".to_string() // 1/16 "217"
     } else if v <= 0.1765 {
-        "▎ ".to_string()     // 1/8
+        "▎ ".to_string() // 1/8
     } else if v <= 0.2353 {
         "▍ ".to_string()
     } else if v <= 0.2941 {
-        "▌ ".to_string()     // 1/4
+        "▌ ".to_string() // 1/4
     } else if v <= 0.3529 {
         "▋ ".to_string()
     } else if v <= 0.4118 {
-        "▊ ".to_string()     // 3/8
+        "▊ ".to_string() // 3/8
     } else if v <= 0.4706 {
         "▉ ".to_string()
     } else if v <= 0.5294 {
-        "█ ".to_string()     // 1/2
+        "█ ".to_string() // 1/2
     } else if v <= 0.5882 {
-        "█▏".to_string()     // 9/16 "217"
+        "█▏".to_string() // 9/16 "217"
     } else if v <= 0.6471 {
-        "█▎".to_string()     // 216
+        "█▎".to_string() // 216
     } else if v <= 0.7059 {
-        "█▍".to_string()     // 215
+        "█▍".to_string() // 215
     } else if v <= 0.7647 {
-        "█▌".to_string()     // 214 1/2
+        "█▌".to_string() // 214 1/2
     } else if v <= 0.8235 {
-        "█▋".to_string()     // 213 5/8
+        "█▋".to_string() // 213 5/8
     } else if v <= 0.8824 {
-        "█▊".to_string()     // 212 6/8
+        "█▊".to_string() // 212 6/8
     } else if v <= 0.9412 {
-        "█▉".to_string()     // 211 7/8
+        "█▉".to_string() // 211 7/8
     } else {
         // -> 1.0
-        "██".to_string()     // 210 full
+        "██".to_string() // 210 full
     }
 }
 
 #[cfg(test)]
 mod test {
 
-    use crate::ui::barchart::{values_barchart, value_to_hbar};
+    use crate::ui::barchart::{value_to_hbar, values_barchart};
 
     #[test]
     fn test_values_barchart() {

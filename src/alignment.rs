@@ -29,10 +29,10 @@ pub struct Alignment {
      * example, does not depend on anything but the sequence itself, and could be a field in a
      * struct that also contains the sequence and its header. */
     pub id_wrt_consensus: Vec<f64>,
-    // TODO: u32 should be ok for most aplications - 2^32 is a bit longer than 3E9, roughly the
-    // size of th ehuman genome. I don't expect to have _that_ sort of size for our alignments. I'd
-    // be surprised if anybody went past 2^16-1, actually. Thats 65535.
-    pub seq_len_ungapped: Vec<u32>,
+    // Of course the sequence length is an integer, but using an integer type like u32 would make
+    // it hard (for me, at least...) to write a function that accepts a Vec of either  lengths or
+    // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
+    pub relative_seq_len: Vec<f64>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -56,7 +56,7 @@ impl Alignment {
         let id_wrt_consensus = sequences.iter()
             .map(|seq| percent_identity(seq, &consensus))
             .collect();
-        let seq_len_ungapped = sequences.iter()
+        let relative_seq_len = sequences.iter()
             .map(|seq| seq_len_nogaps(seq))
             .collect();
 
@@ -67,7 +67,7 @@ impl Alignment {
             entropies,
             densities,
             id_wrt_consensus,
-            seq_len_ungapped,
+            relative_seq_len,
         }
     }
 
@@ -196,14 +196,14 @@ fn percent_identity(s1: &str, s2: &str) -> f64 {
     num_identical as f64 / s1.len() as f64
 }
 
-fn seq_len_nogaps(s: &str) -> u32 {
-    s.chars().filter(|c| c.is_alphabetic()).count() as u32
+fn seq_len_nogaps(s: &str) -> f64 {
+    s.chars().filter(|c| c.is_alphabetic()).count() as f64 / s.len() as f64
 }
 
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, to_freq_distrib,
+        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, seq_len_nogaps, to_freq_distrib,
         Alignment, BestResidue, ResidueCounts, ResidueDistribution,
     };
     use approx::assert_relative_eq;
@@ -378,5 +378,20 @@ mod tests {
         let s1 = "GAATTC";
         let s2 = "gaattc";
         assert_eq!(percent_identity(s1, s2), 1.0);
+    }
+
+    #[test]
+    fn test_seq_len_nogaps_00() {
+        assert_eq!(seq_len_nogaps("atgc"), 1.0);
+    }
+
+    #[test]
+    fn test_seq_len_nogaps_05() {
+        assert_eq!(seq_len_nogaps("a-gc"), 0.75);
+    }
+
+    #[test]
+    fn test_seq_len_nogaps_10() {
+        assert_eq!(seq_len_nogaps("--.-"), 0.0);
     }
 }
