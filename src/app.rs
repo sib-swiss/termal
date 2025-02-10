@@ -82,27 +82,29 @@ impl App {
         self.alignment.aln_len().try_into().unwrap()
     }
 
-    pub fn cycle_ordering(&mut self) {
+    fn recompute_ordering(&mut self) {
         match self.ordering_criterion {
-            SOURCE_FILE => {
-                // Next criterion is according to metric
-                self.ordering_criterion = METRIC_INCR;
+            METRIC_INCR => {
                 self.ordering = order(&self.order_values());
             }
-            METRIC_INCR => {
-                // Next criterion is according to metric, descending
-                self.ordering_criterion = METRIC_DECR;
+            METRIC_DECR => {
                 let mut ord = order(&self.order_values());
                 ord.reverse();
                 self.ordering = ord;
             }
-            METRIC_DECR => {
-                self.ordering_criterion = SOURCE_FILE;
+            SOURCE_FILE => {
                 self.ordering = (0..self.alignment.num_seq()).collect();
-                assert_eq!(self.num_seq(), self.ordering.len() as u16);
             }
-
         }
+    }
+
+    pub fn cycle_ordering_criterion(&mut self) {
+        self.ordering_criterion = match self.ordering_criterion {
+            SOURCE_FILE => METRIC_INCR,
+            METRIC_INCR => METRIC_DECR,
+            METRIC_DECR => SOURCE_FILE,
+        };
+        self.recompute_ordering();
     }
 
     pub fn cycle_metric(&mut self) {
@@ -110,7 +112,7 @@ impl App {
             PCT_ID_WRT_CONSENSUS =>  SEQ_LEN,
             SEQ_LEN => PCT_ID_WRT_CONSENSUS,
         };
-        debug!("metric now {}", self.metric);
+        self.recompute_ordering();
     }
 
     pub fn output_info(&self) {

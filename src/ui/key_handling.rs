@@ -136,7 +136,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             KeyCode::Char('m') => ui.cycle_colormap(),
 
             // Sequence Order
-            KeyCode::Char('o') => ui.cycle_ordering(),
+            KeyCode::Char('o') => ui.cycle_ordering_criterion(),
 
             // Metric
             // TODO: this directl< calls the method in App, while the above call a method in UI

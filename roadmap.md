@@ -58,6 +58,13 @@ Urgent
 Normal
 ------
 
+1. [x] B0009: metric change does not trigger recomputation of ordering. To
+   reproduce: `termal data/test-metrics.msa`, 'o' to order by increasing metric,
+   then 't': the metric does (correctly) switch to sequence length, but the
+   order is still according to %id. Note that we _could_ order by one metric and
+   display another, but it's more complicated and not what we're trying to
+   achieve now. => Fixed (af6bac5).
+
 1. [x] Sequence numbers start at 1, but positions start at 0. Make up your mind,
    dude... => Sequence positions in the bottom panel now start at 1.
 

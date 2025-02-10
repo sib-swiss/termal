@@ -434,9 +434,9 @@ impl<'a> UI<'a> {
     // ****************************************************************
     // Ordering
 
-    pub fn cycle_ordering(&mut self) {
+    pub fn cycle_ordering_criterion(&mut self) {
         // Just delegate to App
-        self.app.cycle_ordering();
+        self.app.cycle_ordering_criterion();
     }
 
     // ****************************************************************
