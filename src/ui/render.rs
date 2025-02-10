@@ -798,19 +798,33 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 }
 
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
-    let corner_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
-    let corner_text = Text::from(vec![
+    let layout = Layout::new(
+        Direction::Vertical,
+        [Constraint::Length(1), Constraint::Fill(1)]
+        ).split(corner_chunk);
+
+    let metric_chunk = layout[0];
+    let cons_chunk = layout[1];
+    let metric_block = Block::default().borders(Borders::LEFT);
+    let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
+
+    let metric_text = Text::from(vec![
         Line::from(format!(
             "{} {}",
             ui.app.get_metric(),
             ui.app.get_seq_ordering().to_string()
         )),
+    ]);
+    let metric_para = Paragraph::new(metric_text).block(metric_block);
+    f.render_widget(metric_para, metric_chunk);
+
+    let cons_text = Text::from(vec![
         "Position".into(),
         "Consensus".into(),
         "Conservation".into(),
     ]);
-    let corner_para = Paragraph::new(corner_text).block(corner_block);
-    f.render_widget(corner_para, corner_chunk);
+    let cons_para = Paragraph::new(cons_text).block(cons_block);
+    f.render_widget(cons_para, cons_chunk);
 }
 
 fn mark_consensus_zb_pos(consensus: &mut [Span], ui: &UI) {
