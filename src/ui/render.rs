@@ -808,14 +808,15 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let metric_block = Block::default().borders(Borders::LEFT);
     let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
 
-    let metric_text = Text::from(vec![
-        Line::from(format!(
-            "{} {}",
-            ui.app.get_metric(),
-            ui.app.get_seq_ordering().to_string()
-        )),
-    ]);
-    let metric_para = Paragraph::new(metric_text).block(metric_block);
+    let metric_para = Paragraph::new(
+            format!(
+                "{} {}",
+                ui.app.get_metric(),
+                ui.app.get_seq_ordering().to_string()
+            )
+        )
+        .block(metric_block)
+        .right_aligned();
     f.render_widget(metric_para, metric_chunk);
 
     let cons_text = Text::from(vec![
