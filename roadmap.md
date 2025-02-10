@@ -58,6 +58,13 @@ Urgent
 Normal
 ------
 
+1. [x] The top line of the corner pane now shows the current metric, as well as
+   the ordering. It is colored like the metric barchart, and right-aligned (this
+   means I had to add a Layout to that pane).
+
+1. [x] Added sequence length (ungapped) as a metric. Pressing 't' cycles through
+   the metrics.
+
 1. [x] B0009: metric change does not trigger recomputation of ordering. To
    reproduce: `termal data/test-metrics.msa`, 'o' to order by increasing metric,
    then 't': the metric does (correctly) switch to sequence length, but the

@@ -798,6 +798,9 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 }
 
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
+    // TODO: This render_* function does its own layout. Perhaps this could be done for other
+    // non-top-level layouts, e.g. the layout of the left pane (which has three subpanes, namely
+    // number, label and metric) could be done within a single function (render_left_pane).
     let layout = Layout::new(
         Direction::Vertical,
         [Constraint::Length(1), Constraint::Fill(1)]
@@ -808,13 +811,18 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let metric_block = Block::default().borders(Borders::LEFT);
     let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
 
+    let metric_text_style = Style::new()
+        .fg(ui.color_scheme.seq_metric_color)
+        //.bg(Color::Green)
+        .add_modifier(Modifier::BOLD);
     let metric_para = Paragraph::new(
-            format!(
-                "{} {}",
+        Text::styled(
+            format!("{} {}",
                 ui.app.get_metric(),
                 ui.app.get_seq_ordering().to_string()
-            )
-        )
+            ),
+            metric_text_style
+        ))
         .block(metric_block)
         .right_aligned();
     f.render_widget(metric_para, metric_chunk);
