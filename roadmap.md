@@ -58,6 +58,14 @@ Urgent
 Normal
 ------
 
+1. [x] Added a proper nucleotide colormap (RGB values from JalView).
+
+1. [x] Help dialog now sourced from an external file at _compile time_ using
+   `include_str!()`. The same file is also shown when `termal` is passed option
+   `-b`.
+
+1. Scrolling responds to arrows (hjkl still work, of course).
+
 1. [x] The top line of the corner pane now shows the current metric, as well as
    the ordering. It is colored like the metric barchart, and right-aligned (this
    means I had to add a Layout to that pane).

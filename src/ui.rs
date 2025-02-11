@@ -15,7 +15,8 @@ use ratatui::style::Color;
 
 use crate::{
     ui::color_map::{
-        MONOCHROME_INDEX, builtin_colormaps, color_map_clustalx, color_map_lesk, color_map_monochrome, ColorMap,
+        MONOCHROME_INDEX, builtin_colormaps, color_map_clustalx, color_map_lesk,
+        color_map_monochrome, color_map_jalview_nt, ColorMap,
     },
     ui::color_scheme::{color_scheme_colored, color_scheme_monochrome, ColorScheme},
     App,

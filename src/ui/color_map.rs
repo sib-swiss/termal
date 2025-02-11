@@ -8,7 +8,11 @@ use serde_json::Value::Object;
 
 use crate::ui::color_scheme::{
     CLUSTALX_BLUE, CLUSTALX_CYAN, CLUSTALX_GREEN, CLUSTALX_MAGENTA, CLUSTALX_ORANGE, CLUSTALX_PINK,
-    CLUSTALX_RED, CLUSTALX_YELLOW, ORANGE,
+    CLUSTALX_RED, CLUSTALX_YELLOW, JALVIEW_NUCLEOTIDE_A, JALVIEW_NUCLEOTIDE_B,
+    JALVIEW_NUCLEOTIDE_C, JALVIEW_NUCLEOTIDE_D, JALVIEW_NUCLEOTIDE_G, JALVIEW_NUCLEOTIDE_H,
+    JALVIEW_NUCLEOTIDE_I, JALVIEW_NUCLEOTIDE_K, JALVIEW_NUCLEOTIDE_M, JALVIEW_NUCLEOTIDE_N,
+    JALVIEW_NUCLEOTIDE_R, JALVIEW_NUCLEOTIDE_S, JALVIEW_NUCLEOTIDE_T, JALVIEW_NUCLEOTIDE_U,
+    JALVIEW_NUCLEOTIDE_V, JALVIEW_NUCLEOTIDE_W, JALVIEW_NUCLEOTIDE_X, JALVIEW_NUCLEOTIDE_Y, ORANGE,
 };
 
 pub const MONOCHROME_INDEX: usize = 0;
@@ -43,6 +47,7 @@ pub fn builtin_colormaps() -> Vec<ColorMap> {
         color_map_clustalx(),
         color_map_lesk(),
         color_map_monochrome(),
+        color_map_jalview_nt(),
     ]
 }
 
@@ -204,6 +209,50 @@ pub fn color_map_clustalx() -> ColorMap {
             ('r', CLUSTALX_RED),
             ('x', Color::White),
             ('-', Color::Gray),
+        ]),
+    )
+}
+
+pub fn color_map_jalview_nt() -> ColorMap {
+    ColorMap::new(
+        "JalView nt".into(),
+        HashMap::from([
+            ('A', JALVIEW_NUCLEOTIDE_A),
+            ('C', JALVIEW_NUCLEOTIDE_C),
+            ('G', JALVIEW_NUCLEOTIDE_G),
+            ('T', JALVIEW_NUCLEOTIDE_T),
+            ('U', JALVIEW_NUCLEOTIDE_U),
+            ('I', JALVIEW_NUCLEOTIDE_I),
+            ('X', JALVIEW_NUCLEOTIDE_X),
+            ('R', JALVIEW_NUCLEOTIDE_R),
+            ('Y', JALVIEW_NUCLEOTIDE_Y),
+            ('W', JALVIEW_NUCLEOTIDE_W),
+            ('S', JALVIEW_NUCLEOTIDE_S),
+            ('M', JALVIEW_NUCLEOTIDE_M),
+            ('K', JALVIEW_NUCLEOTIDE_K),
+            ('B', JALVIEW_NUCLEOTIDE_B),
+            ('H', JALVIEW_NUCLEOTIDE_H),
+            ('D', JALVIEW_NUCLEOTIDE_D),
+            ('V', JALVIEW_NUCLEOTIDE_V),
+            ('N', JALVIEW_NUCLEOTIDE_N),
+            ('a', JALVIEW_NUCLEOTIDE_A),
+            ('c', JALVIEW_NUCLEOTIDE_C),
+            ('g', JALVIEW_NUCLEOTIDE_G),
+            ('t', JALVIEW_NUCLEOTIDE_T),
+            ('u', JALVIEW_NUCLEOTIDE_U),
+            ('i', JALVIEW_NUCLEOTIDE_I),
+            ('x', JALVIEW_NUCLEOTIDE_X),
+            ('r', JALVIEW_NUCLEOTIDE_R),
+            ('y', JALVIEW_NUCLEOTIDE_Y),
+            ('w', JALVIEW_NUCLEOTIDE_W),
+            ('s', JALVIEW_NUCLEOTIDE_S),
+            ('m', JALVIEW_NUCLEOTIDE_M),
+            ('k', JALVIEW_NUCLEOTIDE_K),
+            ('b', JALVIEW_NUCLEOTIDE_B),
+            ('h', JALVIEW_NUCLEOTIDE_H),
+            ('d', JALVIEW_NUCLEOTIDE_D),
+            ('v', JALVIEW_NUCLEOTIDE_V),
+            ('n', JALVIEW_NUCLEOTIDE_N),
         ]),
     )
 }

@@ -19,6 +19,27 @@ pub const CLUSTALX_MAGENTA: Color = Color::Rgb(204, 76, 204);
 pub const CLUSTALX_YELLOW: Color = Color::Rgb(204, 204, 0);
 pub const CLUSTALX_ORANGE: Color = Color::Rgb(229, 153, 76);
 
+// JalView Nucleotide Colors
+
+pub const JALVIEW_NUCLEOTIDE_A: Color = Color::from_u32(0x0064F73F);
+pub const JALVIEW_NUCLEOTIDE_C: Color = Color::from_u32(0x00FFB340);
+pub const JALVIEW_NUCLEOTIDE_G: Color = Color::from_u32(0x00EB413C);
+pub const JALVIEW_NUCLEOTIDE_T: Color = Color::from_u32(0x003C88EE);
+pub const JALVIEW_NUCLEOTIDE_U: Color = Color::from_u32(0x003C88EE);
+pub const JALVIEW_NUCLEOTIDE_I: Color = Color::from_u32(0x00ffffff);
+pub const JALVIEW_NUCLEOTIDE_X: Color = Color::from_u32(0x004f6f6f);
+pub const JALVIEW_NUCLEOTIDE_R: Color = Color::from_u32(0x00CD5C5C);
+pub const JALVIEW_NUCLEOTIDE_Y: Color = Color::from_u32(0x00008000);
+pub const JALVIEW_NUCLEOTIDE_W: Color = Color::from_u32(0x004682B4);
+pub const JALVIEW_NUCLEOTIDE_S: Color = Color::from_u32(0x00FF8C00);
+pub const JALVIEW_NUCLEOTIDE_M: Color = Color::from_u32(0x009ACD32);
+pub const JALVIEW_NUCLEOTIDE_K: Color = Color::from_u32(0x009932CC);
+pub const JALVIEW_NUCLEOTIDE_B: Color = Color::from_u32(0x008b4513);
+pub const JALVIEW_NUCLEOTIDE_H: Color = Color::from_u32(0x00808080);
+pub const JALVIEW_NUCLEOTIDE_D: Color = Color::from_u32(0x00483D8B);
+pub const JALVIEW_NUCLEOTIDE_V: Color = Color::from_u32(0x00b8860b);
+pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
+
 pub struct ColorScheme {
     pub label_num_color: Color,
     pub seq_metric_color: Color,
