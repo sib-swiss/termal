@@ -56,6 +56,51 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // ----- Motion -----
 
+            // Arrows - late introduction, but might be friendlier to new users.
+            KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
+                // Non-shifted arrow keys
+                if ! key_event.modifiers.contains(KeyModifiers::SHIFT) {
+                    match key_event.code {
+                        KeyCode::Down => match ui.zoom_level() {
+                            ZoomLevel::ZoomedIn => ui.scroll_one_line_down(),
+                            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
+                                ui.scroll_zoombox_one_line_down()
+                            }
+                        },
+                        KeyCode::Up => match ui.zoom_level() {
+                            ZoomLevel::ZoomedIn => ui.scroll_one_line_up(),
+                            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
+                                ui.scroll_zoombox_one_line_up()
+                            }
+                        },
+                        KeyCode::Right => match ui.zoom_level() {
+                            ZoomLevel::ZoomedIn => ui.scroll_one_col_right(),
+                            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
+                                ui.scroll_zoombox_one_col_right()
+                            }
+                        },
+                        KeyCode::Left => match ui.zoom_level() {
+                            ZoomLevel::ZoomedIn => ui.scroll_one_col_left(),
+                            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
+                                ui.scroll_zoombox_one_col_left()
+                            }
+                        },
+
+                        _ => panic!("Expected only arrow keycodes"),
+                    }
+                } else {
+                    // Shifted arrow keys
+                    match key_event.code {
+                        KeyCode::Down  => ui.scroll_one_screen_down(),
+                        KeyCode::Up    => ui.scroll_one_screen_up(),
+                        KeyCode::Right => ui.scroll_one_screen_right(),
+                        KeyCode::Left  => ui.scroll_one_screen_left(),
+
+                        _ => panic!("Expected only arrow keycodes"),
+                    }
+                }
+            }
+
             // Down
             KeyCode::Char('j') => match ui.zoom_level() {
                 ZoomLevel::ZoomedIn => ui.scroll_one_line_down(),

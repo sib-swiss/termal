@@ -803,8 +803,9 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     // number, label and metric) could be done within a single function (render_left_pane).
     let layout = Layout::new(
         Direction::Vertical,
-        [Constraint::Length(1), Constraint::Fill(1)]
-        ).split(corner_chunk);
+        [Constraint::Length(1), Constraint::Fill(1)],
+    )
+    .split(corner_chunk);
 
     let metric_chunk = layout[0];
     let cons_chunk = layout[1];
@@ -815,16 +816,16 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
         .fg(ui.color_scheme.seq_metric_color)
         //.bg(Color::Green)
         .add_modifier(Modifier::BOLD);
-    let metric_para = Paragraph::new(
-        Text::styled(
-            format!("{} {}",
-                ui.app.get_metric(),
-                ui.app.get_seq_ordering().to_string()
-            ),
-            metric_text_style
-        ))
-        .block(metric_block)
-        .right_aligned();
+    let metric_para = Paragraph::new(Text::styled(
+        format!(
+            "{} {}",
+            ui.app.get_metric(),
+            ui.app.get_seq_ordering().to_string()
+        ),
+        metric_text_style,
+    ))
+    .block(metric_block)
+    .right_aligned();
     f.render_widget(metric_para, metric_chunk);
 
     let cons_text = Text::from(vec![
