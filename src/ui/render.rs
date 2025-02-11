@@ -911,7 +911,9 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
     let dialog_block = Block::default().borders(Borders::ALL);
     let bindings = include_str!("bindings.md");
-    let text = Text::from(bindings);
+    let mut text = Text::from(bindings);
+    text.push_line("");
+    text.push_line("Press any key to close this dialog.");
     let dialog_para = Paragraph::new(Text::from_iter(text))
         .block(dialog_block)
         .style(Style::new().white().on_black());
