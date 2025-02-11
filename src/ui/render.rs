@@ -910,22 +910,8 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 
 fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
     let dialog_block = Block::default().borders(Borders::ALL);
-    let text = vec![
-        "Key Bindings",
-        "============",
-        "",
-        "h,j,k,l: move view port / zoom box left, down, up, right",
-        "H,J,K,L: like h,j,k,l, but large motions",
-        "^,G,g,$: full left, bottom, top, full right",
-        "z,Z    : cycle through zoom modes",
-        "r      : highlight zoom box residues in consensus",
-        "v      : show view guides",
-        "<,>    : widen/narrow label pane",
-        "a      : hide/show label pane",
-        "Q,q    : quit",
-        "",
-        "Press any key to close this window.",
-    ];
+    let bindings = include_str!("bindings.md");
+    let text = Text::from(bindings);
     let dialog_para = Paragraph::new(Text::from_iter(text))
         .block(dialog_block)
         .style(Style::new().white().on_black());

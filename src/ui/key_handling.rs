@@ -59,7 +59,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             // Arrows - late introduction, but might be friendlier to new users.
             KeyCode::Up | KeyCode::Down | KeyCode::Left | KeyCode::Right => {
                 // Non-shifted arrow keys
-                if ! key_event.modifiers.contains(KeyModifiers::SHIFT) {
+                if !key_event.modifiers.contains(KeyModifiers::SHIFT) {
                     match key_event.code {
                         KeyCode::Down => match ui.zoom_level() {
                             ZoomLevel::ZoomedIn => ui.scroll_one_line_down(),
@@ -91,10 +91,10 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 } else {
                     // Shifted arrow keys
                     match key_event.code {
-                        KeyCode::Down  => ui.scroll_one_screen_down(),
-                        KeyCode::Up    => ui.scroll_one_screen_up(),
+                        KeyCode::Down => ui.scroll_one_screen_down(),
+                        KeyCode::Up => ui.scroll_one_screen_up(),
                         KeyCode::Right => ui.scroll_one_screen_right(),
-                        KeyCode::Left  => ui.scroll_one_screen_left(),
+                        KeyCode::Left => ui.scroll_one_screen_left(),
 
                         _ => panic!("Expected only arrow keycodes"),
                     }
