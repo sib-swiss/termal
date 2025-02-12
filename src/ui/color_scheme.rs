@@ -2,7 +2,13 @@ use std::collections::HashMap;
 
 use ratatui::prelude::Color;
 
-use crate::ui::color_map::ColorMap;
+use crate::{
+    alignment::SeqType,
+    ui::{
+        color_map::ColorMap,
+        color_scheme::SeqType::Protein
+    },
+};
 
 // In-house colors
 pub const ORANGE: Color = Color::Rgb(255, 165, 0);
@@ -66,10 +72,16 @@ pub fn color_scheme_monochrome() -> ColorScheme {
     }
 }
 
-pub fn color_scheme_colored() -> ColorScheme {
+pub fn color_scheme_colored(macromolecule_type: SeqType) -> ColorScheme {
+    // These are indices into the Vec of built-in color maps, see color_maps.rs
+    let index = if macromolecule_type == Protein {
+        1
+    } else {
+        0
+    };
     ColorScheme {
         label_num_color: Color::LightGreen,
-        colormap_index: 1,
+        colormap_index: index,
         seq_metric_color: Color::LightBlue,
         zoombox_color: Color::Cyan,
         position_color: Color::White,

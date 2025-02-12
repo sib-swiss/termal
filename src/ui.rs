@@ -78,9 +78,10 @@ pub struct UI<'a> {
 
 impl<'a> UI<'a> {
     pub fn new(app: &'a mut App) -> Self {
+        let macromolecule_type = app.alignment.macromolecule_type();
         UI {
             app,
-            color_scheme: color_scheme_colored(),
+            color_scheme: color_scheme_colored(macromolecule_type),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             show_zb_guides: true,

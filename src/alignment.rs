@@ -12,8 +12,8 @@ use crate::alignment::SeqType::{Nucleic, Protein};
 type ResidueDistribution = HashMap<char, f64>;
 type ResidueCounts = HashMap<char, u64>;
 
-#[derive(PartialEq, Debug)]
-enum SeqType {
+#[derive(PartialEq, Clone, Copy, Debug)]
+pub enum SeqType {
     Nucleic,
     Protein,
 }
@@ -42,6 +42,7 @@ pub struct Alignment {
     // it hard (for me, at least...) to write a function that accepts a Vec of either  lengths or
     // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
     pub relative_seq_len: Vec<f64>,
+    pub macromolecule_type: SeqType,
 }
 
 #[derive(Debug, PartialEq)]
@@ -68,6 +69,8 @@ impl Alignment {
         let relative_seq_len = sequences.iter()
             .map(|seq| seq_len_nogaps(seq))
             .collect();
+        let first_seq = sequences.iter().nth(1);
+        let macromolecule_type = seq_type(first_seq.expect("No sequence found."));
 
         Alignment {
             headers,
@@ -77,6 +80,7 @@ impl Alignment {
             densities,
             id_wrt_consensus,
             relative_seq_len,
+            macromolecule_type,
         }
     }
 
@@ -86,6 +90,10 @@ impl Alignment {
 
     pub fn aln_len(&self) -> usize {
         self.sequences[0].len()
+    }
+
+    pub fn macromolecule_type(&self) -> SeqType {
+        self.macromolecule_type
     }
 }
 
