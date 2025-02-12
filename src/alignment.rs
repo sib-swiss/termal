@@ -3,11 +3,20 @@ mod permutation;
 use std::collections::HashMap;
 use std::iter::Zip;
 
+use itertools::Itertools;
 
 use rasta::FastaFile;
 
+use crate::alignment::SeqType::{Nucleic, Protein};
+
 type ResidueDistribution = HashMap<char, f64>;
 type ResidueCounts = HashMap<char, u64>;
+
+#[derive(PartialEq, Debug)]
+enum SeqType {
+    Nucleic,
+    Protein,
+}
 
 pub struct Alignment {
     pub headers: Vec<String>,
@@ -200,11 +209,29 @@ fn seq_len_nogaps(s: &str) -> f64 {
     s.chars().filter(|c| c.is_alphabetic()).count() as f64 / s.len() as f64
 }
 
+fn seq_type(sequence: &str) -> SeqType {
+    let counts = sequence.to_lowercase().chars().counts();
+    let counts_u64: HashMap<char, u64> = counts.into_iter().map(|(k, v)| (k, v as u64)).collect();
+    let frequencies = to_freq_distrib(&counts_u64);
+    let nt_freq: f64 = 
+        *frequencies.get(&'a').unwrap_or(&0.0) + 
+        *frequencies.get(&'c').unwrap_or(&0.0) + 
+        *frequencies.get(&'g').unwrap_or(&0.0) + 
+        *frequencies.get(&'t').unwrap_or(&0.0) + 
+        *frequencies.get(&'u').unwrap_or(&0.0);
+    // A quick-and dirty heuristic, I'm afraid
+    if nt_freq > 0.75 {
+        Nucleic
+    } else {
+        Protein
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, seq_len_nogaps, to_freq_distrib,
-        Alignment, BestResidue, ResidueCounts, ResidueDistribution,
+        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, seq_len_nogaps, seq_type, to_freq_distrib,
+        Alignment, BestResidue, ResidueCounts, ResidueDistribution, SeqType::{Nucleic, Protein},
     };
     use approx::assert_relative_eq;
     use rasta::read_fasta_file;
@@ -394,4 +421,26 @@ mod tests {
     fn test_seq_len_nogaps_10() {
         assert_eq!(seq_len_nogaps("--.-"), 0.0);
     }
+
+    #[test]
+    fn test_seq_type_00() {
+        assert_eq!(Nucleic, seq_type("GAATTC"));
+    }
+
+    #[test]
+    fn test_seq_type_05() {
+        assert_eq!(Protein, seq_type("HGTSDA"));
+    }
+
+    #[test]
+    fn test_seq_type_10() {
+        assert_eq!(Nucleic, seq_type("cgatgcacgatgcncagtgtuucgatcga"));
+    }
+
+
+    #[test]
+    fn test_seq_type_15() {
+        assert_eq!(Nucleic, seq_type("UUTGAU"));
+    }
+
 }
