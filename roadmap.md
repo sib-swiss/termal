@@ -58,6 +58,10 @@ Urgent
 Normal
 ------
 
+1. [x] B0010: "No sequence found" with `data/test[13].fas`. What these have in
+   common is that they have only 1 entry. => Fixed - was using nth(1) instead of
+   nth(0) - sometimes I forget that Rust, contrary to Julia, is 0-based.
+
 1. [x] Added a proper nucleotide colormap (RGB values from JalView).
 
 1. [x] Help dialog now sourced from an external file at _compile time_ using

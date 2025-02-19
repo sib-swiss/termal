@@ -69,7 +69,7 @@ impl Alignment {
         let relative_seq_len = sequences.iter()
             .map(|seq| seq_len_nogaps(seq))
             .collect();
-        let first_seq = sequences.iter().nth(1);
+        let first_seq = sequences.iter().nth(0);
         let macromolecule_type = seq_type(first_seq.expect("No sequence found."));
 
         Alignment {
