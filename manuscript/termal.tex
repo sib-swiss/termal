@@ -114,27 +114,32 @@ features.
 \centering
 \begin{tabular}{lccc}
 \hline
-Feature & \texttt{termal} & \texttt{alv} & \texttt{showalign} \\
+Feature                 & \texttt{termal} & \texttt{alv} & \texttt{showalign} \\
 \hline
-Terminal-based        & Yes  & Yes  & Yes \\
-Interactive scrolling & Yes  & Partial & No \\
-Zooming               & Yes  & No   & No \\
-Color schemes         & Yes  & Basic & Very limited \\
-Consensus/conservation & Yes & Limited & No \\
-Format tolerance      & High & Medium & Low \\
-Performance (large MSA) & High & Medium & Low \\
+Terminal-based          & Yes             & Yes          & Yes                \\
+Interactive scrolling   & Yes             & Partial      & No                 \\
+Zooming                 & Yes             & No           & No                 \\
+Color schemes           & Yes             & Basic        & Very limited       \\
+Consensus/conservation  & Yes             & Limited      & No                 \\
+Format tolerance        & High            & Medium       & Low                \\
+Performance (large MSA) & High            & Medium       & Low                \\
 \hline
 \end{tabular}
 \caption{Comparison of \texttt{termal} with other terminal-based MSA viewers.}
 \label{tab:comparison}
 \end{table}
 
-\section*{Use Case}
+\section*{Performance and Limits}
 
-To illustrate its utility, we used \texttt{termal} to explore a 16S rRNA
-alignment of over 10,000 sequences on a remote cluster. The tool allowed
-interactive inspection of conserved motifs and visualization of gaps and
-variability regions with minimal latency.
+\texttt{termal} has been tested on alignments exceeding 15,000 sequences and
+1,500 columns (∼22 million alignment cells), with startup and initial rendering
+completing in under one second on a machine with 12th-generation
+Intel\textregistered{} Core\textsuperscript{TM} i5-1240P CPU and 16 GB of RAM
+running Linux 6.14.2. In practice, interactive performance is limited more by
+the speed of the terminal emulator than by \texttt{termal} itself.
+GPU-accelerated terminals such as Alacritty\cite{alacritty}, Kitty\cite{kitty}
+and Ghostty\cite{ghostty} offer smoother scrolling at large screen sizes than do
+more traditional emulators.
 
 \section*{Availability}
 
@@ -152,8 +157,8 @@ operation and varying degrees of interactivity — including \texttt{showalign},
 \texttt{termal} is the only tool to combine interactive navigation, zooming,
 consensus and conservation visualization, and customizable layout options in a
 single terminal interface.  Its minimal dependencies and fast startup make
-termal suitable for both ad-hoc use and for integration into semi-automated
-workflows requiring terminal-based alignment review. Accordingly,
+\texttt{termal} suitable for both ad-hoc use and for integration into
+semi-automated workflows requiring terminal-based alignment review. Accordingly,
 \texttt{termal} fills a niche for fast, interactive MSA exploration directly in
 the terminal, making it an ideal tool for remote bioinformatics workflows.
 
