@@ -1,11 +1,12 @@
-.PHONY: test clean install fmt
+.PHONY: test clean install fmt manuscript
 
 RUST_SOURCES = $(shell find src -name '*.rs')
 TERMAL_BINARY = ./target/release/termal
 INSTALL_DIR = /usr/local/bin
 MAN_DIR = /usr/share/man
+MS_DIR = ./manuscript
 
-all: $(TERMAL_BINARY) termal.1.gz
+all: $(TERMAL_BINARY) termal.1.gz manuscript
 
 $(TERMAL_BINARY): $(RUST_SOURCES)
 	cargo build --release
@@ -30,6 +31,9 @@ roadmap.pdf: roadmap.md meta.yaml
 install: 
 	install -m 755 $(TERMAL_BINARY) $(INSTALL_DIR)
 	install -m 644 termal.1.gz $(MAN_DIR)/man1
+
+manuscript:
+	$(MAKE) -C $(MS_DIR)
 
 test:
 	cargo test 2> /dev/null
