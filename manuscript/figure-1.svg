@@ -1,0 +1,5697 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="216.03114mm"
+   height="119.47604mm"
+   viewBox="0 0 216.03114 119.47604"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.1 (93de688d07, 2025-03-30)"
+   sodipodi:docname="figure-1.svg"
+   inkscape:export-filename="figure-1.pdf"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="1.0191358"
+     inkscape:cx="62.798304"
+     inkscape:cy="219.79406"
+     inkscape:window-width="2540"
+     inkscape:window-height="1372"
+     inkscape:window-x="9"
+     inkscape:window-y="33"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-24.341665,-96.308333)">
+    <g
+       id="use9947"
+       transform="matrix(1.5699908,0,0,1.6925551,26.854474,100.69063)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <path
+         fill="transparent"
+         d="M 0,0 H 136 V 68 H 0 Z"
+         id="path34" />
+    </g>
+    <g
+       id="use9948"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,100.69063)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text25"
+         style="white-space:pre;fill:#ffffff">┌───┌──────────┌──┌</text>
+      <text
+         x="20.040001"
+         y="1.67"
+         class="s"
+         id="text26"
+         style="white-space:pre;fill:#ffffff">aln5.pep</text>
+      <text
+         x="29.058001"
+         y="1.67"
+         class="s"
+         id="text27"
+         style="white-space:pre;fill:#ffffff">-</text>
+      <text
+         x="31.062"
+         y="1.67"
+         class="s"
+         id="text28"
+         style="white-space:pre;fill:#ffffff">13/226s</text>
+      <text
+         x="39.077999"
+         y="1.67"
+         class="s"
+         id="text29"
+         style="white-space:pre;fill:#ffffff">(0.06)</text>
+      <text
+         x="46.091999"
+         y="1.67"
+         class="s"
+         id="text30"
+         style="white-space:pre;fill:#ffffff">x</text>
+      <text
+         x="48.096001"
+         y="1.67"
+         class="s"
+         id="text31"
+         style="white-space:pre;fill:#ffffff">60/1054c</text>
+      <text
+         x="57.113998"
+         y="1.67"
+         class="s"
+         id="text32"
+         style="white-space:pre;fill:#ffffff">(0.06)</text>
+      <text
+         x="64.127998"
+         y="1.67"
+         class="s"
+         id="text33"
+         style="white-space:pre;fill:#ffffff">-</text>
+      <text
+         x="66.132004"
+         y="1.67"
+         class="s"
+         id="text34"
+         style="white-space:pre;fill:#ffffff">─────────────┐</text>
+    </g>
+    <g
+       id="use9949"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,106.43473)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text516"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text517"
+         style="white-space:pre;fill:#a8cc8c">170</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text518"
+         style="white-space:pre;fill:#ffffff">│CEFNMEKK_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text519"
+         style="white-space:pre;fill:#73bef3">█</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text520"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 7 v 2.171 h -7 z"
+         id="path520"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text521"
+         style="white-space:pre;fill:#282d35">-------</text>
+      <path
+         class="y"
+         d="m 26.052,0 h 1 v 2.171 h -1 z"
+         id="path521"
+         style="fill:#e5994c" />
+      <text
+         x="26.052"
+         y="1.67"
+         class="v"
+         id="text522"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="A"
+         d="m 27.054,0 h 1 v 2.171 h -1 z"
+         id="path522"
+         style="fill:#cccc00" />
+      <text
+         x="27.054001"
+         y="1.67"
+         class="v"
+         id="text523"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="x"
+         d="m 28.056,0 h 1 v 2.171 h -1 z"
+         id="path523"
+         style="fill:#19cc19" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text524"
+         style="white-space:pre;fill:#282d35">Q</text>
+      <path
+         class="w"
+         d="m 29.058,0 h 2 v 2.171 h -2 z"
+         id="path524"
+         style="fill:#197fe5" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text525"
+         style="white-space:pre;fill:#282d35">AM</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path525"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text526"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="A"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path526"
+         style="fill:#cccc00" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text527"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="x"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path527"
+         style="fill:#19cc19" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text528"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="B"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path528"
+         style="fill:#cc4ccc" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text529"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path529"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text530"
+         style="white-space:pre;fill:#282d35">AFV</text>
+      <path
+         class="B"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path530"
+         style="fill:#cc4ccc" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text531"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="x"
+         d="m 39.078,0 h 1 v 2.171 h -1 z"
+         id="path531"
+         style="fill:#19cc19" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text532"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="w"
+         d="m 40.08,0 h 3 v 2.171 h -3 z"
+         id="path532"
+         style="fill:#197fe5" />
+      <text
+         x="40.080002"
+         y="1.67"
+         class="v"
+         id="text533"
+         style="white-space:pre;fill:#282d35">LAA</text>
+      <path
+         class="x"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path533"
+         style="fill:#19cc19" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text534"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path534"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text535"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path535"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text536"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path536"
+         style="fill:#19cc19" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text537"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path537"
+         style="fill:#cc4ccc" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text538"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path538"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text539"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path539"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text540"
+         style="white-space:pre;fill:#282d35">MF</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path540"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text541"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 2 v 2.171 h -2 z"
+         id="path541"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text542"
+         style="white-space:pre;fill:#282d35">IM</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path542"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text543"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="x"
+         d="m 66.132,0 h 1 v 2.171 h -1 z"
+         id="path543"
+         style="fill:#19cc19" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text544"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="w"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path544"
+         style="fill:#197fe5" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text545"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path545"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text546"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 2 v 2.171 h -2 z"
+         id="path546"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text547"
+         style="white-space:pre;fill:#282d35">FM</text>
+      <path
+         class="B"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path547"
+         style="fill:#cc4ccc" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text548"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 2 v 2.171 h -2 z"
+         id="path548"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text549"
+         style="white-space:pre;fill:#282d35">AM</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path549"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text550"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 3 v 2.171 h -3 z"
+         id="path550"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text551"
+         style="white-space:pre;fill:#282d35">IFA</text>
+      <path
+         class="A"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path551"
+         style="fill:#cccc00" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text552"
+         style="white-space:pre;fill:#282d35">P</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text553"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9950"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,112.17884)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text477"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text478"
+         style="white-space:pre;fill:#a8cc8c">171</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text479"
+         style="white-space:pre;fill:#ffffff">│CEFNMEKK_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text480"
+         style="white-space:pre;fill:#73bef3">█</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text481"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 10 v 2.171 h -10 z"
+         id="path481"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text482"
+         style="white-space:pre;fill:#282d35">----------</text>
+      <path
+         class="D"
+         d="m 29.058,0 h 1 v 2.171 h -1 z"
+         id="path482"
+         style="fill:#e53319" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text483"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="w"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path483"
+         style="fill:#197fe5" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text484"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path484"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text485"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="w"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path485"
+         style="fill:#197fe5" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text486"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path486"
+         style="fill:#19cc19" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text487"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="D"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path487"
+         style="fill:#e53319" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text488"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="x"
+         d="m 35.07,0 h 1 v 2.171 h -1 z"
+         id="path488"
+         style="fill:#19cc19" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text489"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="w"
+         d="m 36.072,0 h 2 v 2.171 h -2 z"
+         id="path489"
+         style="fill:#197fe5" />
+      <text
+         x="36.071999"
+         y="1.67"
+         class="v"
+         id="text490"
+         style="white-space:pre;fill:#282d35">VV</text>
+      <path
+         class="D"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path490"
+         style="fill:#e53319" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text491"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="x"
+         d="m 39.078,0 h 1 v 2.171 h -1 z"
+         id="path491"
+         style="fill:#19cc19" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text492"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="w"
+         d="m 40.08,0 h 1 v 2.171 h -1 z"
+         id="path492"
+         style="fill:#197fe5" />
+      <text
+         x="40.080002"
+         y="1.67"
+         class="v"
+         id="text493"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="B"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path493"
+         style="fill:#cc4ccc" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text494"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="w"
+         d="m 42.084,0 h 2 v 2.171 h -2 z"
+         id="path494"
+         style="fill:#197fe5" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text495"
+         style="white-space:pre;fill:#282d35">AA</text>
+      <path
+         class="x"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path495"
+         style="fill:#19cc19" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text496"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path496"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text497"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="B"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path497"
+         style="fill:#cc4ccc" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text498"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="G"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path498"
+         style="fill:#19b2b2" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text499"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path499"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text500"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 4 v 2.171 h -4 z"
+         id="path500"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text501"
+         style="white-space:pre;fill:#282d35">VFLV</text>
+      <path
+         class="A"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path501"
+         style="fill:#cccc00" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text502"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path502"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text503"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="D"
+         d="m 66.132,0 h 1 v 2.171 h -1 z"
+         id="path503"
+         style="fill:#e53319" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text504"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="w"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path504"
+         style="fill:#197fe5" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text505"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path505"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text506"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 1 v 2.171 h -1 z"
+         id="path506"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text507"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="G"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path507"
+         style="fill:#19b2b2" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text508"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path508"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text509"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 2 v 2.171 h -2 z"
+         id="path509"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text510"
+         style="white-space:pre;fill:#282d35">LL</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path510"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text511"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path511"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text512"
+         style="white-space:pre;fill:#282d35">AI</text>
+      <path
+         class="B"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path512"
+         style="fill:#cc4ccc" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text513"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="D"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path513"
+         style="fill:#e53319" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text514"
+         style="white-space:pre;fill:#282d35">K</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text515"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9951"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,117.92294)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text439"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text440"
+         style="white-space:pre;fill:#a8cc8c">172</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text441"
+         style="white-space:pre;fill:#ffffff">│CEFNMEKK_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text442"
+         style="white-space:pre;fill:#73bef3">█</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text443"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 12 v 2.171 h -12 z"
+         id="path443"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text444"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path444"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text445"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="w"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path445"
+         style="fill:#197fe5" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text446"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="y"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path446"
+         style="fill:#e5994c" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text447"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="B"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path447"
+         style="fill:#cc4ccc" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text448"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path448"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text449"
+         style="white-space:pre;fill:#282d35">FII</text>
+      <path
+         class="y"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path449"
+         style="fill:#e5994c" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text450"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="D"
+         d="m 39.078,0 h 1 v 2.171 h -1 z"
+         id="path450"
+         style="fill:#e53319" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text451"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="w"
+         d="m 40.08,0 h 1 v 2.171 h -1 z"
+         id="path451"
+         style="fill:#197fe5" />
+      <text
+         x="40.080002"
+         y="1.67"
+         class="v"
+         id="text452"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="G"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path452"
+         style="fill:#19b2b2" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text453"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="w"
+         d="m 42.084,0 h 2 v 2.171 h -2 z"
+         id="path453"
+         style="fill:#197fe5" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text454"
+         style="white-space:pre;fill:#282d35">AW</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path454"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text455"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path455"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text456"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="D"
+         d="m 46.092,0 h 2 v 2.171 h -2 z"
+         id="path456"
+         style="fill:#e53319" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text457"
+         style="white-space:pre;fill:#282d35">RR</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path457"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text458"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 1 v 2.171 h -1 z"
+         id="path458"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text459"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="G"
+         d="m 61.122,0 h 1 v 2.171 h -1 z"
+         id="path459"
+         style="fill:#19b2b2" />
+      <text
+         x="61.122002"
+         y="1.67"
+         class="v"
+         id="text460"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path460"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text461"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="G"
+         d="m 63.126,0 h 1 v 2.171 h -1 z"
+         id="path461"
+         style="fill:#19b2b2" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text462"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="A"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path462"
+         style="fill:#cccc00" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text463"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path463"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text464"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="B"
+         d="m 66.132,0 h 1 v 2.171 h -1 z"
+         id="path464"
+         style="fill:#cc4ccc" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text465"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="y"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path465"
+         style="fill:#e5994c" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text466"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path466"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text467"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 1 v 2.171 h -1 z"
+         id="path467"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text468"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="x"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path468"
+         style="fill:#19cc19" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text469"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="y"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path469"
+         style="fill:#e5994c" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text470"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 2 v 2.171 h -2 z"
+         id="path470"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text471"
+         style="white-space:pre;fill:#282d35">VF</text>
+      <path
+         class="y"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path471"
+         style="fill:#e5994c" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text472"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path472"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text473"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="x"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path473"
+         style="fill:#19cc19" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text474"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="D"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path474"
+         style="fill:#e53319" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text475"
+         style="white-space:pre;fill:#282d35">R</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text476"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9952"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,123.66705)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text238"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text239"
+         style="white-space:pre;fill:#a8cc8c">173</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text240"
+         style="white-space:pre;fill:#ffffff">│CEFNMEKK_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text241"
+         style="white-space:pre;fill:#73bef3">█▋</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text242"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 4 v 2.171 h -4 z"
+         id="path242"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text243"
+         style="white-space:pre;fill:#282d35">----</text>
+      <path
+         class="x"
+         d="m 23.046,0 h 3 v 2.171 h -3 z"
+         id="path243"
+         style="fill:#19cc19" />
+      <text
+         x="23.046"
+         y="1.67"
+         class="v"
+         id="text244"
+         style="white-space:pre;fill:#282d35">TQQ</text>
+      <path
+         class="w"
+         d="m 26.052,0 h 1 v 2.171 h -1 z"
+         id="path244"
+         style="fill:#197fe5" />
+      <text
+         x="26.052"
+         y="1.67"
+         class="v"
+         id="text245"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="x"
+         d="m 27.054,0 h 1 v 2.171 h -1 z"
+         id="path245"
+         style="fill:#19cc19" />
+      <text
+         x="27.054001"
+         y="1.67"
+         class="v"
+         id="text246"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 28.056,0 h 1 v 2.171 h -1 z"
+         id="path246"
+         style="fill:#cc4ccc" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text247"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="x"
+         d="m 29.058,0 h 2 v 2.171 h -2 z"
+         id="path247"
+         style="fill:#19cc19" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text248"
+         style="white-space:pre;fill:#282d35">TT</text>
+      <path
+         class="B"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path248"
+         style="fill:#cc4ccc" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text249"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path249"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text250"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path250"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text251"
+         style="white-space:pre;fill:#282d35">F</text>
+      <path
+         class="G"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path251"
+         style="fill:#19b2b2" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text252"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path252"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text253"
+         style="white-space:pre;fill:#282d35">LVI</text>
+      <path
+         class="B"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path253"
+         style="fill:#cc4ccc" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text254"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path254"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text255"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="D"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path255"
+         style="fill:#e53319" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text256"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="w"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path256"
+         style="fill:#197fe5" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text257"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path257"
+         style="fill:#19cc19" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text258"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="B"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path258"
+         style="fill:#cc4ccc" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text259"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path259"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text260"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="D"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path260"
+         style="fill:#e53319" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text261"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="x"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path261"
+         style="fill:#19cc19" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text262"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path262"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text263"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path263"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text264"
+         style="white-space:pre;fill:#282d35">IF</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path264"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text265"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 2 v 2.171 h -2 z"
+         id="path265"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text266"
+         style="white-space:pre;fill:#282d35">LV</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path266"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text267"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="u"
+         d="m 66.132,0 h 4 v 2.171 h -4 z"
+         id="path267"
+         style="fill:#b9bfca" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text268"
+         style="white-space:pre;fill:#282d35">----</text>
+      <path
+         class="w"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path268"
+         style="fill:#197fe5" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text269"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path269"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text270"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path270"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text271"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="x"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path271"
+         style="fill:#19cc19" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text272"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path272"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text273"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path273"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text274"
+         style="white-space:pre;fill:#282d35">LA</text>
+      <path
+         class="D"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path274"
+         style="fill:#e53319" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text275"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="w"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path275"
+         style="fill:#197fe5" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text276"
+         style="white-space:pre;fill:#282d35">L</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text277"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9953"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,129.41115)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text201"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text202"
+         style="white-space:pre;fill:#a8cc8c">174</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text203"
+         style="white-space:pre;fill:#ffffff">│CEFNMEKK_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text204"
+         style="white-space:pre;fill:#73bef3">█▏</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text205"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 7 v 2.171 h -7 z"
+         id="path205"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text206"
+         style="white-space:pre;fill:#282d35">-------</text>
+      <path
+         class="w"
+         d="m 26.052,0 h 1 v 2.171 h -1 z"
+         id="path206"
+         style="fill:#197fe5" />
+      <text
+         x="26.052"
+         y="1.67"
+         class="v"
+         id="text207"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="x"
+         d="m 27.054,0 h 2 v 2.171 h -2 z"
+         id="path207"
+         style="fill:#19cc19" />
+      <text
+         x="27.054001"
+         y="1.67"
+         class="v"
+         id="text208"
+         style="white-space:pre;fill:#282d35">SN</text>
+      <path
+         class="D"
+         d="m 29.058,0 h 1 v 2.171 h -1 z"
+         id="path208"
+         style="fill:#e53319" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text209"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="x"
+         d="m 30.06,0 h 2 v 2.171 h -2 z"
+         id="path209"
+         style="fill:#19cc19" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text210"
+         style="white-space:pre;fill:#282d35">TT</text>
+      <path
+         class="w"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path210"
+         style="fill:#197fe5" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text211"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="y"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path211"
+         style="fill:#e5994c" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text212"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="B"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path212"
+         style="fill:#cc4ccc" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text213"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 6 v 2.171 h -6 z"
+         id="path213"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text214"
+         style="white-space:pre;fill:#282d35">LIAAFL</text>
+      <path
+         class="B"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path214"
+         style="fill:#cc4ccc" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text215"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="x"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path215"
+         style="fill:#19cc19" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text216"
+         style="white-space:pre;fill:#282d35">Q</text>
+      <path
+         class="C"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path216"
+         style="fill:#e57f7f" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text217"
+         style="white-space:pre;fill:#282d35">C</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path217"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text218"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path218"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text219"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 46.092,0 h 2 v 2.171 h -2 z"
+         id="path219"
+         style="fill:#19cc19" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text220"
+         style="white-space:pre;fill:#282d35">QT</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path220"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text221"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path221"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text222"
+         style="white-space:pre;fill:#282d35">AF</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path222"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text223"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 2 v 2.171 h -2 z"
+         id="path223"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text224"
+         style="white-space:pre;fill:#282d35">VI</text>
+      <path
+         class="x"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path224"
+         style="fill:#19cc19" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text225"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="w"
+         d="m 66.132,0 h 1 v 2.171 h -1 z"
+         id="path225"
+         style="fill:#197fe5" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text226"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="G"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path226"
+         style="fill:#19b2b2" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text227"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path227"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text228"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="x"
+         d="m 69.138,0 h 1 v 2.171 h -1 z"
+         id="path228"
+         style="fill:#19cc19" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text229"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="w"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path229"
+         style="fill:#197fe5" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text230"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path230"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text231"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 2 v 2.171 h -2 z"
+         id="path231"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text232"
+         style="white-space:pre;fill:#282d35">IL</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path232"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text233"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path233"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text234"
+         style="white-space:pre;fill:#282d35">AI</text>
+      <path
+         class="G"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path234"
+         style="fill:#19b2b2" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text235"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="x"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path235"
+         style="fill:#19cc19" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text236"
+         style="white-space:pre;fill:#282d35">N</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text237"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9954"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,135.15525)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text163"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text164"
+         style="white-space:pre;fill:#a8cc8c">175</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text165"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text166"
+         style="white-space:pre;fill:#73bef3">█▋</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text167"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 9 v 2.171 h -9 z"
+         id="path167"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text168"
+         style="white-space:pre;fill:#282d35">---------</text>
+      <path
+         class="x"
+         d="m 28.056,0 h 1 v 2.171 h -1 z"
+         id="path168"
+         style="fill:#19cc19" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text169"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="w"
+         d="m 29.058,0 h 1 v 2.171 h -1 z"
+         id="path169"
+         style="fill:#197fe5" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text170"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path170"
+         style="fill:#19cc19" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text171"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path171"
+         style="fill:#cc4ccc" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text172"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path172"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text173"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path173"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text174"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="G"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path174"
+         style="fill:#19b2b2" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text175"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path175"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text176"
+         style="white-space:pre;fill:#282d35">IIV</text>
+      <path
+         class="B"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path176"
+         style="fill:#cc4ccc" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text177"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path177"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text178"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="D"
+         d="m 41.082,0 h 2 v 2.171 h -2 z"
+         id="path178"
+         style="fill:#e53319" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text179"
+         style="white-space:pre;fill:#282d35">KK</text>
+      <path
+         class="x"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path179"
+         style="fill:#19cc19" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text180"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path180"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text181"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path181"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text182"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="B"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path182"
+         style="fill:#cc4ccc" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text183"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path183"
+         style="fill:#19cc19" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text184"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path184"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text185"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 1 v 2.171 h -1 z"
+         id="path185"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text186"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="G"
+         d="m 61.122,0 h 1 v 2.171 h -1 z"
+         id="path186"
+         style="fill:#19b2b2" />
+      <text
+         x="61.122002"
+         y="1.67"
+         class="v"
+         id="text187"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path187"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text188"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 2 v 2.171 h -2 z"
+         id="path188"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text189"
+         style="white-space:pre;fill:#282d35">VV</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path189"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text190"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="u"
+         d="m 66.132,0 h 4 v 2.171 h -4 z"
+         id="path190"
+         style="fill:#b9bfca" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text191"
+         style="white-space:pre;fill:#282d35">----</text>
+      <path
+         class="w"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path191"
+         style="fill:#197fe5" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text192"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path192"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text193"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path193"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text194"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path194"
+         style="fill:#19cc19" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text195"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path195"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text196"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path196"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text197"
+         style="white-space:pre;fill:#282d35">MA</text>
+      <path
+         class="D"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path197"
+         style="fill:#e53319" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text198"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="G"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path198"
+         style="fill:#19b2b2" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text199"
+         style="white-space:pre;fill:#282d35">H</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text200"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9955"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,140.89936)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text125"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text126"
+         style="white-space:pre;fill:#a8cc8c">176</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text127"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text128"
+         style="white-space:pre;fill:#73bef3">█▋</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text129"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 9 v 2.171 h -9 z"
+         id="path129"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text130"
+         style="white-space:pre;fill:#282d35">---------</text>
+      <path
+         class="x"
+         d="m 28.056,0 h 1 v 2.171 h -1 z"
+         id="path130"
+         style="fill:#19cc19" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text131"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="w"
+         d="m 29.058,0 h 1 v 2.171 h -1 z"
+         id="path131"
+         style="fill:#197fe5" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text132"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path132"
+         style="fill:#19cc19" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text133"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path133"
+         style="fill:#cc4ccc" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text134"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path134"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text135"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path135"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text136"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="G"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path136"
+         style="fill:#19b2b2" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text137"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path137"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text138"
+         style="white-space:pre;fill:#282d35">IIV</text>
+      <path
+         class="B"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path138"
+         style="fill:#cc4ccc" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text139"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path139"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text140"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="D"
+         d="m 41.082,0 h 2 v 2.171 h -2 z"
+         id="path140"
+         style="fill:#e53319" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text141"
+         style="white-space:pre;fill:#282d35">KK</text>
+      <path
+         class="x"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path141"
+         style="fill:#19cc19" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text142"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path142"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text143"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path143"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text144"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="B"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path144"
+         style="fill:#cc4ccc" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text145"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path145"
+         style="fill:#19cc19" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text146"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path146"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text147"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 1 v 2.171 h -1 z"
+         id="path147"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text148"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="G"
+         d="m 61.122,0 h 1 v 2.171 h -1 z"
+         id="path148"
+         style="fill:#19b2b2" />
+      <text
+         x="61.122002"
+         y="1.67"
+         class="v"
+         id="text149"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path149"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text150"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 2 v 2.171 h -2 z"
+         id="path150"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text151"
+         style="white-space:pre;fill:#282d35">VV</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path151"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text152"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="u"
+         d="m 66.132,0 h 4 v 2.171 h -4 z"
+         id="path152"
+         style="fill:#b9bfca" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text153"
+         style="white-space:pre;fill:#282d35">----</text>
+      <path
+         class="w"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path153"
+         style="fill:#197fe5" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text154"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path154"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text155"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path155"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text156"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path156"
+         style="fill:#19cc19" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text157"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path157"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text158"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path158"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text159"
+         style="white-space:pre;fill:#282d35">MA</text>
+      <path
+         class="D"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path159"
+         style="fill:#e53319" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text160"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="G"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path160"
+         style="fill:#19b2b2" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text161"
+         style="white-space:pre;fill:#282d35">H</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text162"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9956"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,146.64346)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text88"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text89"
+         style="white-space:pre;fill:#a8cc8c">177</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text90"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text91"
+         style="white-space:pre;fill:#73bef3">█▏</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text92"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 11 v 2.171 h -11 z"
+         id="path92"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text93"
+         style="white-space:pre;fill:#282d35">-----------</text>
+      <path
+         class="w"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path93"
+         style="fill:#197fe5" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text94"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path94"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text95"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path95"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text96"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path96"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text97"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="x"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path97"
+         style="fill:#19cc19" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text98"
+         style="white-space:pre;fill:#282d35">Q</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path98"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text99"
+         style="white-space:pre;fill:#282d35">WLV</text>
+      <path
+         class="x"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path99"
+         style="fill:#19cc19" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text100"
+         style="white-space:pre;fill:#282d35">Q</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path100"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text101"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="D"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path101"
+         style="fill:#e53319" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text102"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="x"
+         d="m 42.084,0 h 2 v 2.171 h -2 z"
+         id="path102"
+         style="fill:#19cc19" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text103"
+         style="white-space:pre;fill:#282d35">TQ</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path103"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text104"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path104"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text105"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="B"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path105"
+         style="fill:#cc4ccc" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text106"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path106"
+         style="fill:#19cc19" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text107"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path107"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text108"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path108"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text109"
+         style="white-space:pre;fill:#282d35">VF</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path109"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text110"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="G"
+         d="m 63.126,0 h 1 v 2.171 h -1 z"
+         id="path110"
+         style="fill:#19b2b2" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text111"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="A"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path111"
+         style="fill:#cccc00" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text112"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 2 v 2.171 h -2 z"
+         id="path112"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text113"
+         style="white-space:pre;fill:#282d35">GG</text>
+      <path
+         class="w"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path113"
+         style="fill:#197fe5" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text114"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path114"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text115"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 2 v 2.171 h -2 z"
+         id="path115"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text116"
+         style="white-space:pre;fill:#282d35">IM</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path116"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text117"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path117"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text118"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="G"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path118"
+         style="fill:#19b2b2" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text119"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path119"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text120"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path120"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text121"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="G"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path121"
+         style="fill:#19b2b2" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text122"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="B"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path122"
+         style="fill:#cc4ccc" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text123"
+         style="white-space:pre;fill:#282d35">D</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text124"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9957"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,152.38757)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text400"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text401"
+         style="white-space:pre;fill:#a8cc8c">178</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text402"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text403"
+         style="white-space:pre;fill:#73bef3">█▏</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text404"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 9 v 2.171 h -9 z"
+         id="path404"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text405"
+         style="white-space:pre;fill:#282d35">---------</text>
+      <path
+         class="D"
+         d="m 28.056,0 h 2 v 2.171 h -2 z"
+         id="path405"
+         style="fill:#e53319" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text406"
+         style="white-space:pre;fill:#282d35">KK</text>
+      <path
+         class="x"
+         d="m 30.06,0 h 2 v 2.171 h -2 z"
+         id="path406"
+         style="fill:#19cc19" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text407"
+         style="white-space:pre;fill:#282d35">QS</text>
+      <path
+         class="w"
+         d="m 32.064,0 h 2 v 2.171 h -2 z"
+         id="path407"
+         style="fill:#197fe5" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text408"
+         style="white-space:pre;fill:#282d35">VA</text>
+      <path
+         class="x"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path408"
+         style="fill:#19cc19" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text409"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="G"
+         d="m 35.07,0 h 1 v 2.171 h -1 z"
+         id="path409"
+         style="fill:#19b2b2" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text410"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="w"
+         d="m 36.072,0 h 2 v 2.171 h -2 z"
+         id="path410"
+         style="fill:#197fe5" />
+      <text
+         x="36.071999"
+         y="1.67"
+         class="v"
+         id="text411"
+         style="white-space:pre;fill:#282d35">IA</text>
+      <path
+         class="D"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path411"
+         style="fill:#e53319" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text412"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path412"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text413"
+         style="white-space:pre;fill:#282d35">VL</text>
+      <path
+         class="B"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path413"
+         style="fill:#cc4ccc" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text414"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path414"
+         style="fill:#19cc19" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text415"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="w"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path415"
+         style="fill:#197fe5" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text416"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path416"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text417"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path417"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text418"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="D"
+         d="m 46.092,0 h 2 v 2.171 h -2 z"
+         id="path418"
+         style="fill:#e53319" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text419"
+         style="white-space:pre;fill:#282d35">KR</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path419"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text420"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path420"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text421"
+         style="white-space:pre;fill:#282d35">IW</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path421"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text422"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 1 v 2.171 h -1 z"
+         id="path422"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text423"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path423"
+         style="fill:#19cc19" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text424"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path424"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text425"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="B"
+         d="m 66.132,0 h 1 v 2.171 h -1 z"
+         id="path425"
+         style="fill:#cc4ccc" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text426"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path426"
+         style="fill:#19cc19" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text427"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path427"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text428"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 1 v 2.171 h -1 z"
+         id="path428"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text429"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path429"
+         style="fill:#19cc19" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text430"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="y"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path430"
+         style="fill:#e5994c" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text431"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path431"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text432"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path432"
+         style="fill:#19cc19" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text433"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path433"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text434"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 75.15,0 h 1 v 2.171 h -1 z"
+         id="path434"
+         style="fill:#19cc19" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text435"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="w"
+         d="m 76.152,0 h 1 v 2.171 h -1 z"
+         id="path435"
+         style="fill:#197fe5" />
+      <text
+         x="76.152"
+         y="1.67"
+         class="v"
+         id="text436"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="D"
+         d="m 77.154,0 h 2 v 2.171 h -2 z"
+         id="path436"
+         style="fill:#e53319" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text437"
+         style="white-space:pre;fill:#282d35">RR</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text438"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9958"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,158.13167)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text364"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text365"
+         style="white-space:pre;fill:#a8cc8c">179</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text366"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text367"
+         style="white-space:pre;fill:#73bef3">█▏</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text368"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 11 v 2.171 h -11 z"
+         id="path368"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text369"
+         style="white-space:pre;fill:#282d35">-----------</text>
+      <path
+         class="w"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path369"
+         style="fill:#197fe5" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text370"
+         style="white-space:pre;fill:#282d35">M</text>
+      <path
+         class="D"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path370"
+         style="fill:#e53319" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text371"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="w"
+         d="m 32.064,0 h 2 v 2.171 h -2 z"
+         id="path371"
+         style="fill:#197fe5" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text372"
+         style="white-space:pre;fill:#282d35">AV</text>
+      <path
+         class="B"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path372"
+         style="fill:#cc4ccc" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text373"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path373"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text374"
+         style="white-space:pre;fill:#282d35">AAM</text>
+      <path
+         class="G"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path374"
+         style="fill:#19b2b2" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text375"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path375"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text376"
+         style="white-space:pre;fill:#282d35">VL</text>
+      <path
+         class="B"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path376"
+         style="fill:#cc4ccc" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text377"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="D"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path377"
+         style="fill:#e53319" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text378"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="B"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path378"
+         style="fill:#cc4ccc" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text379"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path379"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text380"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path380"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text381"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="x"
+         d="m 46.092,0 h 2 v 2.171 h -2 z"
+         id="path381"
+         style="fill:#19cc19" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text382"
+         style="white-space:pre;fill:#282d35">TT</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path382"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text383"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path383"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text384"
+         style="white-space:pre;fill:#282d35">AF</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path384"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text385"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 1 v 2.171 h -1 z"
+         id="path385"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text386"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="A"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path386"
+         style="fill:#cccc00" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text387"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path387"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text388"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 66.132,0 h 2 v 2.171 h -2 z"
+         id="path388"
+         style="fill:#197fe5" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text389"
+         style="white-space:pre;fill:#282d35">AA</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path389"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text390"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 1 v 2.171 h -1 z"
+         id="path390"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text391"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="x"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path391"
+         style="fill:#19cc19" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text392"
+         style="white-space:pre;fill:#282d35">N</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path392"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text393"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path393"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text394"
+         style="white-space:pre;fill:#282d35">F</text>
+      <path
+         class="G"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path394"
+         style="fill:#19b2b2" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text395"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="x"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path395"
+         style="fill:#19cc19" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text396"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path396"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text397"
+         style="white-space:pre;fill:#282d35">AM</text>
+      <path
+         class="D"
+         d="m 77.154,0 h 2 v 2.171 h -2 z"
+         id="path397"
+         style="fill:#e53319" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text398"
+         style="white-space:pre;fill:#282d35">RK</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text399"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9959"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,163.87578)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text326"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text327"
+         style="white-space:pre;fill:#a8cc8c">180</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text328"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text329"
+         style="white-space:pre;fill:#73bef3">█▏</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text330"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 11 v 2.171 h -11 z"
+         id="path330"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text331"
+         style="white-space:pre;fill:#282d35">-----------</text>
+      <path
+         class="w"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path331"
+         style="fill:#197fe5" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text332"
+         style="white-space:pre;fill:#282d35">L</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path332"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text333"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path333"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text334"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path334"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text335"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="B"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path335"
+         style="fill:#cc4ccc" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text336"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path336"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text337"
+         style="white-space:pre;fill:#282d35">MVV</text>
+      <path
+         class="D"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path337"
+         style="fill:#e53319" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text338"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="x"
+         d="m 39.078,0 h 1 v 2.171 h -1 z"
+         id="path338"
+         style="fill:#19cc19" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text339"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="w"
+         d="m 40.08,0 h 2 v 2.171 h -2 z"
+         id="path339"
+         style="fill:#197fe5" />
+      <text
+         x="40.080002"
+         y="1.67"
+         class="v"
+         id="text340"
+         style="white-space:pre;fill:#282d35">LI</text>
+      <path
+         class="B"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path340"
+         style="fill:#cc4ccc" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text341"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="x"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path341"
+         style="fill:#19cc19" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text342"
+         style="white-space:pre;fill:#282d35">Q</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path342"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text343"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path343"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text344"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="D"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path344"
+         style="fill:#e53319" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text345"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="G"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path345"
+         style="fill:#19b2b2" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text346"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path346"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text347"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 2 v 2.171 h -2 z"
+         id="path347"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text348"
+         style="white-space:pre;fill:#282d35">VF</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path348"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text349"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="G"
+         d="m 63.126,0 h 1 v 2.171 h -1 z"
+         id="path349"
+         style="fill:#19b2b2" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text350"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="A"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path350"
+         style="fill:#cccc00" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text351"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 2 v 2.171 h -2 z"
+         id="path351"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text352"
+         style="white-space:pre;fill:#282d35">GG</text>
+      <path
+         class="w"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path352"
+         style="fill:#197fe5" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text353"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path353"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text354"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 2 v 2.171 h -2 z"
+         id="path354"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text355"
+         style="white-space:pre;fill:#282d35">VL</text>
+      <path
+         class="B"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path355"
+         style="fill:#cc4ccc" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text356"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path356"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text357"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="G"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path357"
+         style="fill:#19b2b2" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text358"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path358"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text359"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path359"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text360"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="G"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path360"
+         style="fill:#19b2b2" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text361"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="x"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path361"
+         style="fill:#19cc19" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text362"
+         style="white-space:pre;fill:#282d35">T</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="z"
+         id="text363"
+         style="white-space:pre;fill:#66c2cd">█</text>
+    </g>
+    <g
+       id="use9960"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,169.61988)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text319"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text320"
+         style="white-space:pre;fill:#a8cc8c">181</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text321"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text322"
+         style="white-space:pre;fill:#73bef3">█</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text323"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 60 v 2.171 h -60 z"
+         id="path323"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text324"
+         style="white-space:pre;fill:#282d35">------------------------------------------------------------</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text325"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9961"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,175.36398)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="s"
+         id="text278"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <text
+         x="1.002"
+         y="1.67"
+         class="d"
+         id="text279"
+         style="white-space:pre;fill:#a8cc8c">182</text>
+      <text
+         x="4.0079999"
+         y="1.67"
+         class="s"
+         id="text280"
+         style="white-space:pre;fill:#ffffff">│BNIANBDI_0│</text>
+      <text
+         x="16.032"
+         y="1.67"
+         class="t"
+         id="text281"
+         style="white-space:pre;fill:#73bef3">█▏</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="s"
+         id="text282"
+         style="white-space:pre;fill:#ffffff">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 9 v 2.171 h -9 z"
+         id="path282"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text283"
+         style="white-space:pre;fill:#282d35">---------</text>
+      <path
+         class="x"
+         d="m 28.056,0 h 1 v 2.171 h -1 z"
+         id="path283"
+         style="fill:#19cc19" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text284"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="D"
+         d="m 29.058,0 h 1 v 2.171 h -1 z"
+         id="path284"
+         style="fill:#e53319" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text285"
+         style="white-space:pre;fill:#282d35">R</text>
+      <path
+         class="w"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path285"
+         style="fill:#197fe5" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text286"
+         style="white-space:pre;fill:#282d35">F</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path286"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text287"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path287"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text288"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path288"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text289"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="B"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path289"
+         style="fill:#cc4ccc" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text290"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path290"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text291"
+         style="white-space:pre;fill:#282d35">LIV</text>
+      <path
+         class="G"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path291"
+         style="fill:#19b2b2" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text292"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path292"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text293"
+         style="white-space:pre;fill:#282d35">LL</text>
+      <path
+         class="B"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path293"
+         style="fill:#cc4ccc" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text294"
+         style="white-space:pre;fill:#282d35">E</text>
+      <path
+         class="D"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path294"
+         style="fill:#e53319" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text295"
+         style="white-space:pre;fill:#282d35">K</text>
+      <path
+         class="G"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path295"
+         style="fill:#19b2b2" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text296"
+         style="white-space:pre;fill:#282d35">H</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path296"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text297"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path297"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text298"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="x"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path298"
+         style="fill:#19cc19" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text299"
+         style="white-space:pre;fill:#282d35">T</text>
+      <path
+         class="w"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path299"
+         style="fill:#197fe5" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text300"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path300"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text301"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 1 v 2.171 h -1 z"
+         id="path301"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text302"
+         style="white-space:pre;fill:#282d35">V</text>
+      <path
+         class="x"
+         d="m 61.122,0 h 1 v 2.171 h -1 z"
+         id="path302"
+         style="fill:#19cc19" />
+      <text
+         x="61.122002"
+         y="1.67"
+         class="v"
+         id="text303"
+         style="white-space:pre;fill:#282d35">S</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path303"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text304"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 1 v 2.171 h -1 z"
+         id="path304"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text305"
+         style="white-space:pre;fill:#282d35">I</text>
+      <path
+         class="A"
+         d="m 64.128,0 h 1 v 2.171 h -1 z"
+         id="path305"
+         style="fill:#cccc00" />
+      <text
+         x="64.127998"
+         y="1.67"
+         class="v"
+         id="text306"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 2 v 2.171 h -2 z"
+         id="path306"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text307"
+         style="white-space:pre;fill:#282d35">GG</text>
+      <path
+         class="w"
+         d="m 67.134,0 h 1 v 2.171 h -1 z"
+         id="path307"
+         style="fill:#197fe5" />
+      <text
+         x="67.134003"
+         y="1.67"
+         class="v"
+         id="text308"
+         style="white-space:pre;fill:#282d35">A</text>
+      <path
+         class="u"
+         d="m 68.136,0 h 1 v 2.171 h -1 z"
+         id="path308"
+         style="fill:#b9bfca" />
+      <text
+         x="68.136002"
+         y="1.67"
+         class="v"
+         id="text309"
+         style="white-space:pre;fill:#282d35">-</text>
+      <path
+         class="w"
+         d="m 69.138,0 h 2 v 2.171 h -2 z"
+         id="path309"
+         style="fill:#197fe5" />
+      <text
+         x="69.138"
+         y="1.67"
+         class="v"
+         id="text310"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path310"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text311"
+         style="white-space:pre;fill:#282d35">P</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path311"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text312"
+         style="white-space:pre;fill:#282d35">F</text>
+      <path
+         class="G"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path312"
+         style="fill:#19b2b2" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text313"
+         style="white-space:pre;fill:#282d35">Y</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path313"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text314"
+         style="white-space:pre;fill:#282d35">D</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path314"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text315"
+         style="white-space:pre;fill:#282d35">AL</text>
+      <path
+         class="y"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path315"
+         style="fill:#e5994c" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text316"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="x"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path316"
+         style="fill:#19cc19" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text317"
+         style="white-space:pre;fill:#282d35">Q</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="s"
+         id="text318"
+         style="white-space:pre;fill:#ffffff">║</text>
+    </g>
+    <g
+       id="use9963"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,186.85219)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="c"
+         id="text1"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+      <text
+         x="6.0120001"
+         y="1.67"
+         class="E"
+         id="text2"
+         style="font-weight:700;white-space:pre;fill:#73bef3">%id</text>
+      <text
+         x="10.02"
+         y="1.67"
+         class="E"
+         id="text3"
+         style="font-weight:700;white-space:pre;fill:#73bef3">(cons)</text>
+      <text
+         x="17.034"
+         y="1.67"
+         class="E"
+         id="text4"
+         style="font-weight:700;white-space:pre;fill:#73bef3">-</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="c"
+         id="text5"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+      <text
+         x="23.046"
+         y="1.67"
+         class="s"
+         id="text6"
+         style="white-space:pre;fill:#ffffff">:</text>
+      <text
+         x="28.056"
+         y="1.67"
+         class="s"
+         id="text7"
+         style="white-space:pre;fill:#ffffff">|</text>
+      <text
+         x="33.066002"
+         y="1.67"
+         class="s"
+         id="text8"
+         style="white-space:pre;fill:#ffffff">:</text>
+      <text
+         x="38.076"
+         y="1.67"
+         class="s"
+         id="text9"
+         style="white-space:pre;fill:#ffffff">|</text>
+      <text
+         x="43.085999"
+         y="1.67"
+         class="s"
+         id="text10"
+         style="white-space:pre;fill:#ffffff">:</text>
+      <text
+         x="48.096001"
+         y="1.67"
+         class="s"
+         id="text11"
+         style="white-space:pre;fill:#ffffff">|</text>
+      <text
+         x="53.105999"
+         y="1.67"
+         class="s"
+         id="text12"
+         style="white-space:pre;fill:#ffffff">:</text>
+      <text
+         x="58.116001"
+         y="1.67"
+         class="s"
+         id="text13"
+         style="white-space:pre;fill:#ffffff">|</text>
+      <text
+         x="63.125999"
+         y="1.67"
+         class="s"
+         id="text14"
+         style="white-space:pre;fill:#ffffff">:</text>
+      <text
+         x="68.136002"
+         y="1.67"
+         class="s"
+         id="text15"
+         style="white-space:pre;fill:#ffffff">|</text>
+      <text
+         x="73.146004"
+         y="1.67"
+         class="s"
+         id="text16"
+         style="white-space:pre;fill:#ffffff">:</text>
+      <text
+         x="78.155998"
+         y="1.67"
+         class="s"
+         id="text17"
+         style="white-space:pre;fill:#ffffff">|</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="c"
+         id="text18"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+    </g>
+    <g
+       id="use9964"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,192.5963)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="c"
+         id="text79"
+         style="white-space:pre;fill:#b9c0cb">│Position</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="c"
+         id="text80"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+      <text
+         x="27.054001"
+         y="1.67"
+         class="s"
+         id="text81"
+         style="white-space:pre;fill:#ffffff">70</text>
+      <text
+         x="37.074001"
+         y="1.67"
+         class="s"
+         id="text82"
+         style="white-space:pre;fill:#ffffff">80</text>
+      <text
+         x="47.094002"
+         y="1.67"
+         class="s"
+         id="text83"
+         style="white-space:pre;fill:#ffffff">90</text>
+      <text
+         x="56.112"
+         y="1.67"
+         class="s"
+         id="text84"
+         style="white-space:pre;fill:#ffffff">100</text>
+      <text
+         x="66.132004"
+         y="1.67"
+         class="s"
+         id="text85"
+         style="white-space:pre;fill:#ffffff">110</text>
+      <text
+         x="76.152"
+         y="1.67"
+         class="s"
+         id="text86"
+         style="white-space:pre;fill:#ffffff">120</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="c"
+         id="text87"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+    </g>
+    <g
+       id="use9965"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,198.3404)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="c"
+         id="text43"
+         style="white-space:pre;fill:#b9c0cb">│Consensus</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="c"
+         id="text44"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+      <path
+         class="u"
+         d="m 19.038,0 h 9 v 2.171 h -9 z"
+         id="path44"
+         style="fill:#b9bfca" />
+      <text
+         x="19.038"
+         y="1.67"
+         class="v"
+         id="text45"
+         style="white-space:pre;fill:#282d35">---------</text>
+      <path
+         class="B"
+         d="m 28.056,0 h 1 v 2.171 h -1 z"
+         id="path45"
+         style="fill:#cc4ccc" />
+      <text
+         x="28.056"
+         y="1.67"
+         class="v"
+         id="text46"
+         style="white-space:pre;fill:#282d35">e</text>
+      <path
+         class="x"
+         d="m 29.058,0 h 1 v 2.171 h -1 z"
+         id="path46"
+         style="fill:#19cc19" />
+      <text
+         x="29.058001"
+         y="1.67"
+         class="v"
+         id="text47"
+         style="white-space:pre;fill:#282d35">q</text>
+      <path
+         class="w"
+         d="m 30.06,0 h 1 v 2.171 h -1 z"
+         id="path47"
+         style="fill:#197fe5" />
+      <text
+         x="30.059999"
+         y="1.67"
+         class="v"
+         id="text48"
+         style="white-space:pre;fill:#282d35">v</text>
+      <path
+         class="x"
+         d="m 31.062,0 h 1 v 2.171 h -1 z"
+         id="path48"
+         style="fill:#19cc19" />
+      <text
+         x="31.062"
+         y="1.67"
+         class="v"
+         id="text49"
+         style="white-space:pre;fill:#282d35">t</text>
+      <path
+         class="y"
+         d="m 32.064,0 h 1 v 2.171 h -1 z"
+         id="path49"
+         style="fill:#e5994c" />
+      <text
+         x="32.063999"
+         y="1.67"
+         class="v"
+         id="text50"
+         style="white-space:pre;fill:#282d35">g</text>
+      <path
+         class="w"
+         d="m 33.066,0 h 1 v 2.171 h -1 z"
+         id="path50"
+         style="fill:#197fe5" />
+      <text
+         x="33.066002"
+         y="1.67"
+         class="v"
+         id="text51"
+         style="white-space:pre;fill:#282d35">m</text>
+      <path
+         class="G"
+         d="m 34.068,0 h 1 v 2.171 h -1 z"
+         id="path51"
+         style="fill:#19b2b2" />
+      <text
+         x="34.068001"
+         y="1.67"
+         class="v"
+         id="text52"
+         style="white-space:pre;fill:#282d35">h</text>
+      <path
+         class="w"
+         d="m 35.07,0 h 3 v 2.171 h -3 z"
+         id="path52"
+         style="fill:#197fe5" />
+      <text
+         x="35.07"
+         y="1.67"
+         class="v"
+         id="text53"
+         style="white-space:pre;fill:#282d35">ila</text>
+      <path
+         class="B"
+         d="m 38.076,0 h 1 v 2.171 h -1 z"
+         id="path53"
+         style="fill:#cc4ccc" />
+      <text
+         x="38.076"
+         y="1.67"
+         class="v"
+         id="text54"
+         style="white-space:pre;fill:#282d35">d</text>
+      <path
+         class="w"
+         d="m 39.078,0 h 2 v 2.171 h -2 z"
+         id="path54"
+         style="fill:#197fe5" />
+      <text
+         x="39.077999"
+         y="1.67"
+         class="v"
+         id="text55"
+         style="white-space:pre;fill:#282d35">aL</text>
+      <path
+         class="D"
+         d="m 41.082,0 h 1 v 2.171 h -1 z"
+         id="path55"
+         style="fill:#e53319" />
+      <text
+         x="41.082001"
+         y="1.67"
+         class="v"
+         id="text56"
+         style="white-space:pre;fill:#282d35">k</text>
+      <path
+         fill="#ffffff"
+         d="m 42.084,0 h 1 v 2.171 h -1 z"
+         id="path56" />
+      <text
+         x="42.084"
+         y="1.67"
+         class="v"
+         id="text57"
+         style="white-space:pre;fill:#282d35">*</text>
+      <path
+         class="x"
+         d="m 43.086,0 h 1 v 2.171 h -1 z"
+         id="path57"
+         style="fill:#19cc19" />
+      <text
+         x="43.085999"
+         y="1.67"
+         class="v"
+         id="text58"
+         style="white-space:pre;fill:#282d35">n</text>
+      <path
+         class="y"
+         d="m 44.088,0 h 1 v 2.171 h -1 z"
+         id="path58"
+         style="fill:#e5994c" />
+      <text
+         x="44.088001"
+         y="1.67"
+         class="v"
+         id="text59"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 45.09,0 h 1 v 2.171 h -1 z"
+         id="path59"
+         style="fill:#197fe5" />
+      <text
+         x="45.09"
+         y="1.67"
+         class="v"
+         id="text60"
+         style="white-space:pre;fill:#282d35">i</text>
+      <path
+         class="B"
+         d="m 46.092,0 h 1 v 2.171 h -1 z"
+         id="path60"
+         style="fill:#cc4ccc" />
+      <text
+         x="46.091999"
+         y="1.67"
+         class="v"
+         id="text61"
+         style="white-space:pre;fill:#282d35">d</text>
+      <path
+         class="x"
+         d="m 47.094,0 h 1 v 2.171 h -1 z"
+         id="path61"
+         style="fill:#19cc19" />
+      <text
+         x="47.094002"
+         y="1.67"
+         class="v"
+         id="text62"
+         style="white-space:pre;fill:#282d35">t</text>
+      <path
+         class="u"
+         d="m 48.096,0 h 12 v 2.171 h -12 z"
+         id="path62"
+         style="fill:#b9bfca" />
+      <text
+         x="48.096001"
+         y="1.67"
+         class="v"
+         id="text63"
+         style="white-space:pre;fill:#282d35">------------</text>
+      <path
+         class="w"
+         d="m 60.12,0 h 1 v 2.171 h -1 z"
+         id="path63"
+         style="fill:#197fe5" />
+      <text
+         x="60.119999"
+         y="1.67"
+         class="v"
+         id="text64"
+         style="white-space:pre;fill:#282d35">v</text>
+      <path
+         class="G"
+         d="m 61.122,0 h 1 v 2.171 h -1 z"
+         id="path64"
+         style="fill:#19b2b2" />
+      <text
+         x="61.122002"
+         y="1.67"
+         class="v"
+         id="text65"
+         style="white-space:pre;fill:#282d35">y</text>
+      <path
+         class="y"
+         d="m 62.124,0 h 1 v 2.171 h -1 z"
+         id="path65"
+         style="fill:#e5994c" />
+      <text
+         x="62.124001"
+         y="1.67"
+         class="v"
+         id="text66"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="w"
+         d="m 63.126,0 h 2 v 2.171 h -2 z"
+         id="path66"
+         style="fill:#197fe5" />
+      <text
+         x="63.125999"
+         y="1.67"
+         class="v"
+         id="text67"
+         style="white-space:pre;fill:#282d35">lv</text>
+      <path
+         class="y"
+         d="m 65.13,0 h 1 v 2.171 h -1 z"
+         id="path67"
+         style="fill:#e5994c" />
+      <text
+         x="65.129997"
+         y="1.67"
+         class="v"
+         id="text68"
+         style="white-space:pre;fill:#282d35">G</text>
+      <path
+         class="u"
+         d="m 66.132,0 h 4 v 2.171 h -4 z"
+         id="path68"
+         style="fill:#b9bfca" />
+      <text
+         x="66.132004"
+         y="1.67"
+         class="v"
+         id="text69"
+         style="white-space:pre;fill:#282d35">----</text>
+      <path
+         class="w"
+         d="m 70.14,0 h 1 v 2.171 h -1 z"
+         id="path69"
+         style="fill:#197fe5" />
+      <text
+         x="70.139999"
+         y="1.67"
+         class="v"
+         id="text70"
+         style="white-space:pre;fill:#282d35">i</text>
+      <path
+         class="A"
+         d="m 71.142,0 h 1 v 2.171 h -1 z"
+         id="path70"
+         style="fill:#cccc00" />
+      <text
+         x="71.141998"
+         y="1.67"
+         class="v"
+         id="text71"
+         style="white-space:pre;fill:#282d35">p</text>
+      <path
+         class="w"
+         d="m 72.144,0 h 1 v 2.171 h -1 z"
+         id="path71"
+         style="fill:#197fe5" />
+      <text
+         x="72.143997"
+         y="1.67"
+         class="v"
+         id="text72"
+         style="white-space:pre;fill:#282d35">v</text>
+      <path
+         class="x"
+         d="m 73.146,0 h 1 v 2.171 h -1 z"
+         id="path72"
+         style="fill:#19cc19" />
+      <text
+         x="73.146004"
+         y="1.67"
+         class="v"
+         id="text73"
+         style="white-space:pre;fill:#282d35">t</text>
+      <path
+         class="B"
+         d="m 74.148,0 h 1 v 2.171 h -1 z"
+         id="path73"
+         style="fill:#cc4ccc" />
+      <text
+         x="74.148003"
+         y="1.67"
+         class="v"
+         id="text74"
+         style="white-space:pre;fill:#282d35">d</text>
+      <path
+         class="w"
+         d="m 75.15,0 h 2 v 2.171 h -2 z"
+         id="path74"
+         style="fill:#197fe5" />
+      <text
+         x="75.150002"
+         y="1.67"
+         class="v"
+         id="text75"
+         style="white-space:pre;fill:#282d35">aa</text>
+      <path
+         class="D"
+         d="m 77.154,0 h 1 v 2.171 h -1 z"
+         id="path75"
+         style="fill:#e53319" />
+      <text
+         x="77.153999"
+         y="1.67"
+         class="v"
+         id="text76"
+         style="white-space:pre;fill:#282d35">r</text>
+      <path
+         class="w"
+         d="m 78.156,0 h 1 v 2.171 h -1 z"
+         id="path76"
+         style="fill:#197fe5" />
+      <text
+         x="78.155998"
+         y="1.67"
+         class="v"
+         id="text77"
+         style="white-space:pre;fill:#282d35">l</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="c"
+         id="text78"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+    </g>
+    <g
+       id="use9966"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,204.0845)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="c"
+         id="text35"
+         style="white-space:pre;fill:#b9c0cb">│Conservation</text>
+      <text
+         x="18.035999"
+         y="1.67"
+         class="c"
+         id="text36"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+      <text
+         x="23.046"
+         y="1.67"
+         class="F"
+         id="text37"
+         style="white-space:pre;fill:#fa8072">▁▂</text>
+      <text
+         x="26.052"
+         y="1.67"
+         class="F"
+         id="text38"
+         style="white-space:pre;fill:#fa8072">▁▂▁▂▂▄▅▃▁▃▄▃▂▃▇▂</text>
+      <text
+         x="43.085999"
+         y="1.67"
+         class="F"
+         id="text39"
+         style="white-space:pre;fill:#fa8072">▁▆▄▂▂</text>
+      <text
+         x="60.119999"
+         y="1.67"
+         class="F"
+         id="text40"
+         style="white-space:pre;fill:#fa8072">▃▅▇▄▅█</text>
+      <text
+         x="70.139999"
+         y="1.67"
+         class="F"
+         id="text41"
+         style="white-space:pre;fill:#fa8072">▄▅▄▅▄▂▄▃</text>
+      <text
+         x="79.157997"
+         y="1.67"
+         class="c"
+         id="text42"
+         style="white-space:pre;fill:#b9c0cb">│</text>
+    </g>
+    <g
+       id="use9967"
+       transform="matrix(2.6458333,0,0,2.6458333,26.854474,209.82861)"
+       style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace">
+      <text
+         y="1.67"
+         class="c"
+         id="text19"
+         style="white-space:pre;fill:#b9c0cb">└─────────────────└</text>
+      <text
+         x="20.040001"
+         y="1.67"
+         class="o"
+         id="text20"
+         style="font-weight:700;white-space:pre;fill:#b9c0cb">Press</text>
+      <text
+         x="26.052"
+         y="1.67"
+         class="o"
+         id="text21"
+         style="font-weight:700;white-space:pre;fill:#b9c0cb">'?'</text>
+      <text
+         x="30.059999"
+         y="1.67"
+         class="o"
+         id="text22"
+         style="font-weight:700;white-space:pre;fill:#b9c0cb">for</text>
+      <text
+         x="34.068001"
+         y="1.67"
+         class="o"
+         id="text23"
+         style="font-weight:700;white-space:pre;fill:#b9c0cb">help</text>
+      <text
+         x="39.077999"
+         y="1.67"
+         class="c"
+         id="text24"
+         style="white-space:pre;fill:#b9c0cb">────────────────────────────────────────┘</text>
+    </g>
+    <text
+       y="185.52663"
+       class="s"
+       id="text1-1"
+       style="font-size:4.41854px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;white-space:pre;fill:#ffffff;fill-opacity:1;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       x="26.854475">└───└──────────└──└═══</text>
+    <text
+       x="86.757797"
+       y="185.52663"
+       class="z"
+       id="text2-2"
+       style="font-size:4.41854px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;white-space:pre;fill:#66c2cd;fill-opacity:1;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1">🬹🬹🬹🬹</text>
+    <text
+       x="97.930237"
+       y="185.52663"
+       class="s"
+       id="text3-7"
+       style="font-size:4.41854px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;white-space:pre;fill:#ffffff;fill-opacity:1;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1">════════════════════════════════════════════════════┘</text>
+    <g
+       id="g4626"
+       transform="matrix(0.26458333,0,0,0.26458333,81.623595,37.455214)">
+      <circle
+         style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="path2"
+         cx="212.99437"
+         cy="250.67"
+         r="27.233009" />
+      <text
+         xml:space="preserve"
+         style="font-size:48px;font-family:Monospace;-inkscape-font-specification:Monospace;font-variation-settings:normal;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         x="227.01781"
+         y="264.67001"
+         id="text4612"><tspan
+           sodipodi:role="line"
+           id="tspan2"
+           style="fill:#000000;stroke-width:1"
+           x="227.01781"
+           y="264.67001">A</tspan></text>
+    </g>
+    <g
+       id="g4627"
+       transform="matrix(0.26458333,0,0,0.26458333,-51.197237,76.08438)">
+      <circle
+         style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="circle4612"
+         cx="313.73438"
+         cy="251.23302"
+         r="27.233009" />
+      <text
+         xml:space="preserve"
+         style="font-size:48px;font-family:Monospace;-inkscape-font-specification:Monospace;font-variation-settings:normal;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         x="327.75781"
+         y="267.233"
+         id="text4613"><tspan
+           sodipodi:role="line"
+           id="tspan4612"
+           style="fill:#000000;stroke-width:1"
+           x="327.75781"
+           y="267.233">B</tspan></text>
+    </g>
+    <g
+       id="g4628"
+       transform="matrix(0.26458333,0,0,0.26458333,-48.28682,76.08438)">
+      <circle
+         style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="circle4613"
+         cx="383.33438"
+         cy="250.67"
+         r="27.233009" />
+      <text
+         xml:space="preserve"
+         style="font-size:48px;font-family:Monospace;-inkscape-font-specification:Monospace;font-variation-settings:normal;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         x="393.35782"
+         y="266.67001"
+         id="text4614"><tspan
+           sodipodi:role="line"
+           id="tspan4613"
+           style="fill:#000000;stroke-width:1"
+           x="393.35782"
+           y="266.67001">C</tspan></text>
+    </g>
+    <g
+       id="g4629"
+       transform="matrix(0.26458333,0,0,0.26458333,-109.93474,76.08438)">
+      <circle
+         style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="circle4614"
+         cx="683.93439"
+         cy="250.67"
+         r="27.233009" />
+      <text
+         xml:space="preserve"
+         style="font-size:48px;font-family:Monospace;-inkscape-font-specification:Monospace;font-variation-settings:normal;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         x="699.95782"
+         y="268.67001"
+         id="text4615"><tspan
+           sodipodi:role="line"
+           id="tspan4614"
+           style="fill:#000000;stroke-width:1"
+           x="699.95782"
+           y="268.67001">D</tspan></text>
+    </g>
+    <g
+       id="g4631"
+       transform="matrix(0.26458333,0,0,0.26458333,-71.040986,62.59063)">
+      <circle
+         style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="circle4615"
+         cx="897.23438"
+         cy="523.23303"
+         r="27.233009" />
+      <text
+         xml:space="preserve"
+         style="font-size:48px;font-family:Monospace;-inkscape-font-specification:Monospace;font-variation-settings:normal;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         x="911.25781"
+         y="541.23303"
+         id="text4616"><tspan
+           sodipodi:role="line"
+           id="tspan4615"
+           style="fill:#000000;stroke-width:1"
+           x="911.25781"
+           y="541.23303">F</tspan></text>
+    </g>
+    <g
+       id="g4630"
+       transform="matrix(0.26458333,0,0,0.26458333,-44.847237,17.611464)">
+      <circle
+         style="font-size:1.67px;font-family:Monaco, Consolas, Menlo, 'Bitstream Vera Sans Mono', 'Powerline Symbols', monospace;font-variation-settings:normal;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         id="circle4620"
+         cx="745.23438"
+         cy="474.233"
+         r="27.233009" />
+      <text
+         xml:space="preserve"
+         style="font-size:48px;font-family:Monospace;-inkscape-font-specification:Monospace;font-variation-settings:normal;text-align:end;writing-mode:lr-tb;direction:ltr;text-anchor:end;fill:#f5f5f5;fill-opacity:1;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+         x="759.25781"
+         y="490.233"
+         id="text4621"><tspan
+           sodipodi:role="line"
+           id="tspan4620"
+           style="fill:#000000;stroke-width:1"
+           x="759.25781"
+           y="490.233">E</tspan></text>
+    </g>
+  </g>
+</svg>
