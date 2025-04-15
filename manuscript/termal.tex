@@ -2,6 +2,9 @@
 
 \usepackage[a4paper,margin=1in]{geometry}
 \usepackage{graphicx}
+\usepackage{lscape}
+\usepackage{tabularx}
+\usepackage{booktabs}
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{authblk}
@@ -44,23 +47,27 @@
 
 \section*{Introduction}
 
-Multiple sequence alignment (MSA) visualization is a common task in
-computational biology, yet many tools are GUI-based and unsuitable for use on
-headless or remote systems such as HPC clusters. While command-line tools such
-as \texttt{showalign} from the EMBOSS suite\cite{emboss} exist, they are limited
-in interactivity and display features. \texttt{termal} addresses this gap by
-providing a responsive, feature-rich terminal interface for exploring MSAs.
-Among terminal-based alignment viewers, Alan\cite{alan} stands out as a
-particularly elegant solution, leveraging standard Unix tools such as
-\texttt{less} and \texttt{awk} to enable minimalist inspection of multiple
-sequence alignments. Indeed, it served as the initial inspiration for the
-development of \texttt{termal}. However, Alan is limited by its static output and lack of
-interactivity: while scrolling and searching are available through less,
-features such as zooming, interactive navigation, consensus/conservation
-highlighting, and multiple color schemes are absent.  \texttt{termal} builds on Alan’s
-philosophy of terminal-first simplicity, but provides a richer and more
-responsive user experience by incorporating a fully interactive terminal UI and
-enhanced alignment rendering.
+Visualising multiple sequence alignments (MSAs)is a common task in computational
+biology, yet many alignment viewers have a graphical user interface (GUI) and
+are hence unsuitable for use on headless or remote systems such as HPC clusters.
+While command-line tools such as \texttt{showalign}\cite{emboss} do exist, they
+are typically limited in interactivity and display features. Among these,
+Alan\cite{alan} stands out as a particularly elegant solution, leveraging
+standard Unix tools such as \texttt{less} and \texttt{awk} to enable minimalist
+inspection of MSAs ---  indeed, it served as the initial inspiration for the
+present work. This means, however, that Alan's interactivity is limited to that
+of a pager: features such as zooming, reordering seqences, as well as computing
+and displaying a consensus sequence are absent. While \texttt{showalign} can
+compute a consensus, it does not support coloring residues, and the user must
+explicitly call a pager in order to scroll through the alignment. 
+
+In this work we introduce \texttt{termal}, which addresses this gap by providing
+a responsive, feature-rich terminal interface for exploring MSAs.
+\texttt{termal} builds on Alan’s philosophy of terminal-first simplicity, but
+provides a richer and more responsive user experience by incorporating a fully
+interactive terminal UI and enhanced alignment rendering.
+
+\section*{Features}
 
 \begin{figure}[htbp]
 \centering
@@ -75,39 +82,52 @@ enhanced alignment rendering.
 \end{figure}
 
 
-\section*{Implementation}
-
-\texttt{termal} is implemented in Rust using a modular terminal user interface
-(TUI) architecture. It supports common MSA formats such as FASTA and Clustal,
-and displays aligned sequences with interactive navigation (keyboard-based
-scrolling and zooming), consensus/conservation overlays, and customizable color
-schemes. It is distributed as a single static binary for ease of installation
-and deployment on remote systems.
-
 \section*{Comparison with Existing Tools}
 
 We compared \texttt{termal} with existing terminal-based viewers including
-\texttt{alv} and \texttt{showalign}. Table~\ref{tab:comparison} summarizes their
+\texttt{alv} and \texttt{showalign}. Table~\ref{tbl:comparison} summarizes their
 features.
 
-\begin{table}[h]
+\begin{landscape}
+\begin{table}[ht]
 \centering
-\begin{tabular}{lccc}
-\hline
-Feature                 & \texttt{termal} & \texttt{alv} & \texttt{showalign} \\
-\hline
-Terminal-based          & Yes             & Yes          & Yes                \\
-Interactive scrolling   & Yes             & Partial      & No                 \\
-Zooming                 & Yes             & No           & No                 \\
-Color schemes           & Yes             & Basic        & Very limited       \\
-Consensus/conservation  & Yes             & Limited      & No                 \\
-Format tolerance        & High            & Medium       & Low                \\
-Performance (large MSA) & High            & Medium       & Low                \\
-\hline
-\end{tabular}
-\caption{Comparison of \texttt{termal} with other terminal-based MSA viewers.}
-\label{tab:comparison}
+\small
+\begin{tabularx}{\linewidth}{lXXXXX}
+\toprule
+\textbf{Feature} & \textbf{\texttt{termal}} & \textbf{\texttt{alen}} & \textbf{\texttt{alv}} & \textbf{\texttt{alan}} & \textbf{\texttt{showalign}} \\
+\midrule
+\textit{Basics} \\
+Language & Rust & Rust & Python & Shell & C \\
+Interactivity & Yes (full TUI) & Yes (TUI) & No (pager output) & No (pager output) & No (static output) \\
+Handles large alignments & Yes (tested $>$15k$\times$1500) & Yes & Yes (slower) & Yes (but static) & Moderate \\
+\midrule
+\textit{Display features} \\
+Scrolling / navigation & Yes & Yes & No & No & No \\
+Zooming & Yes & No & No & No & No \\
+Label pane toggle & Yes & No & No & No & No \\
+Consensus display & Yes & Yes (reference toggle) & Yes (static) & No & Optional \\
+Conservation display & Yes & No & No & No & No \\
+Similarity histogram & Yes (vertical bars) & No & No & No & No \\
+Color schemes & Multiple, configurable & Fixed & Fixed & Basic ANSI & Limited \\
+Sequence numbering & Yes & No & No & No & Yes \\
+Supported formats & FASTA & FASTA & FASTA, Clustal (via BioPython) & FASTA & FASTA, Clustal \\
+\midrule
+\textit{Sorting / filtering} \\
+Sort by consensus similarity & Yes & No & No & No & No \\
+Sort by sequence length & Yes & No & No & No & No \\
+Manual row reordering & No & Yes & No & No & No \\
+Regex search & No & Yes & No & No & No \\
+\midrule
+\textit{Integration / output} \\
+Output style & TUI & TUI & STDOUT (to pager) & STDOUT (to pager) & Plain text output \\
+HPC / CLI friendly & Yes (single binary) & Yes & Needs Python env & Yes & Yes (installed via EMBOSS) \\
+License & MIT & MIT & MIT & Various & GPL \\
+\bottomrule
+\end{tabularx}
+\caption{Feature comparison of terminal-based MSA viewers.}
+\label{tab:msa-viewers}
 \end{table}
+\end{landscape}
 
 \section*{Performance and Limits}
 
@@ -123,10 +143,10 @@ more traditional emulators.
 
 \section*{Availability}
 
-\texttt{termal} is implemented in Rust and distributed under the MIT license. It
-is available as a single precompiled binary for Linux, macOS, and Windows, with
-no external dependencies or runtime environment required. Alternatively, users
-with Rust installed can install it via \texttt{cargo install termal}.
+\texttt{termal} is distributed under the <INSERT> license. It is available as a
+single precompiled binary for Linux, macOS, and Windows, with no external
+dependencies or runtime environment required. Alternatively, users with Rust
+installed can install it via \texttt{cargo install termal}.
 
 \section*{Conclusion}
 
@@ -142,13 +162,10 @@ semi-automated workflows requiring terminal-based alignment review. Accordingly,
 \texttt{termal} fills a niche for fast, interactive MSA exploration directly in
 the terminal, making it an ideal tool for remote bioinformatics workflows.
 
-\section*{Funding}
-
-(Optional: include if supported by a grant or institution)
-
 \section*{Acknowledgements}
 
-(Include if you'd like to credit collaborators or contributors)
+The author wishes to thank Drs Guillaume Cailleau and Sébastien Moretti for
+insightful comments on the program.
 
 \bibliographystyle{plain} % or use plainnat, unsrt, etc.
 \bibliography{termal}
