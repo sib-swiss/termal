@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 // TODO: this module should be renamed "barchart", as it is used for purposes other than
 // conservation (such as sequence metrics).
 

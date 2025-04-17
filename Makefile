@@ -1,15 +1,19 @@
 .PHONY: test clean install fmt manuscript
 
 RUST_SOURCES = $(shell find src -name '*.rs')
+#TODO: rename to LINUX_BINARY
 TERMAL_BINARY = ./target/release/termal
+WINDOWS_BINARY = ./target/x86_64-pc-windows-gnu/release/termal.exe
 INSTALL_DIR = /usr/local/bin
 MAN_DIR = /usr/share/man
 MS_DIR = ./manuscript
+BINARIES = $(TERMAL_BINARY) $(WINDOWS_BINARY)
 
-all: $(TERMAL_BINARY) termal.1.gz manuscript
+all: $(BINARIES) termal.1.gz #manuscript
 
 $(TERMAL_BINARY): $(RUST_SOURCES)
 	cargo build --release
+
 
 termal.1.gz: termal.1
 	gzip -f $<
@@ -44,3 +48,4 @@ clean:
 
 mrproper: clean
 	cargo clean
+	$(RM) $(BINARIES)

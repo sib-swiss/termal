@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 mod permutation;
 
 use std::collections::HashMap;

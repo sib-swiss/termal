@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 use ratatui::{
     prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
     style::{Modifier, Stylize},
