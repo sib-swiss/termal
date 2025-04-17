@@ -11,6 +11,8 @@ all: $(TERMAL_BINARY) termal.1.gz manuscript
 $(TERMAL_BINARY): $(RUST_SOURCES)
 	cargo build --release
 
+WINDOWS_BINARY = ./target/x86_64-pc-windows-gnu/release/termal.exe
+
 termal.1.gz: termal.1
 	gzip -f $<
 

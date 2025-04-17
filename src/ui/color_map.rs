@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 use std::{collections::HashMap, fs::File, io::BufReader, iter::Map};
 
 use hex_color::HexColor;

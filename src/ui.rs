@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 pub mod color_map;
 mod color_scheme;
 mod barchart;
