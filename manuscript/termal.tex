@@ -55,7 +55,7 @@ example Alan\cite{alan}, which stands out as a particularly elegant solution,
 since it is built on standard Unix tools such as \texttt{awk} and \texttt{less}
 --- indeed, it served as the initial inspiration for the present work. This
 means, however, that Alan's interactivity is limited to that of a pager:
-features such as zooming, reordering seqences, as well as computing and
+features such as zooming, reordering sequences, as well as computing and
 displaying a consensus sequence are absent. While
 \texttt{showalign}\cite{emboss} can compute a consensus, it does not support
 coloring residues, and the user must explicitly call a pager in order to scroll
@@ -79,15 +79,15 @@ be scrolled one sequence/column at a time using arrow keys or Vim-like
 \texttt{h}, \texttt{j}, \texttt{k}, and \texttt{l}; similar keystrokes allow
 jumping by screenfuls or to the edges of the alignment.
 
-By default, residues of nucleotide aligmnents are coloured according to
+By default, residues of nucleotide alignments are coloured according to
 Jalview's\cite{waterhouse2009jalview} nucleotide colour scheme, while protein
-alignments use that of CLUSTALX\cite{larkin2007clustal}. An alternative color
+alignments use that of ClustalX\cite{larkin2007clustal}. An alternative color
 scheme for protein is Lesk's\cite{lesk2019introduction}, and all alignments can
 be rendered in monochrome. 
 
 Alignments too wide to fit on the screen can be "zoomed out" by showing only the
 first and last column, as well as a sample of equidistant columns in between.
-The same can be done with sequences for aligments that are too tall. This
+The same can be done with sequences for alignments that are too tall. This
 allows regions of high conservation to be spotted without scrolling. A variant
 of the zoomed-out mode preserves the alignment's aspect ratio, at the cost of
 some wasted space.
@@ -108,11 +108,11 @@ alignment.
 \caption{%
 	A snapshot of \texttt{termal}'s interface showing a protein alignment. A:
 	alignment filename and dimensions, B: sequence numbers pane, C: sequence
-	labels pane, D: metric barplot pane (currently displaying sequence similarity
+	labels pane, D: metric bar plot pane (currently displaying sequence similarity
 	with the consensus), E: alignment pane, F: bottom pane, displaying sequence
-	position, consensus, and conservation barplot. \\
+	position, consensus, and conservation bar plot. \\
 	In this example the sequences are in the original (file) order, and use the
-	CLUSTALX color scheme. The view is zoomed in, that is, only a fracion of the
+	CLUSTALX color scheme. The view is zoomed in, that is, only a fraction of the
 	alignment is displayed. }
 	\label{fig:screen}
 \end{figure}
@@ -169,7 +169,7 @@ Regex search & No & Yes & No & No & No \\
 \textit{Integration / output} \\
 Output style & TUI & TUI & STDOUT (to pager) & STDOUT (to pager) & Plain text output \\
 HPC / CLI friendly & Yes (single binary) & Yes & Needs Python env & Yes & Yes (installed via EMBOSS) \\
-	License & (TBD) & MIT & MIT & Various & GPL \\
+	License & MIT & MIT & MIT & Various & GPL \\
 \bottomrule
 \end{tabularx}
 \caption{Feature comparison of terminal-based MSA viewers.}
@@ -180,7 +180,7 @@ HPC / CLI friendly & Yes (single binary) & Yes & Needs Python env & Yes & Yes (i
 \section*{Availability}
 
 \texttt{termal} is distributed under the <INSERT> license. It is available as a
-single precompiled binary (for Linux, macOS, and Windows), with no external
+single precompiled binary (for Linux, MacOS, and Windows), with no external
 dependencies or runtime environment required, from
 \url{gitlab.sib.swiss/tjunier/termal.git}. Alternatively, users with Rust
 installed can install it via \texttt{cargo install termal}.
