@@ -6,21 +6,21 @@ mod barchart;
 pub mod key_handling;
 pub mod render;
 
-use std::{cmp::min, collections::HashMap};
+use std::cmp::min; 
 
 use log::debug;
 
 use bitflags::bitflags;
 
 use ratatui::layout::Size;
-use ratatui::style::Color;
+//use ratatui::style::Color;
 
 use crate::{
     ui::color_map::{
-        MONOCHROME_INDEX, builtin_colormaps, color_map_clustalx, color_map_lesk,
-        color_map_monochrome, color_map_jalview_nt, ColorMap,
+        MONOCHROME_INDEX, builtin_colormaps,
+        ColorMap,
     },
-    ui::color_scheme::{color_scheme_colored, color_scheme_monochrome, ColorScheme},
+    ui::color_scheme::{color_scheme_colored, ColorScheme},
     App,
 };
 
@@ -425,6 +425,7 @@ impl<'a> UI<'a> {
         self.color_scheme.colormap_index = MONOCHROME_INDEX;
     }
 
+    #[allow(dead_code)]
     pub fn set_colormap(&mut self, cmap_ndx: usize) {
         self.color_scheme.colormap_index = cmap_ndx;
     }

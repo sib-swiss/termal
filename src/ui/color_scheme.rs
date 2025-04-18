@@ -1,13 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Thomas Junier
-use std::collections::HashMap;
 
 use ratatui::prelude::Color;
 
 use crate::{
     alignment::SeqType,
     ui::{
-        color_map::ColorMap,
         color_scheme::SeqType::Protein
     },
 };
@@ -59,9 +57,11 @@ pub struct ColorScheme {
 
     pub position_color: Color,
     pub conservation_color: Color,
+    #[allow(dead_code)]
     pub consensus_default_color: Color,
 }
 
+#[allow(dead_code)]
 pub fn color_scheme_monochrome() -> ColorScheme {
     ColorScheme {
         label_num_color: Color::White,

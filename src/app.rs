@@ -144,12 +144,12 @@ impl App {
 // after sorting. Eg [3, -2, 7] -> [1, 0, 2], because the smalllest element has index 1, the next
 // has index 0, and the largest has index 2 (in the original array).
 fn order(nums: &Vec<f64>) -> Vec<usize> {
-    let mut result: Vec<usize> = Vec::with_capacity(nums.len());
+    // let result: Vec<usize> = Vec::with_capacity(nums.len());
     let init_order: Vec<usize> = (0..nums.len()).collect();
-    let mut zip_iter = init_order.iter().zip(nums);
+    let zip_iter = init_order.iter().zip(nums);
     let mut unsorted_pairs: Vec<(&usize, &f64)> = zip_iter.collect();
-    unsorted_pairs.sort_by(|(u1, t1), (u2, t2)| t1.partial_cmp(t2).expect("Unorder!"));
-    unsorted_pairs.into_iter().map(|(u, t)| *u).collect::<Vec<usize>>()
+    unsorted_pairs.sort_by(|(_, t1), (_, t2)| t1.partial_cmp(t2).expect("Unorder!"));
+    unsorted_pairs.into_iter().map(|(u, _)| *u).collect::<Vec<usize>>()
 }
 
 #[cfg(test)]

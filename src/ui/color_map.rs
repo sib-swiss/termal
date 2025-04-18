@@ -1,11 +1,10 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Thomas Junier
-use std::{collections::HashMap, fs::File, io::BufReader, iter::Map};
+use std::{collections::HashMap, fs::File, io::BufReader};
 
 use hex_color::HexColor;
 use ratatui::prelude::Color;
 
-use serde_json::Value;
 use serde_json::Value::Object;
 
 use crate::ui::color_scheme::{
@@ -20,6 +19,7 @@ use crate::ui::color_scheme::{
 pub const MONOCHROME_INDEX: usize = 0;
 
 pub struct ColorMap {
+    #[allow(dead_code)]
     pub name: String,
     map: HashMap<char, Color>,
 }
@@ -37,6 +37,7 @@ impl ColorMap {
         }
     }
 
+    #[allow(dead_code)]
     pub fn insert(&mut self, residue: char, color: Color) {
         self.map.insert(residue, color);
     }

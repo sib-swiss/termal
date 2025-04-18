@@ -8,7 +8,7 @@ mod vec_f64_aux;
 use log::{debug, info};
 
 use std::io::{stdout, Result};
-use std::process::exit;
+//use std::process::exit;
 
 use clap::{arg, command, Parser};
 
@@ -155,8 +155,8 @@ fn main() -> Result<()> {
             }
 
             if let Some(path) = cli.color_map {
-                let cmap = colormap_gecos(path.into());
-                // TODO: add to colormaps
+                let _cmap = colormap_gecos(path.into());
+                // TODO: add to colormaps (and remove the underscore)
             }
 
             // main loop

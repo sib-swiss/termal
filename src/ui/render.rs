@@ -588,7 +588,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
 
 fn tick_marks(aln_length: usize, primary: Option<char>, secondary: Option<char>) -> String {
     let mut ticks = String::with_capacity(aln_length);
-    ticks += ("    :    ");
+    ticks += "    :    ";
     for i in 10..aln_length {
         ticks.push(if i % 10 == 0 {
             primary.unwrap_or('|')
