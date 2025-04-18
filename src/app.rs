@@ -8,7 +8,7 @@ use rasta::read_fasta_file;
 use crate::{
     alignment::Alignment,
     app::SeqOrdering::{SOURCE_FILE, METRIC_INCR, METRIC_DECR},
-    app::Metric::{PCT_ID_WRT_CONSENSUS, SEQ_LEN},
+    app::Metric::{PCT_ID_WRT_CONSENSUS, SeqLen},
 };
 
 #[derive(Clone, Copy)]
@@ -32,14 +32,14 @@ impl fmt::Display for SeqOrdering {
 #[derive(Clone, Copy)]
 pub enum Metric {
     PCT_ID_WRT_CONSENSUS,
-    SEQ_LEN,
+    SeqLen,
 }
 
 impl fmt::Display for Metric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let metric = match self {
             PCT_ID_WRT_CONSENSUS => "%id (cons)", 
-            SEQ_LEN => "seq len",
+            SeqLen => "seq len",
         };
         write!(f, "{}", metric)
     }
@@ -110,8 +110,8 @@ impl App {
 
     pub fn cycle_metric(&mut self) {
         self.metric = match self.metric {
-            PCT_ID_WRT_CONSENSUS =>  SEQ_LEN,
-            SEQ_LEN => PCT_ID_WRT_CONSENSUS,
+            PCT_ID_WRT_CONSENSUS =>  SeqLen,
+            SeqLen => PCT_ID_WRT_CONSENSUS,
         };
         self.recompute_ordering();
     }
@@ -134,7 +134,7 @@ impl App {
     pub fn order_values(&self) -> &Vec<f64> {
          match self.metric {
             PCT_ID_WRT_CONSENSUS => &self.alignment.id_wrt_consensus,
-            SEQ_LEN => &self.alignment.relative_seq_len, 
+            SeqLen => &self.alignment.relative_seq_len, 
         }
     }
 }
