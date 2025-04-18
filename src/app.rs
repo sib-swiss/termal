@@ -7,23 +7,23 @@ use rasta::read_fasta_file;
 
 use crate::{
     alignment::Alignment,
-    app::SeqOrdering::{SOURCE_FILE, METRIC_INCR, METRIC_DECR},
-    app::Metric::{PCT_ID_WRT_CONSENSUS, SeqLen},
+    app::SeqOrdering::{SourceFile, MetricIncr, MetricDecr},
+    app::Metric::{PctIdWrtConsensus, SeqLen},
 };
 
 #[derive(Clone, Copy)]
 pub enum SeqOrdering {
-    SOURCE_FILE,
-    METRIC_INCR,
-    METRIC_DECR,
+    SourceFile,
+    MetricIncr,
+    MetricDecr,
 }
 
 impl fmt::Display for SeqOrdering {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let sord = match self {
-            SOURCE_FILE => '-', 
-            METRIC_INCR => '↑',
-            METRIC_DECR => '↓',
+            SourceFile => '-', 
+            MetricIncr => '↑',
+            MetricDecr => '↓',
         };
         write!(f, "{}", sord)
     }
@@ -31,14 +31,14 @@ impl fmt::Display for SeqOrdering {
 
 #[derive(Clone, Copy)]
 pub enum Metric {
-    PCT_ID_WRT_CONSENSUS,
+    PctIdWrtConsensus,
     SeqLen,
 }
 
 impl fmt::Display for Metric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let metric = match self {
-            PCT_ID_WRT_CONSENSUS => "%id (cons)", 
+            PctIdWrtConsensus => "%id (cons)", 
             SeqLen => "seq len",
         };
         write!(f, "{}", metric)
@@ -66,8 +66,8 @@ impl App {
         Ok(App {
             filename: path.to_string(),
             alignment,
-            ordering_criterion: SOURCE_FILE,
-            metric: PCT_ID_WRT_CONSENSUS,
+            ordering_criterion: SourceFile,
+            metric: PctIdWrtConsensus,
             ordering: (0..len).collect(),
         })
     }
@@ -85,15 +85,15 @@ impl App {
 
     fn recompute_ordering(&mut self) {
         match self.ordering_criterion {
-            METRIC_INCR => {
+            MetricIncr => {
                 self.ordering = order(&self.order_values());
             }
-            METRIC_DECR => {
+            MetricDecr => {
                 let mut ord = order(&self.order_values());
                 ord.reverse();
                 self.ordering = ord;
             }
-            SOURCE_FILE => {
+            SourceFile => {
                 self.ordering = (0..self.alignment.num_seq()).collect();
             }
         }
@@ -101,17 +101,17 @@ impl App {
 
     pub fn cycle_ordering_criterion(&mut self) {
         self.ordering_criterion = match self.ordering_criterion {
-            SOURCE_FILE => METRIC_INCR,
-            METRIC_INCR => METRIC_DECR,
-            METRIC_DECR => SOURCE_FILE,
+            SourceFile => MetricIncr,
+            MetricIncr => MetricDecr,
+            MetricDecr => SourceFile,
         };
         self.recompute_ordering();
     }
 
     pub fn cycle_metric(&mut self) {
         self.metric = match self.metric {
-            PCT_ID_WRT_CONSENSUS =>  SeqLen,
-            SeqLen => PCT_ID_WRT_CONSENSUS,
+            PctIdWrtConsensus =>  SeqLen,
+            SeqLen => PctIdWrtConsensus,
         };
         self.recompute_ordering();
     }
@@ -133,7 +133,7 @@ impl App {
 
     pub fn order_values(&self) -> &Vec<f64> {
          match self.metric {
-            PCT_ID_WRT_CONSENSUS => &self.alignment.id_wrt_consensus,
+            PctIdWrtConsensus => &self.alignment.id_wrt_consensus,
             SeqLen => &self.alignment.relative_seq_len, 
         }
     }
