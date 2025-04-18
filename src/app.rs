@@ -2,7 +2,6 @@
 // Copyright (c) 2025 Thomas Junier
 use std::fmt;
 
-use log::debug;
 
 use rasta::read_fasta_file;
 

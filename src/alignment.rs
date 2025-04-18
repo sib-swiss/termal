@@ -3,7 +3,6 @@
 mod permutation;
 
 use std::collections::HashMap;
-use std::iter::Zip;
 
 use itertools::Itertools;
 
