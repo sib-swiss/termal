@@ -8,7 +8,7 @@ MAN_DIR = /usr/share/man
 MS_DIR = ./manuscript
 BINARIES = $(LINUX_BINARY) $(WINDOWS_BINARY)
 
-all: $(BINARIES) termal.1.gz manuscript
+all: $(BINARIES) termal.1.gz
 
 $(LINUX_BINARY): $(RUST_SOURCES)
 	cargo build --release
@@ -18,7 +18,7 @@ $(WINDOWS_BINARY): $(RUST_SOURCES)
 	cargo build --release --target x86_64-pc-windows-gnu
 
 termal.1.gz: termal.1
-	gzip -f $<
+	gzip -kf $<
 
 termal.1: termal.md
 	pandoc --standalone --to=man $< > $@
