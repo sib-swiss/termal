@@ -22,8 +22,8 @@
 
 \author[1]{Thomas Junier}
 \affil[1]{Swiss Institute of Bioinformatics, Vital-\textsc{it} Group, Bâtiment
-Amphipôle, Quartier UNIL-Sorge, CH-1015 Lausanne, Switzerland\\
-\texttt{thomas.junier@sib.swiss}}
+Amphipôle, Quartier UNIL-Sorge, CH-1015 Lausanne, Switzerland -- 
+\texttt{thomas.junier@sib.swiss} -- ORCID: 0000-0002-4015-5969}
 
 \date{} % Actually _suppresses_ the date!
 
@@ -36,12 +36,12 @@ Amphipôle, Quartier UNIL-Sorge, CH-1015 Lausanne, Switzerland\\
   designed for use on remote systems such as high-performance computing (HPC)
   clusters. Unlike traditional graphical viewers, \texttt{termal} runs entirely
   within a terminal and offers features such as scrolling, zooming,
-  consensus/conservation visualization, and customizable color schemes. It is
+  consensus/conservation visualization, and customizable colour schemes. It is
   implemented in Rust, ensuring high performance and minimal dependencies.
 
 	\textbf{Availability and implementation:} \texttt{termal} is written in Rust
-	and freely available under the <INSERT> license at
-	\url{gitlab.sib.swiss/tjunier/termal.git}
+	and freely available under the MIT license at
+	\url{https://gitlab.sib.swiss/tjunier/termal.git}
 
 \end{abstract}
 
@@ -58,14 +58,14 @@ means, however, that Alan's interactivity is limited to that of a pager:
 features such as zooming, reordering sequences, as well as computing and
 displaying a consensus sequence are absent. While
 \texttt{showalign}\cite{emboss} can compute a consensus, it does not support
-coloring residues, and the user must explicitly call a pager in order to scroll
+colouring residues, and the user must explicitly call a pager in order to scroll
 through the alignment. Other programs like \texttt{alen}\cite{alen} are
 interactive, but not all have built-in residue colour schemes or the ability to
 visually represent metrics such as similarity to the consensus, or to reorder
 sequences according to such metrics. The capacity to fit a large alignment on
 screen, typically by only displaying a subset of the sequences and columns, is
 also rare (see also table~\ref{tbl:comparison}). In summary, text-based MSA
-viewers collectively provide a substantial range of functions, but non viewer
+viewers collectively provide a substantial range of functions, but no viewer
 implements all, or even most, of them. In this work we introduce
 \texttt{termal}, which combines most of these features in a single application.
 
@@ -81,7 +81,7 @@ jumping by screenfuls or to the edges of the alignment.
 
 By default, residues of nucleotide alignments are coloured according to
 Jalview's\cite{waterhouse2009jalview} nucleotide colour scheme, while protein
-alignments use that of ClustalX\cite{larkin2007clustal}. An alternative color
+alignments use that of ClustalX\cite{larkin2007clustal}. An alternative colour
 scheme for protein is Lesk's\cite{lesk2019introduction}, and all alignments can
 be rendered in monochrome. 
 
@@ -112,7 +112,8 @@ alignment.
 	with the consensus), E: alignment pane, F: bottom pane, displaying sequence
 	position, consensus, and conservation bar plot. \\
 	In this example the sequences are in the original (file) order, and use the
-	CLUSTALX color scheme. The view is zoomed in, that is, only a fraction of the
+	CLUSTALX colour
+scheme. The view is zoomed in, that is, only a fraction of the
 	alignment is displayed. }
 	\label{fig:screen}
 \end{figure}
@@ -156,7 +157,7 @@ Label pane toggle & Yes & No & No & No & No \\
 Consensus display & Yes & Yes (reference toggle) & Yes (static) & No & Optional \\
 Conservation display & Yes & No & No & No & No \\
 Similarity histogram & Yes (vertical bars) & No & No & No & No \\
-Color schemes & Multiple, configurable & Fixed & Fixed & Basic ANSI & Limited \\
+Colour schemes & Multiple, configurable & Fixed & Fixed & Basic ANSI & Limited \\
 Sequence numbering & Yes & No & No & No & Yes \\
 Supported formats & FASTA & FASTA & FASTA, Clustal (via BioPython) & FASTA & FASTA, Clustal \\
 \midrule
@@ -179,7 +180,7 @@ HPC / CLI friendly & Yes (single binary) & Yes & Needs Python env & Yes & Yes (i
 
 \section*{Availability}
 
-\texttt{termal} is distributed under the <INSERT> license. It is available as a
+\texttt{termal} is distributed under the MIT license. It is available as a
 single precompiled binary (for Linux, MacOS, and Windows), with no external
 dependencies or runtime environment required, from
 \url{gitlab.sib.swiss/tjunier/termal.git}. Alternatively, users with Rust
@@ -202,9 +203,10 @@ tool for remote bioinformatics workflows.
 
 \section*{Acknowledgements}
 
-<INSERT SNF Grant #>
-The author wishes to thank Drs Guillaume Cailleau and Sébastien Moretti for
-insightful comments on the program.
+The development of \texttt{termal} was funded by Swiss National Science
+Foundation BRIDGE Discovery grant 40B2-0\_194701.  The author wishes to thank
+Drs Guillaume Cailleau and Sébastien Moretti for insightful comments on the
+program.
 
 \bibliographystyle{plain} % or use plainnat, unsrt, etc.
 \bibliography{termal}
