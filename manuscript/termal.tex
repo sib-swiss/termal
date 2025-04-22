@@ -45,6 +45,8 @@ Amphipôle, Quartier UNIL-Sorge, CH-1015 Lausanne, Switzerland --
 
 \end{abstract}
 
+\paragraph*{Keywords:} multiple sequence alignment, viewer, terminal, text user interface
+
 \section*{Introduction}
 
 Visualising multiple sequence alignments (MSAs) is a common task in
@@ -112,8 +114,8 @@ alignment.
 	with the consensus), E: alignment pane, F: bottom pane, displaying sequence
 	position, consensus, and conservation bar plot. \\
 	In this example the sequences are in the original (file) order, and use the
-	CLUSTALX colour
-scheme. The view is zoomed in, that is, only a fraction of the
+	ClustalX colour
+scheme. the view is zoomed in, that is, only a fraction of the
 	alignment is displayed. }
 	\label{fig:screen}
 \end{figure}
@@ -135,7 +137,7 @@ more traditional emulators.
 \section*{Comparison with Existing Tools}
 
 Table~\ref{tbl:comparison} presents a feature matrix for \texttt{termal} and a
-selection of other TUI alignment viewers.
+selection of other terminal-based alignment viewers.
 
 \begin{landscape}
 \begin{table}[ht]
@@ -147,19 +149,19 @@ selection of other TUI alignment viewers.
 \midrule
 \textit{Basics} \\
 Language & Rust & Rust & Python & Shell & C \\
-Interactivity & Yes (full TUI) & Yes (TUI) & No (pager output) & No (pager output) & No (static output) \\
-Handles large alignments & Yes (tested $>$15k$\times$1500) & Yes & Yes (slower) & Yes (but static) & Moderate \\
+Interactivity & Yes (TUI) & Yes (TUI) & No & Limited (pager)  & No \\
+Supported alignment formats & Fasta & Fasta & Fasta, Clustal, Phylip, and more
+	& Fasta, Clustal & Fasta, Clustal, Phylip, and more\\
 \midrule
 \textit{Display features} \\
 Scrolling / navigation & Yes & Yes & No & No & No \\
-Zooming & Yes & No & No & No & No \\
-Label pane toggle & Yes & No & No & No & No \\
-Consensus display & Yes & Yes (reference toggle) & Yes (static) & No & Optional \\
-Conservation display & Yes & No & No & No & No \\
-Similarity histogram & Yes (vertical bars) & No & No & No & No \\
-Colour schemes & Multiple, configurable & Fixed & Fixed & Basic ANSI & Limited \\
-Sequence numbering & Yes & No & No & No & Yes \\
-Supported formats & FASTA & FASTA & FASTA, Clustal (via BioPython) & FASTA & FASTA, Clustal \\
+Zooming & Yes & No & Partial (\texttt{-g}) & No & No \\
+Label pane width adjustment & Yes & Yes & No & No & Yes \\
+Consensus display & Yes & Yes  & No & No & Yes \\
+Conservation bar plot & Yes & No & No & No & No \\
+Sequence metric bar plot & Yes  & No & No & No & No \\
+Colour schemes & Multiple & Fixed & Fixed & Customisable & No \\
+Sequence numbering & Yes & No & No & No & No \\
 \midrule
 \textit{Sorting / filtering} \\
 Sort by consensus similarity & Yes & No & No & No & No \\
@@ -167,13 +169,17 @@ Sort by sequence length & Yes & No & No & No & No \\
 Manual row reordering & No & Yes & No & No & No \\
 Regex search & No & Yes & No & No & No \\
 \midrule
-\textit{Integration / output} \\
-Output style & TUI & TUI & STDOUT (to pager) & STDOUT (to pager) & Plain text output \\
-HPC / CLI friendly & Yes (single binary) & Yes & Needs Python env & Yes & Yes (installed via EMBOSS) \\
+\textit{Other} \\
+	Dependencies & None  & None & BioPython & Core shell utilities & None (installed via EMBOSS) \\
 	License & MIT & MIT & MIT & Various & GPL \\
 \bottomrule
 \end{tabularx}
-\caption{Feature comparison of terminal-based MSA viewers.}
+\caption{%
+Feature comparison of some terminal-based MSA viewers. Features are considered
+	present when mentioned in the manual page or program help, or when obvious
+	from the display. A "sequence metric" is a numeric property of a sequence such
+	as ungapped length (see text).
+}
 \label{tbl:comparison}
 \end{table}
 \end{landscape}
@@ -207,6 +213,10 @@ The development of \texttt{termal} was funded by Swiss National Science
 Foundation BRIDGE Discovery grant 40B2-0\_194701.  The author wishes to thank
 Drs Guillaume Cailleau and Sébastien Moretti for insightful comments on the
 program.
+
+\section*{Conflicts of Interest}
+
+The author declares no conflict of interest.
 
 \bibliographystyle{plain} % or use plainnat, unsrt, etc.
 \bibliography{termal}
