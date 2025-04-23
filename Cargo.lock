@@ -777,7 +777,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "termal"
+name = "termal-msa"
 version = "1.0.0"
 dependencies = [
  "approx",
