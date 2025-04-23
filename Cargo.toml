@@ -5,6 +5,11 @@ edition = "2021"
 license = "MIT"
 repository = "https://gitlab.sib.swiss/tjunier/termal"
 readme = "README.md"
+description = "A viewer of multiple sequence alignments, with a text-based user interface"
+keywords = ["multiple sequence alignment", "viewer", "terminal", "TUI"]
+categories = ["science::bioinformatics", "science::bioinformatics::sequence-analysis", "command-line-utilities"]
+readme = "README.md"
+#homepage: no page other than repo
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
