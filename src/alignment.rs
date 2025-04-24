@@ -6,7 +6,7 @@ use std::collections::HashMap;
 
 use itertools::Itertools;
 
-use rasta::FastaFile;
+use crate::fasta::FastaFile;
 
 use crate::alignment::SeqType::{Nucleic, Protein};
 

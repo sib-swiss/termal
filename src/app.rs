@@ -3,7 +3,7 @@
 use std::fmt;
 
 
-use rasta::read_fasta_file;
+use crate::fasta::read_fasta_file;
 
 use crate::{
     alignment::Alignment,
