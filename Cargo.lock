@@ -568,11 +568,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "rasta"
-version = "0.1.0"
-source = "git+https://github.com/juniert/rasta.git#2d2122c487a79b320179f5363e117ec8ac4148d6"
-
-[[package]]
 name = "ratatui"
 version = "0.29.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -788,7 +783,6 @@ dependencies = [
  "hex_color",
  "itertools 0.14.0",
  "log",
- "rasta",
  "ratatui",
  "serde_json",
 ]
