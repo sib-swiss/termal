@@ -6,7 +6,7 @@ license = "MIT"
 repository = "https://gitlab.sib.swiss/tjunier/termal"
 readme = "README.md"
 description = "A viewer of multiple sequence alignments, with a text-based user interface"
-keywords = ["multiple sequence alignment", "viewer", "terminal", "TUI"]
+keywords = ["multiple alignment", "viewer", "terminal", "TUI"]
 categories = ["science::bioinformatics", "science::bioinformatics::sequence-analysis", "command-line-utilities"]
 include = ["**/*.rs", "src/ui/bindings.md", "Cargo.toml", "data/example-1.msa", "data/CD00377_ICL-PEPM_wDesc.msa", "data/large_DNA.msa"]
 #homepage: no page other than repo
