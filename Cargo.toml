@@ -8,7 +8,7 @@ readme = "README.md"
 description = "A viewer of multiple sequence alignments, with a text-based user interface"
 keywords = ["multiple sequence alignment", "viewer", "terminal", "TUI"]
 categories = ["science::bioinformatics", "science::bioinformatics::sequence-analysis", "command-line-utilities"]
-exclude = ["app-tests", "Makefile", "manuscript"]
+exclude = ["app-tests", "Makefile", "meta.yaml", "manuscript", "data/colormaps"]
 #homepage: no page other than repo
 
 [[bin]]
