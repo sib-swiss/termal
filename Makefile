@@ -2,17 +2,20 @@
 
 RUST_SOURCES = $(shell find src -name '*.rs')
 LINUX_BINARY = ./target/release/termal
+LINUX_STATIC_BINARY = target/x86_64-unknown-linux-musl/release/termal
 WINDOWS_BINARY = ./target/x86_64-pc-windows-gnu/release/termal.exe
 INSTALL_DIR = /usr/local/bin
 MAN_DIR = /usr/share/man
 MS_DIR = ./manuscript
-BINARIES = $(LINUX_BINARY) $(WINDOWS_BINARY)
+BINARIES = $(LINUX_BINARY) $(LINUX_STATIC_BINARY) $(WINDOWS_BINARY) 
 
 all: $(BINARIES) termal.1.gz
 
 $(LINUX_BINARY): $(RUST_SOURCES)
 	cargo build --release
 
+$(LINUX_STATIC_BINARY): $(RUST_SOURCES)
+	cargo build --release --target x86_64-unknown-linux-musl
 
 $(WINDOWS_BINARY): $(RUST_SOURCES)
 	cargo build --release --target x86_64-pc-windows-gnu
