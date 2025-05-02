@@ -6,3 +6,5 @@ Session.vim
 termal.1
 termal.1.gz
 manuscript
+*.gz
+*.md5
