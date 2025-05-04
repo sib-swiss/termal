@@ -14,9 +14,10 @@ Quick Start
 
 Download the latest binary:
 
+
 ### 🐧 Linux (x86_64)
 
-📥 [Download](https://github.com/sib-swiss/termal/releases/latest)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-x86_64-linux.tar.gz)
 
 ```bash
 tar -xzf termal-v1.0.0-linux-x64.tar.gz
@@ -28,7 +29,7 @@ chmod +x termal
 
 ### Windows
 
-📥 [Download ZIP](https://github.com/sib-swiss/termal/releases/latest)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-x86_64-windows.tar.gz)
 
 1. Unzip the archive
 2. Open a terminal and run:
@@ -41,7 +42,7 @@ termal.exe -h
 
 ### macOS
 
-📥 [Download](https://github.com/sib-swiss/termal/releases/latest)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-x86_64-macos.tar.gz)
 
 ```bash
 tar -xzf termal-v1.0.0-macos-x64.tar.gz
