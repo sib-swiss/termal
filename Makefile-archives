@@ -23,7 +23,7 @@ release-archives: $(LINUX_ARCHIVE) $(LINUX_SHA) \
 $(LINUX_ARCHIVE): $(LINUX_BIN) $(EXAMPLE_MSA)
 	cp $(LINUX_BIN) termal
 	chmod 755 termal
-	tar -czvf $@ termal $(EXAMPLE_MSA)
+	tar -czhf $@ termal $(EXAMPLE_MSA)
 	rm termal
 
 $(LINUX_SHA): $(LINUX_ARCHIVE)
@@ -32,7 +32,7 @@ $(LINUX_SHA): $(LINUX_ARCHIVE)
 $(MACOS_ARCHIVE): $(MACOS_BIN) $(EXAMPLE_MSA)
 	cp $(MACOS_BIN) termal
 	chmod 755 termal
-	tar -czvf $@ termal $(EXAMPLE_MSA)
+	tar -czhf $@ termal $(EXAMPLE_MSA)
 	rm termal
 
 $(MACOS_SHA): $(MACOS_ARCHIVE)
