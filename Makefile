@@ -1,9 +1,10 @@
-.PHONY: test clean install fmt manuscript
+.PHONY: test clean install fmt manuscript release
 
 RUST_SOURCES = $(shell find src -name '*.rs')
 LINUX_BINARY = ./target/release/termal
 LINUX_STATIC_BINARY = target/x86_64-unknown-linux-musl/release/termal
 COMPRESSED_LINUX_STATIC_BINARY = termal-x86_64-linux.tar.gz
+COMPRESSED_LINUX_STATIC_BINARY_SHA256 = termal-x86_64-linux.tar.gz.sha256
 WINDOWS_BINARY = ./target/x86_64-pc-windows-gnu/release/termal.exe
 INSTALL_DIR = /usr/local/bin
 MAN_DIR = /usr/share/man
@@ -13,8 +14,13 @@ COMPRESSED_BINARIES = $(COMPRESSED_LINUX_STATIC_BINARY)
 
 all: $(BINARIES) $(COMPRESSED_BINARIES) termal.1.gz manuscript
 
+release: $(COMPRESSED_BINARIES) $(COMPRESSED_LINUX_STATIC_BINARY_SHA256)
+
 $(COMPRESSED_LINUX_STATIC_BINARY): $(LINUX_STATIC_BINARY)
-	tar -czvf termal-x86_64-linux.tar.gz -C target/x86_64-unknown-linux-musl/release termal
+	tar -czvf $@ -C $(dir $(LINUX_STATIC_BINARY)) $(notdir $(LINUX_STATIC_BINARY))
+
+$(COMPRESSED_LINUX_STATIC_BINARY_SHA256): $(COMPRESSED_LINUX_STATIC_BINARY)
+	sha256sum $< > $@
 
 $(LINUX_BINARY): $(RUST_SOURCES)
 	cargo build --release
@@ -59,4 +65,4 @@ clean:
 
 mrproper: clean
 	cargo clean
-	$(RM) $(BINARIES)
+	$(RM) $(BINARIES) $(COMPRESSED_LINUX_STATIC_BINARY_SHA256)

@@ -8,3 +8,4 @@ termal.1.gz
 manuscript
 *.gz
 *.md5
+*.sha256
