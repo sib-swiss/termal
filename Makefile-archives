@@ -1,0 +1,56 @@
+RELEASE_VERSION = v1.0.0
+EXAMPLE_MSA = data/example-1.msa
+
+# Binaries built manually or by other rules
+LINUX_BIN = target/x86_64-unknown-linux-musl/release/termal
+MACOS_BIN = termal-v1.0.0-macos-x86_64
+WINDOWS_BIN = termal-v1.0.0-windows-x86_64.exe
+
+# Archive names
+LINUX_ARCHIVE = termal-$(RELEASE_VERSION)-linux-x86_64.tar.gz
+MACOS_ARCHIVE = termal-$(RELEASE_VERSION)-macos-x86_64.tar.gz
+WINDOWS_ARCHIVE = termal-$(RELEASE_VERSION)-windows-x86_64.zip
+
+LINUX_SHA = $(LINUX_ARCHIVE).sha256
+MACOS_SHA = $(MACOS_ARCHIVE).sha256
+WINDOWS_SHA = $(WINDOWS_ARCHIVE).sha256
+
+# Default rule to build all archives
+release-archives: $(LINUX_ARCHIVE) $(LINUX_SHA) \
+                  $(MACOS_ARCHIVE) $(MACOS_SHA) \
+                  $(WINDOWS_ARCHIVE) $(WINDOWS_SHA)
+
+$(LINUX_ARCHIVE): $(LINUX_BIN) $(EXAMPLE_MSA)
+	cp $(LINUX_BIN) termal
+	chmod 755 termal
+	tar -czvf $@ termal $(EXAMPLE_MSA)
+	rm termal
+
+$(LINUX_SHA): $(LINUX_ARCHIVE)
+	sha256sum $< > $@
+
+$(MACOS_ARCHIVE): $(MACOS_BIN) $(EXAMPLE_MSA)
+	cp $(MACOS_BIN) termal
+	chmod 755 termal
+	tar -czvf $@ termal $(EXAMPLE_MSA)
+	rm termal
+
+$(MACOS_SHA): $(MACOS_ARCHIVE)
+	sha256sum $< > $@
+
+$(WINDOWS_ARCHIVE): $(WINDOWS_BIN) $(EXAMPLE_MSA)
+	cp $(WINDOWS_BIN) termal.exe
+	# Optional: convert line endings for Windows if needed
+	# unix2dos -n $(EXAMPLE_MSA) example.msa
+	cp $(EXAMPLE_MSA) example-1.msa
+	zip $@ termal.exe example-1.msa
+	rm termal.exe example-1.msa
+
+$(WINDOWS_SHA): $(WINDOWS_ARCHIVE)
+	sha256sum $< > $@
+
+clean:
+	$(RM) $(LINUX_ARCHIVE) $(LINUX_SHA) \
+		$(MACOS_ARCHIVE) $(MACOS_SHA) \
+		$(WINDOWS_ARCHIVE) $(WINDOWS_SHA)
+

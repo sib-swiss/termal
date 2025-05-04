@@ -1,8 +1,3 @@
----
-title: TERMAL
-subtitle: A TUI multiple alignment viewer
-author: Thomas Junier
----
 
 Summary
 =======
@@ -15,14 +10,14 @@ Quick Start
 Download the latest binary:
 
 
-### 🐧 Linux (x86_64)
+### Linux (x86_64)
 
 * [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-linux-x86_64.tar.gz)
 
 ```bash
 tar -xzf termal-v1.0.0-linux-x64.tar.gz
 chmod +x termal
-./termal -h
+./termal data/example-1.msa
 ```
 
 ---
@@ -35,7 +30,7 @@ chmod +x termal
 2. Open a terminal and run:
 
 ```powershell
-termal.exe -h
+termal.exe example-1.msa
 ```
 
 ---
@@ -47,7 +42,7 @@ termal.exe -h
 ```bash
 tar -xzf termal-v1.0.0-macos-x64.tar.gz
 chmod +x termal
-./termal -h
+./termal data/example-1.msa
 ```
 
 Tested on:

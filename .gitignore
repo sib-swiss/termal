@@ -10,3 +10,5 @@ manuscript
 *.md5
 *.sha256
 *.zip
+*.exe
+termal-v1.0.0-macos-x86_64
