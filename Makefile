@@ -1,10 +1,11 @@
 .PHONY: test clean install fmt manuscript release
 
+VERSION=v1.0.0
 RUST_SOURCES = $(shell find src -name '*.rs')
 LINUX_BINARY = ./target/release/termal
 LINUX_STATIC_BINARY = target/x86_64-unknown-linux-musl/release/termal
-COMPRESSED_LINUX_STATIC_BINARY = termal-x86_64-linux.tar.gz
-COMPRESSED_LINUX_STATIC_BINARY_SHA256 = termal-x86_64-linux.tar.gz.sha256
+COMPRESSED_LINUX_STATIC_BINARY = termal-$(VERSION)-linux-x86_64.tar.gz
+COMPRESSED_LINUX_STATIC_BINARY_SHA256 = $(COMPRESSED_LINUX_STATIC_BINARY).sha256
 WINDOWS_BINARY = ./target/x86_64-pc-windows-gnu/release/termal.exe
 INSTALL_DIR = /usr/local/bin
 MAN_DIR = /usr/share/man

@@ -17,7 +17,7 @@ Download the latest binary:
 
 ### 🐧 Linux (x86_64)
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-x86_64-linux.tar.gz)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-linux-x86_64.tar.gz)
 
 ```bash
 tar -xzf termal-v1.0.0-linux-x64.tar.gz
@@ -29,7 +29,7 @@ chmod +x termal
 
 ### Windows
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-x86_64-windows.tar.gz)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-wv1.0.0-indows-x86_64.exe.zip)
 
 1. Unzip the archive
 2. Open a terminal and run:
@@ -42,7 +42,7 @@ termal.exe -h
 
 ### macOS
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-x86_64-macos.tar.gz)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-mv1.0.0-acos-x86_64.tar.gz")
 
 ```bash
 tar -xzf termal-v1.0.0-macos-x64.tar.gz
@@ -50,7 +50,12 @@ chmod +x termal
 ./termal -h
 ```
 
+Tested on:
+- Linux (EndeavourOS Build-ID 2024-01-15)
+- macOS 10.13.6 (High Sierra)
+- Windows 11
 
+No installation required. No dependencies.
 
 Synopsis
 ========
