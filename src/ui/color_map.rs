@@ -48,7 +48,7 @@ pub fn builtin_colormaps() -> Vec<ColorMap> {
     // the same for the default colored map.
     vec![
         color_map_jalview_nt(), // Keep the nucleotide map at index 0 (see
-                                // color_scheme::color_scheme_colored()
+        // color_scheme::color_scheme_colored()
         color_map_clustalx(),
         color_map_lesk(),
         color_map_monochrome(),

@@ -239,11 +239,10 @@ fn seq_type(sequence: &str) -> SeqType {
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, seq_len_nogaps, seq_type, to_freq_distrib,
-        Alignment, BestResidue, ResidueCounts, ResidueDistribution, SeqType::{Nucleic, Protein},
+        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count, seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, ResidueCounts, ResidueDistribution, SeqType::{Nucleic, Protein},
     };
+    use crate::fasta::read_fasta_file;
     use approx::assert_relative_eq;
-    use rasta::read_fasta_file;
     use std::collections::HashMap;
 
     #[test]

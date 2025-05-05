@@ -53,11 +53,11 @@ mod tests {
         let path = "data/test2.fas";
         let fasta: FastaFile = read_fasta_file(path).expect("Test file not found");
         assert_eq!(fasta[0].header, "seq1");
-        assert_eq!(fasta[0].sequence, "GAATTC");
+        assert_eq!(fasta[0].sequence, "TTGCCG-CGA");
         assert_eq!(fasta[1].header, "seq2");
-        assert_eq!(fasta[1].sequence, "TTGCCGGCAA");
+        assert_eq!(fasta[1].sequence, "TTCCCGGCGA");
         assert_eq!(fasta[2].header, "seq3");
-        assert_eq!(fasta[2].sequence, "TATAAT");
+        assert_eq!(fasta[2].sequence, "TTACCG-CAA");
     }
 
     #[test]
@@ -65,7 +65,7 @@ mod tests {
         let path = "data/test3.pep";
         let fasta: FastaFile = read_fasta_file(path).expect("Test file not found");
         assert_eq!(fasta[0].header, "Some larger FastA record, with several lines");
-        assert_eq!(fasta[0].sequence, "hwyqydswswhqiqdpwvaslmtgsehnttivdlnvlgamdclwlcycqpecfevfslcievdlpsccwakalcafhmwdsmakqcwmpemgevsyfyalsmfhyfllhsrpiqpwqthhipydsivvdlianyfynmivqdvdknsnirfdrsvmrdvmiyefentyatgvvfnvngkcgqfcknmiyvgtietqkeyemfknldcavqkrhnlqpnceniamkmriqyngkrfrmdyweryrcndikqvlpqpftevamehrtfklwpttrlmmsnpkcrqclewaavetgwifttnf");
+        assert_eq!(fasta[0].sequence, "HWYQYDSWSWHQIQDPWVASLMTGSEHNTTIVDLNVLGAMDCLWLCYCQPECFEVFSLCIEVDLPSCCWAKALCAFHMWDSMAKQCWMPEMGEVSYFYALSMFHYFLLHSRPIQPWQTHHIPYDSIVVDLIANYFYNMIVQDVDKNSNIRFDRSVMRDVMIYEFENTYATGVVFNVNGKCGQFCKNMIYVGTIETQKEYEMFKNLDCAVQKRHNLQPNCENIAMKMRIQYNGKRFRMDYWERYRCNDIKQVLPQPFTEVAMEHRTFKLWPTTRLMMSNPKCRQCLEWAAVETGWIFTTNF");
     }
 }
 
