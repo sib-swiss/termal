@@ -1,3 +1,4 @@
+![Build](https://github.com/sib-swiss/termal/actions/workflows/ci.yml/badge.svg)
 
 Summary
 =======
