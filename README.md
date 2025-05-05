@@ -8,7 +8,7 @@ Termal is a program for examining multiple sequence **al**ignments in a **term**
 Quick Start 
 ============
 
-Download the latest archive, uncompress it, and run the binary on the exa,ple
+Download the latest archive, uncompress it, and run the binary on the example
 alignment:
 
 
