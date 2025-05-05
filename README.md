@@ -5,9 +5,10 @@ Summary
 Termal is a program for examining multiple sequence **al**ignments in a **term**inal.
 
 Quick Start 
-------------
+============
 
-Download the latest binary:
+Download the latest archive, uncompress it, and run the binary on the exa,ple
+alignment:
 
 
 ### Linux (x86_64)
@@ -15,8 +16,7 @@ Download the latest binary:
 * [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-linux-x86_64.tar.gz)
 
 ```bash
-tar -xzf termal-v1.0.0-linux-x64.tar.gz
-chmod +x termal
+tar -xzf termal-v1.0.0-linux-x86_64.tar.gz
 ./termal data/example-1.msa
 ```
 
@@ -40,8 +40,7 @@ termal.exe example-1.msa
 * [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-macos-x86_64.tar.gz")
 
 ```bash
-tar -xzf termal-v1.0.0-macos-x64.tar.gz
-chmod +x termal
+tar -xzf termal-v1.0.0-macos-x86_64.tar.gz
 ./termal data/example-1.msa
 ```
 
