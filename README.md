@@ -71,6 +71,8 @@ Interface
 Key Bindings
 ------------
 
+To see the key bindings, press "`?`" while running `termal`, or run `termal -h`.
+
 Features
 ========
 
@@ -88,15 +90,19 @@ Motivation
 Primary
 -------
 
-Multiple sequence alignments often reside on distant machines like HPC clusters, for two reasons:
+Multiple sequence alignments often reside on distant machines like HPC clusters,
+for two reasons:
 
-1. They may require nontrivial resources to compute (this is especially true of large alignments);
-1. They may serve as inputs to heavy-duty analyses like computing phylogenetic trees.
+1. They may require nontrivial resources to compute (this is especially true of
+   large alignments);
+1. They may serve as inputs to heavy-duty analyses like computing phylogenetic
+   trees.
 
-Like any other input data, it's a good idea to have a quick look at an alignment before it is fed to an analysis pipeline. There are many fine tools for doing this, but most of them have a graphical user interface, so they (usually) can't be used over SSH. Termal allows you to 
-
-Secondary
----------
+Like any other input data, it's a good idea to have a quick look at an alignment
+before it is fed to an analysis pipeline. There are many fine tools for doing
+this, but most of them have a graphical user interface, so they (usually) can't
+be used over SSH. A multiple sequence alignment is basically just text, so it is
+well suited for a TUI.
 
 Example
 =======
