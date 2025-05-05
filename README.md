@@ -5,11 +5,15 @@ Summary
 
 Termal is a program for examining multiple sequence **al**ignments in a **term**inal.
 
+* No installer (just download and uncompress)
+* No dependencies.
+* Best results in a dark-themed terminal.
+
 Quick Start 
 ============
 
 Download the latest archive, uncompress it, and run the binary on the example
-alignment:
+alignment (see below). Press "`?`" for help.
 
 
 ### Linux (x86_64)
@@ -49,8 +53,6 @@ Tested on:
 - Linux (EndeavourOS Build-ID 2024-01-15)
 - macOS 10.13.6 (High Sierra)
 - Windows 11
-
-No installation required. No dependencies.
 
 Synopsis
 ========
