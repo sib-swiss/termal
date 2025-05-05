@@ -24,7 +24,7 @@ tar -xzf termal-v1.0.0-linux-x86_64.tar.gz
 
 ### Windows
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-windows-x86_64.exe.zip)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-windows-x86_64.zip)
 
 1. Unzip the archive
 2. Open a terminal and run:
