@@ -1,5 +1,5 @@
 ![Build](https://github.com/sib-swiss/termal/actions/workflows/ci.yml/badge.svg)
-![crates.io](https://img.shields.io/crates/v/termal.svg)](https://crates.io/crates/termal-msa)
+![crates.io](https://crates.io/crates/termal-msa)
 
 Summary
 =======
