@@ -671,7 +671,8 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let lbl_nums = Text::from(compute_label_numbers(ui)).style(ui.color_scheme.label_num_color);
+    let style = get_style(false, ui.color_scheme.label_num_color);
+    let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
@@ -848,12 +849,6 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .title_bottom(&*ui.message)
         .title_style(Style::new().bold());
 
-    let fg_bg_style = if ui.inverse {
-        Style::new().reversed()
-    } else {
-        Style::new()
-    };
-
     let mut colored_consensus: Vec<Span> = ui
         .app
         .alignment
@@ -862,7 +857,8 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                Style::new().fg(colormap.get(c)).patch(fg_bg_style),
+                get_style(ui.inverse, colormap.get(c))
+                //Style::new().fg(colormap.get(c)).patch(fg_bg_style),
             )
         })
         .collect();
@@ -872,18 +868,22 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     }
 
     let pos_color = match ui.zoom_level {
-        ZoomLevel::ZoomedIn => ui.color_scheme.position_color,
+        ZoomLevel::ZoomedIn => Color::Reset,
         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.color_scheme.zoombox_color,
     };
 
     let btm_text: Vec<Line> = vec![
         Line::from(Span::styled(
+            // TODO: the color should behave like the text in the labels pane, which is
+            // automatically white on black or black on white. Possibly this can be done by NOT
+            // styling the span. Or else, if styling must be done, then the style should depend on
+            // the theme.
             tick_marks(ui.app.aln_len() as usize, None, Some(':')),
-            pos_color,
+            Style::default().fg(pos_color).bg(Color::Reset),
         )),
         Line::from(Span::styled(
             tick_position(ui.app.aln_len() as usize),
-            pos_color,
+            Style::default().fg(pos_color).bg(Color::Reset),
         )),
         Line::from(colored_consensus),
         Line::from(values_barchart(&product(
