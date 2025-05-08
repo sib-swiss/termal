@@ -2,7 +2,7 @@
 // Copyright (c) 2025 Thomas Junier
 use ratatui::{
     prelude::{Constraint, Direction, Layout, Line, Margin, Rect, Span, Style, Text},
-    style::{Modifier, Stylize},
+    style::{Color, Modifier, Stylize},
     widgets::{Block, Borders, Clear, Paragraph, Scrollbar, ScrollbarOrientation, ScrollbarState},
     Frame,
 };
@@ -132,6 +132,16 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
+fn get_style(inverse: bool, color: Color) -> Style {
+    if inverse {
+        Style::new()
+            .fg(color)
+            .add_modifier(Modifier::REVERSED)
+    } else {
+        Style::new().fg(color)
+    }
+}
+
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     let top_i = ui.top_line as usize;
     let bot_i = (ui.top_line + ui.max_nb_seq_shown()) as usize;
@@ -157,13 +167,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_seq_ref = &ui.app.alignment.sequences[ordering[i]];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
-            let style = if ui.inverse {
-                Style::new()
-                    .fg(colormap.get(cur_char))
-                    .add_modifier(Modifier::REVERSED)
-            } else {
-                Style::new().fg(colormap.get(cur_char))
-            };
+            let style = get_style(ui.inverse, colormap.get(cur_char));
             spans.push(Span::styled(cur_char.to_string(), style));
         }
         text.push(Line::from(spans));
@@ -183,13 +187,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = if ui.inverse {
-                Style::new()
-                    .fg(colormap.get(cur_char))
-                    .add_modifier(Modifier::REVERSED)
-            } else {
-                Style::new().fg(colormap.get(cur_char))
-            };
+            let style = get_style(ui.inverse, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -209,13 +207,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = if ui.inverse {
-                Style::new()
-                    .fg(colormap.get(cur_char))
-                    .add_modifier(Modifier::REVERSED)
-            } else {
-                Style::new().fg(colormap.get(cur_char))
-            };
+            let style = get_style(ui.inverse, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
