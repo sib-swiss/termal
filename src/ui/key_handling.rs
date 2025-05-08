@@ -12,7 +12,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
     if ui.show_help {
         ui.show_help = false;
     } else {
-        debug!("key event: {:#?}", key_event.code);
+        // debug!("key event: {:#?}", key_event.code);
         match key_event.code {
             // Help
             KeyCode::Char('?') => {
@@ -178,6 +178,8 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             KeyCode::Char('i') => {
                 ui.inverse = !ui.inverse;
             }
+
+            KeyCode::Char('d') => ui.app.toggle_theme(),
 
             // Cycle through colormaps
             KeyCode::Char('m') => ui.cycle_colormap(),
