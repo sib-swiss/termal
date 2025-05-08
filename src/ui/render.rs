@@ -687,7 +687,6 @@ fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOutAR => 0,
     };
     let lbl_num_para = Paragraph::new(lbl_nums)
-        .white()
         .scroll((top_lbl_line, 0))
         .block(lbl_num_block);
     f.render_widget(lbl_num_para, num_chunk);
@@ -703,7 +702,6 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOutAR => 0,
     };
     let lbl_para = Paragraph::new(labels)
-        .white()
         .scroll((top_lbl_line, 0))
         .block(lbl_block);
     f.render_widget(lbl_para, seq_chunk);
@@ -719,7 +717,6 @@ fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOutAR => 0,
     };
     let seq_metrics_para = Paragraph::new(seq_metrics)
-        .white()
         .scroll((top_lbl_line, 0))
         .block(seq_metrics_block);
     f.render_widget(seq_metrics_para, num_chunk);
@@ -748,7 +745,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
         }
     }
 
-    let seq_para = Paragraph::new(seq).white().block(aln_block);
+    let seq_para = Paragraph::new(seq).block(aln_block);
     f.render_widget(seq_para, aln_chunk);
 
     if ui.zoom_level == ZoomLevel::ZoomedIn && ui.show_scrollbars {
