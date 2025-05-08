@@ -7,7 +7,7 @@ environments.
 
 ---
 
-## 📦 Installation
+##  Installation
 
 ```bash
 cargo install termal
@@ -15,7 +15,7 @@ cargo install termal
 
 ---
 
-## 🚀 Quick Usage
+##  Quick Usage
 
 Once installed, run:
 
@@ -27,10 +27,12 @@ Press `?` while running to see key bindings.
 
 ---
 
-## ✨ Features
+## Features
 
 - Zoomed-in and zoomed-out views of the alignment
 - Consensus sequence display
+- Sequence metrics such as ungapped length and similarity to consensus
+- Ordering by metrics
 - Residue coloring and conservation indicators
 - Full keyboard control, no mouse required
 
@@ -38,7 +40,7 @@ Best results in a dark-themed terminal.
 
 ---
 
-## 📚 More Info
+## More Info
 
 - Source, releases, and test data:  
   [https://github.com/sib-swiss/termal](https://github.com/sib-swiss/termal)
