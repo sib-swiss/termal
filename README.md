@@ -1,5 +1,6 @@
 ![Build](https://github.com/sib-swiss/termal/actions/workflows/ci.yml/badge.svg)
-![crates.io](https://crates.io/crates/termal-msa)
+[![crates.io](https://img.shields.io/crates/v/termal-msa.svg)](https://crates.io/crates/termal-msa)
+[![DOI](https://zenodo.org/badge/976490057.svg)](https://doi.org/10.5281/zenodo.15352914)
 
 Summary
 =======
@@ -43,7 +44,7 @@ termal.exe example-1.msa
 
 ### macOS
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-macos-x86_64.tar.gz")
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-macos-x86_64.tar.gz)
 
 ```bash
 tar -xzf termal-v1.0.0-macos-x86_64.tar.gz
