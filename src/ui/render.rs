@@ -132,7 +132,7 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn get_style(inverse: bool, color: Color) -> Style {
+fn get_residue_style(inverse: bool, color: Color) -> Style {
     if inverse {
         Style::new()
             .fg(color)
@@ -167,7 +167,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_seq_ref = &ui.app.alignment.sequences[ordering[i]];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
-            let style = get_style(ui.inverse, colormap.get(cur_char));
+            let style = get_residue_style(ui.inverse, colormap.get(cur_char));
             spans.push(Span::styled(cur_char.to_string(), style));
         }
         text.push(Line::from(spans));
@@ -187,7 +187,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = get_style(ui.inverse, colormap.get(cur_char));
+            let style = get_residue_style(ui.inverse, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -207,7 +207,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = get_style(ui.inverse, colormap.get(cur_char));
+            let style = get_residue_style(ui.inverse, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -671,7 +671,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let style = get_style(false, ui.get_label_num_color());
+    let style = get_residue_style(false, ui.get_label_num_color());
     let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -857,7 +857,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                get_style(ui.inverse, colormap.get(c))
+                get_residue_style(ui.inverse, colormap.get(c))
                 //Style::new().fg(colormap.get(c)).patch(fg_bg_style),
             )
         })
