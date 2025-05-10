@@ -35,11 +35,6 @@ pub enum Metric {
     SeqLen,
 }
 
-enum Theme {
-    Light,
-    Dark,
-}
-
 impl fmt::Display for Metric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let metric = match self {
@@ -61,7 +56,6 @@ pub struct App {
     // according to the current metric, in which case the ordering becomes that of the metric's
     // value for each sequence.
     pub ordering: Vec<usize>,
-    theme: Theme,
 }
 
 impl App {
@@ -75,7 +69,6 @@ impl App {
             ordering_criterion: SourceFile,
             metric: PctIdWrtConsensus,
             ordering: (0..len).collect(),
-            theme: Theme::Dark,
         })
     }
 
@@ -142,13 +135,6 @@ impl App {
          match self.metric {
             PctIdWrtConsensus => &self.alignment.id_wrt_consensus,
             SeqLen => &self.alignment.relative_seq_len, 
-        }
-    }
-
-    pub fn toggle_theme(&mut self) {
-        self.theme = match self.theme {
-            Theme::Light => Theme::Dark,
-            Theme::Dark => Theme::Light,
         }
     }
 }

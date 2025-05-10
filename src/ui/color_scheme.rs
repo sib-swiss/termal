@@ -42,7 +42,8 @@ pub const JALVIEW_NUCLEOTIDE_V: Color = Color::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
 
 pub struct ColorScheme {
-    pub label_num_color: Color,
+    pub dark_bg_label_num_color: Color,
+    pub light_bg_label_num_color: Color,
     pub seq_metric_color: Color,
 
     // Index into Vec of &Colormaps
@@ -59,7 +60,9 @@ pub struct ColorScheme {
 #[allow(dead_code)]
 pub fn color_scheme_monochrome() -> ColorScheme {
     ColorScheme {
-        label_num_color: Color::White,
+        // TODO: better use bg() and fg()?
+        dark_bg_label_num_color: Color::White,
+        light_bg_label_num_color: Color::Black,
         colormap_index: 0,
         zoombox_color: Color::White,
         seq_metric_color: Color::White,
@@ -73,7 +76,8 @@ pub fn color_scheme_colored(macromolecule_type: SeqType) -> ColorScheme {
     // These are indices into the Vec of built-in color maps, see color_maps.rs
     let index = if macromolecule_type == Protein { 1 } else { 0 };
     ColorScheme {
-        label_num_color: Color::LightGreen,
+        dark_bg_label_num_color: Color::LightGreen,
+        light_bg_label_num_color: Color::from_u32(0x00008000), 
         colormap_index: index,
         seq_metric_color: Color::LightBlue,
         zoombox_color: Color::Cyan,

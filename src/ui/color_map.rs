@@ -3,6 +3,8 @@
 use std::{collections::HashMap, fs::File, io::BufReader};
 
 use hex_color::HexColor;
+// NOTE: ideally, the color maps should not depend on crates, since one might conceivably switch to
+// a different library.
 use ratatui::prelude::Color;
 
 use serde_json::Value::Object;

@@ -179,7 +179,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 ui.inverse = !ui.inverse;
             }
 
-            KeyCode::Char('d') => ui.app.toggle_theme(),
+            KeyCode::Char('d') => ui.toggle_theme(),
 
             // Cycle through colormaps
             KeyCode::Char('m') => ui.cycle_colormap(),

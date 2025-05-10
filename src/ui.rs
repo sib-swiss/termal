@@ -13,7 +13,7 @@ use log::debug;
 use bitflags::bitflags;
 
 use ratatui::layout::Size;
-//use ratatui::style::Color;
+use ratatui::style::Color;
 
 use crate::{
     ui::color_map::{
@@ -37,6 +37,10 @@ enum BottomPanePosition {
     ScreenBottom,
 }
 
+enum Theme {
+    Light,
+    Dark,
+}
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
 // tall, both, or neither.
 
@@ -52,7 +56,7 @@ bitflags! {
 
 pub struct UI<'a> {
     app: &'a mut App,
-    color_scheme: ColorScheme,
+    color_scheme: ColorScheme, 
     zoom_level: ZoomLevel,
     show_zoombox: bool,
     //zoombox_color: Style,
@@ -75,6 +79,7 @@ pub struct UI<'a> {
     full_screen: bool,
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
     inverse: bool,   // invert bg/fg
+    theme: Theme,
     colormaps: Vec<ColorMap>,
 }
 
@@ -102,6 +107,7 @@ impl<'a> UI<'a> {
             full_screen: false,
             message: " Press '?' for help ".into(),
             inverse: true,
+            theme: Theme::Dark,
             colormaps: builtin_colormaps(),
         }
     }
@@ -206,7 +212,7 @@ impl<'a> UI<'a> {
         }
     }
 
-    // Bottom pane dimenaions
+    // Bottom pane dimensions
 
     pub fn set_bottom_pane_height(&mut self, height: u16) {
         self.bottom_pane_height = height;
@@ -419,7 +425,7 @@ impl<'a> UI<'a> {
     }
 
     // ****************************************************************
-    // Color scheme
+    // Colors
 
     pub fn set_monochrome(&mut self) {
         self.color_scheme.colormap_index = MONOCHROME_INDEX;
@@ -434,6 +440,20 @@ impl<'a> UI<'a> {
         let nb_colormaps = self.colormaps.len();
         self.color_scheme.colormap_index =
             (self.color_scheme.colormap_index + 1) % nb_colormaps;
+    }
+
+    pub fn toggle_theme(&mut self) {
+        self.theme = match self.theme {
+            Theme::Light => Theme::Dark,
+            Theme::Dark => Theme::Light,
+        }
+    }
+
+    pub fn get_label_num_color(&self) -> Color {
+        match self.theme {
+            Theme::Dark => self.color_scheme.dark_bg_label_num_color,
+            Theme::Light => self.color_scheme.light_bg_label_num_color,
+        }
     }
 
     // ****************************************************************
