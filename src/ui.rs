@@ -90,6 +90,9 @@ pub struct UI<'a> {
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
     video_mode: VideoMode,
     theme: Theme,
+    // TODO: this should be a component of ColorScheme, or even a constant in ColorScheme (one Vec
+    // for colored, another (single-element) for monochrome), with the index into that Vec stored
+    // as a component of ColorScheme.
     colormaps: Vec<ColorMap>,
 }
 

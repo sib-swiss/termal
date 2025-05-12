@@ -41,6 +41,10 @@ pub const JALVIEW_NUCLEOTIDE_D: Color = Color::from_u32(0x00483D8B);
 pub const JALVIEW_NUCLEOTIDE_V: Color = Color::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
 
+/* TODO: the Vec of ColorMaps should be a component of ColorScheme, not of UI. Monochrome schemes
+ * should have only one color map (namely, the monochrome one) in that vec; the colored colorscheme  may have many.
+ * */
+
 pub struct ColorScheme {
     pub dark_bg_label_num_color: Color,
     pub light_bg_label_num_color: Color,
@@ -58,10 +62,8 @@ pub struct ColorScheme {
     pub consensus_default_color: Color,
 }
 
-#[allow(dead_code)]
 pub fn color_scheme_monochrome() -> ColorScheme {
     ColorScheme {
-        // TODO: better use bg() and fg()?
         dark_bg_label_num_color: Color::White,
         light_bg_label_num_color: Color::Black,
         colormap_index: 0,

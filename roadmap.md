@@ -67,6 +67,8 @@ scheme would be in order.
 Normal
 ------
 
+1. [ ] B0013 'M' is supposed to cycle backwards through colormaps, but doesn't.
+
 1. [ ] B0012 cycling through color maps can only be done in one sense (with
    `t`): all `T` to cycle in the opposite sense.
 
