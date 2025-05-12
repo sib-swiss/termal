@@ -55,8 +55,20 @@ TODO
 Urgent
 ------
 
+B0011 Accomodate light backgrounds as well as dark ones. Note that RataTUI lets
+Crossterm decide what colors to use _unless specified_. Residues work reasonably
+well (though white gap chars are a little hard to read), but anything explicitly
+white will not work on a light background. Also, some colors (such as sequence
+numbers and possibly the metric barplots) are a bit light for light backgrounds.
+Let the user switch between dark and light themes; if possible detect the
+terminal's teme and set accordingly. In the future, a rethink of the color
+scheme would be in order.
+
 Normal
 ------
+
+1. [ ] B0012 cycling through color maps can only be done in one sense (with
+   `t`): all `T` to cycle in the opposite sense.
 
 1. [x] B0010: "No sequence found" with `data/test[13].fas`. What these have in
    common is that they have only 1 entry. => Fixed - was using nth(1) instead of

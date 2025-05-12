@@ -44,7 +44,8 @@ pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
 pub struct ColorScheme {
     pub dark_bg_label_num_color: Color,
     pub light_bg_label_num_color: Color,
-    pub seq_metric_color: Color,
+    pub dark_bg_seq_metric_color: Color,
+    pub light_bg_seq_metric_color: Color,
 
     // Index into Vec of &Colormaps
     pub colormap_index: usize,
@@ -65,7 +66,8 @@ pub fn color_scheme_monochrome() -> ColorScheme {
         light_bg_label_num_color: Color::Black,
         colormap_index: 0,
         zoombox_color: Color::White,
-        seq_metric_color: Color::White,
+        dark_bg_seq_metric_color: Color::White,
+        light_bg_seq_metric_color: Color::Black,
         position_color: Color::White,
         conservation_color: Color::White,
         consensus_default_color: Color::White,
@@ -79,7 +81,8 @@ pub fn color_scheme_colored(macromolecule_type: SeqType) -> ColorScheme {
         dark_bg_label_num_color: Color::LightGreen,
         light_bg_label_num_color: Color::from_u32(0x00008000), 
         colormap_index: index,
-        seq_metric_color: Color::LightBlue,
+        dark_bg_seq_metric_color: Color::LightBlue,
+        light_bg_seq_metric_color: Color::Rgb(25, 127, 229),
         zoombox_color: Color::Cyan,
         position_color: Color::White,
         conservation_color: SALMON,

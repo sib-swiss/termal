@@ -37,12 +37,13 @@ enum BottomPanePosition {
     ScreenBottom,
 }
 
+#[derive(Clone, Copy, PartialEq)]
 enum Theme {
     Light,
     Dark,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 enum VideoMode {
     Direct,
     Inverse,
@@ -469,6 +470,13 @@ impl<'a> UI<'a> {
         match self.theme {
             Theme::Dark => self.color_scheme.dark_bg_label_num_color,
             Theme::Light => self.color_scheme.light_bg_label_num_color,
+        }
+    }
+
+    pub fn get_seq_metric_color(&self) -> Color {
+        match self.theme {
+            Theme::Dark => self.color_scheme.dark_bg_seq_metric_color,
+            Theme::Light => self.color_scheme.light_bg_seq_metric_color,
         }
     }
 

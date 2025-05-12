@@ -12,7 +12,7 @@ use log::debug;
 use crate::{
     ui::{
         barchart::{value_to_hbar, values_barchart},
-        AlnWRTSeqPane, BottomPanePosition, VideoMode,
+        AlnWRTSeqPane, BottomPanePosition, VideoMode, Theme,
     },
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
@@ -132,15 +132,17 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn get_residue_style(video_mode: VideoMode, color: Color) -> Style {
-    match video_mode {
-        VideoMode::Inverse => {
-            Style::new()
-                .fg(color)
-                .add_modifier(Modifier::REVERSED)
-        },
-        VideoMode::Direct => Style::new().fg(color),
-    }
+fn get_residue_style(video_mode: VideoMode, theme: Theme, color: Color) -> Style {
+    let mut style = Style::new().fg(color);
+   
+    if VideoMode::Inverse == video_mode {
+        style = style.add_modifier(Modifier::REVERSED);
+        if Theme::Light == theme {
+            style = style.bg(Color::Black);
+        }
+    };
+
+    style
 }
 
 fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
@@ -168,7 +170,8 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_seq_ref = &ui.app.alignment.sequences[ordering[i]];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
-            let style = get_residue_style(ui.video_mode, colormap.get(cur_char));
+            let style = get_residue_style(ui.video_mode,
+                ui.theme, colormap.get(cur_char));
             spans.push(Span::styled(cur_char.to_string(), style));
         }
         text.push(Line::from(spans));
@@ -188,7 +191,8 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = get_residue_style(ui.video_mode, colormap.get(cur_char));
+            let style = get_residue_style(ui.video_mode,
+                ui.theme, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -208,7 +212,8 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = get_residue_style(ui.video_mode, colormap.get(cur_char));
+            let style = get_residue_style(ui.video_mode,
+                ui.theme, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -672,7 +677,8 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let style = get_residue_style(VideoMode::Direct, ui.get_label_num_color());
+    let style = get_residue_style(VideoMode::Direct,
+        ui.theme, ui.get_label_num_color());
     let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -702,7 +708,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.color_scheme.seq_metric_color);
+    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.get_seq_metric_color());
     let seq_metrics_block =
         Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -806,8 +812,7 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
 
     let metric_text_style = Style::new()
-        .fg(ui.color_scheme.seq_metric_color)
-        //.bg(Color::Green)
+        .fg(ui.get_seq_metric_color())
         .add_modifier(Modifier::BOLD);
     let metric_para = Paragraph::new(Text::styled(
         format!(
@@ -857,7 +862,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                get_residue_style(ui.video_mode, colormap.get(c))
+                get_residue_style(ui.video_mode, ui.theme, colormap.get(c))
             )
         })
         .collect();

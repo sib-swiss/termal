@@ -14,7 +14,17 @@ z,Z : cycle through zoom modes
 
 ## Adjusting the Panes
 
-<,> : widen/narrow label pane     o   : cycle through orderings
-a   : hide/show label pane        t   : cycle through metrics
-c   : hode/show consensus pane    m,M : cycle through color maps
+<,> : widen/narrow label pane     
+a   : hide/show label pane        
+c   : hode/show consensus pane    
 f   : toggle fullscreen alignment pane 
+
+## Video
+
+d   : toggle dark/light theme
+m,M : cycle through color maps
+
+## Metrics and Ordering
+
+o   : cycle through orderings
+t   : cycle through metrics
