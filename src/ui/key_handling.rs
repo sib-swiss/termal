@@ -176,7 +176,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
 
             // Inverse video
             KeyCode::Char('i') => {
-                ui.inverse = !ui.inverse;
+                ui.toggle_video_mode();
             }
 
             KeyCode::Char('d') => ui.toggle_theme(),

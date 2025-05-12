@@ -12,7 +12,7 @@ use log::debug;
 use crate::{
     ui::{
         barchart::{value_to_hbar, values_barchart},
-        AlnWRTSeqPane, BottomPanePosition,
+        AlnWRTSeqPane, BottomPanePosition, VideoMode,
     },
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
@@ -132,13 +132,14 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
-fn get_residue_style(inverse: bool, color: Color) -> Style {
-    if inverse {
-        Style::new()
-            .fg(color)
-            .add_modifier(Modifier::REVERSED)
-    } else {
-        Style::new().fg(color)
+fn get_residue_style(video_mode: VideoMode, color: Color) -> Style {
+    match video_mode {
+        VideoMode::Inverse => {
+            Style::new()
+                .fg(color)
+                .add_modifier(Modifier::REVERSED)
+        },
+        VideoMode::Direct => Style::new().fg(color),
     }
 }
 
@@ -167,7 +168,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             let cur_seq_ref = &ui.app.alignment.sequences[ordering[i]];
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
-            let style = get_residue_style(ui.inverse, colormap.get(cur_char));
+            let style = get_residue_style(ui.video_mode, colormap.get(cur_char));
             spans.push(Span::styled(cur_char.to_string(), style));
         }
         text.push(Line::from(spans));
@@ -187,7 +188,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = get_residue_style(ui.inverse, colormap.get(cur_char));
+            let style = get_residue_style(ui.video_mode, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -207,7 +208,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         let mut spans: Vec<Span> = Vec::new();
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
-            let style = get_residue_style(ui.inverse, colormap.get(cur_char));
+            let style = get_residue_style(ui.video_mode, colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -671,7 +672,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let style = get_residue_style(false, ui.get_label_num_color());
+    let style = get_residue_style(VideoMode::Direct, ui.get_label_num_color());
     let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -831,10 +832,9 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
 
 fn mark_consensus_zb_pos(consensus: &mut [Span], ui: &UI) {
     let retained_pos = &retained_col_ndx(ui);
-    let highlight = if ui.inverse {
-        Style::new().remove_modifier(Modifier::REVERSED)
-    } else {
-        Style::new().reversed()
+    let highlight = match ui.video_mode {
+        VideoMode::Inverse => Style::new().remove_modifier(Modifier::REVERSED),
+        VideoMode::Direct => Style::new().reversed()
     };
     for pos in retained_pos {
         let retained_span = consensus[*pos].clone().patch_style(highlight);
@@ -857,8 +857,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                get_residue_style(ui.inverse, colormap.get(c))
-                //Style::new().fg(colormap.get(c)).patch(fg_bg_style),
+                get_residue_style(ui.video_mode, colormap.get(c))
             )
         })
         .collect();

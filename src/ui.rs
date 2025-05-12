@@ -41,6 +41,13 @@ enum Theme {
     Light,
     Dark,
 }
+
+#[derive(Clone, Copy)]
+enum VideoMode {
+    Direct,
+    Inverse,
+}
+
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
 // tall, both, or neither.
 
@@ -54,6 +61,8 @@ bitflags! {
     }
 }
 
+// TODO: make these fields private, e.g. I don't like render.rs to say ui.theme - I'd rather want
+// ui.get_theme().
 pub struct UI<'a> {
     app: &'a mut App,
     color_scheme: ColorScheme, 
@@ -78,7 +87,7 @@ pub struct UI<'a> {
     show_help: bool,
     full_screen: bool,
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
-    inverse: bool,   // invert bg/fg
+    video_mode: VideoMode,
     theme: Theme,
     colormaps: Vec<ColorMap>,
 }
@@ -106,7 +115,7 @@ impl<'a> UI<'a> {
             show_help: false,
             full_screen: false,
             message: " Press '?' for help ".into(),
-            inverse: true,
+            video_mode: VideoMode::Inverse,
             theme: Theme::Dark,
             colormaps: builtin_colormaps(),
         }
@@ -446,6 +455,13 @@ impl<'a> UI<'a> {
         self.theme = match self.theme {
             Theme::Light => Theme::Dark,
             Theme::Dark => Theme::Light,
+        }
+    }
+
+    pub fn toggle_video_mode(&mut self) {
+        self.video_mode = match self.video_mode {
+            VideoMode::Direct => VideoMode::Inverse,
+            VideoMode::Inverse => VideoMode::Direct,
         }
     }
 
