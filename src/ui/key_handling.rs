@@ -179,7 +179,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
                 ui.toggle_video_mode();
             }
 
-            KeyCode::Char('d') => ui.toggle_theme(),
+            KeyCode::Char('s') => ui.next_color_scheme(),
 
             // Cycle through colormaps
             KeyCode::Char('m') => ui.cycle_colormap(),

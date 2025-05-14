@@ -16,12 +16,9 @@ use ratatui::layout::Size;
 use ratatui::style::Color;
 
 use crate::{
-    ui::color_map::{
-        builtin_polychrome_colormaps, monochrome_colormap,
-        ColorMap,
-    },
     ui::color_scheme::{
         ColorScheme,
+        Theme,
         },
     App,
 };
@@ -37,12 +34,6 @@ pub enum ZoomLevel {
 enum BottomPanePosition {
     Adjacent,
     ScreenBottom,
-}
-
-#[derive(Clone, Copy, PartialEq)]
-enum Theme {
-    Light,
-    Dark,
 }
 
 #[derive(Clone, Copy, PartialEq)]
@@ -68,7 +59,8 @@ bitflags! {
 // ui.get_theme().
 pub struct UI<'a> {
     app: &'a mut App,
-    color_scheme: ColorScheme, 
+    color_schemes: Vec<ColorScheme>,
+    current_color_scheme_index: usize, 
     zoom_level: ZoomLevel,
     show_zoombox: bool,
     //zoombox_color: Style,
@@ -91,7 +83,6 @@ pub struct UI<'a> {
     full_screen: bool,
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
     video_mode: VideoMode,
-    theme: Theme,
 }
 
 impl<'a> UI<'a> {
@@ -99,7 +90,12 @@ impl<'a> UI<'a> {
         let macromolecule_type = app.alignment.macromolecule_type();
         UI {
             app,
-            color_scheme: ColorScheme::color_scheme_dark(macromolecule_type),
+            color_schemes: vec![
+                ColorScheme::color_scheme_dark(macromolecule_type),
+                ColorScheme::color_scheme_light(macromolecule_type),
+                ColorScheme::color_scheme_monochrome(),
+            ],
+            current_color_scheme_index: 0,
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             show_zb_guides: true,
@@ -118,7 +114,6 @@ impl<'a> UI<'a> {
             full_screen: false,
             message: " Press '?' for help ".into(),
             video_mode: VideoMode::Inverse,
-            theme: Theme::Dark,
         }
     }
 
@@ -437,20 +432,35 @@ impl<'a> UI<'a> {
     // ****************************************************************
     // Colors
 
+    pub fn theme(&self) -> Theme {
+        self.color_scheme().theme
+    }
+
+    pub fn color_scheme(&self) -> &ColorScheme {
+        &self.color_schemes[self.current_color_scheme_index]
+    }
+
+    fn color_scheme_mut(&mut self) -> &mut ColorScheme {
+        &mut self.color_schemes[self.current_color_scheme_index]
+    }
+
+    pub fn next_color_scheme(&mut self) {
+        self.current_color_scheme_index += 1;
+        self.current_color_scheme_index %= self.color_schemes.len();
+    }
+
     pub fn set_monochrome(&mut self) {
-        self.color_scheme = ColorScheme::color_scheme_monochrome();
+        // NOTE: this relies on the convention that the monochrome color scheme is last in the
+        // list.
+        self.current_color_scheme_index = self.color_schemes.len() - 1;
     }
 
-    // FIXME: this method is in the singular, but the one it delegates to is in the plural.
+    // FIXME: this method is in the singular, but the one it delegates to is in the plural. Call it
+    // next_... instead of cycle_... Also change other cycle*, replace with next_ and prev_.
+
     pub fn cycle_colormap(&mut self) {
-        self.color_scheme.cycle_colormaps();
-    }
-
-    pub fn toggle_theme(&mut self) {
-        self.theme = match self.theme {
-            Theme::Light => Theme::Dark,
-            Theme::Dark => Theme::Light,
-        }
+        let cs: &mut ColorScheme = self.color_scheme_mut();
+        cs.cycle_colormaps();
     }
 
     pub fn toggle_video_mode(&mut self) {
@@ -461,11 +471,11 @@ impl<'a> UI<'a> {
     }
 
     pub fn get_label_num_color(&self) -> Color {
-        self.color_scheme.label_num_color
+        self.color_scheme().label_num_color
     }
 
     pub fn get_seq_metric_color(&self) -> Color {
-        self.color_scheme.seq_metric_color
+        self.color_scheme().seq_metric_color
     }
 
     // ****************************************************************

@@ -18,8 +18,6 @@ use crate::ui::color_scheme::{
     JALVIEW_NUCLEOTIDE_V, JALVIEW_NUCLEOTIDE_W, JALVIEW_NUCLEOTIDE_X, JALVIEW_NUCLEOTIDE_Y, ORANGE,
 };
 
-pub const MONOCHROME_INDEX: usize = 0;
-
 pub struct ColorMap {
     #[allow(dead_code)]
     pub name: String,

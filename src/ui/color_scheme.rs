@@ -51,8 +51,16 @@ pub const JALVIEW_NUCLEOTIDE_D: Color = Color::from_u32(0x00483D8B);
 pub const JALVIEW_NUCLEOTIDE_V: Color = Color::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
 
+#[derive(Clone, Copy, PartialEq)]
+pub enum Theme {
+    Light,
+    Dark,
+    Monochrome,
+}
+
 // TODO: make these private and use getters.
 pub struct ColorScheme {
+    pub theme: Theme,
     pub label_num_color: Color,
     pub seq_metric_color: Color,
     // Different color schemes may have different available color maps.
@@ -71,6 +79,7 @@ impl ColorScheme {
         // These are indices into the Vec of built-in color maps, see color_maps.rs
         let index = if macromolecule_type == Protein { 1 } else { 0 };
         ColorScheme {
+            theme: Theme::Dark,
             label_num_color: Color::LightGreen,
             seq_metric_color: Color::LightBlue,
             residue_colormaps: builtin_polychrome_colormaps(),
@@ -85,6 +94,7 @@ impl ColorScheme {
         // These are indices into the Vec of built-in color maps, see color_maps.rs
         let index = if macromolecule_type == Protein { 1 } else { 0 };
         ColorScheme {
+            theme: Theme::Light,
             label_num_color: Color::from_u32(0x00008000), 
             seq_metric_color: Color::Rgb(25, 127, 229),
             residue_colormaps: builtin_polychrome_colormaps(),
@@ -97,6 +107,7 @@ impl ColorScheme {
 
     pub fn color_scheme_monochrome() -> Self {
         ColorScheme {
+            theme: Theme::Monochrome,
             label_num_color: Color::White,
             seq_metric_color: Color::White,
             residue_colormaps: monochrome_colormap(), // Vec<ColorMap>

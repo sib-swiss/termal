@@ -12,7 +12,8 @@ use log::debug;
 use crate::{
     ui::{
         barchart::{value_to_hbar, values_barchart},
-        AlnWRTSeqPane, BottomPanePosition, VideoMode, Theme,
+        color_scheme::Theme,
+        AlnWRTSeqPane, BottomPanePosition, VideoMode, 
     },
     vec_f64_aux::{normalize, ones_complement, product},
     ZoomLevel, UI,
@@ -160,7 +161,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     // TODO: would it be possible to add a method to UI that returns a ref to the current colormap?
     // Or, failing that, to ask UI itself for the color to apply to a given char? If so, also apply
     // to zoom_out_lbl_text() and zoom_out_ar_seq_text().
-    let colormap = ui.color_scheme.current_residue_colormap();
+    let colormap = ui.color_scheme().current_residue_colormap();
     let ordering = &ui.app.ordering;
 
     for i in top_i..bot_i {
@@ -176,7 +177,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
             // TODO: is the conversion to bytes done at _each_ iteration?
             let cur_char = (*cur_seq_ref).as_bytes()[j] as char;
             let style = get_residue_style(ui.video_mode,
-                ui.theme, colormap.get(cur_char));
+                ui.theme(), colormap.get(cur_char));
             spans.push(Span::styled(cur_char.to_string(), style));
         }
         text.push(Line::from(spans));
@@ -186,7 +187,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let colormap = ui.color_scheme.current_residue_colormap();
+    let colormap = ui.color_scheme().current_residue_colormap();
     let ordering = &ui.app.ordering;
 
     let mut ztext: Vec<Line> = Vec::new();
@@ -197,7 +198,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
             let style = get_residue_style(ui.video_mode,
-                ui.theme, colormap.get(cur_char));
+                ui.theme(), colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -208,7 +209,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let colormap = ui.color_scheme.current_residue_colormap();
+    let colormap = ui.color_scheme().current_residue_colormap();
     let ordering = &ui.app.ordering;
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
@@ -218,7 +219,7 @@ fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
         for j in retained_col_ndx(ui) {
             let cur_char: char = seq_chars[j];
             let style = get_residue_style(ui.video_mode,
-                ui.theme, colormap.get(cur_char));
+                ui.theme(), colormap.get(cur_char));
             let span = Span::styled(cur_char.to_string(), style);
             spans.push(span);
         }
@@ -346,7 +347,7 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     ui.assert_invariants();
     */
 
-    let zb_style = Style::new().fg(ui.color_scheme.zoombox_color);
+    let zb_style = Style::new().fg(ui.color_scheme().zoombox_color);
 
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
@@ -683,7 +684,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
     let style = get_residue_style(VideoMode::Direct,
-        ui.theme, ui.get_label_num_color());
+        ui.theme(), ui.get_label_num_color());
     let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -763,7 +764,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .viewport_content_length((ui.max_nb_seq_shown() - 2).into())
                 .position(ui.top_line.into());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-                .thumb_style(ui.color_scheme.zoombox_color)
+                .thumb_style(ui.color_scheme().zoombox_color)
                 .begin_symbol(None)
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -786,7 +787,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .position(ui.leftmost_col.into());
             let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
                 .begin_symbol(None)
-                .thumb_style(ui.color_scheme.zoombox_color)
+                .thumb_style(ui.color_scheme().zoombox_color)
                 .thumb_symbol("🬹")
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -853,7 +854,7 @@ fn mark_consensus_zb_pos(consensus: &mut [Span], ui: &UI) {
 }
 
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
-    let colormap = ui.color_scheme.current_residue_colormap();
+    let colormap = ui.color_scheme().current_residue_colormap();
     let btm_block = Block::default()
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .title_bottom(&*ui.message)
@@ -867,7 +868,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         .map(|c| {
             Span::styled(
                 c.to_string(),
-                get_residue_style(ui.video_mode, ui.theme, colormap.get(c))
+                get_residue_style(ui.video_mode, ui.theme(), colormap.get(c))
             )
         })
         .collect();
@@ -878,7 +879,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 
     let pos_color = match ui.zoom_level {
         ZoomLevel::ZoomedIn => Color::Reset,
-        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.color_scheme.zoombox_color,
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.color_scheme().zoombox_color,
     };
 
     let btm_text: Vec<Line> = vec![
@@ -899,7 +900,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
         )))
-        .style(ui.color_scheme.conservation_color),
+        .style(ui.color_scheme().conservation_color),
     ];
 
     let btm_para = Paragraph::new(btm_text)
