@@ -3,7 +3,17 @@
 
 use ratatui::prelude::Color;
 
-use crate::{alignment::SeqType, ui::color_scheme::SeqType::Protein};
+use crate::{
+    alignment::SeqType,
+    ui::{
+        color_map::{
+            ColorMap,
+            builtin_polychrome_colormaps,
+            monochrome_colormap,
+        },
+        color_scheme::SeqType::Protein,
+    }
+};
 
 // In-house colors
 pub const ORANGE: Color = Color::Rgb(255, 165, 0);
@@ -41,53 +51,71 @@ pub const JALVIEW_NUCLEOTIDE_D: Color = Color::from_u32(0x00483D8B);
 pub const JALVIEW_NUCLEOTIDE_V: Color = Color::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
 
-/* TODO: the Vec of ColorMaps should be a component of ColorScheme, not of UI. Monochrome schemes
- * should have only one color map (namely, the monochrome one) in that vec; the colored colorscheme  may have many.
- * */
-
 pub struct ColorScheme {
-    pub dark_bg_label_num_color: Color,
-    pub light_bg_label_num_color: Color,
-    pub dark_bg_seq_metric_color: Color,
-    pub light_bg_seq_metric_color: Color,
+    label_num_color: Color,
+    seq_metric_color: Color,
 
+    // Different color schemes may have different available color maps.
+    residue_colormaps: Vec<ColorMap>,
     // Index into Vec of &Colormaps
-    pub colormap_index: usize,
+    residue_colormap_index: usize,
 
-    pub zoombox_color: Color,
+    zoombox_color: Color,
 
-    pub position_color: Color,
-    pub conservation_color: Color,
-    #[allow(dead_code)]
-    pub consensus_default_color: Color,
+    position_color: Color,
+    conservation_color: Color,
 }
 
-pub fn color_scheme_monochrome() -> ColorScheme {
-    ColorScheme {
-        dark_bg_label_num_color: Color::White,
-        light_bg_label_num_color: Color::Black,
-        colormap_index: 0,
-        zoombox_color: Color::White,
-        dark_bg_seq_metric_color: Color::White,
-        light_bg_seq_metric_color: Color::Black,
-        position_color: Color::White,
-        conservation_color: Color::White,
-        consensus_default_color: Color::White,
+impl ColorScheme {
+    // TODO: the Vec of colormaps should depend on the macromolecule, i.e. only protein maps for aa,
+    // and only nt maps for nt.
+    pub fn color_scheme_dark(macromolecule_type: SeqType) -> Self {
+        // These are indices into the Vec of built-in color maps, see color_maps.rs
+        let index = if macromolecule_type == Protein { 1 } else { 0 };
+        ColorScheme {
+            label_num_color: Color::LightGreen,
+            seq_metric_color: Color::LightBlue,
+            residue_colormaps: builtin_polychrome_colormaps(),
+            residue_colormap_index: index,
+            zoombox_color: Color::Cyan,
+            position_color: Color::White,
+            conservation_color: SALMON,
+        }
     }
-}
 
-pub fn color_scheme_colored(macromolecule_type: SeqType) -> ColorScheme {
-    // These are indices into the Vec of built-in color maps, see color_maps.rs
-    let index = if macromolecule_type == Protein { 1 } else { 0 };
-    ColorScheme {
-        dark_bg_label_num_color: Color::LightGreen,
-        light_bg_label_num_color: Color::from_u32(0x00008000), 
-        colormap_index: index,
-        dark_bg_seq_metric_color: Color::LightBlue,
-        light_bg_seq_metric_color: Color::Rgb(25, 127, 229),
-        zoombox_color: Color::Cyan,
-        position_color: Color::White,
-        conservation_color: SALMON,
-        consensus_default_color: Color::White,
+    pub fn color_scheme_light(macromolecule_type: SeqType) -> Self {
+        // These are indices into the Vec of built-in color maps, see color_maps.rs
+        let index = if macromolecule_type == Protein { 1 } else { 0 };
+        ColorScheme {
+            label_num_color: Color::from_u32(0x00008000), 
+            seq_metric_color: Color::Rgb(25, 127, 229),
+            residue_colormaps: builtin_polychrome_colormaps(),
+            residue_colormap_index: index,
+            zoombox_color: Color::Cyan,
+            position_color: Color::White,
+            conservation_color: SALMON,
+        }
+    }
+
+    pub fn color_scheme_monochrome() -> Self {
+        ColorScheme {
+            label_num_color: Color::White,
+            seq_metric_color: Color::White,
+            residue_colormaps: monochrome_colormap(), // Vec<ColorMap>
+            residue_colormap_index: 0,
+            zoombox_color: Color::White,
+            position_color: Color::White,
+            conservation_color: Color::White,
+        }
+    }
+
+    pub fn current_residue_colormap(&self) -> &ColorMap {
+        &(self.residue_colormaps[self.residue_colormap_index])
+    }
+
+    pub fn cycle_colormaps(&mut self) {
+        let size = self.residue_colormaps.len();
+        self.residue_colormap_index += 1;
+        self.residue_colormap_index %= size;
     }
 }

@@ -17,10 +17,12 @@ use ratatui::style::Color;
 
 use crate::{
     ui::color_map::{
-        MONOCHROME_INDEX, builtin_colormaps,
+        builtin_polychrome_colormaps, monochrome_colormap,
         ColorMap,
     },
-    ui::color_scheme::{color_scheme_colored, ColorScheme},
+    ui::color_scheme::{
+        ColorScheme,
+        },
     App,
 };
 
@@ -90,10 +92,6 @@ pub struct UI<'a> {
     message: String, // Simple, 1-line message (possibly just "", no need for Option IMHO)
     video_mode: VideoMode,
     theme: Theme,
-    // TODO: this should be a component of ColorScheme, or even a constant in ColorScheme (one Vec
-    // for colored, another (single-element) for monochrome), with the index into that Vec stored
-    // as a component of ColorScheme.
-    colormaps: Vec<ColorMap>,
 }
 
 impl<'a> UI<'a> {
@@ -441,7 +439,7 @@ impl<'a> UI<'a> {
     // Colors
 
     pub fn set_monochrome(&mut self) {
-        self.color_scheme.colormap_index = MONOCHROME_INDEX;
+        self.color_scheme = ColorScheme::color_scheme_monochrome();
     }
 
     #[allow(dead_code)]

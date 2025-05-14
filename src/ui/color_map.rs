@@ -45,14 +45,16 @@ impl ColorMap {
     }
 }
 
-pub fn builtin_colormaps() -> Vec<ColorMap> {
-    // TODO: use insert() to make sure that the monochrome map is inserted at MONOCHROME_INDEX. Do
-    // the same for the default colored map.
+pub fn builtin_polychrome_colormaps() -> Vec<ColorMap> {
     vec![
         color_map_jalview_nt(), // Keep the nucleotide map at index 0 (see
-        // color_scheme::color_scheme_colored()
         color_map_clustalx(),
         color_map_lesk(),
+    ]
+}
+
+pub fn monochrome_colormap() -> Vec<ColorMap> {
+    vec![
         color_map_monochrome(),
     ]
 }

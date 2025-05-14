@@ -160,7 +160,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     // TODO: would it be possible to add a method to UI that returns a ref to the current colormap?
     // Or, failing that, to ask UI itself for the color to apply to a given char? If so, also apply
     // to zoom_out_lbl_text() and zoom_out_ar_seq_text().
-    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let colormap = &ui.color_scheme.current_residue_colormap();
     let ordering = &ui.app.ordering;
 
     for i in top_i..bot_i {
