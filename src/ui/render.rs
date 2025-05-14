@@ -160,7 +160,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
     // TODO: would it be possible to add a method to UI that returns a ref to the current colormap?
     // Or, failing that, to ask UI itself for the color to apply to a given char? If so, also apply
     // to zoom_out_lbl_text() and zoom_out_ar_seq_text().
-    let colormap = &ui.color_scheme.current_residue_colormap();
+    let colormap = ui.color_scheme.current_residue_colormap();
     let ordering = &ui.app.ordering;
 
     for i in top_i..bot_i {
@@ -186,7 +186,7 @@ fn zoom_in_seq_text<'a>(ui: &'a UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let colormap = ui.color_scheme.current_residue_colormap();
     let ordering = &ui.app.ordering;
 
     let mut ztext: Vec<Line> = Vec::new();
@@ -208,7 +208,7 @@ fn zoom_out_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn zoom_out_ar_seq_text<'a>(ui: &UI) -> Vec<Line<'a>> {
-    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let colormap = ui.color_scheme.current_residue_colormap();
     let ordering = &ui.app.ordering;
     let mut ztext: Vec<Line> = Vec::new();
     for i in retained_seq_ndx(ui) {
@@ -853,7 +853,7 @@ fn mark_consensus_zb_pos(consensus: &mut [Span], ui: &UI) {
 }
 
 fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
-    let colormap = &ui.colormaps[ui.color_scheme.colormap_index];
+    let colormap = ui.color_scheme.current_residue_colormap();
     let btm_block = Block::default()
         .borders(Borders::LEFT | Borders::RIGHT | Borders::BOTTOM)
         .title_bottom(&*ui.message)

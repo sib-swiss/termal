@@ -99,7 +99,7 @@ impl<'a> UI<'a> {
         let macromolecule_type = app.alignment.macromolecule_type();
         UI {
             app,
-            color_scheme: color_scheme_colored(macromolecule_type),
+            color_scheme: ColorScheme::color_scheme_dark(macromolecule_type),
             zoom_level: ZoomLevel::ZoomedIn,
             show_zoombox: true,
             show_zb_guides: true,
@@ -119,7 +119,6 @@ impl<'a> UI<'a> {
             message: " Press '?' for help ".into(),
             video_mode: VideoMode::Inverse,
             theme: Theme::Dark,
-            colormaps: builtin_colormaps(),
         }
     }
 
@@ -442,15 +441,9 @@ impl<'a> UI<'a> {
         self.color_scheme = ColorScheme::color_scheme_monochrome();
     }
 
-    #[allow(dead_code)]
-    pub fn set_colormap(&mut self, cmap_ndx: usize) {
-        self.color_scheme.colormap_index = cmap_ndx;
-    }
-
+    // FIXME: this method is in the singular, but the one it delegates to is in the plural.
     pub fn cycle_colormap(&mut self) {
-        let nb_colormaps = self.colormaps.len();
-        self.color_scheme.colormap_index =
-            (self.color_scheme.colormap_index + 1) % nb_colormaps;
+        self.color_scheme.cycle_colormaps();
     }
 
     pub fn toggle_theme(&mut self) {
@@ -468,17 +461,11 @@ impl<'a> UI<'a> {
     }
 
     pub fn get_label_num_color(&self) -> Color {
-        match self.theme {
-            Theme::Dark => self.color_scheme.dark_bg_label_num_color,
-            Theme::Light => self.color_scheme.light_bg_label_num_color,
-        }
+        self.color_scheme.label_num_color
     }
 
     pub fn get_seq_metric_color(&self) -> Color {
-        match self.theme {
-            Theme::Dark => self.color_scheme.dark_bg_seq_metric_color,
-            Theme::Light => self.color_scheme.light_bg_seq_metric_color,
-        }
+        self.color_scheme.seq_metric_color
     }
 
     // ****************************************************************

@@ -51,19 +51,17 @@ pub const JALVIEW_NUCLEOTIDE_D: Color = Color::from_u32(0x00483D8B);
 pub const JALVIEW_NUCLEOTIDE_V: Color = Color::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Color = Color::from_u32(0x002f4f4f);
 
+// TODO: make these private and use getters.
 pub struct ColorScheme {
-    label_num_color: Color,
-    seq_metric_color: Color,
-
+    pub label_num_color: Color,
+    pub seq_metric_color: Color,
     // Different color schemes may have different available color maps.
-    residue_colormaps: Vec<ColorMap>,
+    pub residue_colormaps: Vec<ColorMap>,
     // Index into Vec of &Colormaps
-    residue_colormap_index: usize,
-
-    zoombox_color: Color,
-
-    position_color: Color,
-    conservation_color: Color,
+    pub residue_colormap_index: usize,
+    pub zoombox_color: Color,
+    pub position_color: Color,
+    pub conservation_color: Color,
 }
 
 impl ColorScheme {
