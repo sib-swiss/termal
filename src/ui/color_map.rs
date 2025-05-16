@@ -259,6 +259,7 @@ pub fn color_map_jalview_nt() -> ColorMap {
             ('d', JALVIEW_NUCLEOTIDE_D),
             ('v', JALVIEW_NUCLEOTIDE_V),
             ('n', JALVIEW_NUCLEOTIDE_N),
+            ('-', Color::Gray),
         ]),
     )
 }
