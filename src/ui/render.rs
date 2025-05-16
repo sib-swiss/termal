@@ -134,19 +134,26 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
 }
 
 fn get_residue_style(video_mode: VideoMode, theme: Theme, color: Color) -> Style {
-    let mut style = Style::new().fg(color);
-   
-    if Color::White == color {
-        style = style.bg(Color::Black);
-        return style;
+    let mut style = Style::default();
+
+    match theme {
+        Theme::Dark | Theme::Light => {
+            style = style.fg(color);
+        }
+        Theme::Monochrome => {
+            style = style.fg(color).bg(Color::Black);
+        }
     }
 
-    if VideoMode::Inverse == video_mode {
-        style = style.add_modifier(Modifier::REVERSED);
-        if Theme::Light == theme {
-            style = style.bg(Color::Black);
-        }
-    };
+    match video_mode {
+        VideoMode::Inverse  => {
+            style = style.add_modifier(Modifier::REVERSED);
+            if Theme::Light == theme {
+                style = style.bg(Color::Black);
+            }
+        },
+        _ => { },
+    }
 
     style
 }
