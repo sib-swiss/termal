@@ -21,10 +21,10 @@ f   : toggle fullscreen alignment pane
 
 ## Video
 
-d   : toggle dark/light theme
-m,M : cycle through color maps
+s : next color scheme
+m : cycle through color maps
 
-## Metrics and Ordering
+## Metrics and Orderings
 
-o   : cycle through orderings
-t   : cycle through metrics
+o : next ordering
+t : next metric
