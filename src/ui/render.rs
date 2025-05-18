@@ -133,6 +133,21 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
+fn get_label_num_style(theme: Theme, color: Color) -> Style {
+    let mut style = Style::default();
+
+    match theme {
+        Theme::Dark | Theme::Light => {
+            style = style.fg(color);
+        }
+        Theme::Monochrome => {
+            style = style.fg(Color::Reset).bg(Color::Reset);
+        }
+    }
+
+    style
+}
+
 fn get_residue_style(video_mode: VideoMode, theme: Theme, color: Color) -> Style {
     let mut style = Style::default();
 
@@ -690,8 +705,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let style = get_residue_style(VideoMode::Direct,
-        ui.theme(), ui.get_label_num_color());
+    let style = get_label_num_style(ui.theme(), ui.get_label_num_color());
     let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
