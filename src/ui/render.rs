@@ -780,6 +780,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     f.render_widget(seq_para, aln_chunk);
 
     if ui.zoom_level == ZoomLevel::ZoomedIn && ui.show_scrollbars {
+        let zoombox_color = ui.get_zoombox_color();
         // vertical scrollbar
         if (AlnWRTSeqPane::TooTall == (ui.aln_wrt_seq_pane() & AlnWRTSeqPane::TooTall))
             && ui.max_nb_seq_shown() > 2
@@ -789,7 +790,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .viewport_content_length((ui.max_nb_seq_shown() - 2).into())
                 .position(ui.top_line.into());
             let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
-                .thumb_style(ui.color_scheme().zoombox_color)
+                .thumb_style(zoombox_color)
                 .begin_symbol(None)
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -812,7 +813,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 .position(ui.leftmost_col.into());
             let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
                 .begin_symbol(None)
-                .thumb_style(ui.color_scheme().zoombox_color)
+                .thumb_style(zoombox_color)
                 .thumb_symbol("🬹")
                 .end_symbol(None);
             f.render_stateful_widget(
@@ -901,13 +902,10 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         mark_consensus_zb_pos(&mut colored_consensus, ui);
     }
 
+
     let pos_color = match ui.zoom_level {
         ZoomLevel::ZoomedIn => Color::Reset,
-        // TODO: this might actually be the responsibility of UI/ColorScheme
-        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => match ui.color_scheme().theme {
-            Theme::Dark | Theme::Light => ui.color_scheme().zoombox_color,
-            Theme::Monochrome => Color::Reset,
-        }
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.get_zoombox_color(),
     };
 
     // TODO: again, this might be delegated to UI/ColorScheme

@@ -490,6 +490,13 @@ impl<'a> UI<'a> {
         self.color_scheme().label_num_color
     }
 
+    pub fn get_zoombox_color(&self) -> Color {
+        match self.color_scheme().theme {
+            Theme::Dark | Theme::Light => self.color_scheme().zoombox_color,
+            Theme::Monochrome => Color::Reset,
+        }
+    }
+
     pub fn get_seq_metric_style(&self) -> Style {
         match self.color_scheme().theme {
             Theme::Dark | Theme::Light => Style::default().fg(self.color_scheme().seq_metric_color),
