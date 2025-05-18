@@ -10,7 +10,7 @@ arrows: scroll 1 column/line; shift-arrows : scroll 1 screenful
 
 ## Zooming
 
-z,Z: cycle through zoom modes 
+z,Z: cycle through zoom modes
 
 ## Adjusting the Panes
 
