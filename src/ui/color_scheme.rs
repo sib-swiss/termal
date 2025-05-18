@@ -81,7 +81,6 @@ pub struct ColorScheme {
     // Index into Vec of &Colormaps
     pub residue_colormap_index: usize,
     pub zoombox_color: Color,
-    pub position_color: Color,
     pub conservation_color: Color,
 }
 
@@ -98,7 +97,6 @@ impl ColorScheme {
             residue_colormaps: builtin_polychrome_colormaps(),
             residue_colormap_index: index,
             zoombox_color: Color::Cyan,
-            position_color: Color::White,
             conservation_color: SALMON,
         }
     }
@@ -113,7 +111,6 @@ impl ColorScheme {
             residue_colormaps: builtin_polychrome_colormaps(),
             residue_colormap_index: index,
             zoombox_color: Color::Cyan,
-            position_color: Color::White,
             conservation_color: SALMON,
         }
     }
@@ -126,7 +123,6 @@ impl ColorScheme {
             residue_colormaps: monochrome_colormap(), // Vec<ColorMap>
             residue_colormap_index: 0,
             zoombox_color: Color::White,
-            position_color: Color::White,
             conservation_color: Color::White,
         }
     }
