@@ -51,7 +51,7 @@ enum VideoMode {
 impl fmt::Display for VideoMode {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let s = match self {
-            VideoMode::Direct => "",
+            VideoMode::Direct => "Dir",
             VideoMode::Inverse => "Inv",
         };
         write!(f, "{}", s)

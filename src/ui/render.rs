@@ -373,7 +373,8 @@ fn mark_zoombox(seq_para: &mut [Line], ui: &UI) {
     ui.assert_invariants();
     */
 
-    let zb_style = Style::new().fg(ui.color_scheme().zoombox_color);
+    let zoombox_color = ui.get_zoombox_color();
+    let zb_style = Style::new().fg(zoombox_color);
 
     if zb_bottom - zb_top < 2 {
         if zb_right - zb_left < 2 {
