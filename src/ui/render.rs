@@ -651,7 +651,7 @@ fn tick_position(aln_length: usize) -> String {
 fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
     ui.common_ratio();
     let title = format!(
-        " {} - {}/{}s x {}/{}c {} {}",
+        " {} | {}/{}s x {}/{}c | {} {}",
         ui.app.filename,
         aln_para.len(),
         ui.app.num_seq(),
@@ -661,12 +661,12 @@ fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
         ui.video_mode,
     );
     format!(
-        "{} - {}",
+        "{} | {} " ,
         title,
         match ui.zoom_level {
-            ZoomLevel::ZoomedIn => "",
-            ZoomLevel::ZoomedOut => "fully zoomed out ",
-            ZoomLevel::ZoomedOutAR => "fully zoomed out, preserving aspect ratio ",
+            ZoomLevel::ZoomedIn => "Zoomed in",
+            ZoomLevel::ZoomedOut => "Zoomed out ",
+            ZoomLevel::ZoomedOutAR => "Zoomed out (AR)",
         }
     )
 }
