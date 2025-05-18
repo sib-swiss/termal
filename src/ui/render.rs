@@ -133,6 +133,8 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ztext
 }
 
+// FIXME Shouldn't this be a part of UI rather than Render? We could dispense with passing the
+// theme.
 fn get_label_num_style(theme: Theme, color: Color) -> Style {
     let mut style = Style::default();
 
@@ -148,6 +150,8 @@ fn get_label_num_style(theme: Theme, color: Color) -> Style {
     style
 }
 
+// FIXME Shouldn't this be a part of UI rather than Render (like get_seq_metric_style()? We could dispense with passing theme
+// and mode
 fn get_residue_style(video_mode: VideoMode, theme: Theme, color: Color) -> Style {
     let mut style = Style::default();
 
@@ -156,7 +160,7 @@ fn get_residue_style(video_mode: VideoMode, theme: Theme, color: Color) -> Style
             style = style.fg(color);
         }
         Theme::Monochrome => {
-            style = style.fg(color).bg(Color::Black);
+            style = style.fg(Color::Reset).bg(Color::Reset);
         }
     }
 
@@ -735,7 +739,7 @@ fn render_labels_pane(f: &mut Frame, seq_chunk: Rect, ui: &UI) {
 }
 
 fn render_seq_metrics_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.get_seq_metric_color());
+    let seq_metrics = Text::from(compute_seq_metrics(ui)).style(ui.get_seq_metric_style());
     let seq_metrics_block =
         Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
@@ -838,8 +842,7 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     let metric_block = Block::default().borders(Borders::LEFT);
     let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
 
-    let metric_text_style = Style::new()
-        .fg(ui.get_seq_metric_color())
+    let metric_text_style = ui.get_seq_metric_style()
         .add_modifier(Modifier::BOLD);
     let metric_para = Paragraph::new(Text::styled(
         format!(
@@ -900,15 +903,21 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
 
     let pos_color = match ui.zoom_level {
         ZoomLevel::ZoomedIn => Color::Reset,
-        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.color_scheme().zoombox_color,
+        // TODO: this might actually be the responsibility of UI/ColorScheme
+        ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => match ui.color_scheme().theme {
+            Theme::Dark | Theme::Light => ui.color_scheme().zoombox_color,
+            Theme::Monochrome => Color::Reset,
+        }
+    };
+
+    // TODO: again, this might be delegated to UI/ColorScheme
+    let conservation_color = match ui.color_scheme().theme {
+        Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
+        Theme::Monochrome => Color::Reset,
     };
 
     let btm_text: Vec<Line> = vec![
         Line::from(Span::styled(
-            // TODO: the color should behave like the text in the labels pane, which is
-            // automatically white on black or black on white. Possibly this can be done by NOT
-            // styling the span. Or else, if styling must be done, then the style should depend on
-            // the theme.
             tick_marks(ui.app.aln_len() as usize, None, Some(':')),
             Style::default().fg(pos_color).bg(Color::Reset),
         )),
@@ -921,7 +930,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies)),
         )))
-        .style(ui.color_scheme().conservation_color),
+        .style(conservation_color),
     ];
 
     let btm_para = Paragraph::new(btm_text)

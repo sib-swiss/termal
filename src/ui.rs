@@ -16,7 +16,10 @@ use log::debug;
 use bitflags::bitflags;
 
 use ratatui::layout::Size;
-use ratatui::style::Color;
+use ratatui::style::{
+    Color,
+    Style,
+};
 
 use crate::{
     ui::color_scheme::{
@@ -487,8 +490,12 @@ impl<'a> UI<'a> {
         self.color_scheme().label_num_color
     }
 
-    pub fn get_seq_metric_color(&self) -> Color {
-        self.color_scheme().seq_metric_color
+    pub fn get_seq_metric_style(&self) -> Style {
+        match self.color_scheme().theme {
+            Theme::Dark | Theme::Light => Style::default().fg(self.color_scheme().seq_metric_color),
+            // For now, we let monochrome theme use terminal defaults
+            Theme::Monochrome => Style::default().fg(Color::Reset).bg(Color::Reset),
+        }
     }
 
     // ****************************************************************
