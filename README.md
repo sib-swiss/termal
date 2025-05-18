@@ -9,14 +9,12 @@ Termal is a program for examining multiple sequence **al**ignments in a **term**
 
 * No installer (just download and uncompress)
 * No dependencies.
-* Best results in a dark-themed terminal.
 
 Quick Start 
 ============
 
 Download the latest archive, uncompress it, and run the binary on the example
 alignment (see below). Press "`?`" for help.
-
 
 ### Linux (x86_64)
 
@@ -73,7 +71,39 @@ Interface
 Key Bindings
 ------------
 
-To see the key bindings, press "`?`" while running `termal`, or run `termal -h`.
+To see the key bindings while running `termal`, press "`?`". To display them in
+the console, run `termal -b`. The main bindings are as follows:
+
+### Motion
+
+arrows: scroll 1 column/line; shift-arrows : scroll 1 screenful
+        h,j,k,l are aliases for left, down, up, and right arrow
+^,G,g,$: full left, bottom, top, full right
+
+### Zooming
+
+z,Z: cycle through zoom modes
+
+### Adjusting the Panes
+
+<,>: widen/narrow label pane
+a  : hide/show label pane
+c  : hode/show consensus pane
+f  : toggle fullscreen alignment pane
+
+### Video
+
+s: next color scheme
+m: next color map
+i: toggle inverse/direct video
+
+Try dark/inverse for best results (this is the default).
+
+### Metrics and Orderings
+
+o: next ordering
+t: next metric
+
 
 Features
 ========
@@ -81,10 +111,48 @@ Features
 Termal has the basic features you'd expect of an alignment viewer, such as:
 
 * moving and jumping around
-* zoomed in or zoomed-out (whole alignment) views
+* zoomed in or zoomed-out (whole alignment) views (see _Zooming_ below)
 * consensus sequence
-* residue colouring
+* residue coloring
 * representation of conservation
+
+Zooming
+-------
+
+By default, Termal shows as much of the alignment as fits on the screen. Smaller
+alignments can fit entirely on screen, but it's quite common for alignments to
+be too large, at least in one dimension, sometimes both. To see more of the
+alignment, there are two options:
+
+* Scrolling: this simply shifts the displayed portion ("view port") of the
+  alignment left, right, up, or down. One can move by a single line (sequence)
+  or column (position), by screenfuls, or directly to the top, bottom, leftmost,
+  or rightmost positions. This is done with the motion keys, including arrows
+
+* Zooming Out: this shows the first and last sequences, as well as evenly-spaced
+  sequences in between so as to show as many sequences as possible. The same
+  sampling is applied to columns. A box shows the location of the view port,
+  that is, what part of the alignment would fill the alignment area when zooming
+  back in. The zoom box can be moved using the same commands as for scrolling
+  (see above). A variant of zooming out will sample rows and columns will
+  preserve the aspect ratio of the alignment, at the expense of potentially
+  fewer sequences or columns shown.
+
+Colors and Themes
+-----------------
+
+The program was developed and tested in a dark-themed terminal, but it works
+reasonably well in light themes. It also has a monochrome "theme", which adapts
+to the theme (white on black in a dark theme, and the other way around). Press
+`s` to move from dark to light to monochrome (and back).
+
+`Termal` can map residues to colors (except in monochrome mode) using one of the
+built-in color maps. The default color map is Clustal's for amino acids, and
+JalView's for nucleotides. Press `m` to change color maps.
+
+By default, residues are colored in inverse video, as is done by most alignment
+viewers, but direct video is also possible. The `i` key toggles between the
+video modes.
 
 Motivation
 ==========
@@ -106,6 +174,18 @@ this, but most of them have a graphical user interface, so they (usually) can't
 be used over SSH. A multiple sequence alignment is basically just text, so it is
 well suited for a TUI.
 
+Secondary
+---------
+
+Even on a local machine, there are use cases for viewing alignments in a
+terminal, such as:
+
+* Short load times: Rust programs can be _very_ fast, and I appreciate being
+  able to have a quick look at an alignment without waiting several seconds (or
+  more on an older machine) for the program and alignment to load.
+* Not needing to leave one's work environment - use `termal` on an alignment
+  like you would use `less`, `bat`, etc. on a text file.
+
 Example
 =======
 
@@ -113,7 +193,7 @@ Example
 $ termal data/aln4.pep
 ```
 ```
-┌──┌───────────┌ data/aln4.pep - 16/16s (1.00) x 70/561c (0.12) - ────────────────────┐
+┌──┌───────────┌ data/aln4.pep | 16/16s x 70/561c | Dark Mono White | Zoomed in ──────┐
 │ 1│Abro_00865 │ELTDGFHLIIDALKLNGLNTIYGVPGIPITDFGRMAQAEGIRVLSFRHEQNAGYAASIAGFLTK-KPGVC│
 │ 2│Aoxa_03215 │NLTDGFHALIDAFKKNDINNIYAVAGIPITDVLRLAVEREMKVIAFRHESNAGHAAAIAGYLTQ-KPGIC│
 │ 3│Bden_01758 │ELTDGFHLVIDAMKLNGIDTIYNVPGIPITDLGRMAQAEGIRVLSFRHEQNAGYAAAIAGFLTK-KPGVC│
@@ -140,9 +220,17 @@ $ termal data/aln4.pep
 
 **Notes**
 
-1. The above example appears in monochrome due to Markdown rendring, but by default Termal uses colours, e.g. to reflect amino acid chemistry.
-2. The above example had to be slightly tweaked because the separation line between the main and bottom panel is rendered too wide in some Markdown engines.
+1. The above example shows `termal` in monochrome mode due to limitations in
+   Markdown rendring, but by default Termal uses colours, e.g. to reflect amino
+   acid chemistry.
+2. The above example had to be slightly tweaked because the separation line
+   between the main and bottom panel is rendered too wide in some Markdown
+   engines.
 
+BUGS AND LIMITATIONS
+====================
+
+* Currently, Termal can only read Fasta alignments (i.e., no Phylip or other formats).
 
 LICENSE
 =======
