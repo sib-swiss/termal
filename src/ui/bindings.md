@@ -22,7 +22,7 @@ f   : toggle fullscreen alignment pane
 ## Video
 
 s : next color scheme
-m : cycle through color maps
+m : next color map
 
 ## Metrics and Orderings
 
