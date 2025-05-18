@@ -666,7 +666,7 @@ fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
         match ui.zoom_level {
             ZoomLevel::ZoomedIn => "Zoomed in",
             ZoomLevel::ZoomedOut => "Zoomed out ",
-            ZoomLevel::ZoomedOutAR => "Zoomed out (AR)",
+            ZoomLevel::ZoomedOutAR => "Z. out (Aspect)",
         }
     )
 }
