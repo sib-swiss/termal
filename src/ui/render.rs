@@ -646,14 +646,13 @@ fn tick_position(aln_length: usize) -> String {
 fn compute_title(ui: &UI, aln_para: &[Line]) -> String {
     ui.common_ratio();
     let title = format!(
-        " {} - {}/{}s ({:.2}) x {}/{}c ({:.2})",
+        " {} - {}/{}s x {}/{}c {}",
         ui.app.filename,
         aln_para.len(),
         ui.app.num_seq(),
-        aln_para.len() as f64 / ui.app.num_seq() as f64,
         aln_para[0].spans.len(),
         ui.app.aln_len(),
-        aln_para[0].spans.len() as f64 / ui.app.aln_len() as f64,
+        ui.theme(),
     );
     format!(
         "{} - {}",
