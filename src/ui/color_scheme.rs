@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Thomas Junier
 
+use std::fmt;
+
 use ratatui::prelude::Color;
 
 use crate::{
@@ -56,6 +58,17 @@ pub enum Theme {
     Light,
     Dark,
     Monochrome,
+}
+
+impl fmt::Display for Theme {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            Theme::Dark => "Dark",
+            Theme::Light => "Light",
+            Theme::Monochrome => "Mono",
+        };
+        write!(f, "{}", s)
+    }
 }
 
 // TODO: make these private and use getters.
@@ -126,5 +139,11 @@ impl ColorScheme {
         let size = self.residue_colormaps.len();
         self.residue_colormap_index += 1;
         self.residue_colormap_index %= size;
+    }
+}
+
+impl fmt::Display for ColorScheme {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{} {}", self.theme, self.current_residue_colormap())
     }
 }

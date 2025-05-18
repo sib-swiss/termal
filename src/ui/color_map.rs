@@ -1,6 +1,11 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Thomas Junier
-use std::{collections::HashMap, fs::File, io::BufReader};
+use std::{
+    collections::HashMap,
+    fmt,
+    fs::File,
+    io::BufReader
+};
 
 use hex_color::HexColor;
 // NOTE: ideally, the color maps should not depend on crates, since one might conceivably switch to
@@ -43,6 +48,12 @@ impl ColorMap {
     }
 }
 
+impl fmt::Display for ColorMap {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+
 pub fn builtin_polychrome_colormaps() -> Vec<ColorMap> {
     vec![
         color_map_jalview_nt(), // Keep the nucleotide map at index 0 (see
@@ -68,7 +79,7 @@ pub fn monochrome_colormap() -> Vec<ColorMap> {
 
 pub fn color_map_monochrome() -> ColorMap {
     ColorMap::new(
-        "Monochrome".into(),
+        "White".into(),
         HashMap::from([
             ('G', Color::White),
             ('A', Color::White),

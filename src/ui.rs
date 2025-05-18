@@ -6,7 +6,10 @@ mod barchart;
 pub mod key_handling;
 pub mod render;
 
-use std::cmp::min; 
+use std::{
+    cmp::min,
+    fmt,
+}; 
 
 use log::debug;
 
@@ -40,6 +43,16 @@ enum BottomPanePosition {
 enum VideoMode {
     Direct,
     Inverse,
+}
+
+impl fmt::Display for VideoMode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let s = match self {
+            VideoMode::Direct => "",
+            VideoMode::Inverse => "Inv",
+        };
+        write!(f, "{}", s)
+    }
 }
 
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
