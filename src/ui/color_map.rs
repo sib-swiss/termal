@@ -232,7 +232,7 @@ pub fn color_map_clustalx() -> ColorMap {
 
 pub fn color_map_jalview_nt() -> ColorMap {
     ColorMap::new(
-        "JalView nt".into(),
+        "JalView-nt".into(),
         HashMap::from([
             ('A', JALVIEW_NUCLEOTIDE_A),
             ('C', JALVIEW_NUCLEOTIDE_C),
