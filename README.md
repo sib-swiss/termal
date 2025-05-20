@@ -8,7 +8,8 @@ Summary
 Termal is a program for examining multiple sequence **al**ignments in a **term**inal.
 
 * No installer (just download and uncompress)
-* No dependencies.
+* No dependencies
+* Best results in a terminal that supports 24-bit ("true color") color output
 
 Quick Start 
 ============
@@ -18,10 +19,10 @@ alignment (see below). Press "`?`" for help.
 
 ### Linux (x86_64)
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-linux-x86_64.tar.gz)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.1.0/termal-v1.0.0-linux-x86_64.tar.gz)
 
 ```bash
-tar -xzf termal-v1.0.0-linux-x86_64.tar.gz
+tar -xzf termal-v1.1.0-linux-x86_64.tar.gz
 ./termal data/example-1.msa
 ```
 
@@ -29,7 +30,7 @@ tar -xzf termal-v1.0.0-linux-x86_64.tar.gz
 
 ### Windows
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-windows-x86_64.zip)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.1.0/termal-v1.0.0-windows-x86_64.zip)
 
 1. Unzip the archive
 2. Open a terminal and run:
@@ -42,10 +43,10 @@ termal.exe example-1.msa
 
 ### macOS
 
-* [Download](https://github.com/sib-swiss/termal/releases/download/v1.0.0/termal-v1.0.0-macos-x86_64.tar.gz)
+* [Download](https://github.com/sib-swiss/termal/releases/download/v1.1.0/termal-v1.0.0-macos-x86_64.tar.gz)
 
 ```bash
-tar -xzf termal-v1.0.0-macos-x86_64.tar.gz
+tar -xzf termal-v1.1.0-macos-x86_64.tar.gz
 ./termal data/example-1.msa
 ```
 
@@ -154,38 +155,6 @@ By default, residues are colored in inverse video, as is done by most alignment
 viewers, but direct video is also possible. The `i` key toggles between the
 video modes.
 
-Motivation
-==========
-
-Primary
--------
-
-Multiple sequence alignments often reside on distant machines like HPC clusters,
-for two reasons:
-
-1. They may require nontrivial resources to compute (this is especially true of
-   large alignments);
-1. They may serve as inputs to heavy-duty analyses like computing phylogenetic
-   trees.
-
-Like any other input data, it's a good idea to have a quick look at an alignment
-before it is fed to an analysis pipeline. There are many fine tools for doing
-this, but most of them have a graphical user interface, so they (usually) can't
-be used over SSH. A multiple sequence alignment is basically just text, so it is
-well suited for a TUI.
-
-Secondary
----------
-
-Even on a local machine, there are use cases for viewing alignments in a
-terminal, such as:
-
-* Short load times: Rust programs can be _very_ fast, and I appreciate being
-  able to have a quick look at an alignment without waiting several seconds (or
-  more on an older machine) for the program and alignment to load.
-* Not needing to leave one's work environment - use `termal` on an alignment
-  like you would use `less`, `bat`, etc. on a text file.
-
 Example
 =======
 
@@ -226,6 +195,38 @@ $ termal data/aln4.pep
 2. The above example had to be slightly tweaked because the separation line
    between the main and bottom panel is rendered too wide in some Markdown
    engines.
+
+Motivations
+===========
+
+Primary
+-------
+
+Multiple sequence alignments often reside on distant machines like HPC clusters,
+for two reasons:
+
+1. They may require nontrivial resources to compute (this is especially true of
+   large alignments);
+1. They may serve as inputs to heavy-duty analyses like computing phylogenetic
+   trees.
+
+Like for any other input data, it's a good idea to have a quick look at an
+alignment before it is fed to an analysis pipeline. There are many fine tools
+for doing this, but most of them have a graphical user interface, so they
+  (usually) can't be used over SSH. A multiple sequence alignment is basically
+  just text, so it is well suited for a text interface.
+
+Secondary
+---------
+
+Even on a local machine, there are use cases for viewing alignments in a
+terminal, such as:
+
+* Short load times: Rust programs can be _very_ fast, and it is convenient to be
+  able to have a quick look at an alignment without waiting several seconds for
+  the program and alignment to load.
+* Not needing to leave one's work environment - use `termal` on an alignment
+  like you would use `less`, `bat`, etc. on any text file.
 
 BUGS AND LIMITATIONS
 ====================
