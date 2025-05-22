@@ -1,0 +1,12 @@
+# Disable detection for FASTA and MSA-related files
+*.fas linguist-detectable=false
+*.fasta linguist-detectable=false
+*.msa linguist-detectable=false
+*.pep linguist-detectable=false
+*.seq linguist-detectable=false
+*.dna linguist-detectable=false
+*.aln linguist-detectable=false
+*.phy linguist-detectable=false
+
+# Tell GitHub to focus only on Rust files
+*.rs linguist-detectable=true
