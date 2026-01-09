@@ -10,6 +10,13 @@ tags:
 test:
 	cargo test --color=always --no-fail-fast
 
+# Make a PDF of the user manual
+
+manual:
+  pandoc --standalone --to=pdf --pdf-engine=lualatex \
+  --output=manual.pdf manual.md
+
+
 # Make a release for GitHub 
 crate := "termal-msa"
 bin := "termal"
