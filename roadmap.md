@@ -45,11 +45,16 @@ Important Points
 Miscellaneous Ideas
 ===================
 
+* Citation: `--cite` shows a ref to Junier 2025.
+
+* See Future Work in manual for other ideas
 TODO
 ====
 
 Urgent
 ------
+
+1. [x] Wrote the user manual (`doc/manual.md`).
 
 1. [ ] Shift-J and Shift-K in Zoomed-Out modes with very tall alignments move
    the ZB by less than one line at a time, instead of a whole ZB - this is

@@ -13,8 +13,7 @@ test:
 # Make a PDF of the user manual
 
 manual:
-  pandoc --standalone --to=pdf --pdf-engine=lualatex \
-  --output=manual.pdf manual.md
+  just doc/
 
 
 # Make a release for GitHub 

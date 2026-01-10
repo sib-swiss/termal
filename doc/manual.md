@@ -1,21 +1,23 @@
 ---
 geometry:
-    - margin = 1in 
+    - margin=1in 
 lang: en
 colorlinks: true 
 linkcolor: blue 
 urlcolor: blue 
 mainfont: TeX Gyre Pagella
 monofont: JetBrains Mono
-title: "termal — User Manual"
+title: "Termal"
+subtitle: "User Manual"
 author: "Thomas Junier"
 date: "January 2026"
+bibliography: "termal.bib"
 toc: true
 ---
 
 #  Overview
 
-**termal** is a terminal-based viewer for multiple sequence alignments (MSAs).
+**Termal** is a terminal-based viewer for multiple sequence alignments (MSAs).
 It is designed for fast, keyboard-driven navigation of large alignments,
 particularly in remote or SSH-based environments where graphical tools are
 impractical.
@@ -23,11 +25,13 @@ impractical.
 Termal is a **read-only** viewer. It does not modify alignments. This may change
 in future versions.
 
+Termal is presented in [@junier2025termal].
+
 ---
 
 #  Basic usage
 
-##  Starting termal
+##  Starting Termal
 
 Simply pass your alignment file as an argument to `termal`, e.g.:
 
@@ -35,7 +39,9 @@ Simply pass your alignment file as an argument to `termal`, e.g.:
 termal my-alignment.msa
 ```
 
-Termal supports Fasta (default) and Stockholm (pass `-f`) formats.
+Termal supports Fasta (default) and Stockholm (pass `-f`) formats. Any alignment
+lines shorter than the longest one will be padded with gap characters at the
+end.
 
 ##  Help
 
@@ -90,7 +96,7 @@ takes a string argument.
 
 #  Navigation fundamentals
 
-Navigation in termal is inspired by **Vim**, but simplified and adapted to
+Navigation in Termal is inspired by **Vim**, but simplified and adapted to
 multiple sequence alignments. The effect of motion commands depends on the zoom
 mode (see "Zooming" below), as follows:
 
@@ -162,7 +168,7 @@ top (respectively left) of the alignment pane.
 
 **NOTE**: in vertical jumps, the sequence's number is counted from the _first
 screen line_. This will be the same as the sequence's number in the alignment
-file, unless the sequences have been reordered (see "Ordering", below).
+file, unless the sequences have been [reordered](#ordering).
 
 ### Absolute jumps
 
@@ -186,14 +192,14 @@ command    motion
 ### Jumps to search matches {#match-jumps}
 
 Termal supports jumping to sequences whose headers match an arbitrary pattern
-(see [Searching](#Searching) for how to start the search). If any matches are
+(see [Searching](#searching) for how to start the search). If any matches are
 found, Termal will automatically jump to the first match. To jump to the next or
 previous match, use `n` or `p`:
 
 command    motion
 --------   --------------
-`[count]n` jump _count_ header matches forwards
-`[count]p` jump _count_ header matches backwards
+`[count]n` jump _count_ header matches forward
+`[count]p` jump _count_ header matches backward
 
 Match jumps wrap around, i.e. pressing `n` while on the last match will move
 back to the first one. If no matches were found, match jump commands have no
@@ -207,7 +213,7 @@ effect.
 * `50%`: Jump to the vertical midpoint of the alignment.
 * `25#`: Jump to one quarter of the alignment width.
 * `n`: jump to the next header match
-* `3p`: jump three header matches backwards
+* `3p`: jump three header matches backward
 
 ---
 
@@ -238,12 +244,12 @@ _zoom box_.
 A variant of the _zoomed-out_ mode works as above but preserves the alignment's
 aspect ratio. It is called _zoomed-out-AR_.
 
-To cycle forward through the zoom modes, press `z`; to cycle backwards, press
+To cycle forward through the zoom modes, press `z`; to cycle backward, press
 `Z`.
 
 ---
 
-# Searching {#Searching}
+# Searching {#searching}
 
 ##  Searching sequence headers
 
@@ -273,7 +279,9 @@ This jumps to the first sequence whose header starts with `Eco` (if any).
 
 ---
 
-#  Resizing the Left Pane
+# Display Controls
+
+##  Resizing the Left Pane
 
 The left pane can be widened (perhaps to show more of the sequence headers) with
 `>` and shrunk with `<`. Both accept a prefix argument, which is by how many
@@ -288,66 +296,120 @@ command    motion
 
 ---
 
-#  Ordering the Sequences
+##  Ordering the Sequences {#ordering}
 
 Initially, the sequences appear in the alignment pane in the same order as they
 appear in the alignment file. However, the sequences may be ordered according to
-the current [metric](#metrics), either ascending or descending.
+the current [metric](#metrics), either ascending or descending. Note that the
+"first" sequence (on the screen) is the _top_ sequence. As a result, when
+sorting in ascending order, metric values increase from top to bottom.
 
-To cycle forward through orderings, press (`o`). To cycle backwards, press `O`.
+To cycle forward through orderings, press (`o`). To cycle backward, press `O`.
+
+The current ordering is displayed is the corner pane, as a symbol just below the
+bar chart in the left pane:
+
+symbol   meaning
+-------  --------
+-        file order
+↑        current metric, ascending
+↓        current metric, descending
 
 ---
 
-# Residue Colormaps
+## Metrics
+
+The left pane displays a bar chart of the current _metric_. This is is a
+numeric property of the sequences. Currently, there are two possible metrics:
+
+a. Sequence length (not counting gaps)
+b. Similarity to the consensus
+
+To cycle forward through the metrics, press `t` (me**t**ric); press `T` to cycle
+backward. The current metric is displayed in the corner pane.
+
+The sequences can be [ordered](#ordering) according to the current metric.
+
+---
+
+## Residue Colormaps
 
 Termal supports four built-in residue color maps:
 
-source     residue class
----------- ----------------
-ClustalX   amino acids
-Lesk       amino acids
-JalView    nucleotides
-monochrome both
+source     residue class    reference
+---------- ---------------- ----------
+ClustalX   amino acids      [@larkin2007clustal]
+Lesk       amino acids      [@lesk2019introduction]
+JalView    nucleotides      [@waterhouse2009jalview]
+monochrome both             [#themes]
+
+To cycle through colormaps, tye `m` (forward) or `M` (backward).  The initial
+colormap is ClustalX for amino acids or JalView for nucleotides. The current
+colormap is displayed in the top border of the Termal screen.
 
 ---
 
-# Themes
+## Themes {#themes}
+
+Termal supports three themes: dark, light, and monochrome. To cycle through the
+themes, type `s` (forward) or `S` (backward). The current
+theme is displayed in the top border of the Termal screen.
+
+**NOTE** Termal has been tested predominantly in a dark-themed
+terminal.
 
 ---
 
-#  Modeline and feedback
+## Inverse Video
 
-The modeline provides continuous feedback about:
-- cursor position (row and column),
+By default, Termal displays the sequence residues in inverse video. To toggle to
+direct video (and back), press `i`. The current
+video mode is displayed in the top border of the Termal screen.
+
+---
+
+##  Modeline and feedback
+
+The modeline (in the bottom border of the Termal screen) provides feedback about:
 - pending numeric arguments,
 - active search state,
 - current search match index.
-
-When a command is incomplete (for example, after typing a numeric prefix),
-the modeline reflects this pending state explicitly.
 
 ---
 
 #  Limitations and scope
 
-termal intentionally does **not** support:
-- editing alignments,
-- modifying sequences,
-- graphical export.
-
-Its scope is limited to:
-- inspection,
-- navigation,
-- orientation within large MSAs.
+Termal currently does **not** support:
+- editing alignments
+- graphical export
+- alignment formats other than Multi-fasta and Stockholm
 
 # Future Work
 
+Features that will be added in the next release:
+
+* custom orderings
+* custom colormaps
+* search within sequences
+
+Features that will be added later
+
+* arbitrary sequence as reference
+* showing only residues that differ from the consensus, or that are fully
+  conserved (à la EMBOSS's `showalign -show`)
+* a color map for vision-impaired users
+
+Features under consideration
+
+* Showing a phylogeny in the left pane
+* Simple edits (removing empty columns)
+* Saving parts of the alignments
 
 ---
 
 #  Design philosophy
 
-termal prioritizes:
+Termal prioritizes:
 - predictability over feature breadth,
 - keyboard-driven navigation over menus,
 - robustness over visual effects.
@@ -357,3 +419,5 @@ and clarity over graphical interaction.
 
 Many commands, as well as the prefix argument syntax, were deliberately copied
 from Vi/Vim.
+
+# References
