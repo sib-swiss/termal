@@ -48,6 +48,10 @@ Miscellaneous Ideas
 * Citation: `--cite` shows a ref to Junier 2025.
 
 * See Future Work in manual for other ideas
+
+* Renderer app: a CLI app that takes an aln and makes a SVG of (a part of) it.
+  Uses the Termal crate, but non-interactively.
+
 TODO
 ====
 
