@@ -44,7 +44,6 @@ in future versions.
 
 Termal is presented in [@junier2025termal].
 
----
 
 #  Basic usage
 
@@ -65,8 +64,6 @@ end.
 For general help, pass option `-h`; for a list of key bindings, pass `-b` or
 press `?` after launching `termal`.
 
----
-
 #  Screen layout
 
 The interface is divided into four areas:
@@ -84,8 +81,6 @@ In addition, the last line contains a message area ("modeline"), which displays:
 - pending command arguments (counts, searches), if any;
 - search match information (when applicable).
 
-
----
 
 #  Interaction
 
@@ -108,8 +103,6 @@ If no prefix argument is given, commands default to **1**.
 String arguments are entered after typing the command character, and are entered
 by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`)
 takes a string argument.
-
----
 
 #  Navigation fundamentals
 
@@ -175,8 +168,6 @@ behaviour of `less` and other Unix pagers.
 - `5K`: move 5 screens up
 - `2<Spc>`: move two screens down
 
----
-
 ## Jumps
 
 Jump commands move directly to a position, specified by the prefix argument. The
@@ -232,8 +223,6 @@ effect.
 * `n`: jump to the next header match
 * `3p`: jump three header matches backward
 
----
-
 # Zooming
 
 In Termal, *zooming* refers to changing how the alignment is displayed, rather
@@ -263,8 +252,6 @@ aspect ratio. It is called _zoomed-out-AR_.
 
 To cycle forward through the zoom modes, press `z`; to cycle backward, press
 `Z`.
-
----
 
 # Searching {#searching}
 
@@ -311,8 +298,6 @@ command    motion
 
 
 
----
-
 ##  Ordering the Sequences {#ordering}
 
 Initially, the sequences appear in the alignment pane in the same order as they
@@ -332,8 +317,6 @@ symbol   meaning
 ↑        current metric, ascending
 ↓        current metric, descending
 
----
-
 ## Metrics {#metrics}
 
 The left pane displays a bar chart of the current _metric_. This is is a
@@ -346,8 +329,6 @@ To cycle forward through the metrics, press `t` (me**t**ric); press `T` to cycle
 backward. The current metric is displayed in the corner pane.
 
 The sequences can be [ordered](#ordering) according to the current metric.
-
----
 
 ## Residue Colormaps
 
@@ -364,8 +345,6 @@ To cycle through colormaps, tye `m` (forward) or `M` (backward).  The initial
 colormap is ClustalX for amino acids or JalView for nucleotides. The current
 colormap is displayed in the top border of the Termal screen.
 
----
-
 ## Themes {#themes}
 
 Termal supports three themes: dark, light, and monochrome. To cycle through the
@@ -375,15 +354,11 @@ theme is displayed in the top border of the Termal screen.
 **NOTE** Termal has been tested predominantly in a dark-themed
 terminal.
 
----
-
 ## Inverse Video
 
 By default, Termal displays the sequence residues in inverse video. To toggle to
 direct video (and back), press `i`. The current
 video mode is displayed in the top border of the Termal screen.
-
----
 
 ##  Modeline and feedback
 
@@ -397,6 +372,7 @@ The modeline (in the bottom border of the Termal screen) provides feedback about
 #  Limitations and scope
 
 Termal currently does **not** support:
+
 - editing alignments
 - graphical export
 - alignment formats other than Multi-fasta and Stockholm
@@ -427,6 +403,7 @@ Features under consideration
 #  Design philosophy
 
 Termal prioritizes:
+
 - predictability over feature breadth,
 - keyboard-driven navigation over menus,
 - robustness over visual effects.
