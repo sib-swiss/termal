@@ -13,6 +13,23 @@ author: "Thomas Junier"
 date: "January 2026"
 bibliography: "termal.bib"
 toc: true
+header-includes:
+  - |
+    \usepackage{etoolbox}
+    \makeatletter
+    \apptocmd{\maketitle}{%
+      \par\bigskip
+      \begin{center}
+      \ttfamily
+      TERM-----AL--------------\\
+      TERMinAL-ALIGNM--T-VIEWER\\
+      TERM--AL-AL-----N--VIEWER\\
+      ------AL-----------VIEW--\\
+      ---------ALIGNMENT-VIEWER
+      \end{center}
+      \bigskip
+    }{}{}
+    \makeatother
 ---
 
 #  Overview
@@ -56,8 +73,8 @@ The interface is divided into four areas:
 
 - **Alignment pane** (center - right): shows the aligned sequences, 
   some properties of the alignments, as well as some current UI settings.
-- **Sequence labels pane** (left): shows sequence numbers and labels, as well as
-  a barplot of the current metric (see below)
+- **Left pane** (left): shows sequence numbers and headers, as well as
+  a barplot of the current [metric](#metrics)
 - **Consensus pane** (bottom): shows horizontal position, the consensus sequence, and a conservation barplot
 - **Corner pane** (bottom left): shows the current metric and ordering (see
   below).
@@ -89,16 +106,16 @@ If no prefix argument is given, commands default to **1**.
 ##  String Arguments
 
 String arguments are entered after typing the command character, and are entered
-by typing `Return`/`Enter`. Currently only the Label Search command (`"`)
+by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`)
 takes a string argument.
 
 ---
 
 #  Navigation fundamentals
 
-Navigation in Termal is inspired by **Vim**, but simplified and adapted to
-multiple sequence alignments. The effect of motion commands depends on the zoom
-mode (see "Zooming" below), as follows:
+Navigation in Termal is inspired by [Vim](https://vim.org)  but simplified and adapted to
+multiple sequence alignments. The effect of motion commands depends on the [zoom
+mode](#zooming), as follows:
 
 * In zoomed-in mode, they change the portion of the alignment that is being
   displayed, much as a pager pages trough a text file.
@@ -251,7 +268,7 @@ To cycle forward through the zoom modes, press `z`; to cycle backward, press
 
 # Searching {#searching}
 
-##  Searching sequence headers
+##  Searching sequence headers {#hdr-search}
 
 Termal supports searching within sequence headers using regular expressions.
 
@@ -317,7 +334,7 @@ symbol   meaning
 
 ---
 
-## Metrics
+## Metrics {#metrics}
 
 The left pane displays a bar chart of the current _metric_. This is is a
 numeric property of the sequences. Currently, there are two possible metrics:
@@ -418,6 +435,6 @@ It is intended for users comfortable with terminal-based tools who value speed
 and clarity over graphical interaction.
 
 Many commands, as well as the prefix argument syntax, were deliberately copied
-from Vi/Vim.
+from [Vim](https://vim.org).
 
 # References
