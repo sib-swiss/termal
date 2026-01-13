@@ -8,7 +8,7 @@ readme = "README.crates.md"
 description = "A viewer of multiple sequence alignments, with a text user interface"
 keywords = ["multiple-alignment", "viewer", "terminal", "TUI"]
 categories = ["science::bioinformatics", "science::bioinformatics::sequence-analysis", "command-line-utilities"]
-include = ["**/*.rs", "src/ui/bindings.md", "Cargo.toml", "README.crates.md", "data/example-1.msa", "data/CD00377_ICL-PEPM_wDesc.msa", "data/PF00244.26.sto", "data/OX_OFA-pg2.msa", "data/OX_OFA-pg2.order"]
+include = ["**/*.rs", "src/ui/bindings.md", "Cargo.toml", "README.crates.md", "data/example-1.msa", "data/CD00377_ICL-PEPM_wDesc.msa", "data/PF00244.26.sto", "data/OX_OFA-pg2.msa"]
 #homepage: no page other than repo
 rust-version = "1.79" # May compile with earlier ones, but not checked.
 
