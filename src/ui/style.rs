@@ -1,11 +1,10 @@
-// SPDX-License-Identifier: MIT 
-// Copyright (c) 2025 Thomas Junier 
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 
 use ratatui::style::{Color, Modifier, Style};
 
 use super::{
-    {Theme, VideoMode},
-    UI,
+    UI, {Theme, VideoMode},
 };
 
 pub fn get_residue_style(video_mode: VideoMode, theme: Theme, color: Color) -> Style {

@@ -1,12 +1,7 @@
-// SPDX-License-Identifier: MIT 
-// Copyright (c) 2025 Thomas Junier 
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 
-use ratatui::{
-    buffer::Buffer,
-    layout::Rect,
-    prelude::Position,
-    style::Style
-};
+use ratatui::{buffer::Buffer, layout::Rect, prelude::Position, style::Style};
 
 pub fn draw_zoombox_border(
     buf: &mut Buffer,
@@ -45,8 +40,8 @@ pub fn draw_zoombox_border(
 
     // single row
     if h <= 1 {
-       draw_zoombox_border_zero_height(buf, x0, x1, y0, style);
-       return;
+        draw_zoombox_border_zero_height(buf, x0, x1, y0, style);
+        return;
     }
 
     // general case (>= 2x2)
@@ -62,32 +57,55 @@ fn draw_zoombox_border_general_case(
     style: Style,
 ) {
     // Top edge
-    buf.cell_mut(Position::from((zb_left, zb_top))).expect("Wrong position").set_char('┌').set_style(style);
+    buf.cell_mut(Position::from((zb_left, zb_top)))
+        .expect("Wrong position")
+        .set_char('┌')
+        .set_style(style);
     for x in (zb_left + 1)..zb_right {
-        buf.cell_mut(Position::from((x, zb_top))).expect("Wrong position").set_char('─').set_style(style);
+        buf.cell_mut(Position::from((x, zb_top)))
+            .expect("Wrong position")
+            .set_char('─')
+            .set_style(style);
     }
-    buf.cell_mut(Position::from((zb_right, zb_top))).expect("Wrong position").set_char('┐').set_style(style);
+    buf.cell_mut(Position::from((zb_right, zb_top)))
+        .expect("Wrong position")
+        .set_char('┐')
+        .set_style(style);
 
     // Sides
     for y in (zb_top + 1)..zb_bottom {
-        buf.cell_mut(Position::from((zb_left, y))).expect("Wrong position").set_char('│').set_style(style);
-        buf.cell_mut(Position::from((zb_right, y))).expect("Wrong position").set_char('│').set_style(style);
+        buf.cell_mut(Position::from((zb_left, y)))
+            .expect("Wrong position")
+            .set_char('│')
+            .set_style(style);
+        buf.cell_mut(Position::from((zb_right, y)))
+            .expect("Wrong position")
+            .set_char('│')
+            .set_style(style);
     }
 
     // Bottom edge
-    buf.cell_mut(Position::from((zb_left, zb_bottom))).expect("Wrong position")
+    buf.cell_mut(Position::from((zb_left, zb_bottom)))
+        .expect("Wrong position")
         .set_char('└')
         .set_style(style);
     for x in (zb_left + 1)..zb_right {
-        buf.cell_mut(Position::from((x, zb_bottom))).expect("Wrong position").set_char('─').set_style(style);
+        buf.cell_mut(Position::from((x, zb_bottom)))
+            .expect("Wrong position")
+            .set_char('─')
+            .set_style(style);
     }
-    buf.cell_mut(Position::from((zb_right, zb_bottom))).expect("Wrong position")
+    buf.cell_mut(Position::from((zb_right, zb_bottom)))
+        .expect("Wrong position")
         .set_char('┘')
         .set_style(style);
 }
 
 fn draw_zoombox_border_point(buf: &mut Buffer, zb_left: u16, zb_top: u16, style: Style) {
-    buf.cell_mut(Position::from((zb_left, zb_top))).expect("Wrong position").set_char('▯').set_style(style);
+    buf.cell_mut(Position::from((zb_left, zb_top)))
+        .expect("Wrong position")
+        .set_char('▯')
+        .set_style(style);
 }
 
 fn draw_zoombox_border_zero_width(
@@ -98,29 +116,46 @@ fn draw_zoombox_border_zero_width(
     style: Style,
 ) {
     // Top cell
-    buf.cell_mut(Position::from((zb_left, zb_top))).expect("Wrong position").set_char('╿').set_style(style);
+    buf.cell_mut(Position::from((zb_left, zb_top)))
+        .expect("Wrong position")
+        .set_char('╿')
+        .set_style(style);
     // Inner cells
     for y in (zb_top + 1)..zb_bottom {
-        buf.cell_mut(Position::from((zb_left, y))).expect("Wrong position").set_char('│').set_style(style);
+        buf.cell_mut(Position::from((zb_left, y)))
+            .expect("Wrong position")
+            .set_char('│')
+            .set_style(style);
     }
     // Bottom cell
-    buf.cell_mut(Position::from((zb_left, zb_bottom))).expect("Wrong position") .set_char('╽').set_style(style);
+    buf.cell_mut(Position::from((zb_left, zb_bottom)))
+        .expect("Wrong position")
+        .set_char('╽')
+        .set_style(style);
 }
-
 
 fn draw_zoombox_border_zero_height(
     buf: &mut Buffer,
-    zb_left: u16, 
+    zb_left: u16,
     zb_right: u16,
-    zb_top: u16,    // zb_bottom = zb_top
+    zb_top: u16, // zb_bottom = zb_top
     style: Style,
 ) {
     // Leftmost col
-    buf.cell_mut(Position::from((zb_left, zb_top))).expect("Wrong position").set_char('╾').set_style(style);
+    buf.cell_mut(Position::from((zb_left, zb_top)))
+        .expect("Wrong position")
+        .set_char('╾')
+        .set_style(style);
     // Inner cells
     for x in (zb_left + 1)..zb_right {
-        buf.cell_mut(Position::from((x, zb_top))).expect("Wrong position").set_char('─').set_style(style);
+        buf.cell_mut(Position::from((x, zb_top)))
+            .expect("Wrong position")
+            .set_char('─')
+            .set_style(style);
     }
     // Bottom edge
-    buf.cell_mut(Position::from((zb_right, zb_top))).expect("Wrong position").set_char('╼').set_style(style);
+    buf.cell_mut(Position::from((zb_right, zb_top)))
+        .expect("Wrong position")
+        .set_char('╼')
+        .set_style(style);
 }

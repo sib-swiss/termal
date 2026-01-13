@@ -1,25 +1,20 @@
-// SPDX-License-Identifier: MIT 
-// Copyright (c) 2025 Thomas Junier 
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 
-use crossterm::event::{KeyCode, KeyEvent, KeyModifiers, KeyEventKind};
+use crossterm::event::{KeyCode, KeyEvent, KeyEventKind, KeyModifiers};
 
 use ratatui::{
     backend::TestBackend,
     buffer::Buffer,
-    prelude::{Rect, Position, Terminal},
-    TerminalOptions,
-    Viewport,
+    prelude::{Position, Rect, Terminal},
+    TerminalOptions, Viewport,
 };
 
 use termal_msa::{
     alignment::Alignment,
     app::App,
-    ui::{
-        render,
-        render::render_ui,
-        UI,
-    },
     seq::fasta,
+    ui::{render, render::render_ui, UI},
 };
 
 #[allow(dead_code)]
@@ -37,13 +32,15 @@ pub fn buffer_text(buf: &Buffer) -> String {
     let mut out = String::new();
     for y in 0..area.height {
         for x in 0..area.width {
-            out.push(buf.cell(Position::from((x, y)))
-                .expect("Wrong position")
-                .symbol()
-                .chars()
-                .next()
-                .unwrap_or(' '));
-            }
+            out.push(
+                buf.cell(Position::from((x, y)))
+                    .expect("Wrong position")
+                    .symbol()
+                    .chars()
+                    .next()
+                    .unwrap_or(' '),
+            );
+        }
         out.push('\n');
     }
     out
@@ -60,13 +57,9 @@ pub fn keypress(c: char) -> KeyEvent {
 }
 
 #[allow(dead_code)]
-pub fn with_rig<F>(
-    path: &str,
-    term_width: u16,
-    term_height: u16,
-    mut f: F) 
-    where
-        F: FnMut(&mut UI, &mut Terminal<TestBackend>),
+pub fn with_rig<F>(path: &str, term_width: u16, term_height: u16, mut f: F)
+where
+    F: FnMut(&mut UI, &mut Terminal<TestBackend>),
 {
     let seq_file = fasta::read_fasta_file(path).expect("read");
     let aln = Alignment::from_file(seq_file);
@@ -78,7 +71,9 @@ pub fn with_rig<F>(
     let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })
         .expect("creating test-backend terminal");
     // Initial draw
-    terminal.draw(|f| render::render_ui(f, &mut ui)).expect("initial draw");
+    terminal
+        .draw(|f| render::render_ui(f, &mut ui))
+        .expect("initial draw");
 
     // Events and assertions here
     f(&mut ui, &mut terminal);
@@ -88,9 +83,11 @@ pub fn with_rig<F>(
 pub fn screen_line(buffer: &Buffer, y: u16) -> String {
     let screen = buffer.area;
     (0..screen.width)
-        .map(|x| buffer.cell(Position::from((x, y)))
-            .expect("Wrong position")
-            .symbol())
+        .map(|x| {
+            buffer
+                .cell(Position::from((x, y)))
+                .expect("Wrong position")
+                .symbol()
+        })
         .collect()
 }
-

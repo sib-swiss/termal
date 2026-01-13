@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT 
-// Copyright (c) 2025 Thomas Junier 
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 
 use ratatui::{
     prelude::{Buffer, Position, Rect},
@@ -7,9 +7,7 @@ use ratatui::{
     widgets::Widget,
 };
 
-use crate::ui::{
-    zoombox::draw_zoombox_border,
-};
+use crate::ui::zoombox::draw_zoombox_border;
 
 pub struct SeqPane<'a> {
     pub sequences: &'a [String],
@@ -29,7 +27,8 @@ impl<'a> Widget for SeqPane<'a> {
         // Clear the pane so “extra space” doesn’t show stale cells.
         for y in 0..rows {
             for x in 0..cols {
-                buf.cell_mut(Position::from((area.x + x as u16, area.y + y as u16))).expect("Wrong position")
+                buf.cell_mut(Position::from((area.x + x as u16, area.y + y as u16)))
+                    .expect("Wrong position")
                     .set_char(' ')
                     .set_style(self.base_style);
             }
@@ -50,7 +49,8 @@ impl<'a> Widget for SeqPane<'a> {
                 let b = seq[j];
                 let style = self.style_lut[b as usize];
 
-                buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16))).expect("Wrong position")
+                buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
+                    .expect("Wrong position")
                     .set_char(b as char)
                     .set_style(style);
             }
@@ -81,7 +81,8 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
         // Clear pane (see ZoomedIn mode)
         for y in 0..rows {
             for x in 0..cols {
-                buf.cell_mut(Position::from((area.x + x as u16, area.y + y as u16))).expect("Wrong position")
+                buf.cell_mut(Position::from((area.x + x as u16, area.y + y as u16)))
+                    .expect("Wrong position")
                     .set_char(' ')
                     .set_style(self.base_style);
             }
@@ -110,7 +111,8 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                 let b = seq_bytes[j];
                 let style = self.style_lut[b as usize];
 
-                buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16))).expect("Wrong position")
+                buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
+                    .expect("Wrong position")
                     .set_char(b as char)
                     .set_style(style);
             }

@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Thomas Junier
-mod barchart;
 mod aln_widget;
+mod barchart;
 pub mod color_map;
 mod color_scheme;
 pub mod key_handling;
-pub mod render;
 mod msg_theme;
+pub mod render;
 mod style;
 mod zoombox;
 
 use std::{
-        cmp::{max, min},
-        fmt,
+    cmp::{max, min},
+    fmt,
 };
 
 use bitflags::bitflags;
@@ -21,8 +21,8 @@ use ratatui::layout::Size;
 use ratatui::style::{Color, Style};
 
 use self::{
-    color_scheme::{ColorScheme, Theme},
     color_map::colormap_gecos,
+    color_scheme::{ColorScheme, Theme},
 };
 
 use crate::app::App;
@@ -54,10 +54,16 @@ enum VideoMode {
 enum InputMode {
     Normal,
     Help,
-    PendingCount { count: usize },
-    LabelSearch { pattern: String },
+    PendingCount {
+        count: usize,
+    },
+    LabelSearch {
+        pattern: String,
+    },
     #[allow(dead_code)]
-    Search { pattern: String, direction: SearchDirection
+    Search {
+        pattern: String,
+        direction: SearchDirection,
     },
     // ExCommand { buffer: String },
 }
@@ -170,7 +176,7 @@ impl<'a> UI<'a> {
 
     fn max_nb_seq_shown(&self) -> u16 {
         let height = self.aln_pane_size.unwrap().height;
-        height.saturating_sub(2)// Borders - TODO: use constants!
+        height.saturating_sub(2) // Borders - TODO: use constants!
     }
 
     fn max_nb_col_shown(&self) -> u16 {
@@ -197,8 +203,12 @@ impl<'a> UI<'a> {
     /****************************************************************/
     // Location within the alignment
 
-    pub fn top_line(&self) -> u16 { self.top_line }
-    pub fn leftmost_col(&self) -> u16 { self.leftmost_col }
+    pub fn top_line(&self) -> u16 {
+        self.top_line
+    }
+    pub fn leftmost_col(&self) -> u16 {
+        self.leftmost_col
+    }
 
     // FIXME: use saturating arithmetic (also next fn)
     pub fn max_top_line(&self) -> u16 {
@@ -218,7 +228,7 @@ impl<'a> UI<'a> {
     }
 
     // Side panel dimensions
- 
+
     pub fn set_left_pane_width(&mut self, width: u16) {
         self.left_pane_width = width;
     }
@@ -248,15 +258,14 @@ impl<'a> UI<'a> {
     pub fn widen_label_pane(&mut self, amount: u16) {
         self.left_pane_width = min(
             self.left_pane_width + amount,
-            self.frame_size.unwrap().width -
-            (V_SCROLLBAR_WIDTH + MIN_COLS_SHOWN + BORDER_WIDTH)
+            self.frame_size.unwrap().width - (V_SCROLLBAR_WIDTH + MIN_COLS_SHOWN + BORDER_WIDTH),
         );
     }
 
     pub fn reduce_label_pane(&mut self, amount: u16) {
         self.left_pane_width = max(
             self.seq_num_pane_width() + self.metric_pane_width(),
-            self.left_pane_width.saturating_sub(amount)
+            self.left_pane_width.saturating_sub(amount),
         );
     }
 
@@ -264,7 +273,6 @@ impl<'a> UI<'a> {
         // Two chars for the histogram, and one for the border
         3
     }
-
 
     // Bottom pane dimensions
 
@@ -498,7 +506,9 @@ impl<'a> UI<'a> {
                     cs.add_colormap(cmap.clone());
                 }
             }
-            Err(_) => self.app.error_msg(format!( "Error reading colormap {}.", cmap_fname)),
+            Err(_) => self
+                .app
+                .error_msg(format!("Error reading colormap {}.", cmap_fname)),
         }
     }
 
@@ -538,7 +548,6 @@ impl<'a> UI<'a> {
         }
     }
 
-
     // ****************************************************************
     // Scrolling
 
@@ -557,64 +566,73 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_one_line_down(&mut self, count: u16) {
-        self.top_line = min(self.top_line.saturating_add(count),
-            self.max_top_line());
+        self.top_line = min(self.top_line.saturating_add(count), self.max_top_line());
     }
 
     pub fn scroll_one_col_right(&mut self, count: u16) {
-        self.leftmost_col = min(self.leftmost_col.saturating_add(count),
-            self.max_leftmost_col());
+        self.leftmost_col = min(
+            self.leftmost_col.saturating_add(count),
+            self.max_leftmost_col(),
+        );
     }
 
     // By screens
 
     pub fn scroll_one_screen_up(&mut self, count: u16) {
-        self.top_line = self.top_line.saturating_sub(
-            count.saturating_mul(self.max_nb_seq_shown()));
+        self.top_line = self
+            .top_line
+            .saturating_sub(count.saturating_mul(self.max_nb_seq_shown()));
     }
 
     pub fn scroll_one_screen_left(&mut self, count: u16) {
-        self.leftmost_col = self.leftmost_col.saturating_sub(
-            count.saturating_mul(self.max_nb_col_shown()));
+        self.leftmost_col = self
+            .leftmost_col
+            .saturating_sub(count.saturating_mul(self.max_nb_col_shown()));
     }
 
     pub fn scroll_one_screen_down(&mut self, count: u16) {
         self.top_line = min(
-            self.top_line.saturating_add(
-                count.saturating_mul(self.max_nb_seq_shown())),
-            self.max_top_line()
+            self.top_line
+                .saturating_add(count.saturating_mul(self.max_nb_seq_shown())),
+            self.max_top_line(),
         );
     }
 
     pub fn scroll_one_screen_right(&mut self, count: u16) {
         self.leftmost_col = min(
-            self.leftmost_col.saturating_add(
-                count.saturating_mul(self.max_nb_col_shown())),
-            self.max_leftmost_col()
+            self.leftmost_col
+                .saturating_add(count.saturating_mul(self.max_nb_col_shown())),
+            self.max_leftmost_col(),
         );
     }
 
     // By lines, zoomed out
     pub fn scroll_zoombox_one_line_up(&mut self, count: u16) {
-        self.top_line = self.top_line.saturating_sub( 
-            (count as f64 / self.v_ratio()).round() as u16);
+        self.top_line = self
+            .top_line
+            .saturating_sub((count as f64 / self.v_ratio()).round() as u16);
     }
 
     pub fn scroll_zoombox_one_col_left(&mut self, count: u16) {
-        self.leftmost_col = self.leftmost_col.saturating_sub(
-            (count as f64 / self.h_ratio()).round() as u16);
+        self.leftmost_col = self
+            .leftmost_col
+            .saturating_sub((count as f64 / self.h_ratio()).round() as u16);
     }
 
     pub fn scroll_zoombox_one_line_down(&mut self, count: u16) {
         self.top_line = min(
-            self.top_line.saturating_add((count as f64 / self.v_ratio()).round() as u16),
-            self.max_top_line());
+            self.top_line
+                .saturating_add((count as f64 / self.v_ratio()).round() as u16),
+            self.max_top_line(),
+        );
     }
 
     pub fn scroll_zoombox_one_col_right(&mut self, count: u16) {
         self.leftmost_col = min(
-            self.leftmost_col.saturating_add((count as f64 / self.h_ratio()).round() as u16),
-            self.max_leftmost_col());
+            self.leftmost_col
+                .saturating_add((count as f64 / self.h_ratio()).round() as u16),
+            self.max_leftmost_col(),
+        );
     }
 
     // ********************************************************
@@ -635,15 +653,15 @@ impl<'a> UI<'a> {
     pub fn jump_to_end(&mut self) {
         self.leftmost_col = self.max_leftmost_col()
     }
-    
+
     // Jump to (0-based) line.
     pub fn jump_to_line(&mut self, line: u16) {
         self.top_line = min(line, self.max_top_line());
     }
-    
+
     pub fn jump_to_col(&mut self, col: u16) {
         // -1 <- 1-based
-        self.leftmost_col = min(col-1, self.max_leftmost_col());
+        self.leftmost_col = min(col - 1, self.max_leftmost_col());
     }
 
     pub fn jump_to_pct_line(&mut self, pct: u16) {

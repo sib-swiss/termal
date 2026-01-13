@@ -8,19 +8,16 @@ use ratatui::{
 };
 
 use super::{
-        aln_widget::{SeqPane, SeqPaneZoomedOut},
-        barchart::{value_to_hbar, values_barchart},
-        color_scheme::Theme,
-        msg_theme::style_for,
-        style::{build_style_lut, get_residue_style},
-        AlnWRTSeqPane, BottomPanePosition, InputMode, VideoMode, BORDER_WIDTH, MIN_COLS_SHOWN,
-        V_SCROLLBAR_WIDTH,
-        ZoomLevel, UI,
+    aln_widget::{SeqPane, SeqPaneZoomedOut},
+    barchart::{value_to_hbar, values_barchart},
+    color_scheme::Theme,
+    msg_theme::style_for,
+    style::{build_style_lut, get_residue_style},
+    AlnWRTSeqPane, BottomPanePosition, InputMode, VideoMode, ZoomLevel, BORDER_WIDTH,
+    MIN_COLS_SHOWN, UI, V_SCROLLBAR_WIDTH,
 };
 
-use crate::{
-    vec_f64_aux::{normalize, ones_complement, product},
-};
+use crate::vec_f64_aux::{normalize, ones_complement, product};
 
 /*****************************************************************
  * Panel Texts

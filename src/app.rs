@@ -1,10 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025 Thomas Junier
 
-use std::{
-    collections::HashMap,
-    fmt,
-};
+use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 
@@ -28,7 +25,7 @@ impl fmt::Display for SeqOrdering {
             SourceFile => '-',
             MetricIncr => '↑',
             MetricDecr => '↓',
-            User       => 'u',
+            User => 'u',
         };
         write!(f, "{}", sord)
     }
@@ -147,20 +144,19 @@ impl App {
             User => {
                 // Do not change ordering if no user ordering provided, or if it had
                 // problems (this is checked early on, in main(), around l. 180 (as of commit
-                // 13a2e2e).). 
+                // 13a2e2e).).
                 match &self.user_ordering {
                     None => {
                         // Note: self.ordering_criterion is not supposed to have value 'User' unless a
                         // valid ordering was supplied (see prev_ordering_criterion() and
                         // next_ordering_criterion()).
-                    } 
+                    }
                     Some(uord_vec) => {
                         // Good ordering
                         // Technically, we could index by &str, but I'm not sure we'd gain a lot.
                         let mut hdr2rank: HashMap<String, usize> = HashMap::new();
-                        for (idx, hdr) in self.alignment.headers
-                            .iter().enumerate() {
-                                hdr2rank.insert(hdr.to_string(), idx);
+                        for (idx, hdr) in self.alignment.headers.iter().enumerate() {
+                            hdr2rank.insert(hdr.to_string(), idx);
                         }
                         // Iterate over ordering, looking up file index from the above hash.
                         let mut result: Vec<usize> = Vec::new();
@@ -169,9 +165,8 @@ impl App {
                         for hdr in uord_vec.iter() {
                             match hdr2rank.get(hdr) {
                                 Some(rank) => result.push(*rank),
-                                None       => break,
+                                None => break,
                             }
-                            
                         }
                         self.ordering = result;
                     }
@@ -187,10 +182,10 @@ impl App {
             MetricIncr => MetricDecr,
             // move to User IFF valid ordering
             MetricDecr => match self.user_ordering {
-                            Some(_) => User,
-                            None => SourceFile,
-                          },
-            User       => SourceFile, 
+                Some(_) => User,
+                None => SourceFile,
+            },
+            User => SourceFile,
         };
         self.recompute_ordering();
     }
@@ -199,11 +194,11 @@ impl App {
         self.ordering_criterion = match self.ordering_criterion {
             MetricIncr => SourceFile,
             MetricDecr => MetricIncr,
-            User       => MetricDecr,
+            User => MetricDecr,
             // move to User IFF valid ordering
             SourceFile => match self.user_ordering {
-                            Some(_) => User,
-                            None => MetricDecr,
+                Some(_) => User,
+                None => MetricDecr,
             },
         };
         self.recompute_ordering();
@@ -265,15 +260,19 @@ impl App {
         match try_re {
             Ok(re) => {
                 // actually numbers of matching lines, but a bit longish
-                let matches: Vec<usize> = self.alignment.headers
+                let matches: Vec<usize> = self
+                    .alignment
+                    .headers
                     .iter()
                     .enumerate()
-                    .filter_map(|(i,line)| re.is_match(line).then_some(i))
+                    .filter_map(|(i, line)| re.is_match(line).then_some(i))
                     .collect();
-                
+
                 // Start with all false, and flip to true only for matching lines
                 let mut match_linenum_vec: Vec<bool> = vec![false; self.alignment.num_seq()];
-                for i in &matches { match_linenum_vec[*i] = true; }
+                for i in &matches {
+                    match_linenum_vec[*i] = true;
+                }
 
                 self.search_state = Some(SearchState {
                     pattern: String::from(pattern),
@@ -308,12 +307,15 @@ impl App {
                 let nb_matches = state.match_linenums.len();
                 if nb_matches > 0 {
                     // (i+n).rem(l)
-                    let new = (state.current as isize + count).rem_euclid(nb_matches as isize) as usize;
+                    let new =
+                        (state.current as isize + count).rem_euclid(nb_matches as isize) as usize;
                     //let new = (state.current + count) % nb_matches.;
                     self.search_state.as_mut().unwrap().current = new;
-                    self.info_msg(format!("match #{}/{}",
-                            self.search_state.as_ref().unwrap().current + 1, // +1 <- user is 1-based
-                            self.search_state.as_ref().unwrap().match_linenums.len()));
+                    self.info_msg(format!(
+                        "match #{}/{}",
+                        self.search_state.as_ref().unwrap().current + 1, // +1 <- user is 1-based
+                        self.search_state.as_ref().unwrap().match_linenums.len()
+                    ));
                 } else {
                     self.info_msg("No match.");
                 }
@@ -325,7 +327,7 @@ impl App {
     }
 
     // Returns true IFF there is a search result AND header of rank `rank` (i.e., without
-    // correction for order) is a match. 
+    // correction for order) is a match.
     pub fn is_label_search_match(&self, rank: usize) -> bool {
         if let Some(state) = &self.search_state {
             state.hdr_match_status[rank]
@@ -455,7 +457,7 @@ mod tests {
             String::from("R1"),
             String::from("R2"),
             String::from("R3"),
-            String::from("R4")
+            String::from("R4"),
         ];
         let seqs = vec![
             String::from("catgcatatg"), // 0 diffs WRT consensus
@@ -539,7 +541,6 @@ mod tests {
         assert_eq!(app.rank_to_screenline(4), 1);
     }
 
-
     #[test]
     fn test_regex_lbl_search_10() {
         let hdrs = vec![
@@ -564,10 +565,12 @@ mod tests {
                 assert_eq!(state.pattern, "^A");
                 assert_eq!(state.match_linenums, vec![0, 1]);
                 assert_eq!(state.current, 0);
-                assert_eq!(state.hdr_match_status, vec![true, true, false, false, false]);
+                assert_eq!(
+                    state.hdr_match_status,
+                    vec![true, true, false, false, false]
+                );
             }
             None => panic!(),
         }
     }
-
 }

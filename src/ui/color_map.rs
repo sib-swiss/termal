@@ -9,6 +9,7 @@ use ratatui::prelude::Color;
 
 use serde_json::Value::Object;
 
+use crate::errors::TermalError;
 use crate::ui::color_scheme::{
     CLUSTALX_BLUE, CLUSTALX_CYAN, CLUSTALX_GREEN, CLUSTALX_MAGENTA, CLUSTALX_ORANGE, CLUSTALX_PINK,
     CLUSTALX_RED, CLUSTALX_YELLOW, JALVIEW_NUCLEOTIDE_A, JALVIEW_NUCLEOTIDE_B,
@@ -17,7 +18,6 @@ use crate::ui::color_scheme::{
     JALVIEW_NUCLEOTIDE_R, JALVIEW_NUCLEOTIDE_S, JALVIEW_NUCLEOTIDE_T, JALVIEW_NUCLEOTIDE_U,
     JALVIEW_NUCLEOTIDE_V, JALVIEW_NUCLEOTIDE_W, JALVIEW_NUCLEOTIDE_X, JALVIEW_NUCLEOTIDE_Y, ORANGE,
 };
-use crate::errors::TermalError;
 
 #[derive(Clone)]
 pub struct ColorMap {

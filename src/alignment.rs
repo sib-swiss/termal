@@ -285,8 +285,8 @@ mod tests {
     use crate::alignment::{
         best_residue, consensus, densities, entropies, entropy, percent_identity, res_count,
         seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, ResidueCounts,
-        ResidueDistribution,
-        SeqType, SeqType::{Nucleic, Protein},
+        ResidueDistribution, SeqType,
+        SeqType::{Nucleic, Protein},
     };
     use crate::seq::fasta::read_fasta_file;
     use approx::assert_relative_eq;
@@ -508,20 +508,20 @@ mod tests {
         let _ = Alignment::from_file(fasta);
     }
 
-    // Test the Vec constructor 
+    // Test the Vec constructor
     #[test]
     fn test_vec_ctor_00() {
         let hdrs = vec![
             String::from("Leo"),
             String::from("Tigris"),
             String::from("Pardus"),
-            String::from("Onca")
+            String::from("Onca"),
         ];
         let seqs = vec![
             String::from("catgcatatg"),
             String::from("aatgcatatg"),
             String::from("tatgcatatg"),
-            String::from("gatgcatatg")
+            String::from("gatgcatatg"),
         ];
         let aln = Alignment::from_vecs(hdrs, seqs);
         assert_eq!(4, aln.num_seq());

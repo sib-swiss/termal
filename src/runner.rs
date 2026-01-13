@@ -1,14 +1,10 @@
-// SPDX-License-Identifier: MIT 
-// Copyright (c) 2025 Thomas Junier 
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025 Thomas Junier
 
 use std::{
     fmt,
     fs::File,
-    io::{
-        BufRead,
-        BufReader,
-        stdout,
-    },
+    io::{stdout, BufRead, BufReader},
     time::{Duration, Instant},
 };
 
@@ -18,11 +14,7 @@ use crate::alignment::Alignment;
 use crate::app::App;
 use crate::seq::fasta::read_fasta_file;
 use crate::seq::stockholm::read_stockholm_file;
-use crate::ui::{
-    key_handling::handle_key_press,
-    render::render_ui,
-    UI,
-};
+use crate::ui::{key_handling::handle_key_press, render::render_ui, UI};
 
 use clap::{Parser, ValueEnum};
 
@@ -38,8 +30,6 @@ use ratatui::{
 };
 
 use crate::errors::TermalError;
-
-
 
 #[derive(Debug, Parser)]
 #[command(version, about, long_about = None) ]
@@ -148,7 +138,6 @@ fn read_user_ordering(fname: &str) -> Result<Vec<String>, std::io::Error> {
     reader.lines().collect()
 }
 
-
 pub fn run() -> Result<(), TermalError> {
     env_logger::init();
     info!("Starting log");
@@ -177,8 +166,7 @@ pub fn run() -> Result<(), TermalError> {
                 match get_ord_vec {
                     Ok(ord_vec) => Some(ord_vec),
                     Err(_) => {
-                        ordering_err_msg = Some(format!("Error reading ordering file {}",
-                            fname));
+                        ordering_err_msg = Some(format!("Error reading ordering file {}", fname));
                         None // => App ignores bad user ordering
                     }
                 }
@@ -193,8 +181,7 @@ pub fn run() -> Result<(), TermalError> {
             uo_clone.sort();
             ah_clone.sort();
             if uo_clone != ah_clone {
-                ordering_err_msg = Some(
-                    String::from("Discrepancies in ordering vs alignment"));
+                ordering_err_msg = Some(String::from("Discrepancies in ordering vs alignment"));
                 // App must ignore bad user ordering
                 user_ordering = None;
             }
@@ -251,7 +238,7 @@ pub fn run() -> Result<(), TermalError> {
             app_ui.prev_colormap();
         }
 
-        let poll_wait = Duration::from_millis(cli.poll_wait_time); 
+        let poll_wait = Duration::from_millis(cli.poll_wait_time);
         let frame_interval = Duration::from_millis(50); // FIXME: constant or option
         let mut last_draw: Instant;
 
@@ -269,7 +256,9 @@ pub fn run() -> Result<(), TermalError> {
                 match event::read()? {
                     event::Event::Key(key) if key.kind == KeyEventKind::Press => {
                         let done = handle_key_press(&mut app_ui, key);
-                        if done { break; }
+                        if done {
+                            break;
+                        }
 
                         // Only draw if enough time has elapsed
                         if last_draw.elapsed() >= frame_interval {
@@ -294,4 +283,3 @@ pub fn run() -> Result<(), TermalError> {
         panic!("Expected filename argument");
     }
 }
-
