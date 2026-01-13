@@ -19,8 +19,8 @@ terminal.
 Download a prebuilt binary from the GitHub Releases page:
 https://github.com/sib-swiss/termal/releases
 
-For the current release (v1.2.0):
-https://github.com/sib-swiss/termal/releases/tag/v1.2.0
+For the current release (v1.3.0):
+https://github.com/sib-swiss/termal/releases/tag/v1.3.0
 
 Unpack the archive and run the binary directly.
 

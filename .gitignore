@@ -1,9 +1,13 @@
+*.bundle
+dist
 *.exe
 *.gz
+*.jl
 *macos*
 manuscript
 *.md5
 old-releases
+*.pdf
 probs.md
 roadmap.pdf
 Session.vim
@@ -19,7 +23,3 @@ termal-v1.1.0-macos-x86_64
 termal*.zip
 *windows*
 *.zip
-*.jl
-dist
-*.bundle
-*.pdf
