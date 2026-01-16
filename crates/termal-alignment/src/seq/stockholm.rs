@@ -5,11 +5,11 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-use crate::errors::TermalError;
+use crate::error::AlignmentError;
 use crate::seq::file::SeqFile;
 use crate::seq::record::SeqRecord;
 
-pub fn read_stockholm_file<P: AsRef<Path>>(path: P) -> Result<SeqFile, TermalError> {
+pub fn read_stockholm_file<P: AsRef<Path>>(path: P) -> Result<SeqFile, AlignmentError> {
     let file = File::open(path)?;
     let mut result: SeqFile = Vec::new();
 
@@ -33,7 +33,9 @@ pub fn read_stockholm_file<P: AsRef<Path>>(path: P) -> Result<SeqFile, TermalErr
                         };
                         result.push(record);
                     }
-                    _ => return Err(TermalError::Format(String::from("Expected two fields"))),
+                    _ => return Err(AlignmentError::InvalidFormat{
+                            msg: String::from("Expected two fields")
+                        }),
                 }
             }
         }

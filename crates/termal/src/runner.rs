@@ -10,10 +10,11 @@ use std::{
 
 use log::info;
 
-use crate::alignment::Alignment;
+use termal_alignment::Alignment;
+use termal_alignment::seq::fasta::read_fasta_file;
+use termal_alignment::seq::stockholm::read_stockholm_file;
+
 use crate::app::App;
-use crate::seq::fasta::read_fasta_file;
-use crate::seq::stockholm::read_stockholm_file;
 use crate::ui::{key_handling::handle_key_press, render::render_ui, UI};
 
 use clap::{Parser, ValueEnum};
