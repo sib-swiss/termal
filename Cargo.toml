@@ -2,6 +2,6 @@
 members = [
 	"crates/termal",
 	"crates/termal-alignment",
-	# "crates/termal-export",
+	"crates/termal-export",
 ]
 resolver = "2"
