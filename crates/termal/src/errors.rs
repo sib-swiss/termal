@@ -3,6 +3,8 @@
 
 use std::{fmt, io};
 
+use termal_alignment::error::AlignmentError;
+
 #[derive(Debug)]
 pub enum TermalError {
     Io(io::Error),
@@ -21,6 +23,12 @@ impl From<io::Error> for TermalError {
 impl From<String> for TermalError {
     fn from(s: String) -> Self {
         TermalError::Format(s)
+    }
+}
+
+impl From<AlignmentError> for TermalError {
+    fn from(e: AlignmentError) -> Self {
+        TermalError::Format(e.to_string())
     }
 }
 

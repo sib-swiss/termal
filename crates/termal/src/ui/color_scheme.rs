@@ -5,8 +5,9 @@ use std::fmt;
 
 use ratatui::prelude::Color;
 
+use termal_alignment::alignment::SeqType;
+
 use crate::{
-    alignment::SeqType,
     ui::{
         color_map::{builtin_polychrome_colormaps, monochrome_colormap, ColorMap},
         color_scheme::SeqType::Protein,

@@ -5,8 +5,9 @@ use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 
+use termal_alignment::Alignment;
+
 use crate::{
-    alignment::Alignment,
     app::Metric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{MetricDecr, MetricIncr, SourceFile, User},
 };

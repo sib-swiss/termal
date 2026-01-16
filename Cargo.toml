@@ -1,8 +1,7 @@
 [workspace]
 members = [
 	"crates/termal",
-	# "crates/termal-alignment",
-	# "crates/termal-render",
+	"crates/termal-alignment",
 	# "crates/termal-export",
 ]
 resolver = "2"
