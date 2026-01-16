@@ -55,11 +55,11 @@ struct BestResidue {
 
 impl Alignment {
     // Makes an Alignment from a SeqFile, which is consumed.
-    pub fn from_file(fasta: SeqFile) -> Alignment {
+    pub fn from_file(seq_file: SeqFile) -> Alignment {
         let mut headers: Vec<String> = Vec::new();
         let mut sequences: Vec<String> = Vec::new();
         let mut max_len: usize = 0;
-        for record in fasta {
+        for record in seq_file {
             headers.push(record.header);
             let l = record.sequence.len();
             sequences.push(record.sequence);

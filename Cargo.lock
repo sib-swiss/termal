@@ -67,6 +67,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "anyhow"
+version = "1.0.100"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a23eb6b1614318a8071c9b2521f36b424b2c83db5eb3a0fead4a6c0809af6e61"
+
+[[package]]
 name = "approx"
 version = "0.3.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -852,6 +858,15 @@ version = "0.1.0"
 dependencies = [
  "approx",
  "itertools 0.14.0",
+]
+
+[[package]]
+name = "termal-export"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "termal-alignment",
 ]
 
 [[package]]

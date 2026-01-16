@@ -1,5 +1,7 @@
 use anyhow::Result;
-use termal_alignment::{Alignment, Region};
+//use termal_alignment::{Alignment, Region};
+// NOTE: Regions will be implemented later
+use termal_alignment::Alignment;
 
 #[derive(Clone, Debug)]
 pub struct ExportOpts {
@@ -20,14 +22,16 @@ impl Default for ExportOpts {
     }
 }
 
-pub fn export_svg(aln: &Alignment, region: &Region, opts: &ExportOpts) -> Result<String> {
+//pub fn export_svg(aln: &Alignment, region: &Region, opts: &ExportOpts) -> Result<String> {
+pub fn export_svg(aln: &Alignment, opts: &ExportOpts) -> Result<String> {
     // Placeholder pipeline:
     // 1) paint_region(aln, region) -> ResidueGrid (ratatui-free)
     // 2) figure_plan::build(grid, opts) -> FigurePlan
     // 3) svg::render(plan) -> String
 
     // For now, return a minimal SVG stub so the CLI works end-to-end.
-    let _ = (aln, region, opts);
+    //let _ = (aln, region, opts);
+    let _ = (aln, opts);
     Ok(r#"<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="200" height="80">
   <rect x="0" y="0" width="200" height="80" fill="white"/>

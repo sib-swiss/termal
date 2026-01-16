@@ -58,8 +58,8 @@ fn parse_range(s: &str) -> Result<std::ops::Range<usize>> {
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    // 1) Read alignment (adjust to your actual API)
-    let aln: Alignment = termal_alignment::read_alignment(&args.input)
+    // 1) Read alignment 
+    let aln: Alignment = Alignment::from_file(&args.input)
         .with_context(|| format!("failed to read alignment from {}", args.input.display()))?;
 
     // 2) Region (defaults: all)
@@ -72,7 +72,7 @@ fn main() -> Result<()> {
         None => 0..aln.ncol(), // adjust method name
     };
 
-    let region = Region { rows: row_range, cols: col_range }; // adjust type/fields
+    // let region = Region { rows: row_range, cols: col_range }; // adjust type/fields
 
     // 3) Export options
     let opts = ExportOpts {
@@ -84,7 +84,8 @@ fn main() -> Result<()> {
     };
 
     // 4) Export SVG
-    let svg = export_svg(&aln, &region, &opts)?;
+    // let svg = export_svg(&aln, &region, &opts)?;
+    let svg = export_svg(&aln, &opts)?;
 
     // 5) Write
     if args.output == "-" {
