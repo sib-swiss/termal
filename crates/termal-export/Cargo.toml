@@ -1,0 +1,10 @@
+[package]
+name = "termal-export"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+termal-alignment = { path = "../termal-alignment" }
+# if export_svg is implemented in this crate's lib, no extra deps here
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"

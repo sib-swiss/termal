@@ -424,8 +424,9 @@ fn order<T: PartialOrd>(elems: &[T]) -> Vec<usize> {
 #[cfg(test)]
 mod tests {
 
+    use termal_alignment::Alignment;
+
     use crate::{
-        alignment::Alignment,
         app::{order, App},
     };
 

@@ -5,3 +5,6 @@ edition = "2021"
 
 [dependencies]
 itertools = "0.14.0"
+
+[dev-dependencies]
+approx = "0.3.2"    # needed for testing vec_f64_aux
