@@ -130,6 +130,7 @@ impl Alignment {
         self.sequences.len()
     }
 
+    // TODO: shouldn't this be aln_width?
     pub fn aln_len(&self) -> usize {
         self.sequences[0].len()
     }

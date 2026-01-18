@@ -4,7 +4,10 @@ use std::fs;
 use std::io::{self, Write};
 use std::path::PathBuf;
 
-use termal_alignment::Alignment;
+use termal_alignment::{
+    Alignment,
+    seq::{fasta, file},
+};
 
 use termal_export::{export_svg, ExportOpts}; // this crate's lib.rs, also used by termal-msa (the
                                              // TUI app)
@@ -59,17 +62,17 @@ fn main() -> Result<()> {
     let args = Args::parse();
 
     // 1) Read alignment 
-    let aln: Alignment = Alignment::from_file(&args.input)
-        .with_context(|| format!("failed to read alignment from {}", args.input.display()))?;
+    let aln_file: file::SeqFile = fasta::read_fasta_file(&args.input)?;
+    let aln: Alignment = Alignment::from_file(aln_file);
 
     // 2) Region (defaults: all)
     let row_range = match &args.rows {
         Some(r) => parse_range(r)?,
-        None => 0..aln.nseq(), // adjust method name
+        None => 0..aln.num_seq(), 
     };
     let col_range = match &args.cols {
         Some(r) => parse_range(r)?,
-        None => 0..aln.ncol(), // adjust method name
+        None => 0..aln.aln_len(), 
     };
 
     // let region = Region { rows: row_range, cols: col_range }; // adjust type/fields
