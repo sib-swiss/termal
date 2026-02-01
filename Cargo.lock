@@ -866,6 +866,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "itertools 0.14.0",
  "termal-alignment",
 ]
 
