@@ -77,7 +77,7 @@ fn main() -> Result<()> {
 
     // let region = Region { rows: row_range, cols: col_range }; // adjust type/fields
 
-    // 3) Export options
+    // Export options
     let opts = ExportOpts {
         cell_w: args.cell_w,
         cell_h: args.cell_h,
@@ -86,17 +86,14 @@ fn main() -> Result<()> {
         ..Default::default()
     };
 
-    // 4) Export SVG
-    // let svg = export_svg(&aln, &region, &opts)?;
-    let svg = export_svg(&aln, &opts)?;
 
-    // 5) Write
     if args.output == "-" {
         let mut out = io::BufWriter::new(io::stdout().lock());
-        out.write_all(svg.as_bytes())?;
+        export_svg(&aln, &opts, &mut out)?;
         out.flush()?;
     } else {
-        fs::write(&args.output, svg).with_context(|| format!("failed to write {}", args.output))?;
+        let mut out = fs::File::create(&args.output)?;
+        export_svg(&aln, &opts, &mut out)?;
     }
 
     Ok(())
