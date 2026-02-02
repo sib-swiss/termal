@@ -16,6 +16,10 @@ fn jalview_colormap() -> HashMap<char, String> {
         ('C', "#FFB340".to_string()),
         ('G', "#EB413C".to_string()),
         ('T', "#3C88EE".to_string()),
+        ('a', "#64F73F".to_string()),
+        ('c', "#FFB340".to_string()),
+        ('g', "#EB413C".to_string()),
+        ('t', "#3C88EE".to_string()),
     ])
 }
 
@@ -37,15 +41,14 @@ fn svg_aln_cell(c: char, x: f32, y: f32) -> String {
     format!("<text x='{}' y='{}'>{}</text>", x, y, c)
 }
 
-fn svg_sequence(seq: &str, x: f32, y: f32, opts: &ExportOpts) -> String {
+fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
     let colormap = jalview_colormap(); // TODO: pass a ref
     let def_color: String = String::from("none");
     let frame_color = if opts.cell_frames { String::from("black") } else { String::from("none") };
     let backgrounds = seq.chars().enumerate().map(|(i, c)| {
         let color_string = colormap.get(&c).unwrap_or(&def_color);
-        format!("<rect x='{}' y='{}' width='{}' height='{}' fill='{}' stroke='{}'/>",
-            x + (i as f32 * opts.cell_width),
-            y,
+        format!("<rect x='{}' y='0' width='{}' height='{}' fill='{}' stroke='{}'/>",
+            i as f32 * opts.cell_width,
             opts.cell_width,
             opts.cell_height,
             color_string,
@@ -54,16 +57,18 @@ fn svg_sequence(seq: &str, x: f32, y: f32, opts: &ExportOpts) -> String {
     }).join("");
     let hdr = "<text font-family='mono'>";
     let residues = seq.chars().enumerate().map(|(i, c)| 
-        format!("<tspan x='{}' y='{}'>{}</tspan>", x + (i as f32 * opts.cell_width), y + opts.ascent_corr, c)
+        format!("<tspan x='{}' y='{}'>{}</tspan>", i as f32 * opts.cell_width, opts.ascent_corr, c)
         ).join("");
     format!("{}{}{}</text>", backgrounds, hdr, residues)
 }
 
 fn write_aln<W: Write>(aln: &Alignment, opts: &ExportOpts, out: &mut W) -> Result<()> {
-    //writeln!(out, r#"<text x="0" y="0" font-family="mono">"#)?; // TODO: make a group, not a text
-
-    writeln!(out, "{}", svg_sequence("GAATTC", 10.0, 20.0, opts))?;
-    //writeln!(out, "</text>")?;
+    for (i, seq) in aln.sequences.iter().enumerate() {
+        writeln!(out, "<g transform='translate(0,{})'>{}</g>",
+            i as f32 * opts.cell_height,
+            svg_sequence(seq, opts)
+        )?;
+    }
     Ok(())
 }
 
