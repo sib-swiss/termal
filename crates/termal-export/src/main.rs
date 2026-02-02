@@ -32,12 +32,16 @@ struct Args {
     cols: Option<String>,
 
     /// Cell width in px
-    #[arg(long, default_value_t = 12.0)]
-    cell_w: f32,
+    #[arg(long, default_value_t = 11.0)]
+    cell_width: f32,
 
     /// Cell height in px
-    #[arg(long, default_value_t = 14.0)]
-    cell_h: f32,
+    #[arg(long, default_value_t = 12.0)]
+    cell_height: f32,
+
+    /// Ascent correction
+    #[arg(long, default_value_t = 12.0)]
+    ascent_corr: f32,
 
     /// Margin x in px
     #[arg(long, default_value_t = 10.0)]
@@ -46,6 +50,10 @@ struct Args {
     /// Margin y in px
     #[arg(long, default_value_t = 10.0)]
     margin_y: f32,
+
+    /// Show cell frames
+    #[arg(long)]
+    cell_frames: bool
 }
 
 fn parse_range(s: &str) -> Result<std::ops::Range<usize>> {
@@ -61,11 +69,11 @@ fn parse_range(s: &str) -> Result<std::ops::Range<usize>> {
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    // 1) Read alignment 
+    // Read alignment 
     let aln_file: file::SeqFile = fasta::read_fasta_file(&args.input)?;
     let aln: Alignment = Alignment::from_file(aln_file);
 
-    // 2) Region (defaults: all)
+    // Region (defaults: all)
     let row_range = match &args.rows {
         Some(r) => parse_range(r)?,
         None => 0..aln.num_seq(), 
@@ -79,10 +87,12 @@ fn main() -> Result<()> {
 
     // Export options
     let opts = ExportOpts {
-        cell_w: args.cell_w,
-        cell_h: args.cell_h,
+        cell_width: args.cell_width,
+        cell_height: args.cell_height,
+        ascent_corr: args.ascent_corr,
         margin_x: args.margin_x,
         margin_y: args.margin_y,
+        cell_frames: args.cell_frames,
         ..Default::default()
     };
 

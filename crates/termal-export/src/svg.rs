@@ -1,10 +1,23 @@
-use std::io::{Result, Write};
+use std::{
+    collections::HashMap,
+    io::{Result, Write}
+};
 
 use itertools::Itertools;
 
 use termal_alignment::Alignment;
 
 use crate::ExportOpts;
+
+
+fn jalview_colormap() -> HashMap<char, String> {
+    HashMap::from([
+        ('A', "#64F73F".to_string()),
+        ('C', "#FFB340".to_string()),
+        ('G', "#EB413C".to_string()),
+        ('T', "#3C88EE".to_string()),
+    ])
+}
 
 pub fn export_svg<W: Write>(aln: &Alignment, opts: &ExportOpts, out: &mut W) -> Result<()> {
     //let _ = (aln, region, opts);
@@ -24,18 +37,32 @@ fn svg_aln_cell(c: char, x: f32, y: f32) -> String {
     format!("<text x='{}' y='{}'>{}</text>", x, y, c)
 }
 
-fn svg_sequence(seq: &str, x: f32, y: f32) -> String {
+fn svg_sequence(seq: &str, x: f32, y: f32, opts: &ExportOpts) -> String {
+    let colormap = jalview_colormap(); // TODO: pass a ref
+    let def_color: String = String::from("none");
+    let frame_color = if opts.cell_frames { String::from("black") } else { String::from("none") };
+    let backgrounds = seq.chars().enumerate().map(|(i, c)| {
+        let color_string = colormap.get(&c).unwrap_or(&def_color);
+        format!("<rect x='{}' y='{}' width='{}' height='{}' fill='{}' stroke='{}'/>",
+            x + (i as f32 * opts.cell_width),
+            y,
+            opts.cell_width,
+            opts.cell_height,
+            color_string,
+            frame_color,
+        )
+    }).join("");
     let hdr = "<text font-family='mono'>";
-    let cells = seq.chars().enumerate().map(|(i, c)| 
-        format!("<tspan x='{}' y='20'>{}</tspan>", (i as f32 * 10.0), c)
+    let residues = seq.chars().enumerate().map(|(i, c)| 
+        format!("<tspan x='{}' y='{}'>{}</tspan>", x + (i as f32 * opts.cell_width), y + opts.ascent_corr, c)
         ).join("");
-    format!("{}{}</text>", hdr, cells)
+    format!("{}{}{}</text>", backgrounds, hdr, residues)
 }
 
 fn write_aln<W: Write>(aln: &Alignment, opts: &ExportOpts, out: &mut W) -> Result<()> {
     //writeln!(out, r#"<text x="0" y="0" font-family="mono">"#)?; // TODO: make a group, not a text
 
-    writeln!(out, "{}", svg_sequence("GAATTC", 10.0, 20.0));
+    writeln!(out, "{}", svg_sequence("GAATTC", 10.0, 20.0, opts))?;
     //writeln!(out, "</text>")?;
     Ok(())
 }
