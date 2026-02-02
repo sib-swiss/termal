@@ -24,9 +24,9 @@ fn jalview_colormap() -> HashMap<char, String> {
 }
 
 pub fn export_svg<W: Write>(aln: &Alignment, opts: &ExportOpts, out: &mut W) -> Result<()> {
-    //let _ = (aln, region, opts);
-    let _ = (aln, opts);
-    out.write_all(svg_open(200.0, 80.0).as_bytes())?;
+    let grid_width = aln.aln_len() as f32 * opts.cell_width;
+    let grid_height = aln.num_seq() as f32 * opts.cell_height;
+    out.write_all(svg_open(grid_width, grid_height).as_bytes())?;
     write_aln(aln, opts, out)?;
     out.write_all(svg_close().as_bytes())?;
     Ok(())
@@ -35,10 +35,6 @@ pub fn export_svg<W: Write>(aln: &Alignment, opts: &ExportOpts, out: &mut W) -> 
 fn svg_open(width: f32, height: f32) -> String {
     format!("<?xml version='1.0' encoding='UTF-8'?>
 <svg xmlns='http://www.w3.org/2000/svg' width='{}' height='{}'>", width, height)
-}
-
-fn svg_aln_cell(c: char, x: f32, y: f32) -> String {
-    format!("<text x='{}' y='{}'>{}</text>", x, y, c)
 }
 
 fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
@@ -55,7 +51,8 @@ fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
             frame_color,
         )
     }).join("");
-    let hdr = "<text font-family='mono'>";
+    let hdr = format!(
+        "<text font-family='ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"DejaVu Sans Mono\", \"Courier New\", monospace' font-size='{}'>", opts.residue_font_size);
     let residues = seq.chars().enumerate().map(|(i, c)| 
         format!("<tspan x='{}' y='{}'>{}</tspan>", i as f32 * opts.cell_width, opts.ascent_corr, c)
         ).join("");
@@ -89,8 +86,4 @@ mod tests {
 
     #[test]
     fn test_svg_close() { assert_eq!(svg_close(), "</svg>"); }
-
-    fn test_cell() {
-        assert_eq!(svg_aln_cell('A', 5.2, 6.4), "<text x=\"5.2\" y=\"6.4\">A</text>");
-    }
 }

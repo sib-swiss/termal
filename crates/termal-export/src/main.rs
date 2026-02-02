@@ -36,8 +36,12 @@ struct Args {
     cell_width: f32,
 
     /// Cell height in px
-    #[arg(long, default_value_t = 12.0)]
+    #[arg(long, default_value_t = 16.0)]
     cell_height: f32,
+
+    /// Font size
+    #[arg(long, default_value_t = 14)]
+    residue_font_size: u32,
 
     /// Ascent correction
     #[arg(long, default_value_t = 12.0)]
@@ -89,6 +93,7 @@ fn main() -> Result<()> {
     let opts = ExportOpts {
         cell_width: args.cell_width,
         cell_height: args.cell_height,
+        residue_font_size: args.residue_font_size,
         ascent_corr: args.ascent_corr,
         margin_x: args.margin_x,
         margin_y: args.margin_y,

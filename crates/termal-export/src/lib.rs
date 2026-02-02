@@ -10,6 +10,7 @@ pub use svg::export_svg;
 pub struct ExportOpts {
     pub cell_width: f32,
     pub cell_height: f32,
+    pub residue_font_size: u32,
     pub ascent_corr: f32,
     pub margin_x: f32,
     pub margin_y: f32,
@@ -23,6 +24,7 @@ impl Default for ExportOpts {
         Self {
             cell_width: 11.0,
             cell_height: 12.0,
+            residue_font_size: 14,
             ascent_corr: 12.0,
             margin_x: 10.0,
             margin_y: 10.0,
