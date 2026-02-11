@@ -20,6 +20,7 @@ pub const SALMON: Color = Color::Rgb(250, 128, 114);
 
 // ClustalX colors (source:
 // https://www.cgl.ucsf.edu/chimera/1.2065/docs/ContributedSoftware/multalignviewer/colprot.par)
+
 pub const CLUSTALX_RED: Color = Color::Rgb(229, 51, 25);
 pub const CLUSTALX_BLUE: Color = Color::Rgb(25, 127, 229);
 pub const CLUSTALX_GREEN: Color = Color::Rgb(25, 204, 25);
