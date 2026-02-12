@@ -8,7 +8,8 @@ pub struct Rgb {
 impl Rgb {
 
     // The simplest case is when R, G, and B are known; if the colour is passed as a hex integer,
-    // then the following constructor can be used instead.
+    // then the following constructor can be used instead. This function is marked 'const' so it
+    // can be used to initialize maps at compile time.
     pub const fn from_u32(h: u32) -> Self {
         // Ignore bits > 16
         Self {
@@ -60,6 +61,8 @@ const RGB_RED: Rgb = Rgb{r: 255, g: 0, b: 0};
 const RGB_GRAY: Rgb = Rgb{r: 127, g: 127, b: 127};
 const RGB_WHITE: Rgb = Rgb{r: 255, g: 255, b: 255};
 
+const GAP_COLOR: Rgb = RGB_GRAY;
+
 // In-house colors
 pub const ORANGE: Rgb = Rgb{r: 255, g: 165, b: 0};
 pub const SALMON: Rgb = Rgb{r: 250, g: 128, b: 114};
@@ -108,8 +111,11 @@ impl ResidueColorMap {
         self.table[b as usize]
     }
 
-    fn with_default(default: Rgb) -> Self {
-        Self { table: [default; 256] }
+    fn with_default(gap_color: Rgb, default: Rgb) -> Self {
+        let mut tbl = [default; 256];
+        tbl[b'-' as usize] = gap_color;
+        tbl[b'.' as usize] = gap_color;
+        Self { table: tbl }
     }
 
     fn set(&mut self, b: u8, color: Rgb) {
@@ -117,22 +123,41 @@ impl ResidueColorMap {
     }
 
     fn set_pair(&mut self, b: u8, color: Rgb) {
-        self.set(b, color);
         self.set(b.to_ascii_lowercase(), color);
+        self.set(b.to_ascii_uppercase(), color);
     }
 
     pub fn dna_basic() -> Self {
-        let mut map = Self::with_default(Rgb { r: 160, g: 160, b: 160 });
+        let mut map = Self::with_default(GAP_COLOR, Rgb { r: 160, g: 160, b: 160 });
         map.set_pair(b'A', Rgb { r: 0, g: 200, b: 0 });
         map.set_pair(b'T', Rgb { r: 200, g: 0, b: 0 });
         map.set_pair(b'G', Rgb { r: 255, g: 165, b: 0 });
         map.set_pair(b'C', Rgb { r: 0, g: 0, b: 200 });
-        map.set(b'-', Rgb { r: 0, g: 0, b: 0 });
         map
     }
 
     pub fn dna_clustalx() -> Self {
-        let mut map = Self::with_default(RGB_WHITE);
+        let mut map = Self::with_default(GAP_COLOR, RGB_WHITE);
+        map.set_pair(b'G', CLUSTALX_ORANGE);
+        map.set_pair(b'A', CLUSTALX_BLUE);
+        map.set_pair(b'S', CLUSTALX_GREEN);
+        map.set_pair(b'T', CLUSTALX_GREEN);
+        map.set_pair(b'C', CLUSTALX_PINK);
+        map.set_pair(b'V', CLUSTALX_BLUE);
+        map.set_pair(b'I', CLUSTALX_BLUE);
+        map.set_pair(b'L', CLUSTALX_BLUE);
+        map.set_pair(b'P', CLUSTALX_YELLOW);
+        map.set_pair(b'F', CLUSTALX_BLUE);
+        map.set_pair(b'Y', CLUSTALX_CYAN);
+        map.set_pair(b'M', CLUSTALX_BLUE);
+        map.set_pair(b'W', CLUSTALX_BLUE);
+        map.set_pair(b'N', CLUSTALX_GREEN);
+        map.set_pair(b'Q', CLUSTALX_GREEN);
+        map.set_pair(b'H', CLUSTALX_CYAN);
+        map.set_pair(b'D', CLUSTALX_MAGENTA);
+        map.set_pair(b'E', CLUSTALX_MAGENTA);
+        map.set_pair(b'K', CLUSTALX_RED);
+        map.set_pair(b'R', CLUSTALX_RED);
         map
     }
 }
@@ -144,11 +169,13 @@ mod test {
         Rgb,
         RGB_RED,
         ResidueColorMap,
+        GAP_COLOR,
+        CLUSTALX_MAGENTA,
     };
 
     #[test]
     fn test_default_colormap() {
-        let cmap = ResidueColorMap::with_default(RGB_RED);
+        let cmap = ResidueColorMap::with_default(GAP_COLOR, RGB_RED);
         assert_eq!(RGB_RED, cmap.rgb(b'a'));
     }
 
@@ -163,5 +190,8 @@ mod test {
     fn test_dna_clustalx() {
         let cmap = ResidueColorMap::dna_clustalx();
         assert_eq!(CLUSTALX_MAGENTA, cmap.rgb(b'D'));
+        assert_eq!(CLUSTALX_MAGENTA, cmap.rgb(b'd'));
+        assert_eq!(GAP_COLOR, cmap.rgb(b'-'));
+        assert_eq!(GAP_COLOR, cmap.rgb(b'.'));
     }
 }
