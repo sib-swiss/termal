@@ -9,8 +9,8 @@ use termal_alignment::{
     seq::{fasta, file},
 };
 
-use termal_export::{export_svg, ExportOpts}; // this crate's lib.rs, also used by termal-msa (the
-                                             // TUI app)
+// This crate's lib.rs, also used by termal-msa (the TUI app)
+use termal_export::{compute_layout, export_svg, ExportOpts}; 
 
 #[derive(Parser, Debug)]
 #[command(name = "termal-export")]
@@ -46,6 +46,10 @@ struct Args {
     /// Ascent correction
     #[arg(long, default_value_t = 12.0)]
     ascent_corr: f32,
+
+    /// Character width
+    #[arg(long, default_value_t = 8.0)]
+    char_width: f32,
 
     /// Margin x in px
     #[arg(long, default_value_t = 10.0)]
@@ -102,13 +106,16 @@ fn main() -> Result<()> {
     };
 
 
+    // Layout
+    let layout = compute_layout(&aln, &opts);
+
     if args.output == "-" {
         let mut out = io::BufWriter::new(io::stdout().lock());
-        export_svg(&aln, &opts, &mut out)?;
+        export_svg(&aln, &opts, &layout, &mut out)?;
         out.flush()?;
     } else {
         let mut out = fs::File::create(&args.output)?;
-        export_svg(&aln, &opts, &mut out)?;
+        export_svg(&aln, &opts, &layout, &mut out)?;
     }
 
     Ok(())
