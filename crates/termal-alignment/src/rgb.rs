@@ -55,6 +55,11 @@ impl Rgb {
             _ => Err("hex color must have 6 or 8 digits"),
         }
     }
+
+    /// Returns a CSS hex color, e.g. "#00ff7f".
+    pub fn to_hex(self) -> String {
+        format!("#{:02x}{:02x}{:02x}", self.r, self.g, self.b)
+    }
 }
 
 pub const RGB_RED: Rgb = Rgb{r: 255, g: 0, b: 0};
@@ -261,5 +266,13 @@ mod test {
         assert_eq!(CLUSTALX_MAGENTA, cmap.rgb(b'd'));
         assert_eq!(GAP_COLOR, cmap.rgb(b'-'));
         assert_eq!(GAP_COLOR, cmap.rgb(b'.'));
+    }
+
+    #[test]
+    fn test_from_u32() {
+        let rgb = Rgb::from_u32(0xFF7700);
+        assert_eq!(255, rgb.r);
+        assert_eq!(119, rgb.g);
+        assert_eq!(0, rgb.b);
     }
 }
