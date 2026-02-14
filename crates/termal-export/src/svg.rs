@@ -42,11 +42,10 @@ fn svg_header(hdr: &str, opts: &ExportOpts) -> String {
 }
 
 fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
-    let colormap = ResidueColorMap::dna_jalview(); // TODO: pass a ref
     let def_color: String = String::from("none");
     let frame_color = if opts.cell_frames { String::from("black") } else { String::from("none") };
     let backgrounds = seq.chars().enumerate().map(|(i, c)| {
-        let color_string = colormap.rgb(c as u8).to_hex();
+        let color_string = opts.colormap.rgb(c as u8).to_hex();
         format!("<rect x='{}' y='0' width='{}' height='{}' fill='{}' stroke='{}'/>",
             i as f32 * opts.cell_width,
             opts.cell_width,

@@ -12,11 +12,13 @@ use termal_alignment::{
 };
 
 // A wrapper for rgb::ColorMapName. This allows us to decouple that struct from Clap::ValueEnum.
+// NOTE: the capitalisation differs slightly from ColorMapName's because of the way Clap derives
+// valid CLI values.
 #[derive(Copy, Clone, Debug, ValueEnum)]
 enum ColorMapArg {
     AALesk,
-    AAClustalX,
-    DNAJalView,
+    AAClustalx,
+    DNAJalview,
     Monochrome,
 }
 
@@ -25,8 +27,8 @@ impl From<ColorMapArg> for ColorMapName {
     fn from(v: ColorMapArg) -> Self {
         match v {
             ColorMapArg::AALesk => ColorMapName::AALesk,
-            ColorMapArg::AAClustalX => ColorMapName::AAClustalX,
-            ColorMapArg::DNAJalView => ColorMapName::DNAJalView,
+            ColorMapArg::AAClustalx => ColorMapName::AAClustalX,
+            ColorMapArg::DNAJalview => ColorMapName::DNAJalView,
             ColorMapArg::Monochrome => ColorMapName::Monochrome,
         }
     }
@@ -47,7 +49,7 @@ struct Args {
     output: String,
 
     /// Colormap 
-    #[arg(short, long, value_enum)]
+    #[arg(short, long, value_enum, default_value_t = ColorMapArg::AAClustalx)]
     colormap_name: ColorMapArg,
 
     /// Row range as START:END (0-based, END exclusive). Example: 0:50
