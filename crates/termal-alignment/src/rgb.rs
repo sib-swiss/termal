@@ -118,6 +118,7 @@ pub const JALVIEW_NUCLEOTIDE_D: Rgb = Rgb::from_u32(0x00483D8B);
 pub const JALVIEW_NUCLEOTIDE_V: Rgb = Rgb::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Rgb = Rgb::from_u32(0x002f4f4f);
 
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ColorMapName {
     AALesk,
     AAClustalX,

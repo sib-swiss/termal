@@ -1,13 +1,35 @@
 use anyhow::{Context, Result};
-use clap::Parser;
+use clap::{Parser, ValueEnum};
 use std::fs;
 use std::io::{self, Write};
 use std::path::PathBuf;
 
 use termal_alignment::{
     Alignment,
+    rgb::ColorMapName,
     seq::{fasta, file},
 };
+
+// A wrapper for rgb::ColorMapName. This allows us to decouple that struct from Clap::ValueEnum.
+#[derive(Copy, Clone, Debug, ValueEnum)]
+enum ColorMapArg {
+    AALesk,
+    AAClustalX,
+    DNAJalView,
+    Monochrome,
+}
+
+// allows .into()
+impl From<ColorMapArg> for ColorMapName {
+    fn from(v: ColorMapArg) -> Self {
+        match v {
+            ColorMapArg::AALesk => ColorMapName::AALesk,
+            ColorMapArg::AAClustalX => ColorMapName::AAClustalX,
+            ColorMapArg::DNAJalView => ColorMapName::DNAJalView,
+            ColorMapArg::Monochrome => ColorMapName::Monochrome,
+        }
+    }
+}
 
 // This crate's lib.rs, also used by termal-msa (the TUI app)
 use termal_export::{compute_layout, export_svg, ExportOpts}; 
@@ -22,6 +44,10 @@ struct Args {
     /// Output SVG file ("-" for stdout)
     #[arg(short, long, default_value = "-")]
     output: String,
+
+    /// Colormap 
+    #[arg(short, long, value_enum)]
+    colormap_name: ColorMapArg,
 
     /// Row range as START:END (0-based, END exclusive). Example: 0:50
     #[arg(long)]
@@ -80,6 +106,8 @@ fn main() -> Result<()> {
     // Read alignment 
     let aln_file: file::SeqFile = fasta::read_fasta_file(&args.input)?;
     let aln: Alignment = Alignment::from_file(aln_file);
+
+    let colormap_name: ColorMapName = args.colormap_name.into();
 
     // Region (defaults: all)
     let row_range = match &args.rows {

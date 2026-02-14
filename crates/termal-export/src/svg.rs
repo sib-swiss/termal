@@ -95,7 +95,7 @@ mod tests {
     #[test]
     fn test_svg_open() {
         assert_eq!(svg_open(200.0, 80.0), r"<?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns='http://www.w3.org/2000/svg' width='200' height='80'>");
+<svg xmlns='http://www.w3.org/2000/svg' width='200' height='80' viewBox='0 0 200 80'>");
     }
 
     #[test]
