@@ -7,6 +7,7 @@ use std::path::PathBuf;
 use termal_alignment::{
     Alignment,
     rgb::ColorMapName,
+    rgb::ResidueColorMap,
     seq::{fasta, file},
 };
 
@@ -108,6 +109,7 @@ fn main() -> Result<()> {
     let aln: Alignment = Alignment::from_file(aln_file);
 
     let colormap_name: ColorMapName = args.colormap_name.into();
+    let colormap = ResidueColorMap::by_name(colormap_name);
 
     // Region (defaults: all)
     let row_range = match &args.rows {
@@ -126,6 +128,7 @@ fn main() -> Result<()> {
         cell_width: args.cell_width,
         cell_height: args.cell_height,
         residue_font_size: args.residue_font_size,
+        colormap: colormap,
         ascent_corr: args.ascent_corr,
         margin_x: args.margin_x,
         margin_y: args.margin_y,

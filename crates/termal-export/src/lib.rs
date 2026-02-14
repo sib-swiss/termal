@@ -2,7 +2,10 @@ mod svg;
 
 //use termal_alignment::{Alignment, Region};
 // NOTE: Regions will be implemented later
-use termal_alignment::Alignment;
+use termal_alignment::{
+    Alignment,
+    rgb::ResidueColorMap,
+};
 
 pub use svg::export_svg;
 
@@ -13,6 +16,7 @@ pub struct ExportOpts {
     pub residue_font_size: u32,
     pub ascent_corr: f32,
     pub char_width: f32,
+    pub colormap: ResidueColorMap,
     pub margin_x: f32,
     pub margin_y: f32,
     pub cell_frames: bool,
@@ -41,12 +45,14 @@ pub fn compute_layout(aln: &Alignment, opts: &ExportOpts) -> Layout {
 
 impl Default for ExportOpts {
     fn default() -> Self {
+        let colormap: ResidueColorMap = ResidueColorMap::aa_lesk();
         Self {
             cell_width: 11.0,
             cell_height: 12.0,
             residue_font_size: 14,
             ascent_corr: 12.0,
             char_width: 8.0,
+            colormap: colormap,
             margin_x: 10.0,
             margin_y: 10.0,
             cell_frames: false,
