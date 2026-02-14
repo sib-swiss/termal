@@ -6,24 +6,17 @@ use std::{
 
 use itertools::Itertools;
 
-use termal_alignment::Alignment;
+use termal_alignment::{
+    Alignment,
+    rgb::{
+        Rgb,
+        ResidueColorMap,
+    },
+};
 
 use crate::{ExportOpts, Layout};
 
 const RESIDUE_FONT_FAMILY: &str = "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"DejaVu Sans Mono\", \"Courier New\", monospace";
-
-fn jalview_colormap() -> HashMap<char, String> {
-    HashMap::from([
-        ('A', "#64F73F".to_string()),
-        ('C', "#FFB340".to_string()),
-        ('G', "#EB413C".to_string()),
-        ('T', "#3C88EE".to_string()),
-        ('a', "#64F73F".to_string()),
-        ('c', "#FFB340".to_string()),
-        ('g', "#EB413C".to_string()),
-        ('t', "#3C88EE".to_string()),
-    ])
-}
 
 pub fn export_svg<W: Write>(aln: &Alignment, opts: &ExportOpts,
         layout: &Layout, out: &mut W) -> Result<()> {
@@ -35,7 +28,8 @@ pub fn export_svg<W: Write>(aln: &Alignment, opts: &ExportOpts,
 
 fn svg_open(width: f32, height: f32) -> String {
     format!("<?xml version='1.0' encoding='UTF-8'?>
-<svg xmlns='http://www.w3.org/2000/svg' width='{}' height='{}'>", width, height)
+<svg xmlns='http://www.w3.org/2000/svg' width='{}' height='{}' viewBox='0 0 {} {}'>",
+        width, height, width, height)
 }
 
 fn svg_header(hdr: &str, opts: &ExportOpts) -> String {
@@ -48,11 +42,11 @@ fn svg_header(hdr: &str, opts: &ExportOpts) -> String {
 }
 
 fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
-    let colormap = jalview_colormap(); // TODO: pass a ref
+    let colormap = ResidueColorMap::dna_jalview(); // TODO: pass a ref
     let def_color: String = String::from("none");
     let frame_color = if opts.cell_frames { String::from("black") } else { String::from("none") };
     let backgrounds = seq.chars().enumerate().map(|(i, c)| {
-        let color_string = colormap.get(&c).unwrap_or(&def_color);
+        let color_string = colormap.rgb(c as u8).to_hex();
         format!("<rect x='{}' y='0' width='{}' height='{}' fill='{}' stroke='{}'/>",
             i as f32 * opts.cell_width,
             opts.cell_width,
