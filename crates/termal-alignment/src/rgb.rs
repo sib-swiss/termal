@@ -126,7 +126,7 @@ pub enum ColorMapName {
     Monochrome,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct ResidueColorMap {
     table: [Rgb; 256],
 }
