@@ -118,6 +118,12 @@ pub const JALVIEW_NUCLEOTIDE_D: Rgb = Rgb::from_u32(0x00483D8B);
 pub const JALVIEW_NUCLEOTIDE_V: Rgb = Rgb::from_u32(0x00b8860b);
 pub const JALVIEW_NUCLEOTIDE_N: Rgb = Rgb::from_u32(0x002f4f4f);
 
+pub enum ColorMapName {
+    AALesk,
+    AAClustalX,
+    DNAJalView,
+    Monochrome,
+}
 
 #[derive(Clone)]
 pub struct ResidueColorMap {
@@ -125,16 +131,26 @@ pub struct ResidueColorMap {
 }
 
 impl ResidueColorMap {
-    #[inline]
-    pub fn rgb(&self, b: u8) -> Rgb {
-        self.table[b as usize]
-    }
 
     pub fn with_default(gap_color: Rgb, default: Rgb) -> Self {
         let mut tbl = [default; 256];
         tbl[b'-' as usize] = gap_color;
         tbl[b'.' as usize] = gap_color;
         Self { table: tbl }
+    }
+
+    pub fn by_name(name: ColorMapName) -> Self {
+        match name {
+            ColorMapName::AALesk     => Self::aa_lesk(),
+            ColorMapName::AAClustalX => Self::aa_clustalx(),
+            ColorMapName::DNAJalView => Self::dna_jalview(),
+            ColorMapName::Monochrome => Self::monochrome(),
+        }
+    }
+
+    #[inline]
+    pub fn rgb(&self, b: u8) -> Rgb {
+        self.table[b as usize]
     }
 
     fn set(&mut self, b: u8, color: Rgb) {
@@ -233,17 +249,19 @@ impl ResidueColorMap {
         map.set_pair(b'X', RGB_WHITE);
         map
     }
+
 }
 
 #[cfg(test)]
 mod test {
 
     use super::{
-        Rgb,
+        CLUSTALX_MAGENTA,
+        ColorMapName,
+        GAP_COLOR,
         RGB_RED,
         ResidueColorMap,
-        GAP_COLOR,
-        CLUSTALX_MAGENTA,
+        Rgb,
     };
 
     #[test]
@@ -275,4 +293,14 @@ mod test {
         assert_eq!(119, rgb.g);
         assert_eq!(0, rgb.b);
     }
+
+    #[test]
+    fn test_colormap_name() {
+        let cmap = ResidueColorMap::by_name(ColorMapName::AAClustalX);
+        assert_eq!(CLUSTALX_MAGENTA, cmap.rgb(b'D'));
+        assert_eq!(CLUSTALX_MAGENTA, cmap.rgb(b'd'));
+        assert_eq!(GAP_COLOR, cmap.rgb(b'-'));
+        assert_eq!(GAP_COLOR, cmap.rgb(b'.'));
+    }
+
 }
