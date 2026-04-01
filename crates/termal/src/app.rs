@@ -464,13 +464,6 @@ impl App {
         }
     }
 
-    pub fn current_label_match_screenlinenum(&self) -> Option<usize> {
-        match self.current_match() {
-            Some(JumpTarget::HeaderLine(screenline)) => Some(screenline),
-            _ => None,
-        }
-    }
-
     pub fn display_current_match(&mut self) {
         match &self.search_state {
             Some(SearchState::Header(hdr_state)) => {
@@ -515,11 +508,6 @@ impl App {
             }
             None => self.info_msg("No current search."),
         }
-    }
-
-    pub fn increment_current_lbl_match(&mut self, count: isize) {
-        self.increment_current_match(count);
-        self.display_current_match();
     }
 
     pub fn screenline_is_hdr_match(&self, screenline: usize) -> bool {
