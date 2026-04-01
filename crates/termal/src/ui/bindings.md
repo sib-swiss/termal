@@ -15,6 +15,7 @@ Arguments (counts, search patterns) and match index are shown in the modeline.
 
 [count]| : jump to absolute column
 [count]- : jump to absolute sequence (by current order)
+[count]= : jump to absolute sequence (by file order)
 [count]% : jump to vertical position (0–100%)
 [count]# : jump to horizontal position (0–100%)
 
@@ -22,10 +23,12 @@ Arguments (counts, search patterns) and match index are shown in the modeline.
 
 z,Z: next/previous zoom mode
 
-## Searching (headers)
+## Searching
 
 "regexp<Ret> : search sequence headers
+/regexp<Ret> : search sequences
 [count]n,p   : next / previous match
+Ret          : current match (e.g. after reordering)
 Esc          : cancel search
 
 ## Adjusting the Panes

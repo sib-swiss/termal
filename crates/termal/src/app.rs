@@ -48,20 +48,52 @@ impl fmt::Display for Metric {
     }
 }
 
-pub struct SearchState {
+pub enum SearchState {
+    Header(HdrSearchState),
+    Sequence(SeqSearchState),
+}
+
+pub struct HdrSearchState {
     // These will eventually be used, when we highlight the actual matching parts of the label, and
     // to allow more informative messages like "pattern 'xyz' has no match".
     #[allow(dead_code)]
     pub pattern: String,
-    #[allow(dead_code)]
-    regex: Regex,
-    // Only the matching linenums; used for jumping to next match on screen. As many elements as
-    // there are _matches_.
-    pub match_linenums: Vec<usize>,
-    pub current: usize,
+    match_ranks: Vec<usize>,
+    ordered_match_screenlinenums: Vec<usize>,
+    screenlinenum_to_index: HashMap<usize, usize>,
+    current_match_ndx: Option<usize>,
+    current_match_rank: Option<usize>,
     // Whether a header matches or not; used when iterating over all headers and determining
     // whether to highlight or not. As many elements as there are sequences (and hence headers) in the alignment.
     hdr_match_status: Vec<bool>,
+}
+
+pub struct SeqSearchState {
+    #[allow(dead_code)]
+    pattern: String,
+    matches_by_rank: HashMap<usize, Vec<MatchPosition>>,
+    current: Option<(usize, usize)>, // (rank, match_ndx)
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct MatchPosition {
+    start_col: usize,
+    end_col: usize,
+}
+
+impl MatchPosition {
+    pub fn start_col(&self) -> usize {
+        self.start_col
+    }
+
+    pub fn end_col(&self) -> usize {
+        self.end_col
+    }
+}
+
+pub enum JumpTarget {
+    HeaderLine(usize),
+    Match(usize, MatchPosition),
 }
 
 #[derive(Clone)]
@@ -189,6 +221,7 @@ impl App {
             User => SourceFile,
         };
         self.recompute_ordering();
+        self.reorder_matches();
     }
 
     pub fn prev_ordering_criterion(&mut self) {
@@ -203,6 +236,7 @@ impl App {
             },
         };
         self.recompute_ordering();
+        self.reorder_matches();
     }
 
     // Maps a rank (= index in the original alignment) to the corresponding line on the screen
@@ -218,6 +252,7 @@ impl App {
             SeqLen => PctIdWrtConsensus,
         };
         self.recompute_ordering();
+        self.reorder_matches();
     }
 
     // NOTE: for now, there are only two metrics, so next and prev are the same. This might change,
@@ -228,6 +263,7 @@ impl App {
             SeqLen => PctIdWrtConsensus,
         };
         self.recompute_ordering();
+        self.reorder_matches();
     }
 
     pub fn output_info(&self) {
@@ -253,14 +289,12 @@ impl App {
         }
     }
 
-    // Label search
+    // Search
 
     pub fn regex_search_labels(&mut self, pattern: &str) {
-        // self.debug_msg("Regex search");
         let try_re = Regex::new(pattern);
         match try_re {
             Ok(re) => {
-                // actually numbers of matching lines, but a bit longish
                 let matches: Vec<usize> = self
                     .alignment
                     .headers
@@ -275,13 +309,29 @@ impl App {
                     match_linenum_vec[*i] = true;
                 }
 
-                self.search_state = Some(SearchState {
+                let ordered_matches = self.ordered_hdr_matches(&matches);
+                let mut l2ndx: HashMap<usize, usize> = HashMap::new();
+                for (ndx, l) in ordered_matches.iter().enumerate() {
+                    l2ndx.insert(*l, ndx);
+                }
+
+                let mut cur_match_ndx: Option<usize> = None;
+                let mut cur_match_rank: Option<usize> = None;
+                if !matches.is_empty() {
+                    cur_match_ndx = Some(0);
+                    let current_match_scrnln = ordered_matches[cur_match_ndx.unwrap()];
+                    cur_match_rank = Some(self.ordering[current_match_scrnln]);
+                }
+
+                self.search_state = Some(SearchState::Header(HdrSearchState {
                     pattern: String::from(pattern),
-                    regex: re,
-                    match_linenums: matches,
-                    current: 0,
+                    match_ranks: matches,
+                    ordered_match_screenlinenums: ordered_matches,
+                    screenlinenum_to_index: l2ndx,
+                    current_match_ndx: cur_match_ndx,
+                    current_match_rank: cur_match_rank,
                     hdr_match_status: match_linenum_vec,
-                });
+                }));
             }
             Err(e) => {
                 self.error_msg(format!("Malformed regex {}.", e));
@@ -290,55 +340,308 @@ impl App {
         }
     }
 
-    pub fn current_label_match_screenlinenum(&self) -> Option<usize> {
+    fn next_match_expect(
+        reverse_ordering: &Vec<usize>,
+        ordering: &Vec<usize>,
+        num_seq: usize,
+        matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
+        cur_match: (usize, usize),
+    ) -> (usize, usize) {
+        let (rank, mut match_ndx) = cur_match;
+        let current_seq_matches = matches_by_rank.get(&rank).unwrap();
+        match_ndx += 1;
+        if match_ndx < current_seq_matches.len() {
+            (rank, match_ndx)
+        } else {
+            let mut current_screen_line = reverse_ordering[rank];
+            loop {
+                current_screen_line = (current_screen_line + 1).rem_euclid(num_seq);
+                let current_rank = ordering[current_screen_line];
+                if matches_by_rank.contains_key(&current_rank) {
+                    break (current_rank, 0);
+                }
+            }
+        }
+    }
+
+    fn previous_match_expect(
+        reverse_ordering: &Vec<usize>,
+        ordering: &Vec<usize>,
+        num_seq: usize,
+        matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
+        cur_match: (usize, usize),
+    ) -> (usize, usize) {
+        let (rank, mut match_ndx) = cur_match;
+        if match_ndx > 0 {
+            match_ndx -= 1;
+            (rank, match_ndx)
+        } else {
+            let mut current_screen_line = reverse_ordering[rank];
+            loop {
+                current_screen_line =
+                    (current_screen_line as isize - 1).rem_euclid(num_seq as isize) as usize;
+                let current_rank = ordering[current_screen_line];
+                if matches_by_rank.contains_key(&current_rank) {
+                    let prev_seq_matches = matches_by_rank.get(&current_rank).unwrap();
+                    break (current_rank, prev_seq_matches.len() - 1);
+                }
+            }
+        }
+    }
+
+    pub fn increment_current_match(&mut self, count: isize) {
+        if let Some(state) = &mut self.search_state {
+            match state {
+                SearchState::Header(hdr_state) => {
+                    let nb_matches = hdr_state.ordered_match_screenlinenums.len();
+                    if nb_matches > 0 {
+                        let new_match_ndx = (hdr_state.current_match_ndx.unwrap() as isize + count)
+                            .rem_euclid(nb_matches as isize)
+                            as usize;
+                        hdr_state.current_match_ndx = Some(new_match_ndx);
+                        let new_match_scrnln =
+                            hdr_state.ordered_match_screenlinenums[new_match_ndx];
+                        let new_match_rank = self.ordering[new_match_scrnln];
+                        hdr_state.current_match_rank = Some(new_match_rank);
+                    }
+                }
+                SearchState::Sequence(seq_state) => {
+                    let step_count = count.unsigned_abs();
+                    for _ in 0..step_count {
+                        match seq_state.current {
+                            Some((rank, match_ndx)) => {
+                                seq_state.current = Some(if count >= 0 {
+                                    Self::next_match_expect(
+                                        &self.reverse_ordering,
+                                        &self.ordering,
+                                        self.alignment.sequences.len(),
+                                        &seq_state.matches_by_rank,
+                                        (rank, match_ndx),
+                                    )
+                                } else {
+                                    Self::previous_match_expect(
+                                        &self.reverse_ordering,
+                                        &self.ordering,
+                                        self.alignment.sequences.len(),
+                                        &seq_state.matches_by_rank,
+                                        (rank, match_ndx),
+                                    )
+                                });
+                            }
+                            None => break,
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    pub fn current_match(&self) -> Option<JumpTarget> {
         if let Some(state) = &self.search_state {
-            if state.match_linenums.len() > 0 {
-                Some(self.rank_to_screenline(state.match_linenums[state.current]))
-            } else {
-                None
+            match state {
+                SearchState::Header(hdr_state) => {
+                    if !hdr_state.ordered_match_screenlinenums.is_empty() {
+                        Some(JumpTarget::HeaderLine(
+                            hdr_state.ordered_match_screenlinenums
+                                [hdr_state.current_match_ndx.unwrap()],
+                        ))
+                    } else {
+                        None
+                    }
+                }
+                SearchState::Sequence(seq_state) => {
+                    if let Some((rank, match_ndx)) = seq_state.current {
+                        let screen_line = self.reverse_ordering[rank];
+                        let match_pos = seq_state.matches_by_rank[&rank][match_ndx];
+                        Some(JumpTarget::Match(screen_line, match_pos))
+                    } else {
+                        None
+                    }
+                }
             }
         } else {
             None
         }
     }
 
-    pub fn increment_current_lbl_match(&mut self, count: isize) {
+    pub fn current_label_match_screenlinenum(&self) -> Option<usize> {
+        match self.current_match() {
+            Some(JumpTarget::HeaderLine(screenline)) => Some(screenline),
+            _ => None,
+        }
+    }
+
+    pub fn display_current_match(&mut self) {
         match &self.search_state {
-            Some(state) => {
-                let nb_matches = state.match_linenums.len();
+            Some(SearchState::Header(hdr_state)) => {
+                let nb_matches = hdr_state.ordered_match_screenlinenums.len();
                 if nb_matches > 0 {
-                    // (i+n).rem(l)
-                    let new =
-                        (state.current as isize + count).rem_euclid(nb_matches as isize) as usize;
-                    //let new = (state.current + count) % nb_matches.;
-                    self.search_state.as_mut().unwrap().current = new;
                     self.info_msg(format!(
                         "match #{}/{}",
-                        self.search_state.as_ref().unwrap().current + 1, // +1 <- user is 1-based
-                        self.search_state.as_ref().unwrap().match_linenums.len()
+                        hdr_state.current_match_ndx.unwrap() + 1,
+                        nb_matches
                     ));
                 } else {
                     self.info_msg("No match.");
                 }
             }
-            None => {
-                self.info_msg("No current search.");
+            Some(SearchState::Sequence(seq_state)) => {
+                let nb_matches: usize = seq_state
+                    .matches_by_rank
+                    .values()
+                    .map(|matches| matches.len())
+                    .sum();
+
+                if nb_matches > 0 {
+                    if let Some((rank, match_ndx)) = seq_state.current {
+                        let mut current_match_num = 0;
+                        for cur_rank in 0..self.alignment.sequences.len() {
+                            if let Some(matches) = seq_state.matches_by_rank.get(&cur_rank) {
+                                if cur_rank < rank {
+                                    current_match_num += matches.len();
+                                } else if cur_rank == rank {
+                                    current_match_num += match_ndx + 1;
+                                    break;
+                                }
+                            }
+                        }
+                        self.info_msg(format!("match #{}/{}", current_match_num, nb_matches));
+                    } else {
+                        self.info_msg("No match.");
+                    }
+                } else {
+                    self.info_msg("No match.");
+                }
             }
+            None => self.info_msg("No current search."),
         }
     }
 
-    // Returns true IFF there is a search result AND header of rank `rank` (i.e., without
-    // correction for order) is a match.
-    pub fn is_label_search_match(&self, rank: usize) -> bool {
-        if let Some(state) = &self.search_state {
-            state.hdr_match_status[rank]
+    pub fn increment_current_lbl_match(&mut self, count: isize) {
+        self.increment_current_match(count);
+        self.display_current_match();
+    }
+
+    pub fn screenline_is_hdr_match(&self, screenline: usize) -> bool {
+        if let Some(SearchState::Header(state)) = &self.search_state {
+            state.hdr_match_status[self.ordering[screenline]]
         } else {
             false
         }
     }
 
+    pub fn screenline_is_current_hdr_match(&self, screenline: usize) -> bool {
+        if let Some(SearchState::Header(state)) = &self.search_state {
+            if let Some(rank) = state.current_match_rank {
+                return self.ordering[screenline] == rank;
+            }
+        }
+        false
+    }
+
+    pub fn cell_is_seq_match(&self, screenline: usize, col: usize) -> bool {
+        if let Some(SearchState::Sequence(state)) = &self.search_state {
+            let rank = self.ordering[screenline];
+            if let Some(matches) = state.matches_by_rank.get(&rank) {
+                return matches.iter().any(|m| m.start_col <= col && col < m.end_col);
+            }
+        }
+        false
+    }
+
+    pub fn cell_is_current_seq_match(&self, screenline: usize, col: usize) -> bool {
+        if let Some(SearchState::Sequence(state)) = &self.search_state {
+            if let Some((rank, match_ndx)) = state.current {
+                if self.ordering[screenline] == rank {
+                    let m = state.matches_by_rank[&rank][match_ndx];
+                    return m.start_col <= col && col < m.end_col;
+                }
+            }
+        }
+        false
+    }
+
     pub fn reset_lbl_search(&mut self) {
         self.search_state = None;
+    }
+
+    pub fn regex_search_seq(&mut self, pattern: &str) {
+        let try_re = Regex::new(pattern);
+        match try_re {
+            Ok(re) => {
+                let mut matches_by_rank: HashMap<usize, Vec<MatchPosition>> = HashMap::new();
+                let current: Option<(usize, usize)>;
+                for (rank, sequence) in self.alignment.sequences.iter().enumerate() {
+                    let seq_matches = re
+                        .find_iter(sequence)
+                        .map(|m| MatchPosition {
+                            start_col: m.start(),
+                            end_col: m.end(),
+                        })
+                        .collect::<Vec<MatchPosition>>();
+                    if !seq_matches.is_empty() {
+                        matches_by_rank.insert(rank, seq_matches);
+                    }
+                }
+                if matches_by_rank.is_empty() {
+                    current = None;
+                } else if let Some(first_match_rank) = matches_by_rank.keys().min().copied() {
+                    current = Some((first_match_rank, 0));
+                } else {
+                    current = None;
+                }
+                self.search_state = Some(SearchState::Sequence(SeqSearchState {
+                    pattern: String::from(pattern),
+                    matches_by_rank,
+                    current,
+                }));
+            }
+            Err(e) => {
+                self.error_msg(format!("Malformed regex {}.", e));
+                self.search_state = None;
+            }
+        }
+    }
+
+    fn ordered_hdr_matches(&self, match_ranks: &Vec<usize>) -> Vec<usize> {
+        let mut screenlines: Vec<usize> = match_ranks
+            .iter()
+            .map(|r| self.reverse_ordering[*r])
+            .collect();
+        screenlines.sort();
+        screenlines
+    }
+
+    fn reorder_matches(&mut self) {
+        match &mut self.search_state {
+            Some(SearchState::Header(state)) => {
+                if !state.match_ranks.is_empty() {
+                    state.ordered_match_screenlinenums = state
+                        .match_ranks
+                        .iter()
+                        .map(|r| self.reverse_ordering[*r])
+                        .collect();
+                    state.ordered_match_screenlinenums.sort();
+                    state.screenlinenum_to_index.clear();
+                    for (ndx, line) in state.ordered_match_screenlinenums.iter().enumerate() {
+                        state.screenlinenum_to_index.insert(*line, ndx);
+                    }
+                    let current_match_scrnln = self.reverse_ordering[state.current_match_rank.unwrap()];
+                    state.current_match_ndx = Some(state.screenlinenum_to_index[&current_match_scrnln]);
+                    let mut matching_scrln = vec![false; self.alignment.num_seq()];
+                    for line in &state.ordered_match_screenlinenums {
+                        matching_scrln[*line] = true;
+                    }
+                    state.hdr_match_status = vec![false; self.alignment.num_seq()];
+                    for line in &state.ordered_match_screenlinenums {
+                        let rank = self.ordering[*line];
+                        state.hdr_match_status[rank] = true;
+                    }
+                }
+            }
+            Some(SearchState::Sequence(_)) => {}
+            None => {}
+        }
     }
 
     // Messages
@@ -427,7 +730,7 @@ mod tests {
     use termal_alignment::Alignment;
 
     use crate::{
-        app::{order, App},
+        app::{order, App, SearchState},
     };
 
     #[test]
@@ -563,15 +866,18 @@ mod tests {
         let mut app = App::new("TEST", aln, None);
         app.regex_search_labels("^A");
         match app.search_state {
-            Some(state) => {
+            Some(SearchState::Header(state)) => {
                 assert_eq!(state.pattern, "^A");
-                assert_eq!(state.match_linenums, vec![0, 1]);
-                assert_eq!(state.current, 0);
+                assert_eq!(state.match_ranks, vec![0, 1]);
+                assert_eq!(state.ordered_match_screenlinenums, vec![0, 1]);
+                assert_eq!(state.current_match_ndx, Some(0));
+                assert_eq!(state.current_match_rank, Some(0));
                 assert_eq!(
                     state.hdr_match_status,
                     vec![true, true, false, false, false]
                 );
             }
+            Some(SearchState::Sequence(_)) => panic!(),
             None => panic!(),
         }
     }
