@@ -495,11 +495,11 @@ impl App {
                 if nb_matches > 0 {
                     if let Some((rank, match_ndx)) = seq_state.current {
                         let mut current_match_num = 0;
-                        for cur_rank in 0..self.alignment.sequences.len() {
+                        for cur_rank in &self.ordering {
                             if let Some(matches) = seq_state.matches_by_rank.get(&cur_rank) {
-                                if cur_rank < rank {
+                                if *cur_rank != rank {
                                     current_match_num += matches.len();
-                                } else if cur_rank == rank {
+                                } else {
                                     current_match_num += match_ndx + 1;
                                     break;
                                 }
@@ -570,7 +570,6 @@ impl App {
         match try_re {
             Ok(re) => {
                 let mut matches_by_rank: HashMap<usize, Vec<MatchPosition>> = HashMap::new();
-                let current: Option<(usize, usize)>;
                 for (rank, sequence) in self.alignment.sequences.iter().enumerate() {
                     let seq_matches = re
                         .find_iter(sequence)
@@ -583,13 +582,7 @@ impl App {
                         matches_by_rank.insert(rank, seq_matches);
                     }
                 }
-                if matches_by_rank.is_empty() {
-                    current = None;
-                } else if let Some(first_match_rank) = matches_by_rank.keys().min().copied() {
-                    current = Some((first_match_rank, 0));
-                } else {
-                    current = None;
-                }
+                let current = self.first_seq_match_in_order(&matches_by_rank);
                 self.search_state = Some(SearchState::Sequence(SeqSearchState {
                     pattern: String::from(pattern),
                     matches_by_rank,
@@ -610,6 +603,16 @@ impl App {
             .collect();
         screenlines.sort();
         screenlines
+    }
+
+    fn first_seq_match_in_order(
+        &self,
+        matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
+    ) -> Option<(usize, usize)> {
+        self.ordering
+            .iter()
+            .find(|rank| matches_by_rank.contains_key(rank))
+            .map(|rank| (*rank, 0))
     }
 
     fn reorder_matches(&mut self) {

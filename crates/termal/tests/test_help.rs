@@ -87,3 +87,34 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
         },
     );
 }
+
+#[test]
+fn help_dialog_opens_after_pending_count_too() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |mut ui, terminal| {
+            key_handling::handle_key_press(ui, utils::keypress('3'));
+            key_handling::handle_key_press(ui, utils::keypress('?'));
+            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            let screen = utils::buffer_text(terminal.backend().buffer());
+
+            assert!(
+                screen.contains("j/k or arrows: scroll"),
+                "help banner not rendered after pending-count ?: \n{}",
+                screen
+            );
+            assert!(
+                screen.contains("# Main Key Bindings"),
+                "help content not rendered after pending-count ?: \n{}",
+                screen
+            );
+            assert!(
+                !screen.contains("Search not implemented yet"),
+                "stale search warning shown for pending-count ?: \n{}",
+                screen
+            );
+        },
+    );
+}
