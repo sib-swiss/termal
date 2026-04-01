@@ -6,7 +6,6 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use super::{
     InputMode,
     InputMode::{Help, LabelSearch, Normal, PendingCount, Search},
-    SearchDirection,
     {ZoomLevel, UI},
 };
 
@@ -18,7 +17,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         Help => handle_help_key(ui, key_event),
         PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
-        Search { pattern, direction: _ } => handle_sequence_search(ui, key_event, &pattern),
+        Search { pattern } => handle_sequence_search(ui, key_event, &pattern),
     };
     done
 }
@@ -52,7 +51,6 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         // Q, q, and Ctrl-C quit
         KeyCode::Char('q') | KeyCode::Char('Q') => done = true,
         KeyCode::Char('c') if key_event.modifiers.contains(KeyModifiers::CONTROL) => done = true,
-        // TODO: search
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,
         KeyCode::Char('"') => {
             ui.input_mode = InputMode::LabelSearch {
@@ -64,7 +62,6 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         KeyCode::Char('/') => {
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
-                direction: SearchDirection::Forward,
             };
             ui.app
                 .argument_msg(String::from("Sequence search: "), String::from(""));
@@ -147,7 +144,6 @@ fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             updated_pattern.push(c);
             ui.input_mode = InputMode::Search {
                 pattern: updated_pattern,
-                direction: SearchDirection::Forward,
             }
         }
         KeyCode::Delete | KeyCode::Backspace => {
@@ -156,7 +152,6 @@ fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             updated_pattern.pop();
             ui.input_mode = InputMode::Search {
                 pattern: updated_pattern,
-                direction: SearchDirection::Forward,
             };
         }
         KeyCode::Enter => {

@@ -61,28 +61,10 @@ enum InputMode {
     LabelSearch {
         pattern: String,
     },
-    #[allow(dead_code)]
     Search {
         pattern: String,
-        direction: SearchDirection,
     },
     // ExCommand { buffer: String },
-}
-
-#[derive(Clone, Copy, PartialEq)]
-#[allow(dead_code)]
-enum LabelSearchDirection {
-    Up,
-    Down,
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-#[allow(dead_code)]
-enum SearchDirection {
-    Forward,
-    Backward,
-    Up,
-    Down,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]

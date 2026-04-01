@@ -9,7 +9,7 @@ use crate::common::utils;
 
 use termal_msa::ui::{key_handling, render};
 use termal_msa::{
-    app::App,
+    app::{App, JumpTarget},
     ui::render::render_ui,
 };
 use termal_alignment::seq::fasta;
@@ -18,9 +18,10 @@ const SCREEN_WIDTH: u16 = 80;
 const SCREEN_HEIGHT: u16 = 50;
 
 fn current_header_marker(app: &App) -> String {
-    let screen_line = app
-        .current_label_match_screenlinenum()
-        .expect("expected current match");
+    let screen_line = match app.current_match() {
+        Some(JumpTarget::HeaderLine(screen_line)) => screen_line,
+        _ => panic!("expected current header match"),
+    };
     let rank = app.ordering[screen_line];
     let header = &app.alignment.headers[rank];
     let prefix: String = header.chars().take(10).collect();
@@ -340,10 +341,12 @@ fn test_label_search_current_match_survives_reordering() {
     let aln = termal_alignment::Alignment::from_file(seq_file);
     let mut app = App::new("TEST", aln, None);
     app.regex_search_labels("KFJ");
-    app.increment_current_lbl_match(2);
+    app.increment_current_match(2);
+    app.display_current_match();
     app.next_ordering_criterion();
     let expected_current_after_reorder = current_header_marker(&app);
-    app.increment_current_lbl_match(1);
+    app.increment_current_match(1);
+    app.display_current_match();
     let expected_next_in_new_order = current_header_marker(&app);
 
     utils::with_rig("tests/data/test-motion.msa", 80, 15, |mut ui, terminal| {
