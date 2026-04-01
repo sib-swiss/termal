@@ -26,6 +26,9 @@ pub struct ColorMap {
 impl ColorMap {
 
     pub fn get(&self, residue: char) -> Color {
+        if residue == '-' || residue == '.' {
+            return Color::Gray;
+        }
         let rgb = self.map.rgb(residue as u8);
         Color::Rgb(rgb.r, rgb.g, rgb.b)
     }
