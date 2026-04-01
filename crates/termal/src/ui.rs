@@ -26,6 +26,7 @@ use self::{
 };
 
 use crate::app::App;
+use crate::app::JumpTarget;
 
 const V_SCROLLBAR_WIDTH: u16 = 1;
 const MIN_COLS_SHOWN: u16 = 1;
@@ -692,9 +693,14 @@ impl<'a> UI<'a> {
         self.top_line = min(line, self.max_top_line());
     }
 
+    // Jump to (0-based) line of given rank
+    pub fn jump_to_rank(&mut self, rank: u16) {
+        let line = self.app.reverse_ordering[rank as usize];
+        self.top_line = min(line.try_into().unwrap(), self.max_top_line());
+    }
+
     pub fn jump_to_col(&mut self, col: u16) {
-        // -1 <- 1-based
-        self.leftmost_col = min(col - 1, self.max_leftmost_col());
+        self.leftmost_col = min(col, self.max_leftmost_col());
     }
 
     pub fn jump_to_pct_line(&mut self, pct: u16) {
@@ -709,12 +715,25 @@ impl<'a> UI<'a> {
         self.leftmost_col = tgt_col;
     }
 
-    pub fn jump_to_next_lbl_match(&mut self, count: i16) {
-        self.app.increment_current_lbl_match(count as isize);
-        let next_match_orig_line = self.app.current_label_match_screenlinenum();
-        if let Some(line) = next_match_orig_line {
-            self.jump_to_line(line as u16);
+    pub fn jump_to_next_match(&mut self, count: i16) {
+        self.app.increment_current_match(count as isize);
+        let target = self.app.current_match();
+
+        match target {
+            Some(JumpTarget::HeaderLine(match_screenline)) => {
+                self.jump_to_line(match_screenline as u16);
+            }
+            Some(JumpTarget::Match(screen_line, match_pos)) => {
+                self.jump_to_line(screen_line as u16);
+                self.jump_to_col(match_pos.start_col() as u16);
+            }
+            None => {}
         }
+        self.app.display_current_match();
+    }
+
+    pub fn jump_to_current_match(&mut self) {
+        self.jump_to_next_match(0);
     }
 
     // Debugging

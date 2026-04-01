@@ -6,7 +6,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use super::{
     InputMode,
     InputMode::{Help, LabelSearch, Normal, PendingCount, Search},
-    //SearchDirection,
+    SearchDirection,
     {ZoomLevel, UI},
 };
 
@@ -18,10 +18,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         Help => handle_help_key(ui, key_event),
         PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
-        Search {
-            pattern: _,
-            direction: _,
-        } => todo!(),
+        Search { pattern, direction: _ } => handle_sequence_search(ui, key_event, &pattern),
     };
     done
 }
@@ -63,6 +60,14 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             };
             ui.app
                 .argument_msg(String::from("Label search: "), String::from(""));
+        }
+        KeyCode::Char('/') => {
+            ui.input_mode = InputMode::Search {
+                pattern: String::from(""),
+                direction: SearchDirection::Forward,
+            };
+            ui.app
+                .argument_msg(String::from("Sequence search: "), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -123,9 +128,41 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             ui.app.regex_search_labels(pattern);
             ui.input_mode = InputMode::Normal;
             if let Some(_) = &ui.app.search_state {
-                // Could be a malformed regex
-                ui.jump_to_next_lbl_match(0);
+                ui.jump_to_next_match(0);
             }
+        }
+        _ => {}
+    }
+}
+
+fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char(c) if c.is_ascii_graphic() || ' ' == c => {
+            ui.app.add_argument_char(c);
+            let mut updated_pattern = pattern.to_string();
+            updated_pattern.push(c);
+            ui.input_mode = InputMode::Search {
+                pattern: updated_pattern,
+                direction: SearchDirection::Forward,
+            }
+        }
+        KeyCode::Delete | KeyCode::Backspace => {
+            ui.app.pop_argument_char();
+            let mut updated_pattern = pattern.to_string();
+            updated_pattern.pop();
+            ui.input_mode = InputMode::Search {
+                pattern: updated_pattern,
+                direction: SearchDirection::Forward,
+            };
+        }
+        KeyCode::Enter => {
+            ui.app.regex_search_seq(pattern);
+            ui.input_mode = InputMode::Normal;
+            ui.jump_to_next_match(0);
         }
         _ => {}
     }
@@ -261,6 +298,9 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         // Visible line
         KeyCode::Char('-') => ui.jump_to_line((count as u16) - 1), // -1: user is 1-based
 
+        // Rank
+        KeyCode::Char('=') => ui.jump_to_rank((count as u16) - 1), // -1: user is 1-based
+
         // Column
         KeyCode::Char('|') => ui.jump_to_col(count as u16),
 
@@ -273,8 +313,9 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('#') => ui.jump_to_pct_col(count as u16),
 
         // To search matches
-        KeyCode::Char('n') => ui.jump_to_next_lbl_match(count as i16),
-        KeyCode::Char('p') => ui.jump_to_next_lbl_match(-1 * count as i16),
+        KeyCode::Char('n') => ui.jump_to_next_match(count as i16),
+        KeyCode::Char('p') => ui.jump_to_next_match(-1 * count as i16),
+        KeyCode::Enter => ui.jump_to_current_match(),
 
         // Left Pane width
         KeyCode::Char('>') => ui.widen_label_pane(count as u16),
@@ -331,7 +372,6 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('T') => ui.app.prev_metric(),
 
         // ----- Search -----
-        KeyCode::Char('/') => ui.app.warning_msg("Search not implemented yet"),
         KeyCode::Char('?') => ui.app.warning_msg("Search not implemented yet"),
         KeyCode::Char(']') => ui.app.warning_msg("Search not implemented yet"),
         KeyCode::Char('[') => ui.app.warning_msg("Search not implemented yet"),

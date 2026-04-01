@@ -99,8 +99,13 @@ fn zoom_in_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     ui.app
         .ordering
         .iter()
-        .map(|i| {
-            let hl_style = if ui.app.is_label_search_match(*i) {
+        .enumerate()
+        .map(|(scrln, i)| {
+            let hl_style = if ui.app.screenline_is_current_hdr_match(scrln) {
+                Style::default()
+                    .add_modifier(Modifier::REVERSED)
+                    .add_modifier(Modifier::BOLD)
+            } else if ui.app.screenline_is_hdr_match(scrln) {
                 Style::default().add_modifier(Modifier::REVERSED)
             } else {
                 Style::default()
@@ -115,13 +120,18 @@ fn zoom_out_lbl_text<'a>(ui: &UI) -> Vec<Line<'a>> {
     let mut ztext: Vec<Line> = Vec::new();
 
     for i in retained_seq_ndx(ui) {
-        let hl_style = if ui.app.is_label_search_match(ui.app.ordering[i]) {
+        let hl_style = if ui.app.screenline_is_current_hdr_match(i) {
+            Style::default()
+                .add_modifier(Modifier::REVERSED)
+                .add_modifier(Modifier::BOLD)
+        } else if ui.app.screenline_is_hdr_match(i) {
             Style::default().add_modifier(Modifier::REVERSED)
         } else {
             Style::default()
         };
+        let rank = ui.app.ordering[i];
         ztext.push(Line::from(Span::styled(
-            ui.app.alignment.headers[ui.app.ordering[i]].clone(),
+            ui.app.alignment.headers[rank].clone(),
             hl_style,
         )));
     }
@@ -398,6 +408,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             let pane = SeqPane {
+                app: &ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
                 top_i: ui.top_line as usize,
@@ -410,6 +421,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
             let zoombox_color = ui.get_zoombox_color();
             let pane = SeqPaneZoomedOut {
+                app: &ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
                 retained_rows: &retained_seq_ndx(ui),

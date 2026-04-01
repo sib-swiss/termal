@@ -3,13 +3,31 @@
 
 use ratatui::{
     prelude::{Buffer, Position, Rect},
-    style::Style,
+    style::{Modifier, Style},
     widgets::Widget,
 };
 
-use crate::ui::zoombox::draw_zoombox_border;
+use crate::{app::App, ui::zoombox::draw_zoombox_border};
+
+fn highlight_match_style(mut style: Style, is_match: bool, is_current_match: bool) -> Style {
+    if is_match {
+        if style.add_modifier.contains(Modifier::REVERSED) {
+            style = style.remove_modifier(Modifier::REVERSED);
+        } else {
+            style = style.add_modifier(Modifier::REVERSED);
+        }
+        style = style.add_modifier(Modifier::UNDERLINED);
+    }
+
+    if is_current_match {
+        style = style.add_modifier(Modifier::BOLD);
+    }
+
+    style
+}
 
 pub struct SeqPane<'a> {
+    pub app: &'a App,
     pub sequences: &'a [String],
     pub ordering: &'a [usize],
     pub top_i: usize,
@@ -47,7 +65,11 @@ impl<'a> Widget for SeqPane<'a> {
                     break;
                 }
                 let b = seq[j];
-                let style = self.style_lut[b as usize];
+                let style = highlight_match_style(
+                    self.style_lut[b as usize],
+                    self.app.cell_is_seq_match(i, j),
+                    self.app.cell_is_current_seq_match(i, j),
+                );
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
@@ -59,6 +81,7 @@ impl<'a> Widget for SeqPane<'a> {
 }
 
 pub struct SeqPaneZoomedOut<'a> {
+    pub app: &'a App,
     pub sequences: &'a [String],    // alignment.sequences
     pub ordering: &'a [usize],      // ordering map
     pub retained_rows: &'a [usize], // indices into "logical rows"
@@ -109,7 +132,11 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                 }
 
                 let b = seq_bytes[j];
-                let style = self.style_lut[b as usize];
+                let style = highlight_match_style(
+                    self.style_lut[b as usize],
+                    self.app.cell_is_seq_match(i, j),
+                    self.app.cell_is_current_seq_match(i, j),
+                );
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
