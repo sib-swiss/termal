@@ -58,6 +58,16 @@ pub fn keypress(c: char) -> KeyEvent {
 }
 
 #[allow(dead_code)]
+pub fn key(code: KeyCode) -> KeyEvent {
+    KeyEvent {
+        code,
+        modifiers: KeyModifiers::NONE,
+        kind: KeyEventKind::Press,
+        state: crossterm::event::KeyEventState::NONE,
+    }
+}
+
+#[allow(dead_code)]
 pub fn with_rig<F>(path: &str, term_width: u16, term_height: u16, mut f: F)
 where
     F: FnMut(&mut UI, &mut Terminal<TestBackend>),

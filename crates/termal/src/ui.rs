@@ -50,7 +50,7 @@ enum VideoMode {
     Inverse,
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum InputMode {
     Normal,
     Help,
@@ -75,13 +75,19 @@ enum LabelSearchDirection {
     Down,
 }
 
-#[derive(Clone, Copy, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 #[allow(dead_code)]
 enum SearchDirection {
     Forward,
     Backward,
     Up,
     Down,
+}
+
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+struct HelpState {
+    top_line: u16,
+    leftmost_col: u16,
 }
 
 impl fmt::Display for VideoMode {
@@ -132,6 +138,7 @@ pub struct UI<'a> {
     full_screen: bool,
     video_mode: VideoMode,
     input_mode: InputMode,
+    help_state: HelpState,
 }
 
 impl<'a> UI<'a> {
@@ -163,6 +170,7 @@ impl<'a> UI<'a> {
             full_screen: false,
             video_mode: VideoMode::Inverse,
             input_mode: InputMode::Normal,
+            help_state: HelpState::default(),
         }
     }
 
@@ -208,6 +216,31 @@ impl<'a> UI<'a> {
     }
     pub fn leftmost_col(&self) -> u16 {
         self.leftmost_col
+    }
+    pub fn help_top_line(&self) -> u16 {
+        self.help_state.top_line
+    }
+    pub fn help_leftmost_col(&self) -> u16 {
+        self.help_state.leftmost_col
+    }
+
+    pub fn reset_help_scroll(&mut self) {
+        self.help_state = HelpState::default();
+    }
+
+    pub fn scroll_help_up(&mut self, count: u16) {
+        self.help_state.top_line = self.help_state.top_line.saturating_sub(count);
+    }
+
+    pub fn scroll_help_down(&mut self, count: u16, max_top_line: u16) {
+        self.help_state.top_line = min(
+            self.help_state.top_line.saturating_add(count),
+            max_top_line,
+        );
+    }
+
+    pub fn clamp_help_scroll(&mut self, max_top_line: u16) {
+        self.help_state.top_line = min(self.help_state.top_line, max_top_line);
     }
 
     // FIXME: use saturating arithmetic (also next fn)

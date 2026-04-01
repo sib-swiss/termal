@@ -15,7 +15,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
     let mode = ui.input_mode.clone();
     match mode {
         Normal => done = handle_normal_key(ui, key_event),
-        Help => ui.input_mode = InputMode::Normal,
+        Help => handle_help_key(ui, key_event),
         PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
         Search {
@@ -24,6 +24,18 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         } => todo!(),
     };
     done
+}
+
+fn handle_help_key(ui: &mut UI, key_event: KeyEvent) {
+    match key_event.code {
+        KeyCode::Esc | KeyCode::Char('q') | KeyCode::Char('?') => {
+            ui.input_mode = InputMode::Normal;
+        }
+        KeyCode::Up | KeyCode::Char('k') => ui.scroll_help_up(1),
+        KeyCode::Down | KeyCode::Char('j') => ui.scroll_help_down(1, u16::MAX),
+        KeyCode::Char('g') => ui.reset_help_scroll(),
+        _ => {}
+    }
 }
 
 fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
