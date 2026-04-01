@@ -196,25 +196,22 @@ fn max_num_seq(f: &Frame, ui: &UI) -> u16 {
 }
 
 fn delineate_help_pane(frame_area: Rect) -> Rect {
-    // We take all the screen except the top, bottom, left and right 10%. This means dividing the
-    // screen in three vertically, taking the middle 80%, and then dividing that in three and
-    // taking its middle 80%.
-    // NOTE here I'm using the builder style, might want to apply it elsewhere, if only for
-    // consistency.
+    // Help benefits from a larger viewport than the default modal size, especially on smaller
+    // terminals. Keep a small margin around it instead of reserving a full 10% on each side.
     let dialog_v_layout = Layout::default()
         .direction(Direction::Vertical)
         .constraints(vec![
-            Constraint::Percentage(10),
-            Constraint::Percentage(80),
-            Constraint::Percentage(10),
+            Constraint::Length(2),
+            Constraint::Min(1),
+            Constraint::Length(2),
         ])
         .split(frame_area);
     let dialog_h_layout = Layout::default()
         .direction(Direction::Horizontal)
         .constraints(vec![
-            Constraint::Percentage(10),
-            Constraint::Percentage(80),
-            Constraint::Percentage(10),
+            Constraint::Length(4),
+            Constraint::Min(1),
+            Constraint::Length(4),
         ])
         .split(dialog_v_layout[1]);
 
@@ -609,17 +606,57 @@ fn render_modeline(f: &mut Frame, last_content_line: u16, ui: &mut UI) {
     f.render_widget(modeline, modeline_rect);
 }
 
-fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect) {
-    let dialog_block = Block::default().borders(Borders::ALL);
+fn render_help_dialog(f: &mut Frame, dialog_chunk: Rect, ui: &mut UI) {
+    let dialog_block = Block::default()
+        .borders(Borders::ALL)
+        .border_style(Style::default().add_modifier(Modifier::BOLD));
+    let inner_dialog_chunk = dialog_chunk.inner(Margin {
+        vertical: 1,
+        horizontal: 1,
+    });
+    let dialog_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([Constraint::Length(2), Constraint::Min(1)])
+        .split(inner_dialog_chunk);
+    let banner = vec![
+        Line::from("j/k or arrows: scroll   g: top   q, Esc, ?: close")
+            .style(Style::default().add_modifier(Modifier::REVERSED)),
+        Line::from(""),
+    ];
+    let help_header = Paragraph::new(banner);
     let bindings = include_str!("bindings.md");
-    let mut text = Text::from(bindings);
-    text.push_line("");
-    text.push_line("Press any key to close this dialog.");
-    let dialog_para = Paragraph::new(Text::from_iter(text))
-        .block(dialog_block)
+    let text = Text::from(bindings);
+    let content_height = dialog_layout[1].height;
+    let total_lines = text.lines.len() as u16;
+    let max_top_line = total_lines.saturating_sub(content_height);
+    ui.clamp_help_scroll(max_top_line);
+    let dialog_para = Paragraph::new(text)
+        .scroll((ui.help_top_line(), ui.help_leftmost_col()))
         .style(Style::new().white().on_black());
     f.render_widget(Clear, dialog_chunk);
-    f.render_widget(dialog_para, dialog_chunk);
+    f.render_widget(dialog_block, dialog_chunk);
+    f.render_widget(help_header, dialog_layout[0]);
+    f.render_widget(dialog_para, dialog_layout[1]);
+
+    if total_lines > content_height && content_height > 0 {
+        let mut v_scrollbar_state = ScrollbarState::default()
+            .content_length(total_lines.into())
+            .viewport_content_length(content_height.into())
+            .position(ui.help_top_line().into());
+        let v_scrollbar = Scrollbar::new(ScrollbarOrientation::VerticalRight)
+            .begin_symbol(None)
+            .end_symbol(None);
+        f.render_stateful_widget(
+            v_scrollbar,
+            Rect {
+                x: dialog_chunk.x + dialog_chunk.width.saturating_sub(1),
+                y: dialog_layout[1].y,
+                width: 1,
+                height: dialog_layout[1].height,
+            },
+            &mut v_scrollbar_state,
+        );
+    }
 }
 
 pub fn render_ui(f: &mut Frame, ui: &mut UI) {
@@ -669,7 +706,7 @@ pub fn render_ui(f: &mut Frame, ui: &mut UI) {
     );
 
     if ui.input_mode == InputMode::Help {
-        render_help_dialog(f, layout_panes.dialog);
+        render_help_dialog(f, layout_panes.dialog, ui);
         // after the first display of the help dialog, remove the message
         ui.app.clear_msg();
     }
