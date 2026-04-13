@@ -1,6 +1,5 @@
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
-use std::fs;
 use std::io::{self, Write};
 use std::path::PathBuf;
 
@@ -44,9 +43,9 @@ struct Args {
     /// Input alignment file
     input: PathBuf,
 
-    /// Output SVG file ("-" for stdout)
-    #[arg(short, long, default_value = "-")]
-    output: String,
+    /// User-supplied order file (as in termal) (TODO)
+    #[arg(short, long)]
+    order: String,
 
     /// Colormap 
     #[arg(short, long, value_enum, default_value_t = ColorMapArg::AAClustalx)]
@@ -142,14 +141,9 @@ fn main() -> Result<()> {
     // Layout
     let layout = compute_layout(&aln, &opts);
 
-    if args.output == "-" {
-        let mut out = io::BufWriter::new(io::stdout().lock());
-        export_svg(&aln, &opts, &layout, &mut out)?;
-        out.flush()?;
-    } else {
-        let mut out = fs::File::create(&args.output)?;
-        export_svg(&aln, &opts, &layout, &mut out)?;
-    }
+    let mut stdout = io::BufWriter::new(io::stdout().lock());
+    export_svg(&aln, &opts, &layout, &mut stdout)?;
+    stdout.flush()?;
 
     Ok(())
 }
