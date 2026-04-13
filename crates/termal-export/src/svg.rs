@@ -1,5 +1,4 @@
 use std::{
-    collections::HashMap,
     io::{Result, Write},
     iter::zip,
 };
@@ -8,10 +7,6 @@ use itertools::Itertools;
 
 use termal_alignment::{
     Alignment,
-    rgb::{
-        Rgb,
-        ResidueColorMap,
-    },
 };
 
 use crate::{ExportOpts, Layout};
@@ -42,7 +37,7 @@ fn svg_header(hdr: &str, opts: &ExportOpts) -> String {
 }
 
 fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
-    let def_color: String = String::from("none");
+    // let def_color: String = String::from("none");
     let frame_color = if opts.cell_frames { String::from("black") } else { String::from("none") };
     let backgrounds = seq.chars().enumerate().map(|(i, c)| {
         let color_string = opts.colormap.rgb(c as u8).to_hex();
@@ -70,7 +65,7 @@ fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
 
 fn write_aln<W: Write>(aln: &Alignment, opts: &ExportOpts,
         layout: &Layout, out: &mut W) -> Result<()> {
-    let zipped_aln = zip( aln.headers.iter(), aln.sequences.iter());
+    let zipped_aln = zip(aln.headers.iter(), aln.sequences.iter());
     for (i, (hdr, seq)) in zipped_aln.enumerate() {
         writeln!(out, "<g transform='translate(0,{})'>{}<g transform='translate({},0)'>{}</g></g>",
             i as f32 * opts.cell_height,
@@ -88,8 +83,24 @@ fn svg_close() -> String {
 
 #[cfg(test)]
 mod tests {
+    use termal_alignment::{rgb::ResidueColorMap, Alignment};
 
     use super::*;
+
+    fn test_alignment() -> Alignment {
+        Alignment::from_vecs(
+            vec!["seq1".to_string(), "longer".to_string()],
+            vec!["ACG".to_string(), "TTA".to_string()],
+        )
+    }
+
+    fn export_to_string(opts: &ExportOpts) -> String {
+        let aln = test_alignment();
+        let layout = crate::compute_layout(&aln, opts);
+        let mut out = Vec::new();
+        export_svg(&aln, opts, &layout, &mut out).unwrap();
+        String::from_utf8(out).unwrap()
+    }
 
     #[test]
     fn test_svg_open() {
@@ -98,5 +109,116 @@ mod tests {
     }
 
     #[test]
-    fn test_svg_close() { assert_eq!(svg_close(), "</svg>"); }
+    fn test_svg_close() {
+        assert_eq!(svg_close(), "</svg>");
+    }
+
+    #[test]
+    fn export_svg_includes_svg_root_and_closing_tag() {
+        let svg = export_to_string(&ExportOpts::default());
+
+        assert!(svg.starts_with("<?xml version='1.0' encoding='UTF-8'?>\n<svg "));
+        assert!(svg.ends_with("</svg>"));
+    }
+
+    #[test]
+    fn export_svg_writes_headers_and_residues() {
+        let svg = export_to_string(&ExportOpts::default());
+
+        assert!(svg.contains(">seq1</text>"));
+        assert!(svg.contains(">longer</text>"));
+        assert!(svg.contains(">A</tspan>"));
+        assert!(svg.contains(">C</tspan>"));
+        assert!(svg.contains(">G</tspan>"));
+        assert!(svg.contains(">T</tspan>"));
+    }
+
+    #[test]
+    fn export_svg_writes_one_rect_per_residue() {
+        let svg = export_to_string(&ExportOpts::default());
+
+        assert_eq!(svg.matches("<rect ").count(), 6);
+    }
+
+    #[test]
+    fn export_svg_cell_frames_toggle_stroke() {
+        let no_frames = export_to_string(&ExportOpts::default());
+
+        let with_frames = export_to_string(&ExportOpts {
+            cell_frames: true,
+            colormap: ResidueColorMap::aa_lesk(),
+            ..ExportOpts::default()
+        });
+
+        assert!(no_frames.contains("stroke='none'"));
+        assert!(with_frames.contains("stroke='black'"));
+    }
+#[test]
+fn export_svg_uses_header_offset_from_layout() {
+    let aln = test_alignment();
+    let opts = ExportOpts::default();
+    let layout = crate::compute_layout(&aln, &opts);
+    let svg = export_to_string(&opts);
+
+    assert!(svg.contains(&format!(
+        "<g transform='translate({},0)'>",
+        layout.hdr_txt_width
+    )));
+}
+
+#[test]
+fn export_svg_emits_one_group_per_sequence() {
+    let aln = test_alignment();
+    let svg = export_to_string(&ExportOpts::default());
+
+    assert_eq!(
+        svg.matches("<g transform='translate(0,").count(),
+        aln.num_seq()
+    );
+}
+
+#[test]
+fn export_svg_positions_rows_by_cell_height() {
+    let opts = ExportOpts::default();
+    let svg = export_to_string(&opts);
+
+    assert!(svg.contains("<g transform='translate(0,0)'>"));
+    assert!(svg.contains(&format!(
+        "<g transform='translate(0,{})'>",
+        opts.cell_height
+    )));
+}
+
+#[test]
+fn export_svg_uses_residue_x_positions_from_cell_width() {
+    let opts = ExportOpts::default();
+    let svg = export_to_string(&opts);
+
+    assert!(svg.contains(&format!("<tspan x='0' y='{}'>A</tspan>", opts.ascent_corr)));
+    assert!(svg.contains(&format!(
+        "<tspan x='{}' y='{}'>C</tspan>",
+        opts.cell_width,
+        opts.ascent_corr
+    )));
+    assert!(svg.contains(&format!(
+        "<tspan x='{}' y='{}'>G</tspan>",
+        2.0 * opts.cell_width,
+        opts.ascent_corr
+    )));
+}
+
+#[test]
+fn export_svg_uses_residue_font_size_and_ascent() {
+    let opts = ExportOpts {
+        residue_font_size: 17,
+        ascent_corr: 9.5,
+        ..ExportOpts::default()
+    };
+    let svg = export_to_string(&opts);
+
+    assert!(svg.contains("font-size='17'"));
+    assert!(svg.contains("<text x='0' y='9.5'"));
+    assert!(svg.contains("<tspan x='0' y='9.5'>A</tspan>"));
+}
+
 }
