@@ -39,7 +39,7 @@ use termal_export::{compute_layout, export_svg, ExportOpts};
 
 #[derive(Parser, Debug)]
 #[command(name = "termal-export")]
-#[command(about = "Export a region of a multiple sequence alignment as graphics", long_about = None)]
+#[command(about = "Export a (region of a) multiple sequence alignment as graphics", long_about = None)]
 struct Args {
     /// Input alignment file
     input: PathBuf,
@@ -114,11 +114,11 @@ fn main() -> Result<()> {
     let colormap = ResidueColorMap::by_name(colormap_name);
 
     // Region (defaults: all)
-    let row_range = match &args.rows {
+    let _row_range = match &args.rows {
         Some(r) => parse_range(r)?,
         None => 0..aln.num_seq(), 
     };
-    let col_range = match &args.cols {
+    let _col_range = match &args.cols {
         Some(r) => parse_range(r)?,
         None => 0..aln.aln_len(), 
     };

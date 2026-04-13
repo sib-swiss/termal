@@ -59,3 +59,24 @@ impl Default for ExportOpts {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::{compute_layout, ExportOpts};
+    use termal_alignment::Alignment;
+
+    #[test]
+    fn compute_layout_uses_longest_header_and_alignment_size() {
+        let aln = Alignment::from_vecs(
+            vec!["a".to_string(), "long_hdr".to_string()],
+            vec!["ACG".to_string(), "TTT".to_string()],
+        );
+        let opts = ExportOpts::default();
+
+        let layout = compute_layout(&aln, &opts);
+
+        assert_eq!(layout.hdr_txt_width, 72.0);
+        assert_eq!(layout.grid_width, 105.0);
+        assert_eq!(layout.grid_height, 24.0);
+    }
+}
