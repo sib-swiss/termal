@@ -45,7 +45,7 @@ struct Args {
 
     /// User-supplied order file (as in termal) (TODO)
     #[arg(short, long)]
-    order: String,
+    order: Option<String>,
 
     /// Colormap 
     #[arg(short, long, value_enum, default_value_t = ColorMapArg::AAClustalx)]
