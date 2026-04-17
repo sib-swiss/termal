@@ -54,6 +54,10 @@ struct Cli {
     )]
     format: SeqFileFormat,
 
+    /// User-supplied order (filename)
+    #[arg(short = 'o', long)]
+    user_order: Option<String>,
+
     /// Gecos color map
     #[arg(short, long = "color-map")]
     color_map: Option<String>,
@@ -66,25 +70,22 @@ struct Cli {
     #[arg(short = 't', long, requires = "width")]
     height: Option<u16>,
 
+    // Rare options (long form only)
+
     /// Start with labels pane hidden
-    #[arg(short = 'L', long)]
+    #[arg(long)]
     hide_labels_pane: bool,
 
     /// Start with bottom pane hidden
-    #[arg(short = 'B', long)]
+    #[arg(long)]
     hide_bottom_pane: bool,
 
     /// (Currently no effect)
-    #[arg(short = 'D', long)]
+    #[arg(long)]
     debug: bool,
 
-    /// User-supplied order (filename)
-    #[arg(short = 'o', long)]
-    user_order: Option<String>,
-
-    // TODO: superseded by BW colormap
-    /// Disable color
-    #[arg(short = 'C', long = "no-color")]
+    /// Switch to monochrome
+    #[arg(long = "no-color")]
     no_color: bool,
 
     /// Disable scrollbars (mostly for testing)
@@ -92,11 +93,11 @@ struct Cli {
     no_scrollbars: bool,
 
     /// Poll wait time [ms]
-    #[clap(long = "poll-wait-time", default_value_t = 50)]
+    #[arg(long = "poll-wait-time", default_value_t = 50)]
     poll_wait_time: u64,
 
     /// Panic (for testing)
-    #[clap(long = "panic")]
+    #[arg(long = "panic")]
     panic: bool,
 
     // TODO: the ZB can be disabled at runtime (or at least it should)
@@ -105,7 +106,7 @@ struct Cli {
     no_zoombox: bool,
 
     // TODO: this is only ever used when the bottom pane is at the bottom of the terminal, which is
-    // practically never.
+    // practically never. 
     //
     /// Do not show zoom box guides (only useful if zoom box not shown)
     #[arg(long = "no-zb-guides")]
