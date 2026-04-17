@@ -17,6 +17,9 @@ use termal_alignment::rgb::{
     Rgb,
 };
 
+// allows terminal-based (instead of fixed) grey
+const GAP_COLOR_TUI: Color = Color::Gray;
+
 #[derive(Clone)]
 pub struct ColorMap {
     pub name: String,
@@ -27,7 +30,7 @@ impl ColorMap {
 
     pub fn get(&self, residue: char) -> Color {
         if residue == '-' || residue == '.' {
-            return Color::Gray;
+            return GAP_COLOR_TUI;
         }
         let rgb = self.map.rgb(residue as u8);
         Color::Rgb(rgb.r, rgb.g, rgb.b)
