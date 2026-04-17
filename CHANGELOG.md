@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0]
+
+### Added
+
+* Regex search within sequences (no special treatment of gaps (yet))
+* Jump to current match
+* Jump to sequence by position in original file
+* Manual (Markdown version)
+
+### Changed
+
+* Help page allows scrolling if content doesn't fit on screen
+
+### Fixed
+
+* Current match now stable across reorderings
+
 ## [1.3.0]
 
 ### Added

@@ -10,7 +10,7 @@ monofont: JetBrains Mono
 title: "Termal"
 subtitle: "User Manual"
 author: "Thomas Junier"
-date: "January 2026"
+date: \today
 bibliography: "termal.bib"
 toc: true
 header-includes:
@@ -55,9 +55,11 @@ Simply pass your alignment file as an argument to `termal`, e.g.:
 termal my-alignment.msa
 ```
 
-Termal supports Fasta (default) and Stockholm (pass `-f`) formats. Any alignment
-lines shorter than the longest one will be padded with gap characters at the
-end.
+### Alignment File Formats
+
+Termal supports Fasta (default) and Stockholm (pass `-f stockholm` (or just `-f
+s`)) formats. Any alignment lines shorter than the longest one will be padded
+with gap characters at the end.
 
 ##  Help
 
@@ -85,13 +87,13 @@ In addition, the last line contains a message area ("modeline"), which displays:
 #  Interaction
 
 Termal is entirely keyboard-driven. All commands are issued by typing a single
-character (usualy a letter).
+character (usually a letter).
 
 ##  Prefix arguments
 
 Many commands (mostly motion) accept a _prefix argument_, which is an integer
-number typed _before_ the command character. Typing any digit starts a prefix
-argument. To cancel, press `Esc`. The meaning of the argument depends
+number typed _before_ the command character. Typing any digit (except 0) starts
+a prefix argument. To cancel, press `Esc`. The meaning of the argument depends
 on the command. For example, scrolling commands such as `j` ("scroll one line
 down") interpret a prefix argument as a repetition count: typing just `j` will
 move one sequence down, but typing `12j` will move twelve sequences down.
@@ -102,7 +104,7 @@ If no prefix argument is given, commands default to **1**.
 
 String arguments are entered after typing the command character, and are entered
 by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`)
-takes a string argument.
+and [sequence search](#seq-search) command (`/`) take a string argument.
 
 #  Navigation fundamentals
 
@@ -111,7 +113,7 @@ multiple sequence alignments. The effect of motion commands depends on the [zoom
 mode](#zooming), as follows:
 
 * In zoomed-in mode, they change the portion of the alignment that is being
-  displayed, much as a pager pages trough a text file.
+  displayed, much as a pager pages through a text file.
 * In the zoomed-out modes, they move the zoom box.
 
 Motion commands all take a prefix argument.
@@ -119,7 +121,7 @@ Motion commands all take a prefix argument.
 ## Scrolling
 
 Scrolling commands move the visible part of the alignment by one or more steps.
-The prefix argument is intepreted as a repeat count.
+The prefix argument is interpreted as a repeat count.
 
 ### Single-step scrolling
 
@@ -184,7 +186,8 @@ In absolute jumps, the prefix argument denotes a specific sequence or column:
 
 command    motion
 --------   --------------
-`[count]-` jump to sequence _count_
+`[count]-` jump to sequence _count_ (in the current order)
+`[count]=` jump to sequence _count_ (in original file order)
 `[count]|` jump to column _count_
 
 ###  Relative jumps
@@ -208,16 +211,16 @@ command    motion
 --------   --------------
 `[count]n` jump _count_ header matches forward
 `[count]p` jump _count_ header matches backward
+`<Return>` jump to the current match (which may be offscreen)
 
-Match jumps wrap around, i.e. pressing `n` while on the last match will move
-back to the first one. If no matches were found, match jump commands have no
-effect.
+Next and previous match jumps wrap around, i.e. pressing `n` while on the last
+match will move back to the first one. If no matches were found, match jump
+commands have no effect.
 
 ### Examples
 
 * `123|`: Jump to column 123 (if it exists).
-* `200-`: Jump to the 200th sequence from the top of the display, which may
-  differ from the original file order if sequences have been reordered.
+* `200-`: Jump to the 200th sequence from the top of the display, which may differ from the original file order if sequences have been reordered.
 * `50%`: Jump to the vertical midpoint of the alignment.
 * `25#`: Jump to one quarter of the alignment width.
 * `n`: jump to the next header match
@@ -279,7 +282,40 @@ During a search, the modeline displays:
 "^Eco<Enter>
 ```
 
-This jumps to the first sequence whose header starts with `Eco` (if any). 
+This jumps to the first sequence whose header starts with `Eco` (if any). The
+search order is according to the current [ordering](#ordering).
+
+
+##  Searching sequences {#seq-search}
+
+Termal supports searching within sequences using regular expressions.
+
+To start a search:
+
+1. Press `/` 
+2. Enter a [regular expression](https://docs.rs/regex/latest/regex/#syntax)
+3. Press `<Enter>` to confirm
+
+To cancel a search, press `<Esc>`.
+
+During a search, the modeline displays:
+
+- the index of the current match,
+- the total number of matches.
+
+**NOTE** The current implementation of sequence search does not treat gap
+characters specially. So if you want e.g. to specify a possible gap between A
+and T, you need to do so explicitly: `A-?T`. A smarter handling of gaps is
+planned for a future release.
+
+### Example:
+
+```
+/GAATTC<Enter>
+```
+
+This jumps to the first instance of `GAATTC`. The search order is according to
+the current [ordering](#ordering), then left to right.
 
 ---
 
@@ -316,11 +352,12 @@ symbol   meaning
 -        file order
 ↑        current metric, ascending
 ↓        current metric, descending
+u        user-supplied order (`-o`)
 
 ## Metrics {#metrics}
 
-The left pane displays a bar chart of the current _metric_. This is is a
-numeric property of the sequences. Currently, there are two possible metrics:
+The left pane displays a bar chart of the current _metric_. This is a numeric
+property of the sequences. Currently, there are two possible metrics:
 
 a. Sequence length (not counting gaps)
 b. Similarity to the consensus
@@ -337,11 +374,11 @@ Termal supports four built-in residue color maps:
 source     residue class    reference
 ---------- ---------------- ----------
 ClustalX   amino acids      [@larkin2007clustal]
-Lesk       amino acids      [@lesk2019introduction]
+Lesk       amino acids      [@lesk2019bioinformatics]
 JalView    nucleotides      [@waterhouse2009jalview]
-monochrome both             [#themes]
+monochrome both             [themes](#themes)
 
-To cycle through colormaps, tye `m` (forward) or `M` (backward).  The initial
+To cycle through colormaps, type `m` (forward) or `M` (backward).  The initial
 colormap is ClustalX for amino acids or JalView for nucleotides. The current
 colormap is displayed in the top border of the Termal screen.
 
@@ -381,9 +418,7 @@ Termal currently does **not** support:
 
 Features that will be added in the next release:
 
-* custom orderings
 * custom colormaps
-* search within sequences
 
 Features that will be added later
 
