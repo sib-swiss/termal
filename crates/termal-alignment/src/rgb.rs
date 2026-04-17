@@ -64,9 +64,10 @@ impl Rgb {
 
 pub const RGB_RED: Rgb = Rgb{r: 255, g: 0, b: 0};
 pub const RGB_GRAY: Rgb = Rgb{r: 127, g: 127, b: 127};
+pub const RGB_LIGHT_GRAY: Rgb = Rgb{r: 224, g: 224, b: 224};
 pub const RGB_WHITE: Rgb = Rgb{r: 255, g: 255, b: 255};
 
-pub const GAP_COLOR: Rgb = RGB_GRAY;
+pub const GAP_COLOR: Rgb = RGB_LIGHT_GRAY;
 
 // In-house colors
 pub const TERMAL_ORANGE: Rgb  = Rgb {r: 255, g: 165, b: 0};
