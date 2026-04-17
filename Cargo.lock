@@ -952,7 +952,7 @@ dependencies = [
 
 [[package]]
 name = "termal-msa"
-version = "1.3.0"
+version = "1.4.0"
 dependencies = [
  "approx",
  "bitflags",

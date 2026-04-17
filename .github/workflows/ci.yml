@@ -2,11 +2,11 @@ name: Build and Test
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     tags:
       - "v*.*.*"        # run CI when you push a release tag (v1.2.0, etc.)
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   test:
