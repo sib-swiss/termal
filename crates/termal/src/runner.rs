@@ -70,6 +70,10 @@ struct Cli {
     #[arg(short = 't', long, requires = "width")]
     height: Option<u16>,
 
+    /// Dry run - show parameters and quit
+    #[arg(short = 'n', long)]
+    dry_run: bool,
+
     // Rare options (long form only)
 
     /// Start with labels pane hidden
@@ -140,6 +144,11 @@ fn read_user_ordering(fname: &str) -> Result<Vec<String>, std::io::Error> {
     reader.lines().collect()
 }
 
+fn show_params(cli: &Cli) {
+    println!("Alignment file: {}", cli.aln_fname.as_ref().unwrap());
+    println!("Alignment file format: {}", cli.format);
+}
+
 pub fn run() -> Result<(), TermalError> {
     env_logger::init();
     info!("Starting log");
@@ -162,7 +171,7 @@ pub fn run() -> Result<(), TermalError> {
         let alignment = Alignment::from_file(seq_file);
         let mut ordering_err_msg: Option<String> = None;
         let mut user_ordering = match cli.user_order {
-            Some(fname) => {
+            Some(ref fname) => {
                 // TODO: should be called from_path()
                 let get_ord_vec = read_user_ordering(&fname);
                 match get_ord_vec {
@@ -195,7 +204,12 @@ pub fn run() -> Result<(), TermalError> {
 
         if cli.info {
             info!("Running in debug mode.");
-            app.output_info(); // TODO: can't this be done using info_msg()?
+            app.output_info(); 
+            return Ok(());
+        }
+
+        if cli.dry_run {
+            show_params(&cli);
             return Ok(());
         }
 
