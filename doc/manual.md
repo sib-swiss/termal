@@ -61,12 +61,35 @@ Termal supports Fasta (default) and Stockholm (pass `-f stockholm` (or just `-f
 s`)) formats. Any alignment lines shorter than the longest one will be padded
 with gap characters at the end.
 
-##  Help
+## Help
 
 For general help, pass option `-h`; for a list of key bindings, pass `-b` or
 press `?` after launching `termal`.
 
-#  Screen layout
+## Info mode
+
+With option `-i/--info`, `termal` will output basic metrics about the alignment
+(such as number of sequences) and quit.
+
+## Options
+
+The main options are shown in the table below (and are discussed in the text in
+the corresponding sections). Other options exist, but they are either
+experimental or used for debugging or testing. For a full list, do `termal
+-h`.
+
+| **short** | **long**                    | **function**                                                                   |
+| :----     | :-------------------------- | :---------------------------                                                   |
+| `-b`      | `--show-bindings`           | Show key bindings and exit successfully                                        |
+| `-i`      | `--info`                    | Show alignment metrics and quit                                                |
+| `-f`      | `--format <FORMAT>`         | Sequence file format [`fasta`/`stockholm`] (or just `f`/`s`); default: `fasta` |
+| `-o`      | `--user-order <USER_ORDER>` | User-supplied order (filename)                                                 |
+| `-c`      | `--color-map <COLOR_MAP>`   | Gecos color map (filename)                                                     |
+| `-n`      | `--dry-run`                 | Dry run - show parameters and quit                                             |
+| `-h`      | `--help`                    | Print help                                                                     |
+| `-V`      | `--version`                 | Show version                                                                   |
+
+# Screen layout
 
 The interface is divided into four areas:
 
@@ -334,13 +357,38 @@ command    motion
 
 
 
-##  Ordering the Sequences {#ordering}
+## Ordering the Sequences {#ordering}
 
 Initially, the sequences appear in the alignment pane in the same order as they
 appear in the alignment file. However, the sequences may be ordered according to
 the current [metric](#metrics), either ascending or descending. Note that the
 "first" sequence (on the screen) is the _top_ sequence. As a result, when
 sorting in ascending order, metric values increase from top to bottom.
+
+The user may also supply a custom ordering, by passing option `-o` and
+supplying the name of an ordering file as an argument to the option, e.g.:
+
+```
+termal -o my-order alignment.msa
+```
+
+An ordering file is simply the sequence headers in the desired order. For
+example, passing the following ordering file would cause `AHMKMHDK_00298` to
+appear first, then `CEFNMEKK_03699`, etc., regardless of the order they appear
+in in the alignment file.
+
+Note that the headers in the ordering file are expected to match those in the
+alignment file.
+
+```bash
+AHMKMHDK_00298
+CEFNMEKK_03699
+IAGGDKJC_03995
+FHLODNDD_02091
+HJACHOPP_04370
+```
+
+### Changing the Ordering
 
 To cycle forward through orderings, press (`o`). To cycle backward, press `O`.
 
@@ -349,10 +397,10 @@ bar chart in the left pane:
 
 symbol   meaning
 -------  --------
--        file order
-↑        current metric, ascending
-↓        current metric, descending
-u        user-supplied order (`-o`)
+`-`      file order
+`↑`      current metric, ascending
+`↓`      current metric, descending
+`u`      user-supplied order (`-o`)
 
 ## Metrics {#metrics}
 
@@ -378,6 +426,33 @@ Lesk       amino acids      [@lesk2019bioinformatics]
 JalView    nucleotides      [@waterhouse2009jalview]
 monochrome both             [themes](#themes)
 
+It is also possible to supply a custom color map:
+
+```bash
+termal -c colormap.json my-alignment.msa
+```
+
+where the colormap is a JSON file in the Gecos format
+(@kunzmann2020gecos). This is a straightworward format that looks like this:
+
+```json
+{
+    "name": "my-colormap",
+    "alphabet": [
+        "A",
+        "C",
+        "G",
+        "T",
+    ],
+    "colors": {
+        "A": "#71564e",
+        "C": "#2a3d00",
+        "G": "#004f7c",
+        "T": "#b03f42",
+        "Y": "#d5dfac"
+    }
+}
+```
 To cycle through colormaps, type `m` (forward) or `M` (backward).  The initial
 colormap is ClustalX for amino acids or JalView for nucleotides. The current
 colormap is displayed in the top border of the Termal screen.
