@@ -137,17 +137,24 @@ impl App {
             message: String::from(""),
             kind: MessageKind::Info,
         };
-        App {
+        let ordering_criterion = if usr_ord.is_some() {
+            User
+        } else {
+            SourceFile
+        };
+        let mut app = App {
             filename: path.to_string(),
             alignment,
-            ordering_criterion: SourceFile,
+            ordering_criterion,
             metric: PctIdWrtConsensus,
             ordering: (0..len).collect(),
             reverse_ordering: (0..len).collect(),
             user_ordering: usr_ord,
             search_state: None,
             current_msg: cur_msg,
-        }
+        };
+        app.recompute_ordering();
+        app
     }
 
     // Computed properties (TODO: could be set in a struct member, as they do not change)
