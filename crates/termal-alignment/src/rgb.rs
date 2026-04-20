@@ -1,3 +1,5 @@
+use std::fmt::{Display, Formatter};
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Rgb {
     pub r: u8,
@@ -127,7 +129,7 @@ pub enum ColorMapName {
     Monochrome,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ResidueColorMap {
     table: [Rgb; 256],
 }
@@ -252,6 +254,18 @@ impl ResidueColorMap {
         map
     }
 
+}
+
+impl Display for ResidueColorMap {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> { 
+        write!(f, "{{")?;
+        let residues = "ABCDEFGHIKLMNPQRSTUVWXY";
+        for c in residues.as_bytes().iter() { 
+            write!(f, "{}: {}, ", *c as char, self.rgb(*c).to_hex())?;
+        }
+        write!(f, "}}")?;
+        Ok(())
+    }
 }
 
 #[cfg(test)]
