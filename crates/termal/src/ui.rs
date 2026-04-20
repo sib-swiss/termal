@@ -528,6 +528,11 @@ impl<'a> UI<'a> {
         }
     }
 
+    pub fn select_first_colormap(&mut self) {
+        let cs: &mut ColorScheme = self.color_scheme_mut();
+        cs.select_first_colormap();
+    }
+
     pub fn next_colormap(&mut self) {
         let cs: &mut ColorScheme = self.color_scheme_mut();
         cs.next_colormap();

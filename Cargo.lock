@@ -955,6 +955,7 @@ name = "termal-msa"
 version = "1.4.0"
 dependencies = [
  "approx",
+ "assert_cmd",
  "bitflags",
  "clap",
  "crossterm",
@@ -962,6 +963,7 @@ dependencies = [
  "hex_color",
  "insta",
  "log",
+ "predicates",
  "ratatui",
  "regex",
  "serde_json",

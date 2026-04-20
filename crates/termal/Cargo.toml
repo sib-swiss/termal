@@ -35,3 +35,5 @@ termal-alignment = { path = "../termal-alignment" }
 [dev-dependencies]
 insta = "1"
 approx = "0.3.2"    # needed for testing vec_f64_aux
+assert_cmd = "2"
+predicates = "3"
