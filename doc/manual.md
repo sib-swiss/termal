@@ -225,15 +225,15 @@ command    motion
 
 ### Jumps to search matches {#match-jumps}
 
-Termal supports jumping to sequences whose headers match an arbitrary pattern
-(see [Searching](#searching) for how to start the search). If any matches are
-found, Termal will automatically jump to the first match. To jump to the next or
+Termal supports regular expression searches in both headers and sequences (see
+[Searching](#searching) for how to start a search). If any matches are found,
+Termal will automatically jump to the first match. To jump to the next or
 previous match, use `n` or `p`:
 
 command    motion
 --------   --------------
-`[count]n` jump _count_ header matches forward
-`[count]p` jump _count_ header matches backward
+`[count]n` jump _count_ matches forward
+`[count]p` jump _count_ matches backward
 `<Return>` jump to the current match (which may be offscreen)
 
 Next and previous match jumps wrap around, i.e. pressing `n` while on the last
@@ -246,8 +246,8 @@ commands have no effect.
 * `200-`: Jump to the 200th sequence from the top of the display, which may differ from the original file order if sequences have been reordered.
 * `50%`: Jump to the vertical midpoint of the alignment.
 * `25#`: Jump to one quarter of the alignment width.
-* `n`: jump to the next header match
-* `3p`: jump three header matches backward
+* `n`: jump to the next match
+* `3p`: jump three matches backward
 
 # Zooming
 
@@ -359,18 +359,22 @@ command    motion
 
 ## Ordering the Sequences {#ordering}
 
-Initially, the sequences appear in the alignment pane in the same order as they
+By default, the sequences appear in the alignment pane in the same order as they
 appear in the alignment file. However, the sequences may be ordered according to
 the current [metric](#metrics), either ascending or descending. Note that the
 "first" sequence (on the screen) is the _top_ sequence. As a result, when
 sorting in ascending order, metric values increase from top to bottom.
 
 The user may also supply a custom ordering, by passing option `-o` and
-supplying the name of an ordering file as an argument to the option, e.g.:
+supplying the name of an ordering file (see below) as an argument to the option, e.g.:
 
 ```
 termal -o my-order alignment.msa
 ```
+
+In this case, `termal` initially shows the alignment in custom ordering.
+
+### Ordering File
 
 An ordering file is simply the sequence headers in the desired order. For
 example, passing the following ordering file would cause `AHMKMHDK_00298` to
@@ -453,8 +457,10 @@ where the colormap is a JSON file in the Gecos format
     }
 }
 ```
+
 To cycle through colormaps, type `m` (forward) or `M` (backward).  The initial
-colormap is ClustalX for amino acids or JalView for nucleotides. The current
+colormap is ClustalX for amino acids or JalView for nucleotides, unless a custom
+colormap is supplied, in which case it becomes the initial colormap. The current
 colormap is displayed in the top border of the Termal screen.
 
 ## Themes {#themes}
@@ -491,16 +497,18 @@ Termal currently does **not** support:
 
 # Future Work
 
-Features that will be added in the next release:
+Features planned for the next release:
 
-* custom colormaps
+* better handling of gaps in regexp searches
+* jumps to conserved regions 
+* a color map for vision-impaired users
 
 Features that will be added later
 
+* exporting (part of) the alignment as SVG
 * arbitrary sequence as reference
 * showing only residues that differ from the consensus, or that are fully
   conserved (à la EMBOSS's `showalign -show`)
-* a color map for vision-impaired users
 
 Features under consideration
 
