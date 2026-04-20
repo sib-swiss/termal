@@ -144,9 +144,13 @@ fn read_user_ordering(fname: &str) -> Result<Vec<String>, std::io::Error> {
     reader.lines().collect()
 }
 
-fn show_params(cli: &Cli) {
+fn show_params(cli: &Cli, ui: &UI) {
     println!("Alignment file: {}", cli.aln_fname.as_ref().unwrap());
     println!("Alignment file format: {}", cli.format);
+    if let Some(map_fname) = &cli.color_map {
+        println!("User color map file: {}", map_fname);
+        println!("User color map: {}", ui.color_scheme().current_residue_colormap().map());
+    }
 }
 
 pub fn run() -> Result<(), TermalError> {
@@ -208,8 +212,10 @@ pub fn run() -> Result<(), TermalError> {
             return Ok(());
         }
 
+        let mut app_ui = UI::new(&mut app);
+
         if cli.dry_run {
-            show_params(&cli);
+            show_params(&cli, &app_ui);
             return Ok(());
         }
 
@@ -230,7 +236,6 @@ pub fn run() -> Result<(), TermalError> {
         let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
         terminal.clear()?;
 
-        let mut app_ui = UI::new(&mut app);
         if cli.no_scrollbars {
             app_ui.disable_scrollbars();
         }
