@@ -112,3 +112,29 @@ pub fn colormap_gecos(path: &str) -> Result<ColorMap, TermalError> {
         map: color_map,
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use ratatui::prelude::Color;
+
+    use super::colormap_gecos;
+    use termal_alignment::rgb::{GAP_COLOR, RGB_WHITE, Rgb};
+
+    #[test]
+    fn gecos_colormap_loads_custom_entries_and_preserves_defaults() {
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("../../data/colormaps/test.json");
+        let cmap = colormap_gecos(path.to_str().expect("utf-8 path")).expect("custom colormap");
+
+        assert_eq!(cmap.name, "custom");
+        assert_eq!(cmap.map().rgb(b'A'), Rgb::from_hex("#7FFFD4").unwrap());
+        assert_eq!(cmap.map().rgb(b'a'), Rgb::from_hex("#7FFFD4").unwrap());
+        assert_eq!(cmap.map().rgb(b'Y'), Rgb::from_hex("#d1fee1").unwrap());
+        assert_eq!(cmap.map().rgb(b'Z'), RGB_WHITE);
+        assert_eq!(cmap.map().rgb(b'-'), GAP_COLOR);
+        assert_eq!(cmap.get('-'), Color::Gray);
+        assert_eq!(cmap.get('A'), Color::Rgb(127, 255, 212));
+    }
+}
