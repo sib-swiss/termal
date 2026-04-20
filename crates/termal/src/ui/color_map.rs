@@ -35,6 +35,10 @@ impl ColorMap {
         let rgb = self.map.rgb(residue as u8);
         Color::Rgb(rgb.r, rgb.g, rgb.b)
     }
+
+    pub fn map(&self) -> &ResidueColorMap {
+        &self.map
+    }
 }
 
 impl fmt::Display for ColorMap {
