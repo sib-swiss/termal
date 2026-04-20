@@ -453,7 +453,6 @@ where the colormap is a JSON file in the Gecos format
         "C": "#2a3d00",
         "G": "#004f7c",
         "T": "#b03f42",
-        "Y": "#d5dfac"
     }
 }
 ```
