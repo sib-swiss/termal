@@ -102,6 +102,10 @@ impl ColorScheme {
         self.residue_colormaps.insert(0, cmap);
     }
 
+    pub fn select_first_colormap(&mut self) {
+        self.residue_colormap_index = 0;
+    }
+
     pub fn current_residue_colormap(&self) -> &ColorMap {
         &(self.residue_colormaps[self.residue_colormap_index])
     }

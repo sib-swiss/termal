@@ -214,6 +214,11 @@ pub fn run() -> Result<(), TermalError> {
 
         let mut app_ui = UI::new(&mut app);
 
+        if let Some(path) = &cli.color_map {
+            app_ui.add_user_colormap(path);
+            app_ui.select_first_colormap();
+        }
+
         if cli.dry_run {
             show_params(&cli, &app_ui);
             return Ok(());
@@ -253,10 +258,6 @@ pub fn run() -> Result<(), TermalError> {
         }
         if cli.hide_bottom_pane {
             app_ui.set_bottom_pane_height(0);
-        }
-        if let Some(path) = cli.color_map {
-            app_ui.add_user_colormap(&path);
-            app_ui.prev_colormap();
         }
 
         let poll_wait = Duration::from_millis(cli.poll_wait_time);
