@@ -12,6 +12,8 @@
 ### Changed
 
 * Help page allows scrolling if content doesn't fit on screen
+* Release archives include new example alignments, an example ordering file, custom
+  colormap examples, and the Markdown manual
 
 ### Fixed
 
