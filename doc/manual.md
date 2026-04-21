@@ -15,17 +15,12 @@ bibliography: "termal.bib"
 toc: true
 header-includes:
   - |
-    \usepackage{etoolbox}
+    \usepackage{graphics}
     \makeatletter
     \apptocmd{\maketitle}{%
       \par\bigskip
       \begin{center}
-      \ttfamily
-      TERM-----AL--------------\\
-      TERMinAL-ALIGNM--T-VIEWER\\
-      TERM--AL-AL-----N--VIEWER\\
-      ------AL-----------VIEW--\\
-      ---------ALIGNMENT-VIEWER
+      \includegraphics{title.pdf}
       \end{center}
       \bigskip
     }{}{}
