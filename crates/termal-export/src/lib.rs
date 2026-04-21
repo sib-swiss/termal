@@ -9,6 +9,8 @@ use termal_alignment::{
 
 pub use svg::export_svg;
 
+const GUTTER_WIDTH: f32 = 20.0; // h space between headers and sequences
+
 #[derive(Clone, Debug)]
 pub struct ExportOpts {
     pub cell_width: f32,
@@ -32,7 +34,7 @@ pub struct Layout {
 pub fn compute_layout(aln: &Alignment, opts: &ExportOpts) -> Layout {
     let max_hdr_len = aln.headers.iter().map(|h| h.len()).max().unwrap_or(0);
     // + 1: add 1 char's width of space between headers and sequences.
-    let hdr_txt_width = (max_hdr_len + 1) as f32 * opts.char_width;
+    let hdr_txt_width = max_hdr_len as f32 * opts.char_width + GUTTER_WIDTH;
     
     Layout {
         grid_width: hdr_txt_width + aln.aln_len() as f32 * opts.cell_width,
