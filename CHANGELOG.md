@@ -5,9 +5,9 @@
 ### Added
 
 * Regex search within sequences (no special treatment of gaps (yet))
-* Jump to current match
+* Jump to current search match
 * Jump to sequence by position in original file
-* Manual (Markdown version)
+* Manual (Markdown and PDF versions)
 
 ### Changed
 
@@ -17,7 +17,7 @@
 
 ### Fixed
 
-* Current match now stable across reorderings
+* Jumps to matches now robust with respect to reorderings
 
 ## [1.3.0]
 

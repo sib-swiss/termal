@@ -1,13 +1,19 @@
-termal 1.3.0 – Enhanced navigation and search
+termal 1.4.0 – Sequence searches
 
-This release improves navigation in large multiple sequence alignments, with
-Vim-style count prefixes, absolute and relative jumps, and header-based search.
+This release adds regular expression search within sequences, and adds commands
+for returning to the current match and jumping to a sequence by its original
+position in the alignment file.
+
+The release archives now also include the manual, sample alignments, an
+example ordering file, and curated custom colormap examples.
 
 Highlights:
-- Vim-style count prefixes for movement and pane resizing
-- Absolute and relative jumps (horizontal and vertical)
-- Regex search in sequence headers, with next/previous navigation
-- Clearer modeline feedback for pending commands and search state
+
+- Regular expression search within sequences
+- Jump to the current search match
+- Jump to a sequence by its original file position
+- Scrollable help page for smaller terminals
+- Release archives with manual and example data
 
 No breaking changes.
 
