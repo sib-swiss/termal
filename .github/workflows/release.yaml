@@ -55,7 +55,6 @@ jobs:
           [[ "${{ matrix.archive }}" == "zip" ]] && BIN="${BIN}.exe" || true
           cp "$BIN" "$STAGE/"
           cp README.md LICENSE CHANGELOG.md "$STAGE/" 2>/dev/null || true
-          #cp -rL data/example-1.msa "$STAGE/data/" 2>/dev/null || true
           cp doc/manual.md "$STAGE/termal-manual.md" 2>/dev/null || true
           cp doc/manual.pdf "$STAGE/termal-manual.pdf" 2>/dev/null || true
           cp -rL data/example-1.msa data/PF00244.26.sto data/OX_OFA-pg2.msa data/OX_OFA-pg2.order "$STAGE/data/" 2>/dev/null || true
