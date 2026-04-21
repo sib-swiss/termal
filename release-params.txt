@@ -1,2 +1,0 @@
-version: 1.2.0
-MSRV: 1.79 # may compile on earlier - haven't checked.
