@@ -291,7 +291,7 @@ impl App {
     // TODO: rename to order_by_metric
     pub fn order_values(&self) -> &Vec<f64> {
         match self.metric {
-            PctIdWrtConsensus => &self.alignment.id_wrt_consensus,
+            PctIdWrtConsensus => &self.alignment.id_wrt_reference,
             SeqLen => &self.alignment.relative_seq_len,
         }
     }
