@@ -44,7 +44,7 @@ pub enum Metric {
 impl fmt::Display for Metric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let metric = match self {
-            PctIdWrtConsensus => "%id (cons)",
+            PctIdWrtConsensus => "%id (ref)",
             SeqLen => "seq len",
         };
         write!(f, "{}", metric)
@@ -714,8 +714,9 @@ impl App {
             self.alignment.set_ref_spec(RefSpec::Consensus);
         } else {
             let rank: usize = ref_spec_str.parse().expect("Malformed integer");
-            self.alignment.set_ref_spec(RefSpec::Rank(rank));
+            self.alignment.set_ref_spec(RefSpec::Rank(rank - 1)); // -1 <- user is 1-based
         }
+        self.recompute_ordering();
     }
 }
 
