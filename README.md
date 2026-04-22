@@ -19,11 +19,8 @@ terminal.
 Download a prebuilt binary from the GitHub Releases page:
 https://github.com/sib-swiss/termal/releases
 
-For the current release (v1.4.0):
-https://github.com/sib-swiss/termal/releases/tag/v1.4.0
-
 Unpack the archive and run the binary directly. The archive also contains a
-manual (`termal-manual.md` and `termal-manual.pdf)`, as well as examples of
+manual (`termal-manual.md` and `termal-manual.pdf`), as well as examples of
 custom colormaps and ordering files and assorted sample alignments.
 
 ```bash
