@@ -11,6 +11,10 @@ use crate::seq::file::SeqFile;
 
 use crate::alignment::SeqType::{Nucleic, Protein};
 
+// Whether to show the most frequent residue as LC or UC
+const UC_CONS_THRESHOLD: f64 = 0.8; // uppercase if at least this
+const LC_CONS_THRESHOLD: f64 = 0.2; // lowercase if at least this (else '*')
+
 type ResidueDistribution = HashMap<char, f64>;
 type ResidueCounts = HashMap<char, u64>;
 
@@ -18,6 +22,12 @@ type ResidueCounts = HashMap<char, u64>;
 pub enum SeqType {
     Nucleic,
     Protein,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum RefSpec {
+    Consensus,
+    Rank(usize),
 }
 
 pub struct Alignment {
@@ -45,6 +55,9 @@ pub struct Alignment {
     // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
     pub relative_seq_len: Vec<f64>,
     pub macromolecule_type: SeqType,
+    /* Specifies whether the reference sequence should be the consensus (see above) or one of the
+     * original sequences (identified by rank).*/
+    ref_spec: RefSpec,
 }
 
 #[derive(Debug, PartialEq)]
@@ -93,6 +106,7 @@ impl Alignment {
             id_wrt_consensus,
             relative_seq_len,
             macromolecule_type,
+            ref_spec: RefSpec::Consensus,
         }
     }
 
@@ -123,6 +137,7 @@ impl Alignment {
             id_wrt_consensus,
             relative_seq_len,
             macromolecule_type,
+            ref_spec: RefSpec::Consensus,
         }
     }
 
@@ -137,6 +152,21 @@ impl Alignment {
 
     pub fn macromolecule_type(&self) -> SeqType {
         self.macromolecule_type
+    }
+
+    pub fn get_ref_spec(&self) -> RefSpec {
+        self.ref_spec
+    }
+
+    pub fn set_ref_spec(&mut self, spec: RefSpec) {
+        self.ref_spec = spec;
+    }
+
+    pub fn reference(&self) -> String {
+        match self.ref_spec {
+            RefSpec::Consensus => self.consensus.clone(),
+            RefSpec::Rank(rk) => self.sequences[rk].clone(),
+        }
     }
 }
 
@@ -154,12 +184,12 @@ fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
 pub fn consensus(sequences: &Vec<String>) -> String {
     let mut consensus = String::new();
     for j in 0..sequences[0].len() {
-        let dist = res_count(sequences, j);
+        let dist = res_count(sequences, j); // res -> count map
         let br = best_residue(&dist);
         let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
-        if rel_freq >= 0.8 {
-            consensus.push(br.residue);
-        } else if rel_freq >= 0.2 {
+        if rel_freq >= UC_CONS_THRESHOLD {
+            consensus.push(br.residue.to_ascii_uppercase());
+        } else if rel_freq >= LC_CONS_THRESHOLD {
             if br.residue.is_alphabetic() {
                 consensus.push(br.residue.to_ascii_lowercase());
             } else {
@@ -287,6 +317,7 @@ mod tests {
         best_residue, consensus, densities, entropies, entropy, percent_identity, res_count,
         seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, ResidueCounts,
         ResidueDistribution, SeqType,
+        RefSpec,
         SeqType::{Nucleic, Protein},
     };
     use crate::seq::fasta::read_fasta_file;
@@ -530,5 +561,36 @@ mod tests {
         assert_eq!(SeqType::Nucleic, aln.macromolecule_type());
         assert_eq!("Onca", aln.headers[3]);
         assert_eq!("gatgcatatg", aln.sequences[3]);
+    }
+
+    // Test the reference specifier
+    #[test]
+    fn test_reference_specifier() {
+        let hdrs = vec![
+            String::from("frugilegus"),
+            String::from("monedula"),
+            String::from("corax"),
+            String::from("corone"),
+            String::from("cornix"),
+        ];
+        let seqs = vec![
+            String::from("catgcatatg"),
+            String::from("aatgcatatg"),
+            String::from("tatgcatatg"),
+            String::from("tatgcatatg"),
+            String::from("gatgcatatg"),
+        ];
+        let mut aln = Alignment::from_vecs(hdrs, seqs);
+        // By default, the reference sequence is the consensus
+        assert_eq!(RefSpec::Consensus, aln.get_ref_spec());
+        assert_eq!("tATGCATATG", aln.reference());
+        // Now set the ref to the first sequence (rank 0)
+        aln.set_ref_spec(RefSpec::Rank(0));
+        assert_eq!(RefSpec::Rank(0), aln.get_ref_spec());
+        assert_eq!("catgcatatg", aln.reference());
+        // Back to consensus
+        aln.set_ref_spec(RefSpec::Consensus);
+        assert_eq!(RefSpec::Consensus, aln.get_ref_spec());
+        assert_eq!("tATGCATATG", aln.reference());
     }
 }
