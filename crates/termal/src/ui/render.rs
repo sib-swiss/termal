@@ -7,6 +7,8 @@ use ratatui::{
     Frame,
 };
 
+use termal_alignment::alignment::RefSpec;
+
 use super::{
     aln_widget::{SeqPane, SeqPaneZoomedOut},
     barchart::{value_to_hbar, values_barchart},
@@ -515,9 +517,14 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     .right_aligned();
     f.render_widget(metric_para, metric_chunk);
 
+    let ref_string = match ui.app.alignment.get_ref_spec() {
+        RefSpec::Consensus => "Ref: consensus".into(),
+        RefSpec::Rank(rk) => format!("Ref: #{}", rk),
+    };
+
     let cons_text = Text::from(vec![
         "Position".into(),
-        "Consensus".into(),
+        ref_string.into(),
         "Conservation".into(),
     ]);
     let cons_para = Paragraph::new(cons_text).block(cons_block);
