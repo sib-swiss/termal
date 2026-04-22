@@ -526,4 +526,40 @@ and clarity over graphical interaction.
 Many commands, as well as the prefix argument syntax, were deliberately copied
 from [Vim](https://vim.org).
 
+---
+
+# Companion programs
+
+## `termal-export`
+
+This program produces SVG representations of alignments, e.g. for
+publication. Its call syntax is simply:
+
+```bash
+termal-export [options] <alignment file>
+```
+
+The SVG is printed out to standard output, so it's usually best to redirect it
+to a file of your choice, e.g.
+
+```bash
+termal-export my-aln.msa > my-aln.svg
+```
+
+### Options
+
+
+The main options supported by `termal-export` are shown in the table below.
+Other options exist, but they are either experimental or used for debugging or
+testing. For a full list, pass `-h`.
+
+| **short** | **long**                          | **function**                                                                                     |
+| :----     | :--------------------------       | :---------------------------                                                                     |
+| `-o`      | `--order <ORDER>`                 | User-supplied order file (as in termal) (TODO)                                                   |
+| `-c`      | `--colormap-name <COLORMAP_NAME>` | Colormap [default: aa-clustalx] [possible values: aa-lesk, aa-clustalx, dna-jalview, monochrome] |
+|           | `--rows <ROWS>`                   | Row range as START:END (0-based, END exclusive). Example: 0:50 (TODO)                            |
+|           | `--cols <COLS>`                   | Column range as START:END (0-based, END exclusive). Example: 0:200 (TODO)                        |
+| `-h`      | `--help`                          | Print help                                                                                       |
+
+
 # References
