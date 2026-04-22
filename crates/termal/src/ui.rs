@@ -64,6 +64,10 @@ enum InputMode {
     Search {
         pattern: String,
     },
+    SetReference {
+        ref_spec: String,
+    }
+
     // ExCommand { buffer: String },
 }
 

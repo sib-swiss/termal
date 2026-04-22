@@ -5,7 +5,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use super::{
     InputMode,
-    InputMode::{Help, LabelSearch, Normal, PendingCount, Search},
+    InputMode::{Help, LabelSearch, Normal, PendingCount, Search, SetReference},
     {ZoomLevel, UI},
 };
 
@@ -18,6 +18,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
         Search { pattern } => handle_sequence_search(ui, key_event, &pattern),
+        SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
     };
     done
 }
@@ -65,6 +66,13 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             };
             ui.app
                 .argument_msg(String::from("Sequence search: "), String::from(""));
+        }
+        KeyCode::Char('R') => {
+            ui.input_mode = InputMode::SetReference {
+                ref_spec: String::from(""),
+            };
+            ui.app
+                .argument_msg(String::from("Set ref: "), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -162,6 +170,38 @@ fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
         _ => {}
     }
 }
+
+fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char(c) if c.is_ascii_digit() => {
+            ui.app.add_argument_char(c);
+            let mut updated_ref_spec = ref_spec.to_string();
+            updated_ref_spec.push(c);
+            ui.input_mode = InputMode::SetReference {
+                ref_spec: updated_ref_spec,
+            }
+        }
+        KeyCode::Delete | KeyCode::Backspace => {
+            ui.app.pop_argument_char();
+            let mut updated_ref_spec = ref_spec.to_string();
+            updated_ref_spec.pop();
+            ui.input_mode = InputMode::SetReference {
+                ref_spec: updated_ref_spec,
+            };
+        }
+        KeyCode::Enter => {
+            ui.app.set_aln_ref(ref_spec);
+            ui.input_mode = InputMode::Normal;
+            // TODO: update ordering?
+        }
+        _ => {}
+    }
+}
+
 
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
