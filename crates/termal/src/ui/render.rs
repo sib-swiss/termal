@@ -550,7 +550,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     let mut colored_consensus: Vec<Span> = ui
         .app
         .alignment
-        .consensus
+        .reference()
         .chars()
         .map(|c| {
             Span::styled(

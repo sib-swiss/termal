@@ -91,7 +91,7 @@ fn handle_pending_count_key(ui: &mut UI, key_event: KeyEvent, count: usize) -> b
             };
             ui.app.add_argument_char(c);
         }
-        // Q, q, and Ctrl-C quit
+        // Q, q, and Ctrl-C quit (TODO: should they really quit when in pending-count mode?)
         KeyCode::Char('q') | KeyCode::Char('Q') => done = true,
         KeyCode::Char('c') if key_event.modifiers.contains(KeyModifiers::CONTROL) => done = true,
         KeyCode::Esc => {
@@ -195,8 +195,8 @@ fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
         }
         KeyCode::Enter => {
             ui.app.set_aln_ref(ref_spec);
+            ui.app.clear_msg();
             ui.input_mode = InputMode::Normal;
-            // TODO: update ordering?
         }
         _ => {}
     }
