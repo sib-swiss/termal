@@ -49,7 +49,8 @@ pub struct Alignment {
     /* By contrast, the following are properties of sequences (at least in part). Length, for
      * example, does not depend on anything but the sequence itself, and could be a field in a
      * struct that also contains the sequence and its header. */
-    pub id_wrt_consensus: Vec<f64>,
+    pub id_wrt_reference: Vec<f64>, // reference is usually the consensus, but CAN be an aln seq.
+                                    // Recompute if ref changes.
     // Of course the sequence length is an integer, but using an integer type like u32 would make
     // it hard (for me, at least...) to write a function that accepts a Vec of either  lengths or
     // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
@@ -89,7 +90,7 @@ impl Alignment {
         let consensus = consensus(&sequences);
         let entropies = entropies(&sequences);
         let densities = densities(&sequences);
-        let id_wrt_consensus = sequences
+        let id_wrt_reference = sequences
             .iter()
             .map(|seq| percent_identity(seq, &consensus))
             .collect();
@@ -103,7 +104,7 @@ impl Alignment {
             consensus,
             entropies,
             densities,
-            id_wrt_consensus,
+            id_wrt_reference,
             relative_seq_len,
             macromolecule_type,
             ref_spec: RefSpec::Consensus,
@@ -120,7 +121,7 @@ impl Alignment {
         let consensus = consensus(&sequences);
         let entropies = entropies(&sequences);
         let densities = densities(&sequences);
-        let id_wrt_consensus = sequences
+        let id_wrt_reference = sequences
             .iter()
             .map(|seq| percent_identity(seq, &consensus))
             .collect();
@@ -134,7 +135,7 @@ impl Alignment {
             consensus,
             entropies,
             densities,
-            id_wrt_consensus,
+            id_wrt_reference,
             relative_seq_len,
             macromolecule_type,
             ref_spec: RefSpec::Consensus,
@@ -160,6 +161,12 @@ impl Alignment {
 
     pub fn set_ref_spec(&mut self, spec: RefSpec) {
         self.ref_spec = spec;
+        // Probable change of ref -> Recompute the identities WRT ref
+        let reference = self.reference();
+        self.id_wrt_reference = self.sequences
+            .iter()
+            .map(|seq| percent_identity(seq, &reference))
+            .collect();
     }
 
     pub fn reference(&self) -> String {
@@ -592,5 +599,37 @@ mod tests {
         aln.set_ref_spec(RefSpec::Consensus);
         assert_eq!(RefSpec::Consensus, aln.get_ref_spec());
         assert_eq!("tATGCATATG", aln.reference());
+    }
+
+    // Tests the %id WRT ref (incl. when != consensus)
+    #[test]
+    fn test_pct_id_wrt_ref() {
+        let hdrs = vec![
+            String::from("frugilegus"),
+            String::from("monedula"),
+            String::from("corax"),
+            String::from("corone"),
+            String::from("cornix"),
+        ];
+        // consensus: ACg-
+        let seqs = vec![
+            String::from("A---"),
+            String::from("AC--"),
+            String::from("ACG-"),
+            String::from("ACGT"),
+            String::from("ACGT"),
+        ];
+        let mut aln = Alignment::from_vecs(hdrs, seqs);
+        // Check the ref, which by default is the consensus
+        assert_eq!("ACg-", aln.reference());
+        assert_eq!(vec![0.5, 0.75, 1.0, 0.75, 0.75], aln.id_wrt_reference);
+        // Now switch to seq #0 for reference
+        aln.set_ref_spec(RefSpec::Rank(0));
+        assert_eq!("A---", aln.reference());
+        assert_eq!(vec![1.0, 0.75, 0.5, 0.25, 0.25], aln.id_wrt_reference);
+        // Switch back to consensus
+        aln.set_ref_spec(RefSpec::Consensus);
+        assert_eq!("ACg-", aln.reference());
+        assert_eq!(vec![0.5, 0.75, 1.0, 0.75, 0.75], aln.id_wrt_reference);
     }
 }
