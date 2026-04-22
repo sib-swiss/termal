@@ -5,7 +5,10 @@ use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 
-use termal_alignment::Alignment;
+use termal_alignment::alignment::{
+    Alignment,
+    RefSpec
+};
 
 use crate::{
     app::Metric::{PctIdWrtConsensus, SeqLen},
@@ -704,6 +707,15 @@ impl App {
     pub fn pop_argument_char(&mut self) {
         self.current_msg.message.pop();
         self.current_msg.kind = MessageKind::Argument;
+    }
+
+    pub fn set_aln_ref(&mut self, ref_spec_str: &str) {
+        if ref_spec_str.is_empty() {
+            self.alignment.set_ref_spec(RefSpec::Consensus);
+        } else {
+            let rank: usize = ref_spec_str.parse().expect("Malformed integer");
+            self.alignment.set_ref_spec(RefSpec::Rank(rank));
+        }
     }
 }
 
