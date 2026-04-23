@@ -27,12 +27,30 @@ fn test_set_reference() {
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |mut ui, terminal| {
-            let key_R = utils::keypress('R');
             let last_line_y = SCREEN_HEIGHT - 1;
+            let ref_line_y = SCREEN_HEIGHT - 3;
+            let last_seq_line_y = 5;
+
+            // Before anything, the reference line should contain the consensus, namely
+            // "tATGCATATG".
+
+            // Draw the UI
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let ref_line = utils::screen_line(&buffer, ref_line_y);
+
+            // Check the consensus
+            assert!(
+                ref_line.contains("tATGCATATG"),
+                "\"tATGCATATG\" not found on ref line: {}",
+                ref_line
+            );
 
             // Pressing R should cause "Set ref:" to appear on last line
 
-            key_handling::handle_key_press(ui, key_R);
+            key_handling::handle_key_press(ui, utils::keypress('R'));
             // Don't forget to draw the UI after the key event...
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
@@ -64,7 +82,6 @@ fn test_set_reference() {
             // Pressing Enter should cause (1) the reference sequence to match the sequence of rank
             // 1, and (2) "Ref: #1" to appear in the bottom-left pane.
 
-            let ref_line_y = SCREEN_HEIGHT - 3;
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
@@ -86,6 +103,54 @@ fn test_set_reference() {
                 ref_line
             );
 
+            // Pressing 'o' should now cause the ref sequence (i.e. seq 1, 'frugilegus') to move to
+            // _last_ position, because the order is now by increasing similarity to the reference,
+            // namely sequence 1 itself.
+
+            key_handling::handle_key_press(ui, utils::keypress('o'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_seq_line = utils::screen_line(&buffer, last_seq_line_y);
+
+            // The last sequence should be seq 1, header "frugilegus" and sequence "catgcatatg", and
+            // maximal similarity (██):
+            let expected = "│1│frugilegus  │██│catgcatatg";
+            assert!(
+                last_seq_line.contains(expected),
+                "\"{}\" not found on last line: {}",
+                expected,
+                last_seq_line
+            );
+
+            // Pressing 'R<Enter>' should revert to the consensus (but NOT restore the original
+            // ordering., which is by file).
+
+            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_seq_line = utils::screen_line(&buffer, last_seq_line_y);
+            let ref_line = utils::screen_line(&buffer, ref_line_y);
+
+            // The last sequence should now be seq 4, header "corone"...
+            let expected = "4│corone      │██│tatgcatatg";
+            assert!(
+                last_seq_line.contains(expected),
+                "\"{}\" not found on last line: {}",
+                expected,
+                last_seq_line
+            );
+
+            // The ref should revert to the consensus
+            assert!(
+                ref_line.contains("tATGCATATG"),
+                "\"tATGCATATG\" not found on ref line: {}",
+                ref_line
+            );
 
             /* 
              *
