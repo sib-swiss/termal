@@ -195,7 +195,6 @@ fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
         }
         KeyCode::Enter => {
             ui.app.set_aln_ref(ref_spec);
-            ui.app.clear_msg();
             ui.input_mode = InputMode::Normal;
         }
         _ => {}

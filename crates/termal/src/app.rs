@@ -7,7 +7,8 @@ use regex::Regex;
 
 use termal_alignment::alignment::{
     Alignment,
-    RefSpec
+    RefSpec,
+    RefSpecError,
 };
 
 use crate::{
@@ -710,13 +711,25 @@ impl App {
     }
 
     pub fn set_aln_ref(&mut self, ref_spec_str: &str) {
-        if ref_spec_str.is_empty() {
-            self.alignment.set_ref_spec(RefSpec::Consensus);
+        let try_set_ref_spec = if ref_spec_str.is_empty() {
+            self.alignment.set_ref_spec(RefSpec::Consensus)
         } else {
-            let rank: usize = ref_spec_str.parse().expect("Malformed integer");
-            self.alignment.set_ref_spec(RefSpec::Rank(rank - 1)); // -1 <- user is 1-based
+            let try_rank = ref_spec_str.parse::<usize>();
+            match try_rank {
+                Err(_) => {
+                    // This is supposed to be impossible :-)
+                    Err(RefSpecError::MalformedInt(ref_spec_str.to_string()))
+                }
+                Ok(rank) => {
+                    // -1 <= user is 1-based
+                    self.alignment.set_ref_spec(RefSpec::Rank(rank - 1))
+                }
+            } 
+        };
+        match try_set_ref_spec {
+            Ok(_) => self.clear_msg(),
+            Err(err) => self.warning_msg(format!("{}", err)),
         }
-        self.recompute_ordering();
     }
 }
 

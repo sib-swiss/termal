@@ -151,176 +151,69 @@ fn test_set_reference() {
                 "\"tATGCATATG\" not found on ref line: {}",
                 ref_line
             );
-
-            /* 
-             *
-
-            // Pressing 'n' should cause the modeline to change to "match #2/8"
-
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
-            let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
-
-            assert!(
-                last_line.contains("match #2/8"),
-                "\"match #2/8\" not found on last line: {}",
-                last_line
-            );
-
-            // Pressing 'n' another 7 times should cause the modeline to cycle back to "match #1/8"
-
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
-            let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
-
-            assert!(
-                last_line.contains("match #1/8"),
-                "\"match #1/8\" not found on last line: {}",
-                last_line
-            );
-
-            // Pressing 'p' should cause the modeline to change to "match #8/8"
-
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
-            let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
-
-            let expected = "match #8/8";
-            assert!(
-                last_line.contains(expected),
-                "\"{}\" not found on last line: {}",
-                expected,
-                last_line
-            );
-
-            // Pressing 'n' another 7 times should cause the modeline to cycle back to "match #1/8"
-
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
-            let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
-
-            let expected = "match #1/8";
-            assert!(
-                last_line.contains(expected),
-                "\"{}\" not found on last line: {}",
-                expected,
-                last_line
-            );
-
-            // Pressing Esc should clear modeline
-
-            key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
-            let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
-
-            let expected = "└─────────────────└─";
-            assert!(
-                last_line.contains(expected),
-                "\"{}\" not found on last line: {}",
-                expected,
-                last_line
-            );
-            */
         },
     );
 }
 
-/*
 #[test]
-/// Tests a label search, for a label that is NOT found in the alignment.
-fn test_missing_label_search() {
+/// Checks the behaviour is the user enters an invalid (too small (0) or too large) ref number.
+fn test_invalid_ref() {
     utils::with_rig(
-        "tests/data/test-motion.msa",
+        "tests/data/test-set-ref.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |mut ui, terminal| {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
-            // We enter label search ("), then enter a label that's NOT in the alignment ("MISS")
+            // Pressing R0<Enter> should trigger a warning that no such ref exists, since there 
+            // is no sequence #0 (for the user, that is).
 
-            key_handling::handle_key_press(ui, key_double_quote);
-            key_handling::handle_key_press(ui, utils::keypress('M'));
-            key_handling::handle_key_press(ui, utils::keypress('I'));
-            key_handling::handle_key_press(ui, utils::keypress('S'));
-            key_handling::handle_key_press(ui, utils::keypress('S'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
-            let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
-
-            let expected = "Label search: MISS";
-            assert!(
-                last_line.contains(expected),
-                "\"{}\" not found on last line: {}",
-                expected,
-                last_line
-            );
-
-            // Pressing Enter should cause "No match." to appear in the modeline
-
+            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, utils::keypress('0'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            // Don't forget to draw the UI after the key event...
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
                 .expect("update");
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "No match.";
+            let expect = "Warning: invalid ref number (min 1)";
             assert!(
-                last_line.contains(expected),
+                last_line.contains(expect),
                 "\"{}\" not found on last line: {}",
-                expected,
+                expect,
                 last_line
             );
 
-            // Pressing Esc should clear modeline
+            // Pressing R6<Enter> should trigger a warning that no such ref exists, since there are
+            // only 5 sequences.
 
-            key_handling::handle_key_press(ui, KeyCode::Esc.into());
+            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, utils::keypress('6'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            // Don't forget to draw the UI after the key event...
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
                 .expect("update");
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "└─────────────────└─";
+            let expect = "Warning: invalid ref number (max 5)";
             assert!(
-                last_line.contains(expected),
+                last_line.contains(expect),
                 "\"{}\" not found on last line: {}",
-                expected,
+                expect,
                 last_line
             );
+
+
         },
     );
 }
+
+/*
 
 #[test]
 /// Tests that the Del key works as expected

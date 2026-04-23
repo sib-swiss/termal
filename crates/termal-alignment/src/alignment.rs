@@ -3,7 +3,10 @@
 
 mod permutation;
 
-use std::collections::HashMap;
+use std::{
+    fmt,
+    collections::HashMap
+};
 
 use itertools::Itertools;
 
@@ -28,6 +31,24 @@ pub enum SeqType {
 pub enum RefSpec {
     Consensus,
     Rank(usize),
+}
+
+pub enum RefSpecError {
+    MalformedInt(String),
+    ZeroRef,
+    RefTooLarge(usize),
+}
+
+impl fmt::Display for RefSpecError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let err_msg = match self {
+            RefSpecError::MalformedInt(mfi) => format!("Malformed integer {}", mfi),
+            RefSpecError::ZeroRef => "Ref too small (min 1)".to_string(),
+            RefSpecError::RefTooLarge(max) => format!("Ref too large (max {})",
+                max),
+        };
+        write!(f, "{}", err_msg)
+    }
 }
 
 pub struct Alignment {
@@ -159,14 +180,23 @@ impl Alignment {
         self.ref_spec
     }
 
-    pub fn set_ref_spec(&mut self, spec: RefSpec) {
-        self.ref_spec = spec;
+    pub fn set_ref_spec(&mut self, spec: RefSpec) -> Result<(), RefSpecError> {
+        match spec {
+            RefSpec::Rank(rk) if rk == 0 => {
+                return Err(RefSpecError::ZeroRef);
+            }
+            RefSpec::Rank(rk) if rk > self.num_seq() as usize => {
+                return Err(RefSpecError::RefTooLarge(self.num_seq()));
+            }
+            _ => self.ref_spec = spec,
+        }
         // Probable change of ref -> Recompute the identities WRT ref
         let reference = self.reference();
         self.id_wrt_reference = self.sequences
             .iter()
             .map(|seq| percent_identity(seq, &reference))
             .collect();
+        Ok(())
     }
 
     pub fn reference(&self) -> String {
