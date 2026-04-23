@@ -215,10 +215,8 @@ fn test_invalid_ref() {
     );
 }
 
-/*
-
 #[test]
-/// Tests that the Del key works as expected
+/// Tests that the Del and Esc key work as expected
 fn test_label_search_del() {
     utils::with_rig(
         "tests/data/test-motion.msa",
@@ -228,20 +226,19 @@ fn test_label_search_del() {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
-            // We enter label search ("), then enter a label "MISS")
+            // We enter ref spec (R), then start entering a ref #
 
-            key_handling::handle_key_press(ui, key_double_quote);
-            key_handling::handle_key_press(ui, utils::keypress('M'));
-            key_handling::handle_key_press(ui, utils::keypress('I'));
-            key_handling::handle_key_press(ui, utils::keypress('S'));
-            key_handling::handle_key_press(ui, utils::keypress('S'));
+            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, utils::keypress('1'));
+            key_handling::handle_key_press(ui, utils::keypress('2'));
+            key_handling::handle_key_press(ui, utils::keypress('3'));
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
                 .expect("update");
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Label search: MISS";
+            let expected = "Set ref: 123";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -252,7 +249,7 @@ fn test_label_search_del() {
             // Pressing Del then 'T' "Label search: MIST" to show in the modeline
 
             key_handling::handle_key_press(ui, KeyCode::Delete.into());
-            key_handling::handle_key_press(ui, utils::keypress('T'));
+            key_handling::handle_key_press(ui, utils::keypress('9'));
 
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
@@ -260,7 +257,7 @@ fn test_label_search_del() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Label search: MIST";
+            let expected = "Set ref: 129";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -287,5 +284,3 @@ fn test_label_search_del() {
         },
     );
 }
-
-*/
