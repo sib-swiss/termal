@@ -131,10 +131,9 @@ fn test_set_reference() {
             let last_seq_line = utils::screen_line(&buffer, last_seq_line_y);
             let ref_line = utils::screen_line(&buffer, ref_line_y);
 
-            // The last sequence should now be seq 4, header "corone"...
-            // NOTE that corax (seq 3) has the same sequence as corone, so could in theory be last,
-            // but if Rust's sort is stable this should not be a problem.
-            let expected = "4│corone      │██│tatgcatatg";
+            // The last sequence should now be seq 4, header "corone"... OR seq 3 "corax" - they
+            // have the same sequence. So I'm not going to check the header.
+            let expected = "│██│tatgcatatg";
             assert!(
                 last_seq_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -211,7 +210,7 @@ fn test_invalid_ref() {
 
 #[test]
 /// Tests that the Del and Esc key work as expected
-fn test_label_search_del() {
+fn test_ref_spec_del_esc() {
     utils::with_rig(
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
