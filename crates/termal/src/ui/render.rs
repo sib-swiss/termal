@@ -519,7 +519,7 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
 
     let ref_string = match ui.app.alignment.get_ref_spec() {
         RefSpec::Consensus => "Ref: consensus".into(),
-        RefSpec::Rank(rk) => format!("Ref: #{}", rk),
+        RefSpec::Rank(rk) => format!("Ref: #{}", rk + 1), // + 1 <- user is 1-based
     };
 
     let cons_text = Text::from(vec![
