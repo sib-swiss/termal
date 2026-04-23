@@ -621,11 +621,11 @@ mod tests {
         assert_eq!(RefSpec::Consensus, aln.get_ref_spec());
         assert_eq!("tATGCATATG", aln.reference());
         // Now set the ref to the first sequence (rank 0)
-        aln.set_ref_spec(RefSpec::Rank(0));
+        let _ = aln.set_ref_spec(RefSpec::Rank(0));
         assert_eq!(RefSpec::Rank(0), aln.get_ref_spec());
         assert_eq!("catgcatatg", aln.reference());
         // Back to consensus
-        aln.set_ref_spec(RefSpec::Consensus);
+        let _ = aln.set_ref_spec(RefSpec::Consensus);
         assert_eq!(RefSpec::Consensus, aln.get_ref_spec());
         assert_eq!("tATGCATATG", aln.reference());
     }
@@ -653,11 +653,11 @@ mod tests {
         assert_eq!("ACg-", aln.reference());
         assert_eq!(vec![0.5, 0.75, 1.0, 0.75, 0.75], aln.id_wrt_reference);
         // Now switch to seq #0 for reference
-        aln.set_ref_spec(RefSpec::Rank(0));
+        let _ = aln.set_ref_spec(RefSpec::Rank(0));
         assert_eq!("A---", aln.reference());
         assert_eq!(vec![1.0, 0.75, 0.5, 0.25, 0.25], aln.id_wrt_reference);
         // Switch back to consensus
-        aln.set_ref_spec(RefSpec::Consensus);
+        let _ = aln.set_ref_spec(RefSpec::Consensus);
         assert_eq!("ACg-", aln.reference());
         assert_eq!(vec![0.5, 0.75, 1.0, 0.75, 0.75], aln.id_wrt_reference);
     }

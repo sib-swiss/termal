@@ -8,11 +8,6 @@ use crossterm::event::KeyCode;
 use crate::common::utils;
 
 use termal_msa::ui::{key_handling, render};
-use termal_msa::{
-    app::{App, JumpTarget},
-    ui::render::render_ui,
-};
-use termal_alignment::seq::fasta;
 
 // More than enough, but shouldn't harm.
 const SCREEN_WIDTH: u16 = 80;
@@ -165,7 +160,6 @@ fn test_invalid_ref() {
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |mut ui, terminal| {
-            let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
             // Pressing R0<Enter> should trigger a warning that no such ref exists, since there 
@@ -223,7 +217,6 @@ fn test_label_search_del() {
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |mut ui, terminal| {
-            let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
             // We enter ref spec (R), then start entering a ref #
