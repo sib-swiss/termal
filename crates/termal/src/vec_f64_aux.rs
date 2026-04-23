@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Thomas Junier
+// Copyright (c) 2025-2026 Thomas Junier
 // Subtracts the minimum and then divides by the maximum -> [0, 1]
 pub fn normalize(values: &[f64]) -> Vec<f64> {
     let max = values

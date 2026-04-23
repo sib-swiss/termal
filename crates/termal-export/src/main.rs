@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025-2026 Thomas Junier
+
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
 use std::io::{self, Write};
@@ -147,4 +150,3 @@ fn main() -> Result<()> {
 
     Ok(())
 }
-

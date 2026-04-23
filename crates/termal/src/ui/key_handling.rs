@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 //
-// Copyright (c) 2025 Thomas Junier
+// Copyright (c) 2025-2026 Thomas Junier
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use super::{

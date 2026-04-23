@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// Copyright (c) 2025 Thomas Junier
+// Copyright (c) 2025-2026 Thomas Junier
 
 // 0 <= v <= 1
 pub fn values_barchart(values: &Vec<f64>) -> String {

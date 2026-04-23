@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2025-2026 Thomas Junier
+
 pub struct Canvas {
     pub width: f32,
     pub height: f32,
