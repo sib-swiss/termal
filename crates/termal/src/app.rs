@@ -720,12 +720,18 @@ impl App {
                     // This is supposed to be impossible :-)
                     Err(RefSpecError::MalformedInt(ref_spec_str.to_string()))
                 }
-                Ok(rank) => {
+                Ok(rank) if rank > 0 => {
                     // -1 <= user is 1-based
                     self.alignment.set_ref_spec(RefSpec::Rank(rank - 1))
                 }
+                Ok(rank) if rank == 0 => {
+                    Err(RefSpecError::ZeroRef)
+                }
+                // usize cannot be < 0
+                _ => panic!()
             } 
         };
+        self.recompute_ordering();
         match try_set_ref_spec {
             Ok(_) => self.clear_msg(),
             Err(err) => self.warning_msg(format!("{}", err)),

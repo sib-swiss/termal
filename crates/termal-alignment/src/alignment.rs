@@ -43,8 +43,8 @@ impl fmt::Display for RefSpecError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let err_msg = match self {
             RefSpecError::MalformedInt(mfi) => format!("Malformed integer {}", mfi),
-            RefSpecError::ZeroRef => "Ref too small (min 1)".to_string(),
-            RefSpecError::RefTooLarge(max) => format!("Ref too large (max {})",
+            RefSpecError::ZeroRef => "Ref # must be > 0".to_string(),
+            RefSpecError::RefTooLarge(max) => format!("Ref # too large (max {})",
                 max),
         };
         write!(f, "{}", err_msg)
@@ -182,10 +182,9 @@ impl Alignment {
 
     pub fn set_ref_spec(&mut self, spec: RefSpec) -> Result<(), RefSpecError> {
         match spec {
-            RefSpec::Rank(rk) if rk == 0 => {
-                return Err(RefSpecError::ZeroRef);
-            }
-            RefSpec::Rank(rk) if rk > self.num_seq() as usize => {
+            // Note: the rank in a RefSpec is 0-based. The conversion from user-land is done in
+            // app.rs.
+            RefSpec::Rank(rk) if rk >= self.num_seq() as usize => {
                 return Err(RefSpecError::RefTooLarge(self.num_seq()));
             }
             _ => self.ref_spec = spec,

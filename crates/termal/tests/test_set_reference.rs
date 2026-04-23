@@ -137,6 +137,8 @@ fn test_set_reference() {
             let ref_line = utils::screen_line(&buffer, ref_line_y);
 
             // The last sequence should now be seq 4, header "corone"...
+            // NOTE that corax (seq 3) has the same sequence as corone, so could in theory be last,
+            // but if Rust's sort is stable this should not be a problem.
             let expected = "4│corone      │██│tatgcatatg";
             assert!(
                 last_seq_line.contains(expected),
@@ -179,7 +181,7 @@ fn test_invalid_ref() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expect = "Warning: invalid ref number (min 1)";
+            let expect = "Ref # must be > 0";
             assert!(
                 last_line.contains(expect),
                 "\"{}\" not found on last line: {}",
@@ -200,7 +202,7 @@ fn test_invalid_ref() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expect = "Warning: invalid ref number (max 5)";
+            let expect = "Ref # too large (max 5)";
             assert!(
                 last_line.contains(expect),
                 "\"{}\" not found on last line: {}",
