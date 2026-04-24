@@ -12,6 +12,7 @@ use termal_alignment::alignment::{
 };
 
 use crate::{
+    app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
 };
@@ -49,6 +50,22 @@ impl fmt::Display for SeqMetric {
             SeqLen => "seq len",
         };
         write!(f, "{}", seq_metric)
+    }
+}
+
+#[derive(Clone, Copy)]
+pub enum ColMetric {
+    Coverage,
+    Entropy,
+}
+
+impl fmt::Display for ColMetric {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let col_metric = match self {
+            Coverage => "coverage",
+            Entropy => "entropy",
+        };
+        write!(f, "{}", col_metric)
     }
 }
 
