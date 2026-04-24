@@ -22,7 +22,6 @@ fn test_wl() {
         SCREEN_HEIGHT,
         |mut ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
-            let last_seq_line_y = 5;
 
             // Pressing w should cause "w... [lbf<Esc>]" to appear on last line
 
@@ -251,7 +250,6 @@ fn test_w_esc() {
         SCREEN_HEIGHT,
         |mut ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
-            let last_seq_line_y = 5;
 
             // Pressing w should cause "w... [lbf<Esc>]" to appear on last line
 

@@ -318,6 +318,28 @@ impl<'a> UI<'a> {
         self.bottom_pane_height = 5;
     }
 
+    pub fn toggle_bottom_pane(&mut self) {
+        if self.bottom_pane_height == 0 {
+            self.show_bottom_pane();
+        } else {
+            self.hide_bottom_pane();
+        }
+    }
+
+    // Full screen
+
+    pub fn toggle_fullscreen(&mut self) {
+        if self.full_screen {
+            self.show_label_pane();
+            self.show_bottom_pane();
+            self.full_screen = false;
+        } else {
+            self.hide_label_pane();
+            self.hide_bottom_pane();
+            self.full_screen = true;
+        }
+    }
+
     // ****************************************************************
     // Zooming
 

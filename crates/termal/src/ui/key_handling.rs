@@ -217,6 +217,16 @@ fn handle_pane_prefix(ui: &mut UI, key_event: KeyEvent) {
             ui.input_mode = InputMode::Normal;
             ui.app.clear_msg();
         }
+        KeyCode::Char('b') => {
+            ui.toggle_bottom_pane();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('f') => {
+            ui.toggle_fullscreen();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
         _ => {}
     }
 }
