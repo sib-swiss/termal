@@ -569,11 +569,15 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.get_zoombox_color(),
     };
 
-    // TODO: again, this might be delegated to UI/ColorScheme
     let conservation_color = match ui.color_scheme().theme {
         Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
         Theme::Monochrome => Color::Reset,
     };
+
+    let metric_values = product(
+            &ui.app.alignment.densities,
+            &ones_complement(&normalize(&ui.app.alignment.entropies))
+            );
 
     let btm_text: Vec<Line> = vec![
         Line::from(Span::styled(
@@ -585,11 +589,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             Style::default().fg(pos_color).bg(Color::Reset),
         )),
         Line::from(colored_consensus),
-        Line::from(values_barchart(&product(
-            &ui.app.alignment.densities,
-            &ones_complement(&normalize(&ui.app.alignment.entropies)),
-        )))
-        .style(conservation_color),
+        Line::from(values_barchart(&metric_values)).style(conservation_color),
     ];
 
     let btm_para = Paragraph::new(btm_text)
