@@ -284,12 +284,12 @@ impl<'a> UI<'a> {
 
     pub fn reduce_label_pane(&mut self, amount: u16) {
         self.left_pane_width = max(
-            self.seq_num_pane_width() + self.metric_pane_width(),
+            self.seq_num_pane_width() + self.seq_metric_pane_width(),
             self.left_pane_width.saturating_sub(amount),
         );
     }
 
-    pub fn metric_pane_width(&self) -> u16 {
+    pub fn seq_metric_pane_width(&self) -> u16 {
         // Two chars for the histogram, and one for the border
         3
     }

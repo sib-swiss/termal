@@ -496,26 +496,26 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     // TODO: This render_* function does its own layout. Perhaps this could be done for other
     // non-top-level layouts, e.g. the layout of the left pane (which has three subpanes, namely
-    // number, label and metric) could be done within a single function (render_left_pane).
+    // number, label and sequence metric) could be done within a single function (render_left_pane).
     let layout = Layout::new(
         Direction::Vertical,
         [Constraint::Length(1), Constraint::Fill(1)],
     )
     .split(corner_chunk);
 
-    let metric_chunk = layout[0];
+    let seq_metric_chunk = layout[0];
     let cons_chunk = layout[1];
-    let metric_block = Block::default().borders(Borders::LEFT);
+    let seq_metric_block = Block::default().borders(Borders::LEFT);
     let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
 
-    let metric_text_style = ui.get_seq_metric_style().add_modifier(Modifier::BOLD);
-    let metric_para = Paragraph::new(Text::styled(
-        format!("{} {}", ui.app.get_metric(), ui.app.get_seq_ordering()),
-        metric_text_style,
+    let seq_metric_text_style = ui.get_seq_metric_style().add_modifier(Modifier::BOLD);
+    let seq_metric_para = Paragraph::new(Text::styled(
+        format!("{} {}", ui.app.get_seq_metric(), ui.app.get_seq_ordering()),
+        seq_metric_text_style,
     ))
-    .block(metric_block)
+    .block(seq_metric_block)
     .right_aligned();
-    f.render_widget(metric_para, metric_chunk);
+    f.render_widget(seq_metric_para, seq_metric_chunk);
 
     let ref_string = match ui.app.alignment.get_ref_spec() {
         RefSpec::Consensus => "Ref: consensus".into(),
@@ -574,7 +574,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         Theme::Monochrome => Color::Reset,
     };
 
-    let metric_values = product(
+    let col_metric_values = product(
             &ui.app.alignment.densities,
             &ones_complement(&normalize(&ui.app.alignment.entropies))
             );
@@ -589,7 +589,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             Style::default().fg(pos_color).bg(Color::Reset),
         )),
         Line::from(colored_consensus),
-        Line::from(values_barchart(&metric_values)).style(conservation_color),
+        Line::from(values_barchart(&col_metric_values)).style(conservation_color),
     ];
 
     let btm_para = Paragraph::new(btm_text)

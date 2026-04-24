@@ -401,9 +401,9 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('o') => ui.app.next_ordering_criterion(),
         KeyCode::Char('O') => ui.app.prev_ordering_criterion(),
 
-        // Metric
-        KeyCode::Char('t') => ui.app.next_metric(),
-        KeyCode::Char('T') => ui.app.prev_metric(),
+        // Sequence Metric
+        KeyCode::Char('t') => ui.app.next_seq_metric(),
+        KeyCode::Char('T') => ui.app.prev_seq_metric(),
 
         // ----- Search -----
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,
