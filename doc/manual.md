@@ -93,8 +93,8 @@ The interface is divided into four areas:
 - **Left pane** (left): shows sequence numbers and headers, as well as
   a barplot of the current [metric](#metrics)
 - **Consensus pane** (bottom): shows horizontal position, the consensus sequence, and a conservation barplot
-- **Corner pane** (bottom left): shows the current metric and ordering (see
-  below).
+- **Corner pane** (bottom left): shows info about the current metrics, ordering,
+  and reference.
 
 In addition, the last line contains a message area ("modeline"), which displays:
 
@@ -342,8 +342,8 @@ the current [ordering](#ordering), then left to right.
 ##  Resizing the Left Pane
 
 The left pane can be widened (perhaps to show more of the sequence headers) with
-`>` and shrunk with `<`. Both accept a prefix argument, which is by how many
-characters the pane is to be resized:
+`>` and shrunk with `<`. This also resizes the corner pane. Both accept a prefix
+argument, which is by how many characters the pane is to be resized:
 
 command    motion
 --------   --------------
