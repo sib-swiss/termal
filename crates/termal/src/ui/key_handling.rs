@@ -77,7 +77,7 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         }
         KeyCode::Char('w') => {
             ui.input_mode = InputMode::PaneCmdPrefix;
-            ui.app.argument_msg(String::from("w... [lbf<Esc>]"), String::from(""));
+            ui.app.argument_msg(String::from("w... [lbf]"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
