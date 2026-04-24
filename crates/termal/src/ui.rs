@@ -66,7 +66,8 @@ enum InputMode {
     },
     SetReference {
         ref_spec: String,
-    }
+    },
+    PaneCmdPrefix,
 
     // ExCommand { buffer: String },
 }
@@ -261,6 +262,14 @@ impl<'a> UI<'a> {
 
     pub fn show_label_pane(&mut self) {
         self.left_pane_width = self.previous_left_pane_width;
+    }
+
+    pub fn toggle_label_pane(&mut self) {
+        if self.left_pane_width == 0 {
+            self.show_label_pane();
+        } else {
+            self.hide_label_pane();
+        }
     }
 
     // Number of columns needed to write the highest sequence number, e.g. 4 for 1000. This does

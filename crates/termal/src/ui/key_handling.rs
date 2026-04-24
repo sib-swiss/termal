@@ -5,7 +5,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use super::{
     InputMode,
-    InputMode::{Help, LabelSearch, Normal, PendingCount, Search, SetReference},
+    InputMode::{Help, LabelSearch, Normal, PendingCount, Search, SetReference, PaneCmdPrefix},
     {ZoomLevel, UI},
 };
 
@@ -19,6 +19,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
         Search { pattern } => handle_sequence_search(ui, key_event, &pattern),
         SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
+        PaneCmdPrefix => handle_pane_prefix(ui, key_event),        
     };
     done
 }
@@ -73,6 +74,10 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             };
             ui.app
                 .argument_msg(String::from("Set ref: "), String::from(""));
+        }
+        KeyCode::Char('w') => {
+            ui.input_mode = InputMode::PaneCmdPrefix;
+            ui.app.argument_msg(String::from("w... [lbf<Esc>]"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -196,6 +201,21 @@ fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
         KeyCode::Enter => {
             ui.app.set_aln_ref(ref_spec);
             ui.input_mode = InputMode::Normal;
+        }
+        _ => {}
+    }
+}
+
+fn handle_pane_prefix(ui: &mut UI, key_event: KeyEvent) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('l') => {
+            ui.toggle_label_pane();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
         }
         _ => {}
     }
