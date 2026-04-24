@@ -238,37 +238,7 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
     // debug!("key event: {:#?}", key_event.code);
     match key_event.code {
         // ----- Hide/Show panes -----
-
-        // Left pane
-        KeyCode::Char('a') => {
-            if ui.left_pane_width == 0 {
-                ui.show_label_pane();
-            } else {
-                ui.hide_label_pane();
-            }
-        }
-
-        // Bottom pane
-        KeyCode::Char('c') => {
-            if ui.bottom_pane_height == 0 {
-                ui.show_bottom_pane();
-            } else {
-                ui.hide_bottom_pane();
-            }
-        }
-
-        // Both panes
-        KeyCode::Char('f') => {
-            if ui.full_screen {
-                ui.show_label_pane();
-                ui.show_bottom_pane();
-                ui.full_screen = false;
-            } else {
-                ui.hide_label_pane();
-                ui.hide_bottom_pane();
-                ui.full_screen = true;
-            }
-        }
+        // NOTE: toggling panes is now handled by the prefix command w, see PaneCmdPrefix.
 
         // ----- Motion -----
 
