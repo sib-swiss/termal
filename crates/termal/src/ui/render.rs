@@ -9,6 +9,8 @@ use ratatui::{
 
 use termal_alignment::alignment::RefSpec;
 
+use crate::app::ColMetric;
+
 use super::{
     aln_widget::{SeqPane, SeqPaneZoomedOut},
     barchart::{value_to_hbar, values_barchart},
@@ -522,8 +524,6 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
         RefSpec::Rank(rk) => format!("Ref: #{}", rk + 1), // + 1 <- user is 1-based
     };
 
-    let col_metric = ui.app.current_col_metric_values(); 
-
     // TODO: Should be renamed col-mnetric color, unless metrics get their own colors
     let conservation_color = match ui.color_scheme().theme {
         Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
@@ -582,10 +582,16 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         Theme::Monochrome => Color::Reset,
     };
 
-    let col_metric_values = product(
-            &ui.app.alignment.densities,
-            &ones_complement(&normalize(&ui.app.alignment.entropies))
-            );
+
+    // FIXME These computations arguably belong App-side - UI is concerned with display, not values.
+    // That's exactly what App::current_col_metric_values() is for (but doesn't do the math yet).
+    let col_metric_values = match ui.app.current_col_metric() {
+        ColMetric::Entropy => product(
+                &ui.app.alignment.densities,
+                &ones_complement(&normalize(&ui.app.alignment.entropies))
+            ),
+        ColMetric::Coverage => normalize(&ui.app.alignment.densities),
+    };
 
     let btm_text: Vec<Line> = vec![
         Line::from(Span::styled(

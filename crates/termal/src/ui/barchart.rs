@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025-2026 Thomas Junier
 
+// TODO: might want to check that values are in [0, 1]
+
 // 0 <= v <= 1
 pub fn values_barchart(values: &Vec<f64>) -> String {
     let mut blocks = String::with_capacity(values.len());
