@@ -53,7 +53,7 @@ impl fmt::Display for SeqMetric {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Copy)]
 pub enum ColMetric {
     Coverage,
     Entropy,

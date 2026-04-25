@@ -524,10 +524,16 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
 
     let col_metric = ui.app.current_col_metric_values(); 
 
+    // TODO: Should be renamed col-mnetric color, unless metrics get their own colors
+    let conservation_color = match ui.color_scheme().theme {
+        Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
+        Theme::Monochrome => Color::Reset,
+    };
+
     let cons_text = Text::from(vec![
-        "Position".into(),
-        ref_string.into(),
-        format!("{}", ui.app.current_col_metric()),
+        Line::from("Position"),
+        Line::from(ref_string),
+        Line::from(format!("Metric: {}", ui.app.current_col_metric())).style(conservation_color),
     ]);
     let cons_para = Paragraph::new(cons_text).block(cons_block);
     f.render_widget(cons_para, cons_chunk);
