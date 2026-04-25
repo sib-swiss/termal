@@ -53,7 +53,7 @@ impl fmt::Display for SeqMetric {
     }
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub enum ColMetric {
     Coverage,
     Entropy,
@@ -137,7 +137,7 @@ pub struct App {
     pub filename: String,
     pub alignment: Alignment,
     ordering_criterion: SeqOrdering,
-    seq_metric: SeqMetric,
+    seq_metric: SeqMetric, // TODO: maybe call it current_seq_metric, like for col_metric
     // Specifies in which order the aligned sequences should be displayed. The elements of this Vec
     // are _indices_ into the Vec's of headers and sequences that together make up the alignment.
     // By default, they are just ordered from 0 to num_seq - 1, but the user can choose to order
@@ -148,6 +148,7 @@ pub struct App {
     user_ordering: Option<Vec<String>>,
     pub search_state: Option<SearchState>,
     current_msg: CurrentMessage,
+    current_col_metric: ColMetric,
 }
 
 impl App {
@@ -173,6 +174,7 @@ impl App {
             user_ordering: usr_ord,
             search_state: None,
             current_msg: cur_msg,
+            current_col_metric: Entropy,
         };
         app.recompute_ordering();
         app
@@ -754,6 +756,18 @@ impl App {
             Err(err) => self.warning_msg(format!("{}", err)),
         }
     }
+
+    pub fn current_col_metric(&self) -> ColMetric {
+        self.current_col_metric
+    }
+
+    pub fn current_col_metric_values(&self) -> Vec<f64> {
+        match self.current_col_metric {
+            Entropy => self.alignment.entropies.clone(),
+            Coverage => self.alignment.densities.clone(),
+        }
+    }
+
 }
 
 // Computes an ordering WRT an array, that is, an array of indices of elements of the source array,

@@ -522,10 +522,12 @@ fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
         RefSpec::Rank(rk) => format!("Ref: #{}", rk + 1), // + 1 <- user is 1-based
     };
 
+    let col_metric = ui.app.current_col_metric_values(); 
+
     let cons_text = Text::from(vec![
         "Position".into(),
         ref_string.into(),
-        "Conservation".into(),
+        format!("{}", ui.app.current_col_metric()),
     ]);
     let cons_para = Paragraph::new(cons_text).block(cons_block);
     f.render_widget(cons_para, cons_chunk);
