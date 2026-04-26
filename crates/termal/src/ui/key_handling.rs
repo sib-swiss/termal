@@ -405,6 +405,9 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('t') => ui.app.next_seq_metric(),
         KeyCode::Char('T') => ui.app.prev_seq_metric(),
 
+        // Column Metric
+        KeyCode::Char('c') => ui.app.next_col_metric(),
+
         // ----- Search -----
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,
         KeyCode::Char(']') => ui.app.warning_msg("Search not implemented yet"),

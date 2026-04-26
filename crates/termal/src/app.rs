@@ -757,6 +757,13 @@ impl App {
         }
     }
 
+    pub fn next_col_metric(&mut self) {
+        self.current_col_metric = match self.current_col_metric {
+            Entropy => Coverage,
+            Coverage => Entropy,
+        }
+    }
+
     pub fn current_col_metric(&self) -> ColMetric {
         self.current_col_metric
     }
