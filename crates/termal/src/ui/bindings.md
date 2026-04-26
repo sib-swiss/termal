@@ -31,6 +31,11 @@ z,Z: next/previous zoom mode
 Ret          : current match (e.g. after reordering)
 Esc          : cancel search
 
+## Setting the Reference
+
+R<integer><Ret> : set reference to sequence <integer>
+R<Ret>          : set reference to consensus
+
 ## Adjusting the Panes
 
 [count]<,> : widen/narrow left pane by count columns
