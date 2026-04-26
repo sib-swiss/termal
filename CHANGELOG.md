@@ -7,6 +7,7 @@
 * Regex search within sequences (no special treatment of gaps (yet))
 * Jump to current search match
 * Jump to sequence by position in original file
+* Set any alignment sequence as reference for the similarity metric
 * Manual (Markdown and PDF versions)
 
 ### Changed
