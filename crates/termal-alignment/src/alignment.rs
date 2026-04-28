@@ -184,7 +184,7 @@ impl Alignment {
         match spec {
             // Note: the rank in a RefSpec is 0-based. The conversion from user-land is done in
             // app.rs.
-            RefSpec::Rank(rk) if rk >= self.num_seq() as usize => {
+            RefSpec::Rank(rk) if rk >= self.num_seq() => {
                 return Err(RefSpecError::RefTooLarge(self.num_seq()));
             }
             _ => self.ref_spec = spec,

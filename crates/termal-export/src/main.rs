@@ -132,7 +132,7 @@ fn main() -> Result<()> {
         cell_width: args.cell_width,
         cell_height: args.cell_height,
         residue_font_size: args.residue_font_size,
-        colormap: colormap,
+        colormap,
         ascent_corr: args.ascent_corr,
         margin_x: args.margin_x,
         margin_y: args.margin_y,

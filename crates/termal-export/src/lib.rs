@@ -42,7 +42,7 @@ pub fn compute_layout(aln: &Alignment, opts: &ExportOpts) -> Layout {
     Layout {
         grid_width: hdr_txt_width + aln.aln_len() as f32 * opts.cell_width,
         grid_height: aln.num_seq() as f32 * opts.cell_height,
-        hdr_txt_width: hdr_txt_width,
+        hdr_txt_width,
     }
 }
 
@@ -57,7 +57,7 @@ impl Default for ExportOpts {
             residue_font_size: 14,
             ascent_corr: 12.0,
             char_width: 8.0,
-            colormap: colormap,
+            colormap,
             margin_x: 10.0,
             margin_y: 10.0,
             cell_frames: false,

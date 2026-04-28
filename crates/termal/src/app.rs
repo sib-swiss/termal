@@ -352,8 +352,8 @@ impl App {
     }
 
     fn next_match_expect(
-        reverse_ordering: &Vec<usize>,
-        ordering: &Vec<usize>,
+        reverse_ordering: &[usize],
+        ordering: &[usize],
         num_seq: usize,
         matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
         cur_match: (usize, usize),
@@ -376,8 +376,8 @@ impl App {
     }
 
     fn previous_match_expect(
-        reverse_ordering: &Vec<usize>,
-        ordering: &Vec<usize>,
+        reverse_ordering: &[usize],
+        ordering: &[usize],
         num_seq: usize,
         matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
         cur_match: (usize, usize),
@@ -500,7 +500,7 @@ impl App {
                     if let Some((rank, match_ndx)) = seq_state.current {
                         let mut current_match_num = 0;
                         for cur_rank in &self.ordering {
-                            if let Some(matches) = seq_state.matches_by_rank.get(&cur_rank) {
+                            if let Some(matches) = seq_state.matches_by_rank.get(cur_rank) {
                                 if *cur_rank != rank {
                                     current_match_num += matches.len();
                                 } else {
@@ -595,7 +595,7 @@ impl App {
         }
     }
 
-    fn ordered_hdr_matches(&self, match_ranks: &Vec<usize>) -> Vec<usize> {
+    fn ordered_hdr_matches(&self, match_ranks: &[usize]) -> Vec<usize> {
         let mut screenlines: Vec<usize> = match_ranks
             .iter()
             .map(|r| self.reverse_ordering[*r])
@@ -724,7 +724,7 @@ impl App {
                     // -1 <= user is 1-based
                     self.alignment.set_ref_spec(RefSpec::Rank(rank - 1))
                 }
-                Ok(rank) if rank == 0 => {
+                Ok(0) => {
                     Err(RefSpecError::ZeroRef)
                 }
                 // usize cannot be < 0

@@ -177,7 +177,7 @@ pub fn run() -> Result<(), TermalError> {
         let mut user_ordering = match cli.user_order {
             Some(ref fname) => {
                 // TODO: should be called from_path()
-                let get_ord_vec = read_user_ordering(&fname);
+                let get_ord_vec = read_user_ordering(fname);
                 match get_ord_vec {
                     Ok(ord_vec) => Some(ord_vec),
                     Err(_) => {
