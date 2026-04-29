@@ -49,7 +49,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          STAGE="${{ runner.temp }}/stage"
+          STAGE_PARENT="${{ runner.temp }}/stage"
+          PACKAGE_ROOT="${BIN_NAME}-${VERSION}"
+          STAGE="${STAGE_PARENT}/${PACKAGE_ROOT}"
           mkdir -p "$STAGE/data/colormaps" "dist"
           BIN="target/${{ matrix.target }}/release/${BIN_NAME}"
           [[ "${{ matrix.archive }}" == "zip" ]] && BIN="${BIN}.exe" || true
@@ -61,9 +63,9 @@ jobs:
           cp -rL data/colormaps/gecos_default.json data/colormaps/high-contrast.json data/colormaps/no-green.json "$STAGE/data/colormaps/" 2>/dev/null || true
           NAME="${BIN_NAME}-${VERSION}-${{ matrix.target }}"
           if [[ "${{ matrix.archive }}" == "tar.gz" ]]; then
-            tar -C "$STAGE" -czf "dist/${NAME}.tar.gz" .
+            tar -C "$STAGE_PARENT" -czf "dist/${NAME}.tar.gz" "$PACKAGE_ROOT"
           else
-            powershell -Command "Compress-Archive -Path '${STAGE}\\*' -DestinationPath 'dist\\${NAME}.zip'"
+            powershell -Command "Compress-Archive -Path '${STAGE}' -DestinationPath 'dist\\${NAME}.zip'"
           fi
 
       - name: Checksums (POSIX)

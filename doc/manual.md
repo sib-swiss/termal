@@ -360,7 +360,7 @@ Passing an empty argument reverts to the consensus.
 R12<Enter>
 ```
 
-This selects sequence #12 as reference. This is reflected in the corner panel,
+This selects sequence #12 as reference. This is reflected in the corner pane,
 which now reads 'Ref: #12', and in the bottom pane, which displays sequence #12
 instead of the consensus.
 
