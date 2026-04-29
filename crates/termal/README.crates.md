@@ -39,8 +39,10 @@ Or press `?` while running to see key bindings.
 
 - Zoomed-in and zoomed-out views of the alignment
 - Consensus sequence display
-- Sequence metrics such as ungapped length and similarity to consensus
-- Ordering by metrics 
+- Sequence metrics such as ungapped length and similarity to the current reference
+- Ordering by metrics
+- Search in sequence headers and sequences
+- Use any alignment sequence as the reference for similarity-based ordering
 - Conservation indicators
 - Color maps for nucleotides and amino acids
 - Color themes
