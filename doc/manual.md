@@ -86,15 +86,16 @@ experimental or used for debugging or testing. For a full list, do `termal
 
 # Screen layout
 
-The interface is divided into four areas:
+The interface is divided into four areas, starting from the top and left to
+right::
 
-- **Alignment pane** (center - right): shows the aligned sequences, 
-  some properties of the alignments, as well as some current UI settings.
-- **Left pane** (left): shows sequence numbers and headers, as well as
-  a barplot of the current [metric](#metrics)
-- **Consensus pane** (bottom): shows horizontal position, the consensus sequence, and a conservation barplot
-- **Corner pane** (bottom left): shows info about the current metrics, ordering,
-  and reference.
+- **Headers pane** or simply **left pane**: shows sequence numbers and headers, as well as a barplot
+  of the current [metric](#metrics)
+- **Alignment pane** or **main pane**: shows the aligned sequences, some
+  properties of the alignments, as well as some current UI settings.
+- **Corner pane**: shows the current metric and [ordering](#ordering) (see below).
+- **Reference pane** or **bottom pane**: shows horizontal position, the reference sequence
+  (usually the consensus, but see [setting the reference](#ref-spec)), and a conservation barplot
 
 In addition, the last line contains a message area ("modeline"), which displays:
 
@@ -121,8 +122,9 @@ If no prefix argument is given, commands default to **1**.
 ##  String Arguments
 
 String arguments are entered after typing the command character, and are entered
-by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`)
-and [sequence search](#seq-search) command (`/`) take a string argument.
+by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`),
+[sequence search](#seq-search) command (`/`) and [reference selection](#ref-spec) command
+(`R`) take a string argument.
 
 #  Navigation fundamentals
 
@@ -337,6 +339,32 @@ the current [ordering](#ordering), then left to right.
 
 ---
 
+# Setting the Reference {#ref-spec}
+
+Some features of the alignment are computed with respect to a _reference
+sequence_. This is the case, for example, of the similarity metric, which
+measures how similar each sequence is to the reference.
+
+By default, the reference is the consensus sequence (which is automatically
+computed). However, the user may select any sequence in the alignment to serve
+as reference. This is done with the `R` command, which takes a sequence number
+(with respect to the original file) as an argument. If the sequences are
+currently ordered according to the similarity metric, changing the reference
+triggers a recomputation of the ordering.
+
+Passing an empty argument reverts to the consensus.
+
+### Example:
+
+```
+R12<Enter>
+```
+
+This selects sequence #12 as reference. This is reflected in the corner panel,
+which now reads 'Ref: #12', and in the bottom pane, which displays sequence #12
+instead of the consensus.
+
+
 # Display Controls
 
 ##  Resizing the Left Pane
@@ -407,7 +435,7 @@ The left pane displays a bar chart of the current _metric_. This is a numeric
 property of the sequences. Currently, there are two possible metrics:
 
 a. Sequence length (not counting gaps)
-b. Similarity to the consensus
+b. Similarity to the [reference](#ref-spec)
 
 To cycle forward through the metrics, press `t` (me**t**ric); press `T` to cycle
 backward. The current metric is displayed in the corner pane.
