@@ -23,5 +23,7 @@ impl fmt::Display for AlignmentError {
 impl std::error::Error for AlignmentError {}
 
 impl From<std::io::Error> for AlignmentError {
-    fn from(e: std::io::Error) -> Self { AlignmentError::Io(e) }
+    fn from(e: std::io::Error) -> Self {
+        AlignmentError::Io(e)
+    }
 }

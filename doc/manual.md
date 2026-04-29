@@ -86,16 +86,16 @@ experimental or used for debugging or testing. For a full list, do `termal
 
 # Screen layout
 
-The interface is divided into four areas:
+The interface is divided into four areas, starting from the top and left to
+right::
 
-- **Alignment pane** (center - right): shows the aligned sequences, some
-  properties of the alignments, as well as some current UI settings.
-- **Left pane** (left): shows sequence numbers and headers, as well as a barplot
+- **Headers pane** or simply **left pane**: shows sequence numbers and headers, as well as a barplot
   of the current [metric](#metrics)
-- **Reference pane** (bottom): shows horizontal position, the reference sequence
+- **Alignment pane** or **main pane**: shows the aligned sequences, some
+  properties of the alignments, as well as some current UI settings.
+- **Corner pane**: shows the current metric and [ordering](#ordering) (see below).
+- **Reference pane** or **bottom pane**: shows horizontal position, the reference sequence
   (usually the consensus, but see [setting the reference](#ref-spec)), and a conservation barplot
-- **Corner pane** (bottom left): shows the current metric and ordering (see
-  below).
 
 In addition, the last line contains a message area ("modeline"), which displays:
 
@@ -123,7 +123,7 @@ If no prefix argument is given, commands default to **1**.
 
 String arguments are entered after typing the command character, and are entered
 by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`),
-[sequence search](#seq-search) command (`/`) and [reference selection](#set-ref) command
+[sequence search](#seq-search) command (`/`) and [reference selection](#ref-spec) command
 (`R`) take a string argument.
 
 #  Navigation fundamentals
@@ -370,8 +370,8 @@ instead of the consensus.
 ##  Resizing the Left Pane
 
 The left pane can be widened (perhaps to show more of the sequence headers) with
-`>` and shrunk with `<`. Both accept a prefix argument, which is by how many
-characters the pane is to be resized:
+`>` and shrunk with `<`. This also resizes the corner pane. Both accept a prefix
+argument, which is by how many characters the pane is to be resized:
 
 command    motion
 --------   --------------

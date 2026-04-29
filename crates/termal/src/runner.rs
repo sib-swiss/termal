@@ -10,9 +10,9 @@ use std::{
 
 use log::info;
 
-use termal_alignment::Alignment;
 use termal_alignment::seq::fasta::read_fasta_file;
 use termal_alignment::seq::stockholm::read_stockholm_file;
+use termal_alignment::Alignment;
 
 use crate::app::App;
 use crate::ui::{key_handling::handle_key_press, render::render_ui, UI};
@@ -33,7 +33,8 @@ use ratatui::{
 use crate::errors::TermalError;
 
 #[derive(Debug, Parser)]
-#[command(version, about, long_about = None) ]
+#[command(name = "termal", version = env!("CARGO_PKG_VERSION"))]
+//#[command(version, about, long_about = None) ]
 struct Cli {
     /// Alignment file
     aln_fname: Option<String>,
@@ -75,7 +76,6 @@ struct Cli {
     dry_run: bool,
 
     // Rare options (long form only)
-
     /// Start with labels pane hidden
     #[arg(long)]
     hide_labels_pane: bool,
@@ -110,7 +110,7 @@ struct Cli {
     no_zoombox: bool,
 
     // TODO: this is only ever used when the bottom pane is at the bottom of the terminal, which is
-    // practically never. 
+    // practically never.
     //
     /// Do not show zoom box guides (only useful if zoom box not shown)
     #[arg(long = "no-zb-guides")]
@@ -149,7 +149,10 @@ fn show_params(cli: &Cli, ui: &UI) {
     println!("Alignment file format: {}", cli.format);
     if let Some(map_fname) = &cli.color_map {
         println!("User color map file: {}", map_fname);
-        println!("User color map: {}", ui.color_scheme().current_residue_colormap().map());
+        println!(
+            "User color map: {}",
+            ui.color_scheme().current_residue_colormap().map()
+        );
     }
 }
 
@@ -177,7 +180,7 @@ pub fn run() -> Result<(), TermalError> {
         let mut user_ordering = match cli.user_order {
             Some(ref fname) => {
                 // TODO: should be called from_path()
-                let get_ord_vec = read_user_ordering(&fname);
+                let get_ord_vec = read_user_ordering(fname);
                 match get_ord_vec {
                     Ok(ord_vec) => Some(ord_vec),
                     Err(_) => {
@@ -208,7 +211,7 @@ pub fn run() -> Result<(), TermalError> {
 
         if cli.info {
             info!("Running in debug mode.");
-            app.output_info(); 
+            app.output_info();
             return Ok(());
         }
 

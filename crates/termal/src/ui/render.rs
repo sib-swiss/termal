@@ -259,7 +259,7 @@ fn make_layout(f: &Frame, ui: &UI) -> Panes {
     let lbl_pane = Layout::new(
         Direction::Horizontal,
         vec![
-            Constraint::Length(lbl_num_pane_num_cols.try_into().unwrap()),
+            Constraint::Length(lbl_num_pane_num_cols),
             Constraint::Fill(1),
             Constraint::Length(3),
         ],
@@ -405,12 +405,12 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 
     f.render_widget(aln_block, aln_chunk);
 
-    let style_lut = build_style_lut(&ui);
+    let style_lut = build_style_lut(ui);
 
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             let pane = SeqPane {
-                app: &ui.app,
+                app: ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
                 top_i: ui.top_line as usize,
@@ -423,7 +423,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
             let zoombox_color = ui.get_zoombox_color();
             let pane = SeqPaneZoomedOut {
-                app: &ui.app,
+                app: ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
                 retained_rows: &retained_seq_ndx(ui),

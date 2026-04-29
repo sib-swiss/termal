@@ -11,7 +11,6 @@ pub struct Rgb {
 }
 
 impl Rgb {
-
     // The simplest case is when R, G, and B are known; if the colour is passed as a hex integer,
     // then the following constructor can be used instead. This function is marked 'const' so it
     // can be used to initialize maps at compile time.
@@ -19,8 +18,8 @@ impl Rgb {
         // Ignore bits > 16
         Self {
             r: ((h >> 16) & 0xFF) as u8,
-            g: ((h >> 8)  & 0xFF) as u8,
-            b: ( h        & 0xFF) as u8,
+            g: ((h >> 8) & 0xFF) as u8,
+            b: (h & 0xFF) as u8,
         }
     }
 
@@ -30,31 +29,30 @@ impl Rgb {
         let s = s.trim();
 
         // Strip common prefixes
-        let s = s.strip_prefix("0x")
+        let s = s
+            .strip_prefix("0x")
             .or_else(|| s.strip_prefix("#"))
             .unwrap_or(s);
 
         match s.len() {
             6 => {
                 // RRGGBB
-                let value = u32::from_str_radix(s, 16)
-                    .map_err(|_| "invalid hex color")?;
+                let value = u32::from_str_radix(s, 16).map_err(|_| "invalid hex color")?;
 
                 Ok(Self {
                     r: ((value >> 16) & 0xFF) as u8,
-                    g: ((value >> 8)  & 0xFF) as u8,
-                    b: ( value        & 0xFF) as u8,
+                    g: ((value >> 8) & 0xFF) as u8,
+                    b: (value & 0xFF) as u8,
                 })
             }
             8 => {
                 // Assume AARRGGBB, ignore alpha
-                let value = u32::from_str_radix(s, 16)
-                    .map_err(|_| "invalid hex color")?;
+                let value = u32::from_str_radix(s, 16).map_err(|_| "invalid hex color")?;
 
                 Ok(Self {
                     r: ((value >> 16) & 0xFF) as u8,
-                    g: ((value >> 8)  & 0xFF) as u8,
-                    b: ( value        & 0xFF) as u8,
+                    g: ((value >> 8) & 0xFF) as u8,
+                    b: (value & 0xFF) as u8,
                 })
             }
             _ => Err("hex color must have 6 or 8 digits"),
@@ -67,22 +65,46 @@ impl Rgb {
     }
 }
 
-pub const RGB_RED: Rgb = Rgb{r: 255, g: 0, b: 0};
-pub const RGB_GRAY: Rgb = Rgb{r: 127, g: 127, b: 127};
-pub const RGB_LIGHT_GRAY: Rgb = Rgb{r: 224, g: 224, b: 224};
-pub const RGB_WHITE: Rgb = Rgb{r: 255, g: 255, b: 255};
+pub const RGB_RED: Rgb = Rgb { r: 255, g: 0, b: 0 };
+pub const RGB_GRAY: Rgb = Rgb {
+    r: 127,
+    g: 127,
+    b: 127,
+};
+pub const RGB_LIGHT_GRAY: Rgb = Rgb {
+    r: 224,
+    g: 224,
+    b: 224,
+};
+pub const RGB_WHITE: Rgb = Rgb {
+    r: 255,
+    g: 255,
+    b: 255,
+};
 
 pub const GAP_COLOR: Rgb = RGB_LIGHT_GRAY;
 
 // In-house colors
-pub const TERMAL_ORANGE: Rgb  = Rgb {r: 255, g: 165, b: 0};
-pub const TERMAL_SALMON: Rgb  = Rgb {r: 250, g: 128, b: 114};
+pub const TERMAL_ORANGE: Rgb = Rgb {
+    r: 255,
+    g: 165,
+    b: 0,
+};
+pub const TERMAL_SALMON: Rgb = Rgb {
+    r: 250,
+    g: 128,
+    b: 114,
+};
 
 // ASCII 8-Color palette colors
-pub const ASCII_8_COLOR_GREEN: Rgb   = Rgb { r: 0,   g: 128, b: 0   };
-pub const ASCII_8_COLOR_MAGENTA: Rgb = Rgb { r: 128, g: 0,   b: 128 };
-pub const ASCII_8_COLOR_RED: Rgb     = Rgb { r: 128, g: 0,   b: 0   };
-pub const ASCII_8_COLOR_BLUE: Rgb    = Rgb { r: 0,   g: 0,   b: 128 };
+pub const ASCII_8_COLOR_GREEN: Rgb = Rgb { r: 0, g: 128, b: 0 };
+pub const ASCII_8_COLOR_MAGENTA: Rgb = Rgb {
+    r: 128,
+    g: 0,
+    b: 128,
+};
+pub const ASCII_8_COLOR_RED: Rgb = Rgb { r: 128, g: 0, b: 0 };
+pub const ASCII_8_COLOR_BLUE: Rgb = Rgb { r: 0, g: 0, b: 128 };
 
 // Lesk aa colors (source?)
 pub const LESK_ORANGE: Rgb = TERMAL_ORANGE;
@@ -93,14 +115,46 @@ pub const LESK_RED: Rgb = ASCII_8_COLOR_RED;
 
 // ClustalX aa colors (source:
 // https://www.cgl.ucsf.edu/chimera/1.2065/docs/ContributedSoftware/multalignviewer/colprot.par)
-pub const CLUSTALX_RED: Rgb = Rgb{r: 229, g: 51, b: 25};
-pub const CLUSTALX_BLUE: Rgb = Rgb{r: 25, g: 127, b: 229};
-pub const CLUSTALX_GREEN: Rgb = Rgb{r: 25, g: 204, b: 25};
-pub const CLUSTALX_CYAN: Rgb = Rgb{r: 25, g: 178, b: 178};
-pub const CLUSTALX_PINK: Rgb = Rgb{r: 229, g: 127, b: 127};
-pub const CLUSTALX_MAGENTA: Rgb = Rgb{r: 204, g: 76, b: 204};
-pub const CLUSTALX_YELLOW: Rgb = Rgb{r: 204, g: 204, b: 0};
-pub const CLUSTALX_ORANGE: Rgb = Rgb{r: 229, g: 153, b: 76};
+pub const CLUSTALX_RED: Rgb = Rgb {
+    r: 229,
+    g: 51,
+    b: 25,
+};
+pub const CLUSTALX_BLUE: Rgb = Rgb {
+    r: 25,
+    g: 127,
+    b: 229,
+};
+pub const CLUSTALX_GREEN: Rgb = Rgb {
+    r: 25,
+    g: 204,
+    b: 25,
+};
+pub const CLUSTALX_CYAN: Rgb = Rgb {
+    r: 25,
+    g: 178,
+    b: 178,
+};
+pub const CLUSTALX_PINK: Rgb = Rgb {
+    r: 229,
+    g: 127,
+    b: 127,
+};
+pub const CLUSTALX_MAGENTA: Rgb = Rgb {
+    r: 204,
+    g: 76,
+    b: 204,
+};
+pub const CLUSTALX_YELLOW: Rgb = Rgb {
+    r: 204,
+    g: 204,
+    b: 0,
+};
+pub const CLUSTALX_ORANGE: Rgb = Rgb {
+    r: 229,
+    g: 153,
+    b: 76,
+};
 
 // JalView Nucleotide Colors
 
@@ -138,7 +192,6 @@ pub struct ResidueColorMap {
 }
 
 impl ResidueColorMap {
-
     pub fn with_default(gap_color: Rgb, default: Rgb) -> Self {
         let mut tbl = [default; 256];
         tbl[b'-' as usize] = gap_color;
@@ -148,7 +201,7 @@ impl ResidueColorMap {
 
     pub fn by_name(name: ColorMapName) -> Self {
         match name {
-            ColorMapName::AALesk     => Self::aa_lesk(),
+            ColorMapName::AALesk => Self::aa_lesk(),
             ColorMapName::AAClustalX => Self::aa_clustalx(),
             ColorMapName::DNAJalView => Self::dna_jalview(),
             ColorMapName::Monochrome => Self::monochrome(),
@@ -169,16 +222,29 @@ impl ResidueColorMap {
         self.set(b.to_ascii_uppercase(), color);
     }
 
-
     pub fn monochrome() -> Self {
         Self::with_default(GAP_COLOR, RGB_WHITE)
     }
 
     pub fn dna_basic() -> Self {
-        let mut map = Self::with_default(GAP_COLOR, Rgb { r: 160, g: 160, b: 160 });
+        let mut map = Self::with_default(
+            GAP_COLOR,
+            Rgb {
+                r: 160,
+                g: 160,
+                b: 160,
+            },
+        );
         map.set_pair(b'A', Rgb { r: 0, g: 200, b: 0 });
         map.set_pair(b'T', Rgb { r: 200, g: 0, b: 0 });
-        map.set_pair(b'G', Rgb { r: 255, g: 165, b: 0 });
+        map.set_pair(
+            b'G',
+            Rgb {
+                r: 255,
+                g: 165,
+                b: 0,
+            },
+        );
         map.set_pair(b'C', Rgb { r: 0, g: 0, b: 200 });
         map
     }
@@ -256,14 +322,13 @@ impl ResidueColorMap {
         map.set_pair(b'X', RGB_WHITE);
         map
     }
-
 }
 
 impl Display for ResidueColorMap {
-    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> { 
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), std::fmt::Error> {
         write!(f, "{{")?;
         let residues = "ABCDEFGHIKLMNPQRSTUVWXY";
-        for c in residues.as_bytes().iter() { 
+        for c in residues.as_bytes().iter() {
             write!(f, "{}: {}, ", *c as char, self.rgb(*c).to_hex())?;
         }
         write!(f, "}}")?;
@@ -274,14 +339,7 @@ impl Display for ResidueColorMap {
 #[cfg(test)]
 mod test {
 
-    use super::{
-        CLUSTALX_MAGENTA,
-        ColorMapName,
-        GAP_COLOR,
-        RGB_RED,
-        ResidueColorMap,
-        Rgb,
-    };
+    use super::{ColorMapName, ResidueColorMap, Rgb, CLUSTALX_MAGENTA, GAP_COLOR, RGB_RED};
 
     #[test]
     fn test_default_colormap() {
@@ -292,8 +350,15 @@ mod test {
     #[test]
     fn test_simple_colormap() {
         let cmap = ResidueColorMap::dna_basic();
-        assert_eq!(Rgb{r:160, g:160, b:160}, cmap.rgb(b'%'));
-        assert_eq!(Rgb{r:0, g:200, b:0}, cmap.rgb(b'A'));
+        assert_eq!(
+            Rgb {
+                r: 160,
+                g: 160,
+                b: 160
+            },
+            cmap.rgb(b'%')
+        );
+        assert_eq!(Rgb { r: 0, g: 200, b: 0 }, cmap.rgb(b'A'));
     }
 
     #[test]
@@ -321,5 +386,4 @@ mod test {
         assert_eq!(GAP_COLOR, cmap.rgb(b'-'));
         assert_eq!(GAP_COLOR, cmap.rgb(b'.'));
     }
-
 }

@@ -132,7 +132,7 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
         KeyCode::Enter => {
             ui.app.regex_search_labels(pattern);
             ui.input_mode = InputMode::Normal;
-            if let Some(_) = &ui.app.search_state {
+            if ui.app.search_state.is_some() {
                 ui.jump_to_next_match(0);
             }
         }
@@ -200,7 +200,6 @@ fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
         _ => {}
     }
 }
-
 
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
@@ -348,7 +347,7 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
         // To search matches
         KeyCode::Char('n') => ui.jump_to_next_match(count as i16),
-        KeyCode::Char('p') => ui.jump_to_next_match(-1 * count as i16),
+        KeyCode::Char('p') => ui.jump_to_next_match(-(count as i16)),
         KeyCode::Enter => ui.jump_to_current_match(),
 
         // Left Pane width

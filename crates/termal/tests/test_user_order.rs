@@ -35,6 +35,14 @@ fn user_order_reorders_visible_headers() {
     let pos_seq1 = screen.find("seq1").expect("seq1 visible");
     let pos_seq2 = screen.find("seq2").expect("seq2 visible");
 
-    assert!(pos_seq3 < pos_seq1, "seq3 should appear before seq1:\n{}", screen);
-    assert!(pos_seq1 < pos_seq2, "seq1 should appear before seq2:\n{}", screen);
+    assert!(
+        pos_seq3 < pos_seq1,
+        "seq3 should appear before seq1:\n{}",
+        screen
+    );
+    assert!(
+        pos_seq1 < pos_seq2,
+        "seq1 should appear before seq2:\n{}",
+        screen
+    );
 }

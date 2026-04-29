@@ -3,10 +3,7 @@
 
 mod permutation;
 
-use std::{
-    fmt,
-    collections::HashMap
-};
+use std::{collections::HashMap, fmt};
 
 use itertools::Itertools;
 
@@ -44,8 +41,7 @@ impl fmt::Display for RefSpecError {
         let err_msg = match self {
             RefSpecError::MalformedInt(mfi) => format!("Malformed integer {}", mfi),
             RefSpecError::ZeroRef => "Ref # must be > 0".to_string(),
-            RefSpecError::RefTooLarge(max) => format!("Ref # too large (max {})",
-                max),
+            RefSpecError::RefTooLarge(max) => format!("Ref # too large (max {})", max),
         };
         write!(f, "{}", err_msg)
     }
@@ -71,7 +67,7 @@ pub struct Alignment {
      * example, does not depend on anything but the sequence itself, and could be a field in a
      * struct that also contains the sequence and its header. */
     pub id_wrt_reference: Vec<f64>, // reference is usually the consensus, but CAN be an aln seq.
-                                    // Recompute if ref changes.
+    // Recompute if ref changes.
     // Of course the sequence length is an integer, but using an integer type like u32 would make
     // it hard (for me, at least...) to write a function that accepts a Vec of either  lengths or
     // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
@@ -184,14 +180,15 @@ impl Alignment {
         match spec {
             // Note: the rank in a RefSpec is 0-based. The conversion from user-land is done in
             // app.rs.
-            RefSpec::Rank(rk) if rk >= self.num_seq() as usize => {
+            RefSpec::Rank(rk) if rk >= self.num_seq() => {
                 return Err(RefSpecError::RefTooLarge(self.num_seq()));
             }
             _ => self.ref_spec = spec,
         }
         // Probable change of ref -> Recompute the identities WRT ref
         let reference = self.reference();
-        self.id_wrt_reference = self.sequences
+        self.id_wrt_reference = self
+            .sequences
             .iter()
             .map(|seq| percent_identity(seq, &reference))
             .collect();
@@ -351,9 +348,8 @@ fn seq_type(sequence: &str) -> SeqType {
 mod tests {
     use crate::alignment::{
         best_residue, consensus, densities, entropies, entropy, percent_identity, res_count,
-        seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, ResidueCounts,
+        seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, RefSpec, ResidueCounts,
         ResidueDistribution, SeqType,
-        RefSpec,
         SeqType::{Nucleic, Protein},
     };
     use crate::seq::fasta::read_fasta_file;

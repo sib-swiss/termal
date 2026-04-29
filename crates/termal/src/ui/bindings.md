@@ -25,11 +25,16 @@ z,Z: next/previous zoom mode
 
 ## Searching
 
-"regexp<Ret> : search sequence headers
-/regexp<Ret> : search sequences
-[count]n,p   : next / previous match
-Ret          : current match (e.g. after reordering)
-Esc          : cancel search
+"<regexp><Ret> : search sequence headers
+/<regexp><Ret> : search sequences
+[count]n,p     : next / previous match
+Ret            : current match (e.g. after reordering)
+Esc            : cancel search
+
+## Setting the Reference
+
+R<integer><Ret> : set reference to sequence <integer>
+R<Ret>          : set reference to consensus
 
 ## Setting the Reference
 

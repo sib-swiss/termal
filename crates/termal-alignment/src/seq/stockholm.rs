@@ -33,9 +33,11 @@ pub fn read_stockholm_file<P: AsRef<Path>>(path: P) -> Result<SeqFile, Alignment
                         };
                         result.push(record);
                     }
-                    _ => return Err(AlignmentError::InvalidFormat{
-                            msg: String::from("Expected two fields")
-                        }),
+                    _ => {
+                        return Err(AlignmentError::InvalidFormat {
+                            msg: String::from("Expected two fields"),
+                        })
+                    }
                 }
             }
         }

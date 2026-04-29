@@ -7,12 +7,12 @@ use crossterm::event::KeyCode;
 
 use crate::common::utils;
 
+use termal_alignment::seq::fasta;
 use termal_msa::ui::{key_handling, render};
 use termal_msa::{
     app::{App, JumpTarget},
     ui::render::render_ui,
 };
-use termal_alignment::seq::fasta;
 
 const SCREEN_WIDTH: u16 = 80;
 const SCREEN_HEIGHT: u16 = 50;

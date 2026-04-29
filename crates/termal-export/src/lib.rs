@@ -5,10 +5,7 @@ mod svg;
 
 //use termal_alignment::{Alignment, Region};
 // NOTE: Regions will be implemented later
-use termal_alignment::{
-    Alignment,
-    rgb::ResidueColorMap,
-};
+use termal_alignment::{rgb::ResidueColorMap, Alignment};
 
 pub use svg::export_svg;
 
@@ -38,11 +35,11 @@ pub fn compute_layout(aln: &Alignment, opts: &ExportOpts) -> Layout {
     let max_hdr_len = aln.headers.iter().map(|h| h.len()).max().unwrap_or(0);
     // + 1: add 1 char's width of space between headers and sequences.
     let hdr_txt_width = max_hdr_len as f32 * opts.char_width + GUTTER_WIDTH;
-    
+
     Layout {
         grid_width: hdr_txt_width + aln.aln_len() as f32 * opts.cell_width,
         grid_height: aln.num_seq() as f32 * opts.cell_height,
-        hdr_txt_width: hdr_txt_width,
+        hdr_txt_width,
     }
 }
 
@@ -57,7 +54,7 @@ impl Default for ExportOpts {
             residue_font_size: 14,
             ascent_corr: 12.0,
             char_width: 8.0,
-            colormap: colormap,
+            colormap,
             margin_x: 10.0,
             margin_y: 10.0,
             cell_frames: false,

@@ -51,9 +51,9 @@ fn cli_rejects_reversed_rows_range() {
         .arg(input.path())
         .args(["--rows", "5:2"]);
 
-    cmd.assert()
-        .failure()
-        .stderr(predicate::str::contains("range START must be <= END in '5:2'"));
+    cmd.assert().failure().stderr(predicate::str::contains(
+        "range START must be <= END in '5:2'",
+    ));
 }
 
 #[test]

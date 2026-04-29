@@ -5,11 +5,7 @@ use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 
-use termal_alignment::alignment::{
-    Alignment,
-    RefSpec,
-    RefSpecError,
-};
+use termal_alignment::alignment::{Alignment, RefSpec, RefSpecError};
 
 use crate::{
     app::Metric::{PctIdWrtConsensus, SeqLen},
@@ -141,11 +137,7 @@ impl App {
             message: String::from(""),
             kind: MessageKind::Info,
         };
-        let ordering_criterion = if usr_ord.is_some() {
-            User
-        } else {
-            SourceFile
-        };
+        let ordering_criterion = if usr_ord.is_some() { User } else { SourceFile };
         let mut app = App {
             filename: path.to_string(),
             alignment,
@@ -352,8 +344,8 @@ impl App {
     }
 
     fn next_match_expect(
-        reverse_ordering: &Vec<usize>,
-        ordering: &Vec<usize>,
+        reverse_ordering: &[usize],
+        ordering: &[usize],
         num_seq: usize,
         matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
         cur_match: (usize, usize),
@@ -376,8 +368,8 @@ impl App {
     }
 
     fn previous_match_expect(
-        reverse_ordering: &Vec<usize>,
-        ordering: &Vec<usize>,
+        reverse_ordering: &[usize],
+        ordering: &[usize],
         num_seq: usize,
         matches_by_rank: &HashMap<usize, Vec<MatchPosition>>,
         cur_match: (usize, usize),
@@ -500,7 +492,7 @@ impl App {
                     if let Some((rank, match_ndx)) = seq_state.current {
                         let mut current_match_num = 0;
                         for cur_rank in &self.ordering {
-                            if let Some(matches) = seq_state.matches_by_rank.get(&cur_rank) {
+                            if let Some(matches) = seq_state.matches_by_rank.get(cur_rank) {
                                 if *cur_rank != rank {
                                     current_match_num += matches.len();
                                 } else {
@@ -542,7 +534,9 @@ impl App {
         if let Some(SearchState::Sequence(state)) = &self.search_state {
             let rank = self.ordering[screenline];
             if let Some(matches) = state.matches_by_rank.get(&rank) {
-                return matches.iter().any(|m| m.start_col <= col && col < m.end_col);
+                return matches
+                    .iter()
+                    .any(|m| m.start_col <= col && col < m.end_col);
             }
         }
         false
@@ -595,7 +589,7 @@ impl App {
         }
     }
 
-    fn ordered_hdr_matches(&self, match_ranks: &Vec<usize>) -> Vec<usize> {
+    fn ordered_hdr_matches(&self, match_ranks: &[usize]) -> Vec<usize> {
         let mut screenlines: Vec<usize> = match_ranks
             .iter()
             .map(|r| self.reverse_ordering[*r])
@@ -628,8 +622,10 @@ impl App {
                     for (ndx, line) in state.ordered_match_screenlinenums.iter().enumerate() {
                         state.screenlinenum_to_index.insert(*line, ndx);
                     }
-                    let current_match_scrnln = self.reverse_ordering[state.current_match_rank.unwrap()];
-                    state.current_match_ndx = Some(state.screenlinenum_to_index[&current_match_scrnln]);
+                    let current_match_scrnln =
+                        self.reverse_ordering[state.current_match_rank.unwrap()];
+                    state.current_match_ndx =
+                        Some(state.screenlinenum_to_index[&current_match_scrnln]);
                     let mut matching_scrln = vec![false; self.alignment.num_seq()];
                     for line in &state.ordered_match_screenlinenums {
                         matching_scrln[*line] = true;
@@ -724,12 +720,10 @@ impl App {
                     // -1 <= user is 1-based
                     self.alignment.set_ref_spec(RefSpec::Rank(rank - 1))
                 }
-                Ok(rank) if rank == 0 => {
-                    Err(RefSpecError::ZeroRef)
-                }
+                Ok(0) => Err(RefSpecError::ZeroRef),
                 // usize cannot be < 0
-                _ => panic!()
-            } 
+                _ => panic!(),
+            }
         };
         self.recompute_ordering();
         match try_set_ref_spec {
@@ -759,9 +753,7 @@ mod tests {
 
     use termal_alignment::Alignment;
 
-    use crate::{
-        app::{order, App, SearchState},
-    };
+    use crate::app::{order, App, SearchState};
 
     #[test]
     fn test_order_00() {

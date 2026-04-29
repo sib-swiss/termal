@@ -8,7 +8,7 @@
 * Jump to current search match
 * Jump to sequence by position in original file
 * Set any alignment sequence as reference for the similarity metric
-* Manual (Markdown and PDF versions)
+* User manual (Markdown and PDF versions)
 
 ### Changed
 
@@ -19,6 +19,7 @@
 ### Fixed
 
 * Jumps to matches now robust with respect to reorderings
+* Option -V/--version now shows the binary name as 'termal', not 'termal-msa'
 
 ## [1.3.0]
 
