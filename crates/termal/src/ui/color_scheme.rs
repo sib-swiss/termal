@@ -7,11 +7,9 @@ use ratatui::prelude::Color;
 
 use termal_alignment::alignment::SeqType;
 
-use crate::{
-    ui::{
-        color_map::{builtin_polychrome_colormaps, monochrome_colormap, ColorMap},
-        color_scheme::SeqType::Protein,
-    },
+use crate::ui::{
+    color_map::{builtin_polychrome_colormaps, monochrome_colormap, ColorMap},
+    color_scheme::SeqType::Protein,
 };
 
 // In-house colors

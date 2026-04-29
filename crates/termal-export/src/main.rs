@@ -7,10 +7,10 @@ use std::io::{self, Write};
 use std::path::PathBuf;
 
 use termal_alignment::{
-    Alignment,
     rgb::ColorMapName,
     rgb::ResidueColorMap,
     seq::{fasta, file},
+    Alignment,
 };
 
 // A wrapper for rgb::ColorMapName. This allows us to decouple that struct from Clap::ValueEnum.
@@ -37,7 +37,7 @@ impl From<ColorMapArg> for ColorMapName {
 }
 
 // This crate's lib.rs, also used by termal-msa (the TUI app)
-use termal_export::{compute_layout, export_svg, ExportOpts}; 
+use termal_export::{compute_layout, export_svg, ExportOpts};
 
 #[derive(Parser, Debug)]
 #[command(name = "termal-export")]
@@ -50,7 +50,7 @@ struct Args {
     #[arg(short, long)]
     order: Option<String>,
 
-    /// Colormap 
+    /// Colormap
     #[arg(short, long, value_enum, default_value_t = ColorMapArg::AAClustalx)]
     colormap_name: ColorMapArg,
 
@@ -92,14 +92,16 @@ struct Args {
 
     /// Show cell frames
     #[arg(long)]
-    cell_frames: bool
+    cell_frames: bool,
 }
 
 fn parse_range(s: &str) -> Result<std::ops::Range<usize>> {
     let (a, b) = s
         .split_once(':')
         .with_context(|| format!("invalid range '{s}', expected START:END"))?;
-    let start: usize = a.parse().with_context(|| format!("invalid START in '{s}'"))?;
+    let start: usize = a
+        .parse()
+        .with_context(|| format!("invalid START in '{s}'"))?;
     let end: usize = b.parse().with_context(|| format!("invalid END in '{s}'"))?;
     anyhow::ensure!(start <= end, "range START must be <= END in '{s}'");
     Ok(start..end)
@@ -108,7 +110,7 @@ fn parse_range(s: &str) -> Result<std::ops::Range<usize>> {
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    // Read alignment 
+    // Read alignment
     let aln_file: file::SeqFile = fasta::read_fasta_file(&args.input)?;
     let aln: Alignment = Alignment::from_file(aln_file);
 
@@ -118,11 +120,11 @@ fn main() -> Result<()> {
     // Region (defaults: all)
     let _row_range = match &args.rows {
         Some(r) => parse_range(r)?,
-        None => 0..aln.num_seq(), 
+        None => 0..aln.num_seq(),
     };
     let _col_range = match &args.cols {
         Some(r) => parse_range(r)?,
-        None => 0..aln.aln_len(), 
+        None => 0..aln.aln_len(),
     };
 
     // let region = Region { rows: row_range, cols: col_range }; // adjust type/fields
@@ -139,7 +141,6 @@ fn main() -> Result<()> {
         cell_frames: args.cell_frames,
         ..Default::default()
     };
-
 
     // Layout
     let layout = compute_layout(&aln, &opts);

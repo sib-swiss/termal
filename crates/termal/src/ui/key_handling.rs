@@ -201,7 +201,6 @@ fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
     }
 }
 
-
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
 

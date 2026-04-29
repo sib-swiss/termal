@@ -10,8 +10,8 @@ use ratatui::{
     TerminalOptions, Viewport,
 };
 
-use termal_alignment::Alignment;
 use termal_alignment::seq::fasta;
+use termal_alignment::Alignment;
 
 use termal_msa::{
     app::App,

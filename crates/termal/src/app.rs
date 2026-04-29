@@ -5,11 +5,7 @@ use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 
-use termal_alignment::alignment::{
-    Alignment,
-    RefSpec,
-    RefSpecError,
-};
+use termal_alignment::alignment::{Alignment, RefSpec, RefSpecError};
 
 use crate::{
     app::Metric::{PctIdWrtConsensus, SeqLen},
@@ -141,11 +137,7 @@ impl App {
             message: String::from(""),
             kind: MessageKind::Info,
         };
-        let ordering_criterion = if usr_ord.is_some() {
-            User
-        } else {
-            SourceFile
-        };
+        let ordering_criterion = if usr_ord.is_some() { User } else { SourceFile };
         let mut app = App {
             filename: path.to_string(),
             alignment,
@@ -542,7 +534,9 @@ impl App {
         if let Some(SearchState::Sequence(state)) = &self.search_state {
             let rank = self.ordering[screenline];
             if let Some(matches) = state.matches_by_rank.get(&rank) {
-                return matches.iter().any(|m| m.start_col <= col && col < m.end_col);
+                return matches
+                    .iter()
+                    .any(|m| m.start_col <= col && col < m.end_col);
             }
         }
         false
@@ -628,8 +622,10 @@ impl App {
                     for (ndx, line) in state.ordered_match_screenlinenums.iter().enumerate() {
                         state.screenlinenum_to_index.insert(*line, ndx);
                     }
-                    let current_match_scrnln = self.reverse_ordering[state.current_match_rank.unwrap()];
-                    state.current_match_ndx = Some(state.screenlinenum_to_index[&current_match_scrnln]);
+                    let current_match_scrnln =
+                        self.reverse_ordering[state.current_match_rank.unwrap()];
+                    state.current_match_ndx =
+                        Some(state.screenlinenum_to_index[&current_match_scrnln]);
                     let mut matching_scrln = vec![false; self.alignment.num_seq()];
                     for line in &state.ordered_match_screenlinenums {
                         matching_scrln[*line] = true;
@@ -724,12 +720,10 @@ impl App {
                     // -1 <= user is 1-based
                     self.alignment.set_ref_spec(RefSpec::Rank(rank - 1))
                 }
-                Ok(0) => {
-                    Err(RefSpecError::ZeroRef)
-                }
+                Ok(0) => Err(RefSpecError::ZeroRef),
                 // usize cannot be < 0
-                _ => panic!()
-            } 
+                _ => panic!(),
+            }
         };
         self.recompute_ordering();
         match try_set_ref_spec {
@@ -759,9 +753,7 @@ mod tests {
 
     use termal_alignment::Alignment;
 
-    use crate::{
-        app::{order, App, SearchState},
-    };
+    use crate::app::{order, App, SearchState};
 
     #[test]
     fn test_order_00() {

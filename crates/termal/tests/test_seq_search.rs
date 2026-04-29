@@ -24,7 +24,9 @@ fn test_sequence_search() {
         SCREEN_HEIGHT,
         |mut ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('/'));
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
@@ -36,7 +38,9 @@ fn test_sequence_search() {
             key_handling::handle_key_press(ui, utils::keypress('t'));
             key_handling::handle_key_press(ui, utils::keypress('a'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
@@ -46,7 +50,9 @@ fn test_sequence_search() {
             );
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
@@ -57,7 +63,9 @@ fn test_sequence_search() {
             assert_eq!(ui.leftmost_col(), 5);
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
@@ -68,7 +76,9 @@ fn test_sequence_search() {
             assert_eq!(ui.leftmost_col(), 0);
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
@@ -79,7 +89,9 @@ fn test_sequence_search() {
             assert_eq!(ui.leftmost_col(), 5);
 
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
@@ -130,7 +142,9 @@ fn test_sequence_search_respects_reordered_traversal() {
             key_handling::handle_key_press(ui, utils::keypress('a'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let screen = utils::buffer_text(terminal.backend().buffer());
 
             assert!(
@@ -146,7 +160,9 @@ fn test_sequence_search_respects_reordered_traversal() {
             );
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal.draw(|f| render::render_ui(f, &mut ui)).expect("update");
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
             let screen = utils::buffer_text(terminal.backend().buffer());
 
             assert!(

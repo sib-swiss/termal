@@ -55,20 +55,10 @@ enum VideoMode {
 enum InputMode {
     Normal,
     Help,
-    PendingCount {
-        count: usize,
-    },
-    LabelSearch {
-        pattern: String,
-    },
-    Search {
-        pattern: String,
-    },
-    SetReference {
-        ref_spec: String,
-    }
-
-    // ExCommand { buffer: String },
+    PendingCount { count: usize },
+    LabelSearch { pattern: String },
+    Search { pattern: String },
+    SetReference { ref_spec: String }, // ExCommand { buffer: String },
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -220,10 +210,8 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_help_down(&mut self, count: u16, max_top_line: u16) {
-        self.help_state.top_line = min(
-            self.help_state.top_line.saturating_add(count),
-            max_top_line,
-        );
+        self.help_state.top_line =
+            min(self.help_state.top_line.saturating_add(count), max_top_line);
     }
 
     pub fn clamp_help_scroll(&mut self, max_top_line: u16) {

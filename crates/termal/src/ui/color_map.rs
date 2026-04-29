@@ -10,12 +10,7 @@ use serde_json::Value::Object;
 
 use crate::errors::TermalError;
 
-use termal_alignment::rgb::{
-    GAP_COLOR,
-    RGB_WHITE,
-    ResidueColorMap,
-    Rgb,
-};
+use termal_alignment::rgb::{ResidueColorMap, Rgb, GAP_COLOR, RGB_WHITE};
 
 // allows terminal-based (instead of fixed) grey
 const GAP_COLOR_TUI: Color = Color::Gray;
@@ -27,7 +22,6 @@ pub struct ColorMap {
 }
 
 impl ColorMap {
-
     pub fn get(&self, residue: char) -> Color {
         if residue == '-' || residue == '.' {
             return GAP_COLOR_TUI;
@@ -100,7 +94,11 @@ pub fn colormap_gecos(path: &str) -> Result<ColorMap, TermalError> {
         for (k, v) in map {
             let color_str = serde_json::from_value::<String>(v.clone()).unwrap();
             let hex_color = HexColor::parse_rgb(&color_str).unwrap();
-            let color = Rgb { r: hex_color.r, g: hex_color.g, b: hex_color.b };
+            let color = Rgb {
+                r: hex_color.r,
+                g: hex_color.g,
+                b: hex_color.b,
+            };
             let residue = k.chars().collect::<Vec<char>>()[0] as u8;
             color_map.set_pair(residue, color);
             //println!("{} -> {}", k.chars().collect::<Vec<char>>()[0], color);
@@ -120,12 +118,11 @@ mod tests {
     use ratatui::prelude::Color;
 
     use super::colormap_gecos;
-    use termal_alignment::rgb::{GAP_COLOR, RGB_WHITE, Rgb};
+    use termal_alignment::rgb::{Rgb, GAP_COLOR, RGB_WHITE};
 
     #[test]
     fn gecos_colormap_loads_custom_entries_and_preserves_defaults() {
-        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-            .join("../../data/colormaps/test.json");
+        let path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../data/colormaps/test.json");
         let cmap = colormap_gecos(path.to_str().expect("utf-8 path")).expect("custom colormap");
 
         assert_eq!(cmap.name, "custom");

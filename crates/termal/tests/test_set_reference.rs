@@ -161,7 +161,7 @@ fn test_invalid_ref() {
         |mut ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
 
-            // Pressing R0<Enter> should trigger a warning that no such ref exists, since there 
+            // Pressing R0<Enter> should trigger a warning that no such ref exists, since there
             // is no sequence #0 (for the user, that is).
 
             key_handling::handle_key_press(ui, utils::keypress('R'));
@@ -202,8 +202,6 @@ fn test_invalid_ref() {
                 expect,
                 last_line
             );
-
-
         },
     );
 }
