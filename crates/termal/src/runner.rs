@@ -33,7 +33,8 @@ use ratatui::{
 use crate::errors::TermalError;
 
 #[derive(Debug, Parser)]
-#[command(version, about, long_about = None) ]
+#[command(name = "termal", version = env!("CARGO_PKG_VERSION"))]
+//#[command(version, about, long_about = None) ]
 struct Cli {
     /// Alignment file
     aln_fname: Option<String>,

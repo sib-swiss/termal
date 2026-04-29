@@ -19,6 +19,7 @@
 ### Fixed
 
 * Jumps to matches now robust with respect to reorderings
+* Option -V/--vserion now shows the binary as 'termal', not 'termal-msa'
 
 ## [1.3.0]
 
