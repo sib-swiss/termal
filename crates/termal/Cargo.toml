@@ -41,7 +41,7 @@ bitflags = "2.6.0"
 serde_json = "1.0.135"
 hex_color = "3"
 regex = "1.12.2"
-termal-alignment = { path = "../termal-alignment" }
+termal-alignment = { version = "0.1.0", path = "../termal-alignment" }
 
 [dev-dependencies]
 insta = "1"
