@@ -1,6 +1,6 @@
 ![Build](https://github.com/sib-swiss/termal/actions/workflows/ci.yml/badge.svg)
 [![crates.io](https://img.shields.io/crates/v/termal-msa.svg)](https://crates.io/crates/termal-msa)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1547243.svg)](https://doi.org/10.5281/zenodo.1547243)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19897259.svg)](https://doi.org/10.5281/zenodo.19897259)
 
 # termal
 
