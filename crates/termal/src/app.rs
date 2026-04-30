@@ -8,15 +8,16 @@ use regex::Regex;
 use termal_alignment::alignment::{Alignment, RefSpec, RefSpecError};
 
 use crate::{
-    app::Metric::{PctIdWrtConsensus, SeqLen},
-    app::SeqOrdering::{MetricDecr, MetricIncr, SourceFile, User},
+    app::ColMetric::{Coverage, Entropy},
+    app::SeqMetric::{PctIdWrtConsensus, SeqLen},
+    app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
 };
 
 #[derive(Clone, Copy)]
 pub enum SeqOrdering {
     SourceFile,
-    MetricIncr,
-    MetricDecr,
+    SeqMetricIncr,
+    SeqMetricDecr,
     User,
 }
 
@@ -24,8 +25,8 @@ impl fmt::Display for SeqOrdering {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let sord = match self {
             SourceFile => '-',
-            MetricIncr => '↑',
-            MetricDecr => '↓',
+            SeqMetricIncr => '↑',
+            SeqMetricDecr => '↓',
             User => 'u',
         };
         write!(f, "{}", sord)
@@ -33,18 +34,34 @@ impl fmt::Display for SeqOrdering {
 }
 
 #[derive(Clone, Copy)]
-pub enum Metric {
+pub enum SeqMetric {
     PctIdWrtConsensus,
     SeqLen,
 }
 
-impl fmt::Display for Metric {
+impl fmt::Display for SeqMetric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let metric = match self {
+        let seq_metric = match self {
             PctIdWrtConsensus => "%id (ref)",
             SeqLen => "seq len",
         };
-        write!(f, "{}", metric)
+        write!(f, "{}", seq_metric)
+    }
+}
+
+#[derive(Clone, Copy)]
+pub enum ColMetric {
+    Coverage,
+    Entropy,
+}
+
+impl fmt::Display for ColMetric {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let col_metric = match self {
+            Coverage => "coverage",
+            Entropy => "entropy",
+        };
+        write!(f, "{}", col_metric)
     }
 }
 
@@ -116,17 +133,18 @@ pub struct App {
     pub filename: String,
     pub alignment: Alignment,
     ordering_criterion: SeqOrdering,
-    metric: Metric,
+    seq_metric: SeqMetric, // TODO: maybe call it current_seq_metric, like for col_metric
     // Specifies in which order the aligned sequences should be displayed. The elements of this Vec
     // are _indices_ into the Vec's of headers and sequences that together make up the alignment.
     // By default, they are just ordered from 0 to num_seq - 1, but the user can choose to order
-    // according to the current metric, in which case the ordering becomes that of the metric's
+    // according to the current sequence metric, in which case the ordering becomes that of the metric's
     // value for each sequence.
     pub ordering: Vec<usize>,
     pub reverse_ordering: Vec<usize>,
     user_ordering: Option<Vec<String>>,
     pub search_state: Option<SearchState>,
     current_msg: CurrentMessage,
+    current_col_metric: ColMetric,
 }
 
 impl App {
@@ -142,12 +160,13 @@ impl App {
             filename: path.to_string(),
             alignment,
             ordering_criterion,
-            metric: PctIdWrtConsensus,
+            seq_metric: PctIdWrtConsensus,
             ordering: (0..len).collect(),
             reverse_ordering: (0..len).collect(),
             user_ordering: usr_ord,
             search_state: None,
             current_msg: cur_msg,
+            current_col_metric: Entropy,
         };
         app.recompute_ordering();
         app
@@ -166,10 +185,10 @@ impl App {
 
     fn recompute_ordering(&mut self) {
         match self.ordering_criterion {
-            MetricIncr => {
+            SeqMetricIncr => {
                 self.ordering = order(self.order_values());
             }
-            MetricDecr => {
+            SeqMetricDecr => {
                 let mut ord = order(self.order_values());
                 ord.reverse();
                 self.ordering = ord;
@@ -214,10 +233,10 @@ impl App {
 
     pub fn next_ordering_criterion(&mut self) {
         self.ordering_criterion = match self.ordering_criterion {
-            SourceFile => MetricIncr,
-            MetricIncr => MetricDecr,
+            SourceFile => SeqMetricIncr,
+            SeqMetricIncr => SeqMetricDecr,
             // move to User IFF valid ordering
-            MetricDecr => match self.user_ordering {
+            SeqMetricDecr => match self.user_ordering {
                 Some(_) => User,
                 None => SourceFile,
             },
@@ -229,13 +248,13 @@ impl App {
 
     pub fn prev_ordering_criterion(&mut self) {
         self.ordering_criterion = match self.ordering_criterion {
-            MetricIncr => SourceFile,
-            MetricDecr => MetricIncr,
-            User => MetricDecr,
+            SeqMetricIncr => SourceFile,
+            SeqMetricDecr => SeqMetricIncr,
+            User => SeqMetricDecr,
             // move to User IFF valid ordering
             SourceFile => match self.user_ordering {
                 Some(_) => User,
-                None => MetricDecr,
+                None => SeqMetricDecr,
             },
         };
         self.recompute_ordering();
@@ -249,8 +268,8 @@ impl App {
         self.reverse_ordering[rank]
     }
 
-    pub fn next_metric(&mut self) {
-        self.metric = match self.metric {
+    pub fn next_seq_metric(&mut self) {
+        self.seq_metric = match self.seq_metric {
             PctIdWrtConsensus => SeqLen,
             SeqLen => PctIdWrtConsensus,
         };
@@ -258,10 +277,10 @@ impl App {
         self.reorder_matches();
     }
 
-    // NOTE: for now, there are only two metrics, so next and prev are the same. This might change,
+    // NOTE: for now, there are only two sequence metrics, so next and prev are the same. This might change,
     // however.
-    pub fn prev_metric(&mut self) {
-        self.metric = match self.metric {
+    pub fn prev_seq_metric(&mut self) {
+        self.seq_metric = match self.seq_metric {
             PctIdWrtConsensus => SeqLen,
             SeqLen => PctIdWrtConsensus,
         };
@@ -280,13 +299,13 @@ impl App {
         self.ordering_criterion
     }
 
-    pub fn get_metric(&self) -> Metric {
-        self.metric
+    pub fn get_seq_metric(&self) -> SeqMetric {
+        self.seq_metric
     }
 
-    // TODO: rename to order_by_metric
+    // TODO: rename to order_by_seq_metric
     pub fn order_values(&self) -> &Vec<f64> {
-        match self.metric {
+        match self.seq_metric {
             PctIdWrtConsensus => &self.alignment.id_wrt_reference,
             SeqLen => &self.alignment.relative_seq_len,
         }
@@ -731,6 +750,25 @@ impl App {
             Err(err) => self.warning_msg(format!("{}", err)),
         }
     }
+
+    pub fn next_col_metric(&mut self) {
+        self.current_col_metric = match self.current_col_metric {
+            Entropy => Coverage,
+            Coverage => Entropy,
+        }
+    }
+
+    pub fn current_col_metric(&self) -> ColMetric {
+        self.current_col_metric
+    }
+
+    pub fn current_col_metric_values(&self) -> Vec<f64> {
+        match self.current_col_metric {
+            Entropy => self.alignment.entropies.clone(),
+            Coverage => self.alignment.densities.clone(),
+        }
+    }
+
 }
 
 // Computes an ordering WRT an array, that is, an array of indices of elements of the source array,
@@ -796,12 +834,12 @@ mod tests {
         let mut app = App::new("TEST", aln, None);
         assert_eq!(app.ordering, vec![0, 1, 2, 3]);
         app.next_ordering_criterion();
-        // Ordering is now by increasing metric, which is (by default) %id WRT consensus. Given the above
-        // sequences, this effectively reverses the order.
+        // Ordering is now by increasing sequence metric, which is (by default) %id WRT consensus.
+        // Given the above sequences, this effectively reverses the order.
         assert_eq!(app.ordering, vec![3, 2, 1, 0]);
         app.next_ordering_criterion();
-        // Now by decreasing metric, which in this case is (by construction) the same as the
-        // original.
+        // Now by decreasing sequence metric, which in this case is (by construction) the same as
+        // the original.
         assert_eq!(app.ordering, vec![0, 1, 2, 3]);
     }
 
@@ -860,7 +898,7 @@ mod tests {
         app.next_ordering_criterion();
         assert_eq!(app.ordering, vec![1, 4, 2, 3, 0]);
         assert_eq!(app.reverse_ordering, vec![4, 0, 2, 3, 1]);
-        // Now the ordering is by metric, so rank != screenline
+        // Now the ordering is by sequence metric, so rank != screenline
         assert_eq!(app.rank_to_screenline(0), 4);
         assert_eq!(app.rank_to_screenline(1), 0);
         assert_eq!(app.rank_to_screenline(2), 2);

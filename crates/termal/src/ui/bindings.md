@@ -44,9 +44,9 @@ R<Ret>          : set reference to consensus
 ## Adjusting the Panes
 
 [count]<,> : widen/narrow left pane by count columns
-a          : hide/show left pane        
-c          : hide/show bottom pane    
-f          : toggle fullscreen alignment pane 
+wl         : hide/show left pane        
+wb         : hide/show bottom pane    
+wf         : toggle fullscreen alignment pane 
 
 ## Video
 

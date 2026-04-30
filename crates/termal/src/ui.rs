@@ -55,10 +55,21 @@ enum VideoMode {
 enum InputMode {
     Normal,
     Help,
-    PendingCount { count: usize },
-    LabelSearch { pattern: String },
-    Search { pattern: String },
-    SetReference { ref_spec: String }, // ExCommand { buffer: String },
+    PendingCount {
+        count: usize,
+    },
+    LabelSearch {
+        pattern: String,
+    },
+    Search {
+        pattern: String,
+    },
+    SetReference {
+        ref_spec: String,
+    },
+    PaneCmdPrefix,
+
+    // ExCommand { buffer: String },
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -251,6 +262,14 @@ impl<'a> UI<'a> {
         self.left_pane_width = self.previous_left_pane_width;
     }
 
+    pub fn toggle_label_pane(&mut self) {
+        if self.left_pane_width == 0 {
+            self.show_label_pane();
+        } else {
+            self.hide_label_pane();
+        }
+    }
+
     // Number of columns needed to write the highest sequence number, e.g. 4 for 1000. This does
     // NOT take into account any borders.
     pub fn seq_num_max_len(&self) -> u16 {
@@ -272,12 +291,12 @@ impl<'a> UI<'a> {
 
     pub fn reduce_label_pane(&mut self, amount: u16) {
         self.left_pane_width = max(
-            self.seq_num_pane_width() + self.metric_pane_width(),
+            self.seq_num_pane_width() + self.seq_metric_pane_width(),
             self.left_pane_width.saturating_sub(amount),
         );
     }
 
-    pub fn metric_pane_width(&self) -> u16 {
+    pub fn seq_metric_pane_width(&self) -> u16 {
         // Two chars for the histogram, and one for the border
         3
     }
@@ -295,6 +314,28 @@ impl<'a> UI<'a> {
 
     pub fn show_bottom_pane(&mut self) {
         self.bottom_pane_height = 5;
+    }
+
+    pub fn toggle_bottom_pane(&mut self) {
+        if self.bottom_pane_height == 0 {
+            self.show_bottom_pane();
+        } else {
+            self.hide_bottom_pane();
+        }
+    }
+
+    // Full screen
+
+    pub fn toggle_fullscreen(&mut self) {
+        if self.full_screen {
+            self.show_label_pane();
+            self.show_bottom_pane();
+            self.full_screen = false;
+        } else {
+            self.hide_label_pane();
+            self.hide_bottom_pane();
+            self.full_screen = true;
+        }
     }
 
     // ****************************************************************

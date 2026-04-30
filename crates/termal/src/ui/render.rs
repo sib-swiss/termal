@@ -9,6 +9,8 @@ use ratatui::{
 
 use termal_alignment::alignment::RefSpec;
 
+use crate::app::ColMetric;
+
 use super::{
     aln_widget::{SeqPane, SeqPaneZoomedOut},
     barchart::{value_to_hbar, values_barchart},
@@ -496,36 +498,42 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 fn render_corner_pane(f: &mut Frame, corner_chunk: Rect, ui: &UI) {
     // TODO: This render_* function does its own layout. Perhaps this could be done for other
     // non-top-level layouts, e.g. the layout of the left pane (which has three subpanes, namely
-    // number, label and metric) could be done within a single function (render_left_pane).
+    // number, label and sequence metric) could be done within a single function (render_left_pane).
     let layout = Layout::new(
         Direction::Vertical,
         [Constraint::Length(1), Constraint::Fill(1)],
     )
     .split(corner_chunk);
 
-    let metric_chunk = layout[0];
+    let seq_metric_chunk = layout[0];
     let cons_chunk = layout[1];
-    let metric_block = Block::default().borders(Borders::LEFT);
+    let seq_metric_block = Block::default().borders(Borders::LEFT);
     let cons_block = Block::default().borders(Borders::LEFT | Borders::BOTTOM);
 
-    let metric_text_style = ui.get_seq_metric_style().add_modifier(Modifier::BOLD);
-    let metric_para = Paragraph::new(Text::styled(
-        format!("{} {}", ui.app.get_metric(), ui.app.get_seq_ordering()),
-        metric_text_style,
+    let seq_metric_text_style = ui.get_seq_metric_style().add_modifier(Modifier::BOLD);
+    let seq_metric_para = Paragraph::new(Text::styled(
+        format!("{} {}", ui.app.get_seq_metric(), ui.app.get_seq_ordering()),
+        seq_metric_text_style,
     ))
-    .block(metric_block)
+    .block(seq_metric_block)
     .right_aligned();
-    f.render_widget(metric_para, metric_chunk);
+    f.render_widget(seq_metric_para, seq_metric_chunk);
 
     let ref_string = match ui.app.alignment.get_ref_spec() {
         RefSpec::Consensus => "Ref: consensus".into(),
         RefSpec::Rank(rk) => format!("Ref: #{}", rk + 1), // + 1 <- user is 1-based
     };
 
+    // TODO: Should be renamed col-mnetric color, unless metrics get their own colors
+    let conservation_color = match ui.color_scheme().theme {
+        Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
+        Theme::Monochrome => Color::Reset,
+    };
+
     let cons_text = Text::from(vec![
-        "Position".into(),
-        ref_string.into(),
-        "Conservation".into(),
+        Line::from("Position"),
+        Line::from(ref_string),
+        Line::from(format!("Metric: {}", ui.app.current_col_metric())).style(conservation_color),
     ]);
     let cons_para = Paragraph::new(cons_text).block(cons_block);
     f.render_widget(cons_para, cons_chunk);
@@ -569,10 +577,20 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => ui.get_zoombox_color(),
     };
 
-    // TODO: again, this might be delegated to UI/ColorScheme
     let conservation_color = match ui.color_scheme().theme {
         Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
         Theme::Monochrome => Color::Reset,
+    };
+
+
+    // FIXME These computations arguably belong App-side - UI is concerned with display, not values.
+    // That's exactly what App::current_col_metric_values() is for (but doesn't do the math yet).
+    let col_metric_values = match ui.app.current_col_metric() {
+        ColMetric::Entropy => product(
+                &ui.app.alignment.densities,
+                &ones_complement(&normalize(&ui.app.alignment.entropies))
+            ),
+        ColMetric::Coverage => normalize(&ui.app.alignment.densities),
     };
 
     let btm_text: Vec<Line> = vec![
@@ -585,11 +603,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
             Style::default().fg(pos_color).bg(Color::Reset),
         )),
         Line::from(colored_consensus),
-        Line::from(values_barchart(&product(
-            &ui.app.alignment.densities,
-            &ones_complement(&normalize(&ui.app.alignment.entropies)),
-        )))
-        .style(conservation_color),
+        Line::from(values_barchart(&col_metric_values)).style(conservation_color),
     ];
 
     let btm_para = Paragraph::new(btm_text)

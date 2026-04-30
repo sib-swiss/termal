@@ -5,7 +5,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use super::{
     InputMode,
-    InputMode::{Help, LabelSearch, Normal, PendingCount, Search, SetReference},
+    InputMode::{Help, LabelSearch, Normal, PendingCount, Search, SetReference, PaneCmdPrefix},
     {ZoomLevel, UI},
 };
 
@@ -19,6 +19,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
         Search { pattern } => handle_sequence_search(ui, key_event, &pattern),
         SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
+        PaneCmdPrefix => handle_pane_prefix(ui, key_event),        
     };
     done
 }
@@ -73,6 +74,10 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             };
             ui.app
                 .argument_msg(String::from("Set ref: "), String::from(""));
+        }
+        KeyCode::Char('w') => {
+            ui.input_mode = InputMode::PaneCmdPrefix;
+            ui.app.argument_msg(String::from("w... [lbf]"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -201,43 +206,39 @@ fn handle_set_reference(ui: &mut UI, key_event: KeyEvent, ref_spec: &str) {
     }
 }
 
+fn handle_pane_prefix(ui: &mut UI, key_event: KeyEvent) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('l') => {
+            ui.toggle_label_pane();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('b') => {
+            ui.toggle_bottom_pane();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('f') => {
+            ui.toggle_fullscreen();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        _ => {}
+    }
+}
+
+
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
 
     // debug!("key event: {:#?}", key_event.code);
     match key_event.code {
         // ----- Hide/Show panes -----
-
-        // Left pane
-        KeyCode::Char('a') => {
-            if ui.left_pane_width == 0 {
-                ui.show_label_pane();
-            } else {
-                ui.hide_label_pane();
-            }
-        }
-
-        // Bottom pane
-        KeyCode::Char('c') => {
-            if ui.bottom_pane_height == 0 {
-                ui.show_bottom_pane();
-            } else {
-                ui.hide_bottom_pane();
-            }
-        }
-
-        // Both panes
-        KeyCode::Char('f') => {
-            if ui.full_screen {
-                ui.show_label_pane();
-                ui.show_bottom_pane();
-                ui.full_screen = false;
-            } else {
-                ui.hide_label_pane();
-                ui.hide_bottom_pane();
-                ui.full_screen = true;
-            }
-        }
+        // NOTE: toggling panes is now handled by the prefix command w, see PaneCmdPrefix.
 
         // ----- Motion -----
 
@@ -400,9 +401,12 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('o') => ui.app.next_ordering_criterion(),
         KeyCode::Char('O') => ui.app.prev_ordering_criterion(),
 
-        // Metric
-        KeyCode::Char('t') => ui.app.next_metric(),
-        KeyCode::Char('T') => ui.app.prev_metric(),
+        // Sequence Metric
+        KeyCode::Char('t') => ui.app.next_seq_metric(),
+        KeyCode::Char('T') => ui.app.prev_seq_metric(),
+
+        // Column Metric
+        KeyCode::Char('c') => ui.app.next_col_metric(),
 
         // ----- Search -----
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,
