@@ -407,6 +407,8 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
         // Column Metric
         KeyCode::Char('c') => ui.app.next_col_metric(),
+        KeyCode::Char('C') => ui.app.next_col_metric(), // FIXME ok when <3 metrics, but there
+                                                        // should be a prev_col_metric() fn.
 
         // ----- Search -----
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,
