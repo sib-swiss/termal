@@ -64,16 +64,17 @@ impl<'a> Widget for SeqPane<'a> {
                 if j >= seq.len() {
                     break;
                 }
-                let b = seq[j];
+                let raw_char = seq[j];
                 let style = highlight_match_style(
-                    self.style_lut[b as usize],
+                    self.style_lut[raw_char as usize],
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
+                let diffed_char = apply_diff_mode(raw_char, ref_char, diff_mode);
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
-                    .set_char(b as char)
+                    .set_char(raw_char as char)
                     .set_style(style);
             }
         }
@@ -131,16 +132,17 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                     panic!();
                 }
 
-                let b = seq_bytes[j];
+                let raw_char = seq_bytes[j];
                 let style = highlight_match_style(
-                    self.style_lut[b as usize],
+                    self.style_lut[raw_char as usize],
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
+                let diffed_char = apply_diff_mode(raw_char, ref_char, diff_mode);
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
-                    .set_char(b as char)
+                    .set_char(raw_char as char)
                     .set_style(style);
             }
         }
