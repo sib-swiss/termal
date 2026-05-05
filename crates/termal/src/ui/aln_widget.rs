@@ -69,7 +69,9 @@ impl<'a> Widget for SeqPane<'a> {
                 if j >= seq.len() {
                     break;
                 }
+
                 let raw_char = seq[j];
+
                 let diffed_char: u8;
                 match self.ref_spec {
                     RefSpec::Consensus => {
@@ -90,7 +92,7 @@ impl<'a> Widget for SeqPane<'a> {
                 }
 
                 let style = highlight_match_style(
-                    self.style_lut[raw_char as usize],
+                    self.style_lut[diffed_char as usize],
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
@@ -179,7 +181,7 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                 }
 
                 let style = highlight_match_style(
-                    self.style_lut[raw_char as usize],
+                    self.style_lut[diffed_char as usize],
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
