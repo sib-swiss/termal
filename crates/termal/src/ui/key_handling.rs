@@ -446,6 +446,9 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('!') => ui.app.warning_msg("Filtering not implemented yet"),
         KeyCode::Char(':') => ui.app.warning_msg("Ex mode not implemented yet"),
 
+        // ----- Diff Mode -----
+        KeyCode::Char('D') => ui.diff_mode = DiffMode::Original,
+
         _ => {
             // let the user know this key is not bound
             //

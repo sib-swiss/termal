@@ -126,6 +126,94 @@ fn test_set_reference() {
                 line_3
             );
 
+            // Pressing 'D' should revert to normal mode 
+
+            key_handling::handle_key_press(ui, utils::keypress('D'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+
+            // Seq 1 should be AGGCTC
+            let line_1 = utils::screen_line(&buffer, 1);
+            let expect = "AGGCTC";
+            assert!(
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
+                expect,
+                line_1
+            );
+
+            // Seq 2 should be AGGCAC
+
+            let line_2 = utils::screen_line(&buffer, 2);
+            let expect = "AGGCAC";
+            assert!(
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
+                expect,
+                line_2
+            );
+
+            // Seq 3 should be AGCTTC (not because it's the ref (which it still is), but because
+            // we're back in normal mode).
+
+            let line_3 = utils::screen_line(&buffer, 3);
+            let expect = "ACGTTC";
+            assert!(
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
+                expect,
+                line_3
+            );
+
+            // Another way to switch to normal mode is 'dn' (of which D is just a shortcut). So if
+            // we briefly enter diff mode again, then hit dn, we should be back in normal:
+
+            // switch to diff
+            key_handling::handle_key_press(ui, utils::keypress('d'));
+            key_handling::handle_key_press(ui, utils::keypress('d'));
+            // back to normal
+            key_handling::handle_key_press(ui, utils::keypress('d'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+
+            // Seq 1 should be AGGCTC
+            let line_1 = utils::screen_line(&buffer, 1);
+            let expect = "AGGCTC";
+            assert!(
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
+                expect,
+                line_1
+            );
+
+            // Seq 2 should be AGGCAC
+
+            let line_2 = utils::screen_line(&buffer, 2);
+            let expect = "AGGCAC";
+            assert!(
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
+                expect,
+                line_2
+            );
+
+            // Seq 3 should be AGCTTC (not because it's the ref (which it still is), but because
+            // we're back in normal mode).
+
+            let line_3 = utils::screen_line(&buffer, 3);
+            let expect = "ACGTTC";
+            assert!(
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
+                expect,
+                line_3
+            );
+
         },
     );
 }
