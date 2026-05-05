@@ -433,7 +433,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 app: ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
-                reference: ref_bytes,
+                ref_spec: ui.app.alignment.get_ref_spec(),
                 diff_mode: ui.diff_mode,
                 retained_rows: &retained_seq_ndx(ui),
                 retained_cols: &retained_col_ndx(ui),

@@ -108,7 +108,7 @@ pub struct SeqPaneZoomedOut<'a> {
     pub app: &'a App,
     pub sequences: &'a [String],    // alignment.sequences
     pub ordering: &'a [usize],      // ordering map
-    pub reference: &'a [u8],
+    pub ref_spec: RefSpec,
     pub diff_mode: DiffMode,
     pub retained_rows: &'a [usize], // indices into "logical rows"
     pub retained_cols: &'a [usize], // indices into alignment columns
@@ -163,8 +163,24 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
-                let ref_char = self.reference[j as usize];
-                let diffed_char: u8 = apply_diff_mode(raw_char, ref_char, self.diff_mode);
+                let diffed_char: u8;
+                match self.ref_spec {
+                    RefSpec::Consensus => {
+                        let reference = &self.app.alignment.consensus.as_bytes();
+                        let ref_char = reference[j];
+                        diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
+                    }
+                    RefSpec::Rank(rk) => {
+                        let ref_screenline = self.ordering[rk];
+                        let reference = self.sequences[ref_screenline].as_bytes();
+                        let ref_char = reference[j];
+                        if i == ref_screenline { // Keep the reference untouched
+                            diffed_char = raw_char;
+                        } else {
+                            diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
+                        }
+                    }
+                }
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
