@@ -409,12 +409,17 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
 
     let style_lut = build_style_lut(ui);
 
+    let reference = ui.app.alignment.reference();
+    let ref_bytes = reference.as_bytes();
+
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
             let pane = SeqPane {
                 app: ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
+                ref_spec: ui.app.alignment.get_ref_spec(),
+                diff_mode: ui.diff_mode,
                 top_i: ui.top_line as usize,
                 left_j: ui.leftmost_col as usize,
                 style_lut: &style_lut,
@@ -428,6 +433,8 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
                 app: ui.app,
                 sequences: &ui.app.alignment.sequences,
                 ordering: &ui.app.ordering,
+                reference: ref_bytes,
+                diff_mode: ui.diff_mode,
                 retained_rows: &retained_seq_ndx(ui),
                 retained_cols: &retained_col_ndx(ui),
                 style_lut: &style_lut,
@@ -796,7 +803,4 @@ mod tests {
         let tm = tick_marks(21, Some(':'), Some('.'));
         assert_eq!(tm, "    :    :    .    :");
     }
-
-    #[test]
-    fn test_
 }

@@ -7,7 +7,9 @@ use ratatui::{
     widgets::Widget,
 };
 
-use crate::{app::App, ui::zoombox::draw_zoombox_border};
+use termal_alignment::alignment::RefSpec;
+
+use crate::{app::App, ui::{DiffMode, zoombox::draw_zoombox_border}};
 
 fn highlight_match_style(mut style: Style, is_match: bool, is_current_match: bool) -> Style {
     if is_match {
@@ -26,10 +28,13 @@ fn highlight_match_style(mut style: Style, is_match: bool, is_current_match: boo
     style
 }
 
+// TODO: is it necessary that these fields (and the struct itself) be pub?
 pub struct SeqPane<'a> {
     pub app: &'a App,
     pub sequences: &'a [String],
     pub ordering: &'a [usize],
+    pub ref_spec: RefSpec,
+    pub diff_mode: DiffMode,
     pub top_i: usize,
     pub left_j: usize,
     pub style_lut: &'a [Style],
@@ -70,21 +75,41 @@ impl<'a> Widget for SeqPane<'a> {
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
-                let diffed_char = apply_diff_mode(raw_char, ref_char, diff_mode);
+                let diffed_char: u8;
+                match self.ref_spec {
+                    RefSpec::Consensus => {
+                        let reference = &self.app.alignment.consensus.as_bytes();
+                        let ref_char = reference[j];
+                        diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
+                    }
+                    RefSpec::Rank(rk) => {
+                        let ref_screenline = self.ordering[rk];
+                        let reference = self.sequences[ref_screenline].as_bytes();
+                        let ref_char = reference[j];
+                        if i == ref_screenline { // Keep the reference untouched
+                            diffed_char = raw_char;
+                        } else {
+                            diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
+                        }
+                    }
+                }
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
-                    .set_char(raw_char as char)
+                    .set_char(diffed_char as char)
                     .set_style(style);
             }
         }
     }
 }
 
+// TODO: is it necessary that these fields (and the struct itself) be pub?
 pub struct SeqPaneZoomedOut<'a> {
     pub app: &'a App,
     pub sequences: &'a [String],    // alignment.sequences
     pub ordering: &'a [usize],      // ordering map
+    pub reference: &'a [u8],
+    pub diff_mode: DiffMode,
     pub retained_rows: &'a [usize], // indices into "logical rows"
     pub retained_cols: &'a [usize], // indices into alignment columns
     pub style_lut: &'a [Style],     // style per byte (0..=255)
@@ -138,11 +163,12 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                     self.app.cell_is_seq_match(i, j),
                     self.app.cell_is_current_seq_match(i, j),
                 );
-                let diffed_char = apply_diff_mode(raw_char, ref_char, diff_mode);
+                let ref_char = self.reference[j as usize];
+                let diffed_char: u8 = apply_diff_mode(raw_char, ref_char, self.diff_mode);
 
                 buf.cell_mut(Position::from((area.x + c as u16, area.y + r as u16)))
                     .expect("Wrong position")
-                    .set_char(raw_char as char)
+                    .set_char(diffed_char as char)
                     .set_style(style);
             }
         }
@@ -159,4 +185,50 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
             );
         }
     }
+
+}
+
+fn apply_diff_mode(raw_c: u8, ref_c: u8, diff_mode: DiffMode) -> u8 {
+    match diff_mode {
+        DiffMode::Original => {
+            raw_c
+        }
+        DiffMode::DiffWRTRef => {
+            if raw_c.to_ascii_uppercase() != ref_c.to_ascii_uppercase() {
+                raw_c
+            } else {
+                b'-'
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+
+use crate::ui::{DiffMode, aln_widget::apply_diff_mode};
+
+    #[test]
+    fn test_apply_diff_mode() {
+
+        let diff_mode = DiffMode::Original;
+        let raw_char = b'A';
+        let ref_char = b'A';
+        let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
+        assert_eq!(obt, b'A');
+
+        let diff_mode = DiffMode::DiffWRTRef;
+        let raw_char = b'A';
+        let ref_char = b'A';
+        let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
+        assert_eq!(obt, b'-');
+
+        let diff_mode = DiffMode::DiffWRTRef;
+        let raw_char = b'C';
+        let ref_char = b'A';
+        let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
+        assert_eq!(obt, b'C');
+
+    }
+
 }

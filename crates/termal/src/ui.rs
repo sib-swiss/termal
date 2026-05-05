@@ -39,6 +39,7 @@ pub enum ZoomLevel {
     ZoomedOutAR,
 }
 
+// FIXME: this is obsolete, was never documented, and takes up space. Discard it.
 #[derive(Debug)]
 enum BottomPanePosition {
     Adjacent,
@@ -68,6 +69,7 @@ enum InputMode {
         ref_spec: String,
     },
     PaneCmdPrefix,
+    DiffCmdPrefix,
 
     // ExCommand { buffer: String },
 }
@@ -86,6 +88,12 @@ impl fmt::Display for VideoMode {
         };
         write!(f, "{}", s)
     }
+}
+
+#[derive(Clone, Copy)]
+pub enum DiffMode {
+    Original,       // sequence residue/gap
+    DiffWRTRef,     // residue IFF != ref, else gap
 }
 
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too
@@ -127,6 +135,7 @@ pub struct UI<'a> {
     video_mode: VideoMode,
     input_mode: InputMode,
     help_state: HelpState,
+    diff_mode: DiffMode,
 }
 
 impl<'a> UI<'a> {
@@ -159,6 +168,7 @@ impl<'a> UI<'a> {
             video_mode: VideoMode::Inverse,
             input_mode: InputMode::Normal,
             help_state: HelpState::default(),
+            diff_mode: DiffMode::Original,
         }
     }
 

@@ -25,9 +25,9 @@ fn test_set_reference() {
 
             let last_line_y = 9;
 
-            // Pressing d should cause "Diff: [dn]" to appear on last line
+            // Pressing d should cause "d... [dn]" to appear on last line
 
-            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, utils::keypress('d'));
             // Don't forget to draw the UI after the key event...
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
@@ -35,7 +35,7 @@ fn test_set_reference() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expect = "Diff: [dn]";
+            let expect = "d... [dn]";
             assert!(
                 last_line.contains(expect),
                 "\"{}\" not found on last line: {}",
@@ -55,10 +55,10 @@ fn test_set_reference() {
             let line_1 = utils::screen_line(&buffer, 1);
             let expect = "-----";
             assert!(
-                last_line.contains(expect),
-                "\"{}\" not found on last line: {}",
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
                 expect,
-                last_line
+                line_1
             );
 
             // Seq 2 should be ----A-, as it only differs from the ref at position 5.
@@ -66,26 +66,29 @@ fn test_set_reference() {
             let line_2 = utils::screen_line(&buffer, 2);
             let expect = "---A-";
             assert!(
-                last_line.contains(expect),
-                "\"{}\" not found on last line: {}",
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
                 expect,
-                last_line
+                line_2
             );
 
             // Seq 3 should be -C-T--, as it differs at 2 and 4
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_3 = utils::screen_line(&buffer, 3);
             let expect = "-C-T-";
             assert!(
-                last_line.contains(expect),
-                "\"{}\" not found on last line: {}",
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
                 expect,
-                last_line
+                line_3
             );
 
             // Now let us change the reference to sequence 3.
 
-            key_handling::handle_key_press(ui, utils::keypress('d'));
+            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, utils::keypress('3'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
                 .expect("update");
@@ -95,10 +98,10 @@ fn test_set_reference() {
             let line_1 = utils::screen_line(&buffer, 1);
             let expect = "-G-C-";
             assert!(
-                last_line.contains(expect),
-                "\"{}\" not found on last line: {}",
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
                 expect,
-                last_line
+                line_1
             );
 
             // Seq 2 should be -G-CA-, as it only differs from the ref at position 5.
@@ -106,21 +109,21 @@ fn test_set_reference() {
             let line_2 = utils::screen_line(&buffer, 2);
             let expect = "-G-CA-";
             assert!(
-                last_line.contains(expect),
-                "\"{}\" not found on last line: {}",
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
                 expect,
-                last_line
+                line_2
             );
 
             // Seq 3 should be unchanged, since it is the now reference
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_3 = utils::screen_line(&buffer, 3);
             let expect = "ACGTTC";
             assert!(
-                last_line.contains(expect),
-                "\"{}\" not found on last line: {}",
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
                 expect,
-                last_line
+                line_3
             );
 
         },

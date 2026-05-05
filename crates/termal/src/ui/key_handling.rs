@@ -5,7 +5,8 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 use super::{
     InputMode,
-    InputMode::{Help, LabelSearch, Normal, PendingCount, Search, SetReference, PaneCmdPrefix},
+    InputMode::{DiffCmdPrefix, Help, LabelSearch, Normal, PaneCmdPrefix, PendingCount, Search, SetReference},
+    DiffMode,
     {ZoomLevel, UI},
 };
 
@@ -20,6 +21,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         Search { pattern } => handle_sequence_search(ui, key_event, &pattern),
         SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
         PaneCmdPrefix => handle_pane_prefix(ui, key_event),        
+        DiffCmdPrefix => handle_diff_prefix(ui, key_event),        
     };
     done
 }
@@ -80,6 +82,10 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             ui.app.argument_msg(String::from("w... [lbf]"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
+        KeyCode::Char('d') => {
+            ui.input_mode = InputMode::DiffCmdPrefix;
+            ui.app.argument_msg(String::from("d... [dn]"), String::from(""));
+        }
         _ => dispatch_command(ui, key_event, None),
     }
     done
@@ -224,6 +230,26 @@ fn handle_pane_prefix(ui: &mut UI, key_event: KeyEvent) {
         }
         KeyCode::Char('f') => {
             ui.toggle_fullscreen();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        _ => {}
+    }
+}
+
+fn handle_diff_prefix(ui: &mut UI, key_event: KeyEvent) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('n') => {
+            ui.diff_mode = DiffMode::Original;
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('d') => {
+            ui.diff_mode = DiffMode::DiffWRTRef;
             ui.input_mode = InputMode::Normal;
             ui.app.clear_msg();
         }
