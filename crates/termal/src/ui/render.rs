@@ -410,7 +410,6 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
     let style_lut = build_style_lut(ui);
 
     let reference = ui.app.alignment.reference();
-    let ref_bytes = reference.as_bytes();
 
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => {
