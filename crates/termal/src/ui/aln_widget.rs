@@ -80,8 +80,8 @@ impl<'a> Widget for SeqPane<'a> {
                         diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
                     }
                     RefSpec::Rank(rk) => {
-                        let ref_screenline = self.ordering[rk];
-                        let reference = self.sequences[ref_screenline].as_bytes();
+                        let ref_screenline = self.app.rank_to_screenline(rk);
+                        let reference = self.sequences[rk].as_bytes();
                         let ref_char = reference[j];
                         if i == ref_screenline { // Keep the reference untouched
                             diffed_char = raw_char;
@@ -169,8 +169,8 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                         diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
                     }
                     RefSpec::Rank(rk) => {
-                        let ref_screenline = self.ordering[rk];
-                        let reference = self.sequences[ref_screenline].as_bytes();
+                        let ref_screenline = self.app.rank_to_screenline(rk);
+                        let reference = self.sequences[rk].as_bytes();
                         let ref_char = reference[j];
                         if i == ref_screenline { // Keep the reference untouched
                             diffed_char = raw_char;

@@ -7,7 +7,7 @@ use ratatui::{
     Frame,
 };
 
-use termal_alignment::alignment::RefSpec;
+use termal_alignment::alignment::RefSpec::{self, Rank};
 
 use crate::app::ColMetric;
 
@@ -356,8 +356,19 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
-    let style = get_label_num_style(ui.theme(), ui.get_label_num_color());
-    let lbl_nums = Text::from(compute_label_numbers(ui)).style(style);
+    let base_style = get_label_num_style(ui.theme(), ui.get_label_num_color());
+    let mut lbl_nums = Text::from(compute_label_numbers(ui))
+        .style(base_style);
+
+    if let Rank(rk) = ui.app.alignment.get_ref_spec() {
+        let ref_screenline = ui.app.rank_to_screenline(rk);
+        if let Some(ref_num) = lbl_nums.lines.get_mut(ref_screenline) {
+            let highlight_style = Style::default()
+                .add_modifier(Modifier::REVERSED);
+            ref_num.style = highlight_style;
+        }
+    }
+
     let lbl_num_block = Block::default().borders(Borders::TOP | Borders::LEFT | Borders::BOTTOM);
     let top_lbl_line = match ui.zoom_level() {
         ZoomLevel::ZoomedIn => ui.top_line,
