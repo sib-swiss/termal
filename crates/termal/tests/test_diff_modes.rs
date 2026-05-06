@@ -11,12 +11,11 @@ use termal_msa::ui::{key_handling, render};
 
 // More than enough, but shouldn't harm.
 const SCREEN_WIDTH: u16 = 80;
-const SCREEN_HEIGHT: u16 = 12;
+const SCREEN_HEIGHT: u16 = 10;
 
 #[test]
 /// Checks the behaviour of the 'D and d*' commands.
-// See also test_reference_specifier() in alignment.rs
-fn test_set_reference() {
+fn test_diff_mode() {
     utils::with_rig(
         "tests/data/test-diff-modes.msa",
         SCREEN_WIDTH,
@@ -207,6 +206,154 @@ fn test_set_reference() {
 
             let line_3 = utils::screen_line(&buffer, 3);
             let expect = "ACGTTC";
+            assert!(
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
+                expect,
+                line_3
+            );
+
+        },
+    );
+}
+
+#[test]
+/// Checks the behaviour of diff mode under reorderings
+fn test_diff_mode_reorder() {
+    utils::with_rig(
+        "tests/data/test-diff-modes.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |mut ui, terminal| {
+
+            let last_line_y = 9;
+
+            // Select seq 3 as reference
+
+            key_handling::handle_key_press(ui, utils::keypress('R'));
+            key_handling::handle_key_press(ui, utils::keypress('3'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+
+            // Enter diff mode
+
+            key_handling::handle_key_press(ui, utils::keypress('d'));
+            key_handling::handle_key_press(ui, utils::keypress('d'));
+
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+
+            // No reordering yet: rank order is 1, 2, 3
+            
+            // Seq 1 should be -G-C--
+
+            let line_1 = utils::screen_line(&buffer, 1);
+            let expect = "-G-C-";
+            assert!(
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
+                expect,
+                line_1
+            );
+
+            // Seq 2 should be -G-CA-, as it only differs from the ref at position 5.
+
+            let line_2 = utils::screen_line(&buffer, 2);
+            let expect = "-G-CA-";
+            assert!(
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
+                expect,
+                line_2
+            );
+
+            // Seq 3 should be unchanged, since it is the reference
+
+            let line_3 = utils::screen_line(&buffer, 3);
+            let expect = "ACGTTC";
+            assert!(
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
+                expect,
+                line_3
+            );
+
+            // Order by increasing similarity to reference: rank order is now 2, 1, 3
+
+            key_handling::handle_key_press(ui, utils::keypress('o'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+
+            // Seq 1 should be rank 2 (Epipactis) -G-CA-
+
+            let line_1 = utils::screen_line(&buffer, 1);
+            let expect = "-G-CA-";
+            assert!(
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
+                expect,
+                line_1
+            );
+
+            // Seq 2 should be rank 1,  -G-C--
+
+            let line_2 = utils::screen_line(&buffer, 2);
+            let expect = "-G-C--";
+            assert!(
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
+                expect,
+                line_2
+            );
+
+            // Seq 3 should be ACGTTC because it's the ref
+
+            let line_3 = utils::screen_line(&buffer, 3);
+            let expect = "ACGTTC";
+            assert!(
+                line_3.contains(expect),
+                "\"{}\" not found in seq 3: {}",
+                expect,
+                line_3
+            );
+
+            // Order by decreasing similarity to reference: rank order is now 3, 1, 2
+
+            key_handling::handle_key_press(ui, utils::keypress('o'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+
+            // Seq 1 should be rank 1 (Limodorum), IOW the reference
+
+            let line_1 = utils::screen_line(&buffer, 1);
+            let expect = "ACGTTC";
+            assert!(
+                line_1.contains(expect),
+                "\"{}\" not found in seq 1: {}",
+                expect,
+                line_1
+            );
+
+            // Seq 2 should be rank 1 (Anacamptis),  -G-C--
+
+            let line_2 = utils::screen_line(&buffer, 2);
+            let expect = "-G-C--";
+            assert!(
+                line_2.contains(expect),
+                "\"{}\" not found in seq 2: {}",
+                expect,
+                line_2
+            );
+
+            // Seq 3 should be rank 2 (Epipactis) -G-CA- 
+
+            let line_3 = utils::screen_line(&buffer, 3);
+            let expect = "-G-CA-";
             assert!(
                 line_3.contains(expect),
                 "\"{}\" not found in seq 3: {}",
