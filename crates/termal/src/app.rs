@@ -11,7 +11,10 @@ use crate::{
     app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
-    seq_match::MatchPosition,
+    seq_match::{
+        MatchPosition,
+        regex_match_positions_naive,
+    },
 };
 
 #[derive(Clone, Copy)]
@@ -568,12 +571,15 @@ impl App {
             Ok(re) => {
                 let mut matches_by_rank: HashMap<usize, Vec<MatchPosition>> = HashMap::new();
                 for (rank, sequence) in self.alignment.sequences.iter().enumerate() {
+                    let seq_matches = regex_match_positions_naive(&re, sequence);
+                    /*
                     let seq_matches = re
                         .find_iter(sequence)
                         .map(|m| MatchPosition::new (
                             m.start(), m.end()
                         ))
                         .collect::<Vec<MatchPosition>>();
+                    */
                     if !seq_matches.is_empty() {
                         matches_by_rank.insert(rank, seq_matches);
                     }

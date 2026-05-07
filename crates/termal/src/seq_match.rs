@@ -24,7 +24,7 @@ impl MatchPosition {
     }
 }
 
-fn regex_match_positions_naive(re: Regex, seq: &str) -> Vec<MatchPosition> {
+pub fn regex_match_positions_naive(re: &Regex, seq: &str) -> Vec<MatchPosition> {
     re.find_iter(seq)
     .map(|m| MatchPosition::new (
         m.start(), m.end()
@@ -38,14 +38,14 @@ mod tests {
 
     use crate::seq_match::{
         MatchPosition,
-        regex_match_positions,
+        regex_match_positions_naive,
     };
 
     #[test]
     fn test_regex_match_position_naive() {
         let re = Regex::new("A[CT]G").unwrap();
         let seq = "AATGXACGY";
-        let match_pos = regex_match_positions_naive(re, seq);
+        let match_pos = regex_match_positions_naive(&re, seq);
         assert_eq!(match_pos,
             vec![
                 MatchPosition{start_col: 1, end_col: 4},
