@@ -6,6 +6,7 @@ pub mod errors;
 mod runner;
 pub mod ui;
 mod vec_f64_aux;
+mod seq_match;
 
 use crate::errors::TermalError;
 

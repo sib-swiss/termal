@@ -11,6 +11,7 @@ use crate::{
     app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
+    seq_match::MatchPosition,
 };
 
 #[derive(Clone, Copy)]
@@ -90,22 +91,6 @@ pub struct SeqSearchState {
     pattern: String,
     matches_by_rank: HashMap<usize, Vec<MatchPosition>>,
     current: Option<(usize, usize)>, // (rank, match_ndx)
-}
-
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub struct MatchPosition {
-    start_col: usize,
-    end_col: usize,
-}
-
-impl MatchPosition {
-    pub fn start_col(&self) -> usize {
-        self.start_col
-    }
-
-    pub fn end_col(&self) -> usize {
-        self.end_col
-    }
 }
 
 pub enum JumpTarget {
@@ -555,7 +540,7 @@ impl App {
             if let Some(matches) = state.matches_by_rank.get(&rank) {
                 return matches
                     .iter()
-                    .any(|m| m.start_col <= col && col < m.end_col);
+                    .any(|m| m.start_col() <= col && col < m.end_col());
             }
         }
         false
@@ -566,7 +551,7 @@ impl App {
             if let Some((rank, match_ndx)) = state.current {
                 if self.ordering[screenline] == rank {
                     let m = state.matches_by_rank[&rank][match_ndx];
-                    return m.start_col <= col && col < m.end_col;
+                    return m.start_col() <= col && col < m.end_col();
                 }
             }
         }
@@ -585,10 +570,9 @@ impl App {
                 for (rank, sequence) in self.alignment.sequences.iter().enumerate() {
                     let seq_matches = re
                         .find_iter(sequence)
-                        .map(|m| MatchPosition {
-                            start_col: m.start(),
-                            end_col: m.end(),
-                        })
+                        .map(|m| MatchPosition::new (
+                            m.start(), m.end()
+                        ))
                         .collect::<Vec<MatchPosition>>();
                     if !seq_matches.is_empty() {
                         matches_by_rank.insert(rank, seq_matches);
