@@ -38,7 +38,8 @@ use crate::errors::TermalError;
 //#[command(version, about, long_about = None) ]
 struct Cli {
     /// Alignment file
-    aln_fname: Option<String>,
+    // aln_fname: Option<String>,
+    aln_fname: String,
 
     /// Show key bindings and exit successfully
     #[arg(short = 'b', long = "show-bindings")]
@@ -146,7 +147,7 @@ fn read_user_ordering(fname: &str) -> Result<Vec<String>, std::io::Error> {
 }
 
 fn show_params(cli: &Cli, ui: &UI) {
-    println!("Alignment file: {}", cli.aln_fname.as_ref().unwrap());
+    println!("Alignment file: {}", cli.aln_fname);
     println!("Alignment file format: {}", cli.format);
     if let Some(map_fname) = &cli.color_map {
         println!("User color map file: {}", map_fname);
@@ -171,10 +172,9 @@ pub fn run() -> Result<(), TermalError> {
         return Ok(());
     }
 
-    if let Some(seq_filename) = &cli.aln_fname {
         let seq_file = match cli.format {
-            SeqFileFormat::FastA => read_fasta_file(seq_filename)?,
-            SeqFileFormat::Stockholm => read_stockholm_file(seq_filename)?,
+            SeqFileFormat::FastA => read_fasta_file(&cli.aln_fname)?,
+            SeqFileFormat::Stockholm => read_stockholm_file(&cli.aln_fname)?,
         };
         let alignment = Alignment::from_file(seq_file);
         let mut ordering_err_msg: Option<String> = None;
@@ -205,7 +205,7 @@ pub fn run() -> Result<(), TermalError> {
                 user_ordering = None;
             }
         };
-        let mut app = App::new(seq_filename, alignment, user_ordering);
+        let mut app = App::new(&cli.aln_fname, alignment, user_ordering);
         if let Some(msg) = ordering_err_msg {
             app.error_msg(msg);
         }
@@ -305,7 +305,4 @@ pub fn run() -> Result<(), TermalError> {
         disable_raw_mode()?;
 
         Ok(())
-    } else {
-        panic!("Expected filename argument");
-    }
 }
