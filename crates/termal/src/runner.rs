@@ -34,6 +34,7 @@ use crate::errors::TermalError;
 
 #[derive(Debug, Parser)]
 #[command(name = "termal", version = env!("CARGO_PKG_VERSION"))]
+#[command(arg_required_else_help = true)]
 //#[command(version, about, long_about = None) ]
 struct Cli {
     /// Alignment file
@@ -77,43 +78,43 @@ struct Cli {
 
     // Rare options (long form only)
     /// Start with labels pane hidden
-    #[arg(long)]
+    #[arg(long, hide_short_help = true)]
     hide_labels_pane: bool,
 
     /// Start with bottom pane hidden
-    #[arg(long)]
+    #[arg(long, hide_short_help = true)]
     hide_bottom_pane: bool,
 
     /// (Currently no effect)
-    #[arg(long)]
+    #[arg(long, hide_short_help = true)]
     debug: bool,
 
     /// Switch to monochrome
-    #[arg(long = "no-color")]
+    #[arg(long = "no-color", hide_short_help = true)]
     no_color: bool,
 
     /// Disable scrollbars (mostly for testing)
-    #[arg(long = "no-scrollbars")]
+    #[arg(long = "no-scrollbars", hide_short_help = true)]
     no_scrollbars: bool,
 
     /// Poll wait time [ms]
-    #[arg(long = "poll-wait-time", default_value_t = 50)]
+    #[arg(long = "poll-wait-time", default_value_t = 50, hide_short_help = true)]
     poll_wait_time: u64,
 
     /// Panic (for testing)
-    #[arg(long = "panic")]
+    #[arg(long = "panic", hide_short_help = true)]
     panic: bool,
 
     // TODO: the ZB can be disabled at runtime (or at least it should)
     /// Do not show zoom box (zooming itself is not disabled)
-    #[arg(long = "no-zoom-box")]
+    #[arg(long = "no-zoom-box", hide_short_help = true)]
     no_zoombox: bool,
 
     // TODO: this is only ever used when the bottom pane is at the bottom of the terminal, which is
     // practically never.
     //
     /// Do not show zoom box guides (only useful if zoom box not shown)
-    #[arg(long = "no-zb-guides")]
+    #[arg(long = "no-zb-guides", hide_short_help = true)]
     no_zb_guides: bool,
 }
 
