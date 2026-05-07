@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.5.0]
+
+### Added
+
+* Reference can now be set to an alignment sequence 
+* Diff mode
+* New column metric (coverage), and ability to change column metrics
+
+### Changed
+
+* Removed obscure options from short help
+* Panel toggles now with prefix command 
+
+### Fixed
+
+* When run without arguments, `termal` now outputs the short help instead of
+  crashing with an error message
+
 ## [1.4.0]
 
 ### Added
