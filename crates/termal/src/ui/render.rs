@@ -65,7 +65,7 @@ fn compute_label_numbers<'a>(ui: &UI) -> Vec<Line<'a>> {
         .app
         .ordering
         .iter()
-        .map(|n| Line::from(format!("{:1$}!", n + 1, num_cols))) // n+1 -> 1-based (for humans...)
+        .map(|n| Line::from(format!("{:1$}", n + 1, num_cols))) // n+1 -> 1-based (for humans...)
         .collect();
     match ui.zoom_level {
         ZoomLevel::ZoomedIn => numbers,
@@ -356,16 +356,37 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 }
 
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
+    log::debug!("Entering render_label_nums_pane()");
     let base_style = get_label_num_style(ui.theme(), ui.get_label_num_color());
     let mut lbl_nums = Text::from(compute_label_numbers(ui))
         .style(base_style);
+    // log::debug!("lbl_nums: {:#?}", lbl_nums);
 
-    if let Rank(rk) = ui.app.alignment.get_ref_spec() {
-        let ref_screenline = ui.app.rank_to_screenline(rk);
-        if let Some(ref_num) = lbl_nums.lines.get_mut(ref_screenline) {
-            let highlight_style = Style::default()
-                .add_modifier(Modifier::REVERSED);
-            ref_num.style = highlight_style;
+    // If the reference is an alignment sequence (as opposed to the consnsus), highlight it.
+
+    if let Rank(ref_rk) = ui.app.alignment.get_ref_spec() {
+        log::debug!("Ref rank: {}", ref_rk);
+        let ref_screenline = ui.app.rank_to_screenline(ref_rk);
+        log::debug!("Ref scln: {}", ref_screenline);
+        let highlight_style = Style::default()
+            .add_modifier(Modifier::REVERSED);
+        match ui.zoom_level {
+            ZoomLevel::ZoomedIn => {
+                if let Some(ref_num) = lbl_nums.lines.get_mut(ref_screenline) {
+                    ref_num.style = highlight_style;
+                }
+            }
+            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => { 
+                let try_pos = retained_seq_ndx(ui)
+                    .iter()
+                    .position(|scln| ui.app.screenline_to_rank(*scln) == ref_rk);
+                if let Some(pos) = try_pos {
+                    log::debug!("pos: {:#?}", pos);
+                    if let Some(ref_num) = lbl_nums.lines.get_mut(pos) {
+                        ref_num.style = highlight_style;
+                    }
+                }
+            }
         }
     }
 

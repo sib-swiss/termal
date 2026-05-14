@@ -257,6 +257,10 @@ impl App {
         self.reverse_ordering[rank]
     }
 
+    pub fn screenline_to_rank(&self, scln: usize) -> usize {
+        self.ordering[scln]
+    }
+
     pub fn next_seq_metric(&mut self) {
         self.seq_metric = match self.seq_metric {
             PctIdWrtConsensus => SeqLen,
