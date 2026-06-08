@@ -25,21 +25,37 @@ z,Z: next/previous zoom mode
 
 ## Searching
 
-"<regexp><Ret> : search sequence headers
-/<regexp><Ret> : search sequences
-[count]n,p     : next / previous match
-Ret            : current match (e.g. after reordering)
-Esc            : cancel search
+Sequence search:
+    Search biological sequences. Alignment gaps are ignored during matching;
+    matches are projected back onto the alignment.
+
+Alignment search:
+    Search displayed alignment rows. Gaps are treated as normal characters,
+    so patterns can explicitly match '-' and regex operators count alignment columns.
+
+Header search:
+    Search sequence labels/headers.
+
+fs<regexp><Ret> : sequence search
+fa<regexp><Ret> : alignment search
+fh<regexp><Ret> : sequence search
+
+/ : shortcut for fs
+" : shortcut for fh
+
+[count]n,p  : next / previous match
+Ret         : current match (e.g. after reordering)
+Esc         : cancel search
 
 ## Setting the Reference
 
 R<integer><Ret> : set reference to sequence <integer>
 R<Ret>          : set reference to consensus
 
-## Setting the Reference
+## Difference Modes
 
-R<integer><Ret> : set reference to sequence <integer>
-R<Ret>          : set reference to consensus
+dd : diff mode - only show residues when different from the reference
+dn : normal mode 
 
 ## Adjusting the Panes
 
@@ -59,4 +75,5 @@ Try dark/inverse for best results (this is the default).
 ## Metrics and Orderings
 
 o,O: next/previous ordering
-t,T: next/previous metric
+t,T: next/previous sequence metric
+c,C: next/previous column metric

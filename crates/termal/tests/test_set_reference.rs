@@ -54,8 +54,8 @@ fn test_set_reference() {
             let last_line = utils::screen_line(&buffer, last_line_y);
 
             assert!(
-                last_line.contains("Set ref:"),
-                "\"Set ref:\" not found on last line: {}",
+                last_line.contains("Set ref (#):"),
+                "\"Set ref (#):\" not found on last line: {}",
                 last_line
             );
 
@@ -69,8 +69,8 @@ fn test_set_reference() {
             let last_line = utils::screen_line(&buffer, last_line_y);
 
             assert!(
-                last_line.contains("Set ref: 1"),
-                "\"Set ref: 1\" not found on last line: {}",
+                last_line.contains("Set ref (#): 1"),
+                "\"Set ref (#): 1\" not found on last line: {}",
                 last_line
             );
 
@@ -228,7 +228,7 @@ fn test_ref_spec_del_esc() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Set ref: 123";
+            let expected = "Set ref (#): 123";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -247,7 +247,7 @@ fn test_ref_spec_del_esc() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Set ref: 129";
+            let expected = "Set ref (#): 129";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",

@@ -33,7 +33,7 @@ fn test_wl() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "w... [lbf]";
+            let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -121,7 +121,7 @@ fn test_wb() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "w... [lbf]";
+            let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -191,7 +191,7 @@ fn test_wf() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "w... [lbf]";
+            let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -261,7 +261,7 @@ fn test_w_esc() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "w... [lbf]";
+            let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",

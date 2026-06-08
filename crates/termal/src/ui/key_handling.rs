@@ -72,26 +72,26 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
                 target: SequenceSearchTarget::BiologicalSequence,
             };
             ui.app
-                .argument_msg(String::from("Seq search (gaps ignored): "), String::from(""));
+                .argument_msg(String::from("Seq search: "), String::from(""));
         }
         KeyCode::Char('R') => {
             ui.input_mode = InputMode::SetReference {
                 ref_spec: String::from(""),
             };
             ui.app
-                .argument_msg(String::from("Set ref: "), String::from(""));
+                .argument_msg(String::from("Set ref (#): "), String::from(""));
         }
         KeyCode::Char('w') => {
             ui.input_mode = InputMode::PaneCmdPrefix;
-            ui.app.argument_msg(String::from("w... [lbf]"), String::from(""));
+            ui.app.argument_msg(String::from("toggle pane: [l]eft [b]ottom [f]ull"), String::from(""));
         }
         KeyCode::Char('d') => {
             ui.input_mode = InputMode::DiffCmdPrefix;
-            ui.app.argument_msg(String::from("d... [dn]"), String::from(""));
+            ui.app.argument_msg(String::from("diff mode: [d]iff [n]ormal"), String::from(""));
         }
         KeyCode::Char('f') => {
             ui.input_mode = InputMode::SearchCmdPrefix;
-            ui.app.argument_msg(String::from("find in [h]eaders | [s]equences | [g]gapped sequences"), String::from(""));
+            ui.app.argument_msg(String::from("find: [h]eaders [s]equences [g]apped rows"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -286,7 +286,7 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
                 target: SequenceSearchTarget::BiologicalSequence,
             };
             ui.app
-                .argument_msg(String::from("Sequence search (gaps ignored): "), String::from(""));
+                .argument_msg(String::from("Seq search: "), String::from(""));
         }
         KeyCode::Char('g') => {
             ui.input_mode = InputMode::Search {
@@ -294,7 +294,7 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
                 target: SequenceSearchTarget::AlignmentRow,
             };
             ui.app
-                .argument_msg(String::from("Alignment search: "), String::from(""));
+                .argument_msg(String::from("Aln search: "), String::from(""));
         }
         _ => {}
     }

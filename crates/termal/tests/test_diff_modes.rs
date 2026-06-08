@@ -34,7 +34,7 @@ fn test_diff_mode() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expect = "d... [dn]";
+            let expect = "diff mode: [d]iff [n]ormal";
             assert!(
                 last_line.contains(expect),
                 "\"{}\" not found on last line: {}",

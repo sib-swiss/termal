@@ -11,6 +11,7 @@ use crate::common::utils;
 use termal_msa::{
     app::{App, JumpTarget},
     ui::{key_handling, render},
+    seq_match::SequenceSearchTarget,
 };
 
 const SCREEN_WIDTH: u16 = 25;
@@ -30,8 +31,8 @@ fn test_sequence_search() {
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
-                screen.contains("Sequence search:"),
-                "\"Sequence search:\" not found on screen:\n{}",
+                screen.contains("Seq search:"),
+                "\"Seq search:\" not found on screen:\n{}",
                 screen
             );
 
@@ -44,8 +45,8 @@ fn test_sequence_search() {
             let buffer = terminal.backend().buffer();
             let screen = utils::buffer_text(&buffer);
             assert!(
-                screen.contains("Sequence search: tat"),
-                "\"Sequence search: tat\" not found on screen:\n{}",
+                screen.contains("Seq search: tat"),
+                "\"Seq search: tat\" not found on screen:\n{}",
                 screen
             );
 
@@ -112,7 +113,7 @@ fn test_sequence_search_respects_reordered_traversal() {
     let aln = Alignment::from_file(seq_file);
     let mut app = App::new("TEST", aln, None);
     app.next_ordering_criterion();
-    app.regex_search_seq("tat");
+    app.regex_search_seq("tat", SequenceSearchTarget::BiologicalSequence);
     app.display_current_match();
     let (expected_top_line, expected_leftmost_col) = match app.current_match() {
         Some(JumpTarget::Match(screenline, match_pos)) => {
