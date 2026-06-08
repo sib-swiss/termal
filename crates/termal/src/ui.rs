@@ -25,8 +25,13 @@ use self::{
     color_scheme::{ColorScheme, Theme},
 };
 
-use crate::app::App;
-use crate::app::JumpTarget;
+use crate::{
+    app::{
+        App,
+        JumpTarget,
+    },
+    seq_match::SequenceSearchTarget,
+};
 
 const V_SCROLLBAR_WIDTH: u16 = 1;
 const MIN_COLS_SHOWN: u16 = 1;
@@ -64,12 +69,14 @@ enum InputMode {
     },
     Search {
         pattern: String,
+        target: SequenceSearchTarget,
     },
     SetReference {
         ref_spec: String,
     },
     PaneCmdPrefix,
     DiffCmdPrefix,
+    SearchCmdPrefix,
 
     // ExCommand { buffer: String },
 }

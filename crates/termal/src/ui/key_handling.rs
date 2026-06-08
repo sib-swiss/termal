@@ -3,9 +3,11 @@
 // Copyright (c) 2025-2026 Thomas Junier
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
+use crate::seq_match::SequenceSearchTarget;
+
 use super::{
     InputMode,
-    InputMode::{DiffCmdPrefix, Help, LabelSearch, Normal, PaneCmdPrefix, PendingCount, Search, SetReference},
+    InputMode::{DiffCmdPrefix, Help, LabelSearch, Normal, PaneCmdPrefix, PendingCount, Search, SearchCmdPrefix, SetReference},
     DiffMode,
     {ZoomLevel, UI},
 };
@@ -18,10 +20,11 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         Help => handle_help_key(ui, key_event),
         PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
-        Search { pattern } => handle_sequence_search(ui, key_event, &pattern),
+        Search { pattern, target } => handle_sequence_search(ui, key_event, &pattern, target),
         SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
         PaneCmdPrefix => handle_pane_prefix(ui, key_event),        
         DiffCmdPrefix => handle_diff_prefix(ui, key_event),        
+        SearchCmdPrefix => handle_search_prefix(ui, key_event),
     };
     done
 }
@@ -66,9 +69,10 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         KeyCode::Char('/') => {
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
+                target: SequenceSearchTarget::BiologicalSequence,
             };
             ui.app
-                .argument_msg(String::from("Sequence search: "), String::from(""));
+                .argument_msg(String::from("Seq search (gaps ignored): "), String::from(""));
         }
         KeyCode::Char('R') => {
             ui.input_mode = InputMode::SetReference {
@@ -81,11 +85,15 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             ui.input_mode = InputMode::PaneCmdPrefix;
             ui.app.argument_msg(String::from("w... [lbf]"), String::from(""));
         }
-        // Anything else: dispatch corresponding command, without count
         KeyCode::Char('d') => {
             ui.input_mode = InputMode::DiffCmdPrefix;
             ui.app.argument_msg(String::from("d... [dn]"), String::from(""));
         }
+        KeyCode::Char('f') => {
+            ui.input_mode = InputMode::SearchCmdPrefix;
+            ui.app.argument_msg(String::from("find in [h]eaders | [s]equences | [g]gapped sequences"), String::from(""));
+        }
+        // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
     }
     done
@@ -151,7 +159,7 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
     }
 }
 
-fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
+fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str, target: SequenceSearchTarget) {
     match key_event.code {
         KeyCode::Esc => {
             ui.input_mode = InputMode::Normal;
@@ -163,6 +171,7 @@ fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             updated_pattern.push(c);
             ui.input_mode = InputMode::Search {
                 pattern: updated_pattern,
+                target,
             }
         }
         KeyCode::Delete | KeyCode::Backspace => {
@@ -171,10 +180,11 @@ fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             updated_pattern.pop();
             ui.input_mode = InputMode::Search {
                 pattern: updated_pattern,
+                target,
             };
         }
         KeyCode::Enter => {
-            ui.app.regex_search_seq(pattern);
+            ui.app.regex_search_seq(pattern, target);
             ui.input_mode = InputMode::Normal;
             ui.jump_to_next_match(0);
         }
@@ -252,6 +262,39 @@ fn handle_diff_prefix(ui: &mut UI, key_event: KeyEvent) {
             ui.diff_mode = DiffMode::DiffWRTRef;
             ui.input_mode = InputMode::Normal;
             ui.app.clear_msg();
+        }
+        _ => {}
+    }
+}
+
+fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('h') => {
+            ui.input_mode = InputMode::LabelSearch {
+                pattern: String::from(""),
+            };
+            ui.app
+                .argument_msg(String::from("Label search: "), String::from(""));
+        }
+        KeyCode::Char('s') => {
+            ui.input_mode = InputMode::Search {
+                pattern: String::from(""),
+                target: SequenceSearchTarget::BiologicalSequence,
+            };
+            ui.app
+                .argument_msg(String::from("Sequence search (gaps ignored): "), String::from(""));
+        }
+        KeyCode::Char('g') => {
+            ui.input_mode = InputMode::Search {
+                pattern: String::from(""),
+                target: SequenceSearchTarget::AlignmentRow,
+            };
+            ui.app
+                .argument_msg(String::from("Alignment search: "), String::from(""));
         }
         _ => {}
     }

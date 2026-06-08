@@ -13,8 +13,8 @@ use crate::{
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
     seq_match::{
         MatchPosition,
-        regex_match_positions_naive,
-        regex_match_positions_gapaware,
+        SequenceSearchTarget,
+        regex_match_positions,
     },
 };
 
@@ -570,13 +570,13 @@ impl App {
         self.search_state = None;
     }
 
-    pub fn regex_search_seq(&mut self, pattern: &str) {
+    pub fn regex_search_seq(&mut self, pattern: &str, target: SequenceSearchTarget) {
         let try_re = Regex::new(pattern);
         match try_re {
             Ok(re) => {
                 let mut matches_by_rank: HashMap<usize, Vec<MatchPosition>> = HashMap::new();
                 for (rank, sequence) in self.alignment.sequences.iter().enumerate() {
-                    let seq_matches = regex_match_positions_gapaware(&re, sequence);
+                    let seq_matches = regex_match_positions(&re, sequence, target);
                     /*
                     let seq_matches = re
                         .find_iter(sequence)

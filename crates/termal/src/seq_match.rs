@@ -1,6 +1,12 @@
 use regex::Regex;
 
 #[derive(Clone, Copy, Debug, PartialEq)]
+pub enum SequenceSearchTarget {
+    BiologicalSequence, // ignores gaps, e.g. ACG matches ACG, A-CG, AC--G, etc.
+    AlignmentRow,       // doesn't - only A-CG matches A-CG
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct MatchPosition {
     start_col: usize,
     end_col: usize,
@@ -21,6 +27,17 @@ impl MatchPosition {
 
     pub fn end_col(&self) -> usize {
         self.end_col
+    }
+}
+
+pub fn regex_match_positions(re: &Regex, seq: &str, target: SequenceSearchTarget) -> Vec<MatchPosition> {
+    match target {
+        SequenceSearchTarget::BiologicalSequence => {
+            regex_match_positions_gapaware(re, seq)
+        }
+        SequenceSearchTarget::AlignmentRow => {
+            regex_match_positions_naive(re, seq)
+        }
     }
 }
 
