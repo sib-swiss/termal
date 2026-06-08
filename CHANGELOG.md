@@ -1,15 +1,18 @@
 # Changelog
 
-## [1.5.0]
+## [2.0.0]
 
 ### Added
 
 * Reference can now be set to an alignment sequence 
 * Diff mode
 * New column metric (coverage), and ability to change column metrics
+* Regex search within sequences can now ignore gaps
+* Prefix command for searches (/ and " still work)
 
 ### Changed
 
+* Sequence search ignores gaps by default
 * Removed obscure options from short help
 * Panel toggles now with prefix command 
 
