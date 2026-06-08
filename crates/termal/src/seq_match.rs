@@ -33,10 +33,10 @@ pub fn regex_match_positions_naive(re: &Regex, seq: &str) -> Vec<MatchPosition> 
 
 pub fn regex_match_positions_gapaware(re: &Regex, seq: &str) -> Vec<MatchPosition> {
     let gap_mapper = GapMapper::new(seq);
-    re.find_iter(&gap_mapper.degapped_seq) 
+    re.find_iter(&gap_mapper.degapped_seq)
     .map(|m| MatchPosition::new (
             gap_mapper.map_back(m.start()),
-            gap_mapper.map_back(m.end())
+            gap_mapper.map_back(m.end()-1) + 1,
     )).collect::<Vec<MatchPosition>>()
 }
 
@@ -117,6 +117,39 @@ mod tests {
             vec![
                 MatchPosition{start_col: 1, end_col: 4},
                 MatchPosition{start_col: 5, end_col: 10},
+            ]);
+    }
+
+    #[test]
+    fn test_regex_match_position_trail() {
+        let re = Regex::new("MANES").unwrap();
+        let seq = "MANES----H";
+        let match_pos = regex_match_positions_gapaware(&re, seq);
+        assert_eq!(match_pos,
+            vec![
+                MatchPosition{start_col: 0, end_col: 5},
+            ]);
+    }
+
+    #[test]
+    fn test_regex_match_position_lead() {
+        let re = Regex::new("MANES").unwrap();
+        let seq = "--MANES";
+        let match_pos = regex_match_positions_gapaware(&re, seq);
+        assert_eq!(match_pos,
+            vec![
+                MatchPosition{start_col: 2, end_col: 7},
+            ]);
+    }
+
+    #[test]
+    fn test_regex_match_position_lead_and_trail() {
+        let re = Regex::new("MANES").unwrap();
+        let seq = "--MANES----H";
+        let match_pos = regex_match_positions_gapaware(&re, seq);
+        assert_eq!(match_pos,
+            vec![
+                MatchPosition{start_col: 2, end_col: 7},
             ]);
     }
 }

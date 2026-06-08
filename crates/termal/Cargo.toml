@@ -1,5 +1,6 @@
 [package]
 name = "termal-msa"
+default-run = "termal"
 version = "1.4.0"
 edition = "2021"
 license = "MIT"
