@@ -6,12 +6,15 @@
 
 * Reference can now be set to an alignment sequence 
 * Diff mode
-* New column metric (coverage), and ability to change column metrics
-* Regex search within sequences can now ignore gaps
 * Prefix command for searches (/ and " still work)
 
 ### Changed
 
+* Regex search within sequences now ignores gaps. Old behavior (literal gaps)
+  now available through alignment search.
+* Old column metric (function of coverage and entropy) now separated into two
+  metrics, namely entropy and coverage (suitably normalized, etc.)
+* Harmonized modeline messages displayed by prefix commands
 * Sequence search ignores gaps by default
 * Removed obscure options from short help
 * Panel toggles now with prefix command 
@@ -55,8 +58,8 @@
 ### Changed
 
 * Modeline is now anchored to the bottom-left corner and displays:
-  * Pending command arguments (counts, search patterns)
-  * Current search match index (when applicable)
+* Pending command arguments (counts, search patterns)
+* Current search match index (when applicable)
 
 ### Fixed
 

@@ -60,13 +60,15 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         KeyCode::Char('c') if key_event.modifiers.contains(KeyModifiers::CONTROL) => done = true,
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,
         KeyCode::Char('"') => {
+            // shortcut for fh
             ui.input_mode = InputMode::LabelSearch {
                 pattern: String::from(""),
             };
             ui.app
-                .argument_msg(String::from("Label search: "), String::from(""));
+                .argument_msg(String::from("Hdr search: "), String::from(""));
         }
         KeyCode::Char('/') => {
+            // shortcut for fs
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
                 target: SequenceSearchTarget::BiologicalSequence,
@@ -91,7 +93,7 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         }
         KeyCode::Char('f') => {
             ui.input_mode = InputMode::SearchCmdPrefix;
-            ui.app.argument_msg(String::from("find: [h]eaders [s]equences [g]apped rows"), String::from(""));
+            ui.app.argument_msg(String::from("find: [h]eaders [s]equences [a]lignment"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -278,7 +280,7 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
                 pattern: String::from(""),
             };
             ui.app
-                .argument_msg(String::from("Label search: "), String::from(""));
+                .argument_msg(String::from("Hdr search: "), String::from(""));
         }
         KeyCode::Char('s') => {
             ui.input_mode = InputMode::Search {
@@ -288,7 +290,7 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
             ui.app
                 .argument_msg(String::from("Seq search: "), String::from(""));
         }
-        KeyCode::Char('g') => {
+        KeyCode::Char('a') => {
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
                 target: SequenceSearchTarget::AlignmentRow,

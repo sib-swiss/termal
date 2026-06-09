@@ -622,10 +622,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     // FIXME These computations arguably belong App-side - UI is concerned with display, not values.
     // That's exactly what App::current_col_metric_values() is for (but doesn't do the math yet).
     let col_metric_values = match ui.app.current_col_metric() {
-        ColMetric::Entropy => product(
-                &ui.app.alignment.densities,
-                &ones_complement(&normalize(&ui.app.alignment.entropies))
-            ),
+        ColMetric::Entropy => ones_complement(&normalize(&ui.app.alignment.entropies)),
         ColMetric::Coverage => normalize(&ui.app.alignment.densities),
     };
 

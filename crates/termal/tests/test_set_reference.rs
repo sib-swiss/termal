@@ -236,7 +236,7 @@ fn test_ref_spec_del_esc() {
                 last_line
             );
 
-            // Pressing Del then 'T' "Label search: MIST" to show in the modeline
+            // Pressing Del then 'T' "Hdr search: MIST" to show in the modeline
 
             key_handling::handle_key_press(ui, KeyCode::Delete.into());
             key_handling::handle_key_press(ui, utils::keypress('9'));

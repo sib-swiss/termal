@@ -30,7 +30,7 @@ fn current_header_marker(app: &App) -> String {
 
 #[test]
 /// Tests a whole label search, for a label that is found in the alignment.
-fn test_label_search() {
+fn test_header_search() {
     utils::with_rig(
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
@@ -39,7 +39,7 @@ fn test_label_search() {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
-            // Pressing " should cause "Label search:" to appear on last line
+            // Pressing " should cause "Hdr search:" to appear on last line
 
             key_handling::handle_key_press(ui, key_double_quote);
             // Don't forget to draw the UI after the key event...
@@ -50,8 +50,8 @@ fn test_label_search() {
             let last_line = utils::screen_line(&buffer, last_line_y);
 
             assert!(
-                last_line.contains("Label search:"),
-                "\"Label search\" not found on last line: {}",
+                last_line.contains("Hdr search:"),
+                "\"Hdr search\" not found on last line: {}",
                 last_line
             );
 
@@ -67,8 +67,8 @@ fn test_label_search() {
             let last_line = utils::screen_line(&buffer, last_line_y);
 
             assert!(
-                last_line.contains("Label search: KFJ"),
-                "\"Label search: KFJ\" not found on last line: {}",
+                last_line.contains("Hdr search: KFJ"),
+                "\"Hdr search: KFJ\" not found on last line: {}",
                 last_line
             );
 
@@ -196,8 +196,185 @@ fn test_label_search() {
 }
 
 #[test]
-/// Tests a label search, for a label that is NOT found in the alignment.
-fn test_missing_label_search() {
+/// Tests a header search, using the prefix command (fh) for a label that is found in the alignment.
+fn test_header_search_prefix() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |mut ui, terminal| {
+            //let key_double_quote = utils::keypress('"');
+            let last_line_y = SCREEN_HEIGHT - 1;
+
+            key_handling::handle_key_press(ui, utils::keypress('f'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let screen = utils::buffer_text(&buffer);
+            let expected = "find: [h]eaders [s]eq"; // screen is too narrow for whole msg
+            assert!(
+                screen.contains(expected),
+                "\"{}\" not found on screen:\n{}", expected,
+                screen
+            );
+            
+            key_handling::handle_key_press(ui, utils::keypress('h'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let screen = utils::buffer_text(&buffer);
+            assert!(
+                screen.contains("Hdr search:"),
+                "\"Seq search:\" not found on screen:\n{}",
+                screen
+            );
+
+            // Pressing K, F, and J should add 'KFJ' to the modeline argument
+            //
+            key_handling::handle_key_press(ui, utils::keypress('K'));
+            key_handling::handle_key_press(ui, utils::keypress('F'));
+            key_handling::handle_key_press(ui, utils::keypress('J'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            assert!(
+                last_line.contains("Hdr search: KFJ"),
+                "\"Hdr search: KFJ\" not found on last line: {}",
+                last_line
+            );
+
+            // Pressing Enter should cause (1) a jump to the 1st matching seq (219) and (2) the text
+            // "match #1/8" to appear in the modeline. The 1st match happens to be 14 lines from screen
+            // bottom.
+
+            let first_match_line_y = SCREEN_HEIGHT - 14;
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let first_match_line = utils::screen_line(&buffer, first_match_line_y);
+
+            assert!(
+                first_match_line.contains("219│KFJ"), // might as well check line #
+                "\"KFJ\" not found on l. {}: {}",
+                first_match_line_y,
+                first_match_line
+            );
+
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            assert!(
+                last_line.contains("match #1/8"),
+                "\"match #1/8\" not found on last line: {}",
+                last_line
+            );
+
+            // Pressing 'n' should cause the modeline to change to "match #2/8"
+
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            assert!(
+                last_line.contains("match #2/8"),
+                "\"match #2/8\" not found on last line: {}",
+                last_line
+            );
+
+            // Pressing 'n' another 7 times should cause the modeline to cycle back to "match #1/8"
+
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            key_handling::handle_key_press(ui, utils::keypress('n'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            assert!(
+                last_line.contains("match #1/8"),
+                "\"match #1/8\" not found on last line: {}",
+                last_line
+            );
+
+            // Pressing 'p' should cause the modeline to change to "match #8/8"
+
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            let expected = "match #8/8";
+            assert!(
+                last_line.contains(expected),
+                "\"{}\" not found on last line: {}",
+                expected,
+                last_line
+            );
+
+            // Pressing 'n' another 7 times should cause the modeline to cycle back to "match #1/8"
+
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            key_handling::handle_key_press(ui, utils::keypress('p'));
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            let expected = "match #1/8";
+            assert!(
+                last_line.contains(expected),
+                "\"{}\" not found on last line: {}",
+                expected,
+                last_line
+            );
+
+            // Pressing Esc should clear modeline
+
+            key_handling::handle_key_press(ui, KeyCode::Esc.into());
+            terminal
+                .draw(|f| render::render_ui(f, &mut ui))
+                .expect("update");
+            let buffer = terminal.backend().buffer();
+            let last_line = utils::screen_line(&buffer, last_line_y);
+
+            let expected = "└─────────────────└─";
+            assert!(
+                last_line.contains(expected),
+                "\"{}\" not found on last line: {}",
+                expected,
+                last_line
+            );
+        },
+    );
+}
+
+#[test]
+/// Tests a label search, for a label that is NOT found in the alignment, using the prefix command
+/// fh
+fn test_missing_header_search_prefix() {
     utils::with_rig(
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
@@ -219,7 +396,7 @@ fn test_missing_label_search() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Label search: MISS";
+            let expected = "Hdr search: MISS";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -266,7 +443,7 @@ fn test_missing_label_search() {
 
 #[test]
 /// Tests that the Del key works as expected
-fn test_label_search_del() {
+fn test_header_search_del() {
     utils::with_rig(
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
@@ -288,7 +465,7 @@ fn test_label_search_del() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Label search: MISS";
+            let expected = "Hdr search: MISS";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -296,7 +473,7 @@ fn test_label_search_del() {
                 last_line
             );
 
-            // Pressing Del then 'T' "Label search: MIST" to show in the modeline
+            // Pressing Del then 'T' "Hdr search: MIST" to show in the modeline
 
             key_handling::handle_key_press(ui, KeyCode::Delete.into());
             key_handling::handle_key_press(ui, utils::keypress('T'));
@@ -307,7 +484,7 @@ fn test_label_search_del() {
             let buffer = terminal.backend().buffer();
             let last_line = utils::screen_line(&buffer, last_line_y);
 
-            let expected = "Label search: MIST";
+            let expected = "Hdr search: MIST";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -336,7 +513,7 @@ fn test_label_search_del() {
 }
 
 #[test]
-fn test_label_search_current_match_survives_reordering() {
+fn test_header_search_current_match_survives_reordering() {
     let seq_file = fasta::read_fasta_file("tests/data/test-motion.msa").expect("read");
     let aln = termal_alignment::Alignment::from_file(seq_file);
     let mut app = App::new("TEST", aln, None);
@@ -388,7 +565,7 @@ fn test_label_search_current_match_survives_reordering() {
 #[test]
 /// Tests that passing a malformed regex causes the expected error message to appear in the
 /// modeline
-fn test_label_search_malformed() {
+fn test_header_search_malformed() {
     utils::with_rig(
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
