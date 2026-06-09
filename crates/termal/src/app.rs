@@ -785,14 +785,14 @@ mod tests {
 
     #[test]
     fn test_order_00() {
-        assert_eq!(vec![2, 1, 0], order(&vec![20.0, 15.0, 10.0]));
+        assert_eq!(vec![2, 1, 0], order(&[20.0, 15.0, 10.0]));
     }
 
     #[test]
     fn test_order_05() {
         assert_eq!(
             vec![3, 2, 0, 1, 4],
-            order(&vec![12.23, 34.89, 7.0, -23.2, 100.0]),
+            order(&[12.23, 34.89, 7.0, -23.2, 100.0]),
         );
     }
 

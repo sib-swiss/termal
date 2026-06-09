@@ -20,18 +20,16 @@ fn test_diff_mode() {
         "tests/data/test-diff-modes.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = 9;
 
             // Pressing d should cause "d... [dn]" to appear on last line
 
             key_handling::handle_key_press(ui, utils::keypress('d'));
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expect = "diff mode: [d]iff [n]ormal";
             assert!(
@@ -45,12 +43,10 @@ fn test_diff_mode() {
             // happens to be identical to the reference (which by default is the consensus).
             //
             key_handling::handle_key_press(ui, utils::keypress('d'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "-----";
             assert!(
                 line_1.contains(expect),
@@ -61,7 +57,7 @@ fn test_diff_mode() {
 
             // Seq 2 should be ----A-, as it only differs from the ref at position 5.
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "---A-";
             assert!(
                 line_2.contains(expect),
@@ -72,7 +68,7 @@ fn test_diff_mode() {
 
             // Seq 3 should be -C-T--, as it differs at 2 and 4
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "-C-T-";
             assert!(
                 line_3.contains(expect),
@@ -87,13 +83,11 @@ fn test_diff_mode() {
             key_handling::handle_key_press(ui, utils::keypress('3'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
 
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
             // Seq 1 should be -G-C--
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "-G-C-";
             assert!(
                 line_1.contains(expect),
@@ -104,7 +98,7 @@ fn test_diff_mode() {
 
             // Seq 2 should be -G-CA-, as it only differs from the ref at position 5.
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "-G-CA-";
             assert!(
                 line_2.contains(expect),
@@ -115,7 +109,7 @@ fn test_diff_mode() {
 
             // Seq 3 should be unchanged, since it is the now reference
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "ACGTTC";
             assert!(
                 line_3.contains(expect),
@@ -127,13 +121,11 @@ fn test_diff_mode() {
             // Pressing 'D' should revert to normal mode
 
             key_handling::handle_key_press(ui, utils::keypress('D'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
             // Seq 1 should be AGGCTC
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "AGGCTC";
             assert!(
                 line_1.contains(expect),
@@ -144,7 +136,7 @@ fn test_diff_mode() {
 
             // Seq 2 should be AGGCAC
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "AGGCAC";
             assert!(
                 line_2.contains(expect),
@@ -156,7 +148,7 @@ fn test_diff_mode() {
             // Seq 3 should be AGCTTC (not because it's the ref (which it still is), but because
             // we're back in normal mode).
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "ACGTTC";
             assert!(
                 line_3.contains(expect),
@@ -174,13 +166,11 @@ fn test_diff_mode() {
             // back to normal
             key_handling::handle_key_press(ui, utils::keypress('d'));
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
             // Seq 1 should be AGGCTC
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "AGGCTC";
             assert!(
                 line_1.contains(expect),
@@ -191,7 +181,7 @@ fn test_diff_mode() {
 
             // Seq 2 should be AGGCAC
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "AGGCAC";
             assert!(
                 line_2.contains(expect),
@@ -203,7 +193,7 @@ fn test_diff_mode() {
             // Seq 3 should be AGCTTC (not because it's the ref (which it still is), but because
             // we're back in normal mode).
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "ACGTTC";
             assert!(
                 line_3.contains(expect),
@@ -222,9 +212,7 @@ fn test_diff_mode_reorder() {
         "tests/data/test-diff-modes.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
-            let last_line_y = 9;
-
+        |ui, terminal| {
             // Select seq 3 as reference
 
             key_handling::handle_key_press(ui, utils::keypress('R'));
@@ -236,16 +224,14 @@ fn test_diff_mode_reorder() {
             key_handling::handle_key_press(ui, utils::keypress('d'));
             key_handling::handle_key_press(ui, utils::keypress('d'));
 
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
             // No reordering yet: rank order is 1, 2, 3
 
             // Seq 1 should be -G-C--
 
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "-G-C-";
             assert!(
                 line_1.contains(expect),
@@ -256,7 +242,7 @@ fn test_diff_mode_reorder() {
 
             // Seq 2 should be -G-CA-, as it only differs from the ref at position 5.
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "-G-CA-";
             assert!(
                 line_2.contains(expect),
@@ -267,7 +253,7 @@ fn test_diff_mode_reorder() {
 
             // Seq 3 should be unchanged, since it is the reference
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "ACGTTC";
             assert!(
                 line_3.contains(expect),
@@ -279,14 +265,12 @@ fn test_diff_mode_reorder() {
             // Order by increasing similarity to reference: rank order is now 2, 1, 3
 
             key_handling::handle_key_press(ui, utils::keypress('o'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
             // Seq 1 should be rank 2 (Epipactis) -G-CA-
 
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "-G-CA-";
             assert!(
                 line_1.contains(expect),
@@ -297,7 +281,7 @@ fn test_diff_mode_reorder() {
 
             // Seq 2 should be rank 1,  -G-C--
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "-G-C--";
             assert!(
                 line_2.contains(expect),
@@ -308,7 +292,7 @@ fn test_diff_mode_reorder() {
 
             // Seq 3 should be ACGTTC because it's the ref
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "ACGTTC";
             assert!(
                 line_3.contains(expect),
@@ -320,14 +304,12 @@ fn test_diff_mode_reorder() {
             // Order by decreasing similarity to reference: rank order is now 3, 1, 2
 
             key_handling::handle_key_press(ui, utils::keypress('o'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
             // Seq 1 should be rank 1 (Limodorum), IOW the reference
 
-            let line_1 = utils::screen_line(&buffer, 1);
+            let line_1 = utils::screen_line(buffer, 1);
             let expect = "ACGTTC";
             assert!(
                 line_1.contains(expect),
@@ -338,7 +320,7 @@ fn test_diff_mode_reorder() {
 
             // Seq 2 should be rank 1 (Anacamptis),  -G-C--
 
-            let line_2 = utils::screen_line(&buffer, 2);
+            let line_2 = utils::screen_line(buffer, 2);
             let expect = "-G-C--";
             assert!(
                 line_2.contains(expect),
@@ -349,7 +331,7 @@ fn test_diff_mode_reorder() {
 
             // Seq 3 should be rank 2 (Epipactis) -G-CA-
 
-            let line_3 = utils::screen_line(&buffer, 3);
+            let line_3 = utils::screen_line(buffer, 3);
             let expect = "-G-CA-";
             assert!(
                 line_3.contains(expect),

@@ -171,139 +171,142 @@ pub fn run() -> Result<(), TermalError> {
         return Ok(());
     }
 
-    let aln_fname = cli.aln_filename.as_ref().expect("No alignment filename given (pass -h for help).");
+    let aln_fname = cli
+        .aln_filename
+        .as_ref()
+        .expect("No alignment filename given (pass -h for help).");
 
-        let seq_file = match cli.format {
-            SeqFileFormat::FastA => read_fasta_file(&aln_fname)?,
-            SeqFileFormat::Stockholm => read_stockholm_file(&aln_fname)?,
-        };
-        let alignment = Alignment::from_file(seq_file);
-        let mut ordering_err_msg: Option<String> = None;
-        let mut user_ordering = match cli.user_order {
-            Some(ref fname) => {
-                // TODO: should be called from_path()
-                let get_ord_vec = read_user_ordering(fname);
-                match get_ord_vec {
-                    Ok(ord_vec) => Some(ord_vec),
-                    Err(_) => {
-                        ordering_err_msg = Some(format!("Error reading ordering file {}", fname));
-                        None // => App ignores bad user ordering
-                    }
+    let seq_file = match cli.format {
+        SeqFileFormat::FastA => read_fasta_file(aln_fname)?,
+        SeqFileFormat::Stockholm => read_stockholm_file(aln_fname)?,
+    };
+    let alignment = Alignment::from_file(seq_file);
+    let mut ordering_err_msg: Option<String> = None;
+    let mut user_ordering = match cli.user_order {
+        Some(ref fname) => {
+            // TODO: should be called from_path()
+            let get_ord_vec = read_user_ordering(fname);
+            match get_ord_vec {
+                Ok(ord_vec) => Some(ord_vec),
+                Err(_) => {
+                    ordering_err_msg = Some(format!("Error reading ordering file {}", fname));
+                    None // => App ignores bad user ordering
                 }
             }
-            None => None,
-        };
-        // Check for discrepancies beween the user-specied ordering and alignment headers. The two
-        // sets should be identical.
-        if let Some(ref ord_vec) = user_ordering {
-            let mut uo_clone = ord_vec.clone();
-            let mut ah_clone = alignment.headers.clone();
-            uo_clone.sort();
-            ah_clone.sort();
-            if uo_clone != ah_clone {
-                ordering_err_msg = Some(String::from("Discrepancies in ordering vs alignment"));
-                // App must ignore bad user ordering
-                user_ordering = None;
-            }
-        };
-        let mut app = App::new(&aln_fname, alignment, user_ordering);
-        if let Some(msg) = ordering_err_msg {
-            app.error_msg(msg);
         }
-
-        if cli.info {
-            info!("Running in debug mode.");
-            app.output_info();
-            return Ok(());
+        None => None,
+    };
+    // Check for discrepancies beween the user-specied ordering and alignment headers. The two
+    // sets should be identical.
+    if let Some(ref ord_vec) = user_ordering {
+        let mut uo_clone = ord_vec.clone();
+        let mut ah_clone = alignment.headers.clone();
+        uo_clone.sort();
+        ah_clone.sort();
+        if uo_clone != ah_clone {
+            ordering_err_msg = Some(String::from("Discrepancies in ordering vs alignment"));
+            // App must ignore bad user ordering
+            user_ordering = None;
         }
+    };
+    let mut app = App::new(aln_fname, alignment, user_ordering);
+    if let Some(msg) = ordering_err_msg {
+        app.error_msg(msg);
+    }
 
-        let mut app_ui = UI::new(&mut app);
+    if cli.info {
+        info!("Running in debug mode.");
+        app.output_info();
+        return Ok(());
+    }
 
-        if let Some(path) = &cli.color_map {
-            app_ui.add_user_colormap(path);
-            app_ui.select_first_colormap();
-        }
+    let mut app_ui = UI::new(&mut app);
 
-        if cli.dry_run {
-            show_params(&aln_fname, &cli, &app_ui);
-            return Ok(());
-        }
+    if let Some(path) = &cli.color_map {
+        app_ui.add_user_colormap(path);
+        app_ui.select_first_colormap();
+    }
 
-        stdout().execute(EnterAlternateScreen)?;
-        enable_raw_mode()?;
+    if cli.dry_run {
+        show_params(aln_fname, &cli, &app_ui);
+        return Ok(());
+    }
 
-        let backend = CrosstermBackend::new(stdout());
-        let viewport: Viewport;
-        // Fix viewport dimensions IFF supplied (mainly for tests)
-        //
-        if let Some(width) = cli.width {
-            // height must be defined too (see 'requires' in struct Cli above)
-            let height = cli.height.unwrap();
-            viewport = Viewport::Fixed(Rect::new(0, 0, width, height));
-        } else {
-            viewport = Viewport::Fullscreen;
-        }
-        let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
-        terminal.clear()?;
+    stdout().execute(EnterAlternateScreen)?;
+    enable_raw_mode()?;
 
-        if cli.no_scrollbars {
-            app_ui.disable_scrollbars();
-        }
-        if cli.no_color {
-            app_ui.set_monochrome();
-        }
-        if cli.no_zoombox {
-            app_ui.set_zoombox(false);
-        }
-        if cli.no_zb_guides {
-            app_ui.set_zoombox_guides(false);
-        }
-        if cli.hide_labels_pane {
-            app_ui.set_left_pane_width(0);
-        }
-        if cli.hide_bottom_pane {
-            app_ui.set_bottom_pane_height(0);
-        }
+    let backend = CrosstermBackend::new(stdout());
+    let viewport: Viewport;
+    // Fix viewport dimensions IFF supplied (mainly for tests)
+    //
+    if let Some(width) = cli.width {
+        // height must be defined too (see 'requires' in struct Cli above)
+        let height = cli.height.unwrap();
+        viewport = Viewport::Fixed(Rect::new(0, 0, width, height));
+    } else {
+        viewport = Viewport::Fullscreen;
+    }
+    let mut terminal = Terminal::with_options(backend, TerminalOptions { viewport })?;
+    terminal.clear()?;
 
-        let poll_wait = Duration::from_millis(cli.poll_wait_time);
-        let frame_interval = Duration::from_millis(50); // FIXME: constant or option
-        let mut last_draw: Instant;
+    if cli.no_scrollbars {
+        app_ui.disable_scrollbars();
+    }
+    if cli.no_color {
+        app_ui.set_monochrome();
+    }
+    if cli.no_zoombox {
+        app_ui.set_zoombox(false);
+    }
+    if cli.no_zb_guides {
+        app_ui.set_zoombox_guides(false);
+    }
+    if cli.hide_labels_pane {
+        app_ui.set_left_pane_width(0);
+    }
+    if cli.hide_bottom_pane {
+        app_ui.set_bottom_pane_height(0);
+    }
 
-        terminal.draw(|f| render_ui(f, &mut app_ui))?;
-        last_draw = Instant::now();
+    let poll_wait = Duration::from_millis(cli.poll_wait_time);
+    let frame_interval = Duration::from_millis(50); // FIXME: constant or option
+    let mut last_draw: Instant;
 
-        // main loop
-        loop {
-            // Wait for an event (or timeout)
-            // TODO: redraw only if 'dirty', i.e. visuals have changes (most keys, but not e.g.
-            // when scrolling past a boundary (=> no change). Have handle_key_press() return (done,
-            // dirty) (i.e. a tuple of booleans).
-            //let mut dirty = true;
-            if event::poll(poll_wait)? {
-                match event::read()? {
-                    event::Event::Key(key) if key.kind == KeyEventKind::Press => {
-                        let done = handle_key_press(&mut app_ui, key);
-                        if done {
-                            break;
-                        }
+    terminal.draw(|f| render_ui(f, &mut app_ui))?;
+    last_draw = Instant::now();
 
-                        // Only draw if enough time has elapsed
-                        if last_draw.elapsed() >= frame_interval {
-                            terminal.draw(|f| render_ui(f, &mut app_ui))?;
-                            last_draw = Instant::now();
-                        }
+    // main loop
+    loop {
+        // Wait for an event (or timeout)
+        // TODO: redraw only if 'dirty', i.e. visuals have changes (most keys, but not e.g.
+        // when scrolling past a boundary (=> no change). Have handle_key_press() return (done,
+        // dirty) (i.e. a tuple of booleans).
+        //let mut dirty = true;
+        if event::poll(poll_wait)? {
+            match event::read()? {
+                event::Event::Key(key) if key.kind == KeyEventKind::Press => {
+                    let done = handle_key_press(&mut app_ui, key);
+                    if done {
+                        break;
                     }
-                    event::Event::Resize(_, _) => {
+
+                    // Only draw if enough time has elapsed
+                    if last_draw.elapsed() >= frame_interval {
                         terminal.draw(|f| render_ui(f, &mut app_ui))?;
                         last_draw = Instant::now();
                     }
-                    _ => {}
                 }
+                event::Event::Resize(_, _) => {
+                    terminal.draw(|f| render_ui(f, &mut app_ui))?;
+                    last_draw = Instant::now();
+                }
+                _ => {}
             }
         }
+    }
 
-        stdout().execute(LeaveAlternateScreen)?;
-        disable_raw_mode()?;
+    stdout().execute(LeaveAlternateScreen)?;
+    disable_raw_mode()?;
 
-        Ok(())
+    Ok(())
 }

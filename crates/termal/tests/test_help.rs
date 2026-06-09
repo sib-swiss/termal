@@ -18,11 +18,9 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('?'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer().clone();
             let screen = utils::buffer_text(&buffer);
 
@@ -45,9 +43,7 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
             for _ in 0..20 {
                 key_handling::handle_key_press(ui, utils::keypress('j'));
             }
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer().clone();
             let scrolled_screen = utils::buffer_text(&buffer);
 
@@ -63,9 +59,7 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
             );
 
             key_handling::handle_key_press(ui, utils::keypress('g'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer().clone();
             let reset_screen = utils::buffer_text(&buffer);
 
@@ -76,9 +70,7 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
             );
 
             key_handling::handle_key_press(ui, utils::key(KeyCode::Esc));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer().clone();
             let closed_screen = utils::buffer_text(&buffer);
 
@@ -102,12 +94,10 @@ fn help_dialog_opens_after_pending_count_too() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('3'));
             key_handling::handle_key_press(ui, utils::keypress('?'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let screen = utils::buffer_text(terminal.backend().buffer());
 
             assert!(

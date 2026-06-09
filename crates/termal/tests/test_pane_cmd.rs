@@ -20,18 +20,16 @@ fn test_wl() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
 
             // Pressing w should cause "w... [lbf<Esc>]" to appear on last line
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
@@ -44,11 +42,9 @@ fn test_wl() {
             // Pressing l should cause the left pane to disappear
 
             key_handling::handle_key_press(ui, utils::keypress('l'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             // The last line should contain nothing but border, in particular, no vertical separator
             let expected =
@@ -64,11 +60,9 @@ fn test_wl() {
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             key_handling::handle_key_press(ui, utils::keypress('l'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             // The last line should show the separator again
             let expected = "└─────────────────└─";
@@ -90,18 +84,16 @@ fn test_wb() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
             let sep_line_y = 6;
 
             // Initially, line 6 should contain a separator between the top and bottom panes.
 
             // Draw the UI
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let sep_line = utils::screen_line(&buffer, sep_line_y);
+            let sep_line = utils::screen_line(buffer, sep_line_y);
 
             let expected = "└───└──────────└──└";
             assert!(
@@ -115,11 +107,9 @@ fn test_wb() {
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
@@ -134,11 +124,9 @@ fn test_wb() {
 
             key_handling::handle_key_press(ui, utils::keypress('b'));
             // Draw the UI
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let sep_line = utils::screen_line(&buffer, sep_line_y);
+            let sep_line = utils::screen_line(buffer, sep_line_y);
 
             let expected =
                 "│  6│LEACOLDL_0│█▊│------------MSDT-----------------------NSTSQNNTNS--------CGC║";
@@ -153,11 +141,9 @@ fn test_wb() {
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             key_handling::handle_key_press(ui, utils::keypress('b'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let sep_line = utils::screen_line(&buffer, sep_line_y);
+            let sep_line = utils::screen_line(buffer, sep_line_y);
 
             let expected = "└───└──────────└──└";
             assert!(
@@ -177,7 +163,7 @@ fn test_wf() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
             let sep_line_y = 6;
 
@@ -185,11 +171,9 @@ fn test_wf() {
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
@@ -203,11 +187,9 @@ fn test_wf() {
 
             key_handling::handle_key_press(ui, utils::keypress('f'));
             // Draw the UI
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let sep_line = utils::screen_line(&buffer, sep_line_y);
+            let sep_line = utils::screen_line(buffer, sep_line_y);
 
             // Line 6 should now contain sequence and no header
             let expected =
@@ -223,11 +205,9 @@ fn test_wf() {
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             key_handling::handle_key_press(ui, utils::keypress('f'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let sep_line = utils::screen_line(&buffer, sep_line_y);
+            let sep_line = utils::screen_line(buffer, sep_line_y);
 
             // Line 6 should contain the separator again
             let expected = "└───└──────────└──└";
@@ -248,18 +228,16 @@ fn test_w_esc() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
 
             // Pressing w should cause "w... [lbf<Esc>]" to appear on last line
 
             key_handling::handle_key_press(ui, utils::keypress('w'));
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "toggle pane: [l]eft [b]ottom [f]ull";
             assert!(
@@ -272,11 +250,9 @@ fn test_w_esc() {
             // Pressing Esc should quit pane prefix mode
             //
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             // There should be no modeline message anymore
             let expected = "└─────────────────└─";

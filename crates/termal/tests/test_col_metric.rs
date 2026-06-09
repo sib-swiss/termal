@@ -3,16 +3,9 @@
 
 mod common;
 
-use crossterm::event::KeyCode;
-
 use crate::common::utils;
 
-use termal_alignment::seq::fasta;
 use termal_msa::ui::{key_handling, render};
-use termal_msa::{
-    app::{App, JumpTarget},
-    ui::render::render_ui,
-};
 
 const SCREEN_WIDTH: u16 = 30;
 const SCREEN_HEIGHT: u16 = 12;
@@ -24,18 +17,16 @@ fn test_header_search() {
         "tests/data/test-seq-search.fas",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let penultimate_line_y = SCREEN_HEIGHT - 2;
 
             // Pressing c should cause the column metric to switch to 'coverage'
             key_handling::handle_key_press(ui, utils::keypress('c'));
 
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let penultimate_line = utils::screen_line(&buffer, penultimate_line_y);
+            let penultimate_line = utils::screen_line(buffer, penultimate_line_y);
 
             let expected = "Metric: coverage │██████████";
             assert!(
@@ -52,11 +43,9 @@ fn test_header_search() {
             key_handling::handle_key_press(ui, utils::keypress('C'));
 
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let penultimate_line = utils::screen_line(&buffer, penultimate_line_y);
+            let penultimate_line = utils::screen_line(buffer, penultimate_line_y);
 
             let expected = "Metric: entropy  │▂▂ ▂ ▂▂█ █";
             assert!(

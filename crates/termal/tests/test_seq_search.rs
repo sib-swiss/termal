@@ -23,13 +23,11 @@ fn test_sequence_search() {
         "tests/data/test-seq-search.fas",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('/'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Seq search:"),
                 "\"Seq search:\" not found on screen:\n{}",
@@ -39,11 +37,9 @@ fn test_sequence_search() {
             key_handling::handle_key_press(ui, utils::keypress('t'));
             key_handling::handle_key_press(ui, utils::keypress('a'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Seq search: tat"),
                 "\"Seq search: tat\" not found on screen:\n{}",
@@ -51,11 +47,9 @@ fn test_sequence_search() {
             );
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #1/4"),
                 "\"match #1/4\" not found on screen:\n{}",
@@ -64,11 +58,9 @@ fn test_sequence_search() {
             assert_eq!(ui.leftmost_col(), 5);
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #2/4"),
                 "\"match #2/4\" not found on screen:\n{}",
@@ -77,11 +69,9 @@ fn test_sequence_search() {
             assert_eq!(ui.leftmost_col(), 0);
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #3/4"),
                 "\"match #3/4\" not found on screen:\n{}",
@@ -90,11 +80,9 @@ fn test_sequence_search() {
             assert_eq!(ui.leftmost_col(), 5);
 
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #2/4"),
                 "\"match #2/4\" not found on screen:\n{}",
@@ -111,13 +99,11 @@ fn test_sequence_search_prefix() {
         "tests/data/test-seq-search.fas",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('f'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             let expected = "find: [h]eaders [s]eq"; // screen is too narrow for whole msg
             assert!(
                 screen.contains(expected),
@@ -127,11 +113,9 @@ fn test_sequence_search_prefix() {
             );
 
             key_handling::handle_key_press(ui, utils::keypress('s'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Seq search:"),
                 "\"Seq search:\" not found on screen:\n{}",
@@ -141,11 +125,9 @@ fn test_sequence_search_prefix() {
             key_handling::handle_key_press(ui, utils::keypress('t'));
             key_handling::handle_key_press(ui, utils::keypress('a'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Seq search: tat"),
                 "\"Seq search: tat\" not found on screen:\n{}",
@@ -153,11 +135,9 @@ fn test_sequence_search_prefix() {
             );
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #1/4"),
                 "\"match #1/4\" not found on screen:\n{}",
@@ -166,11 +146,9 @@ fn test_sequence_search_prefix() {
             assert_eq!(ui.leftmost_col(), 5);
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #2/4"),
                 "\"match #2/4\" not found on screen:\n{}",
@@ -179,11 +157,9 @@ fn test_sequence_search_prefix() {
             assert_eq!(ui.leftmost_col(), 0);
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #3/4"),
                 "\"match #3/4\" not found on screen:\n{}",
@@ -192,11 +168,9 @@ fn test_sequence_search_prefix() {
             assert_eq!(ui.leftmost_col(), 5);
 
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #2/4"),
                 "\"match #2/4\" not found on screen:\n{}",
@@ -238,16 +212,14 @@ fn test_sequence_search_respects_reordered_traversal() {
         "tests/data/test-seq-search.fas",
         SCREEN_WIDTH,
         REORDERED_SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('o'));
             key_handling::handle_key_press(ui, utils::keypress('/'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
             key_handling::handle_key_press(ui, utils::keypress('a'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let screen = utils::buffer_text(terminal.backend().buffer());
 
             assert!(
@@ -263,9 +235,7 @@ fn test_sequence_search_respects_reordered_traversal() {
             );
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let screen = utils::buffer_text(terminal.backend().buffer());
 
             assert!(
@@ -290,13 +260,11 @@ fn test_biol_seq_search() {
         "tests/data/test-seq-search-gapped.fas",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('/'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Seq search:"),
                 "\"Seq search:\" not found on screen:\n{}",
@@ -305,11 +273,9 @@ fn test_biol_seq_search() {
 
             key_handling::handle_key_press(ui, utils::keypress('c'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Seq search: ct"),
                 "\"Seq search: ct\" not found on screen:\n{}",
@@ -321,11 +287,9 @@ fn test_biol_seq_search() {
             // have gaps
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #1/2"),
                 "\"match #1/2\" not found on screen:\n{}",
@@ -342,14 +306,12 @@ fn test_alignment_search() {
         "tests/data/test-seq-search-gapped.fas",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             key_handling::handle_key_press(ui, utils::keypress('f'));
             key_handling::handle_key_press(ui, utils::keypress('a'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Aln search:"),
                 "\"Aln search:\" not found on screen:\n{}",
@@ -359,11 +321,9 @@ fn test_alignment_search() {
             key_handling::handle_key_press(ui, utils::keypress('c'));
             key_handling::handle_key_press(ui, utils::keypress('-'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Aln search: c-t"),
                 "\"Aln search: c-t\" not found on screen:\n{}",
@@ -374,11 +334,9 @@ fn test_alignment_search() {
             // match.
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("match #1/1"),
                 "\"match #1/1\" not found on screen:\n{}",
@@ -390,11 +348,9 @@ fn test_alignment_search() {
 
             key_handling::handle_key_press(ui, utils::keypress('f'));
             key_handling::handle_key_press(ui, utils::keypress('a'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Aln search:"),
                 "\"Aln search:\" not found on screen:\n{}",
@@ -403,11 +359,9 @@ fn test_alignment_search() {
 
             key_handling::handle_key_press(ui, utils::keypress('c'));
             key_handling::handle_key_press(ui, utils::keypress('t'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Aln search: ct"),
                 "\"Aln search: ct\" not found on screen:\n{}",
@@ -417,11 +371,9 @@ fn test_alignment_search() {
             // After pressing Enter, the modeline should display 'No match'.
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             let expected = "No match.";
             assert!(
                 screen.contains(expected),

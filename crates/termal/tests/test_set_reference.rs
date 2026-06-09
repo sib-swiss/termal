@@ -21,7 +21,7 @@ fn test_set_reference() {
         "tests/data/test-set-ref.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
             let ref_line_y = SCREEN_HEIGHT - 3;
             let last_seq_line_y = 5;
@@ -30,11 +30,9 @@ fn test_set_reference() {
             // "tATGCATATG".
 
             // Draw the UI
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let ref_line = utils::screen_line(&buffer, ref_line_y);
+            let ref_line = utils::screen_line(buffer, ref_line_y);
 
             // Check the consensus
             assert!(
@@ -47,11 +45,9 @@ fn test_set_reference() {
 
             key_handling::handle_key_press(ui, utils::keypress('R'));
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("Set ref (#):"),
@@ -62,11 +58,9 @@ fn test_set_reference() {
             // Pressing 1 should add '1' to the modeline argument
             //
             key_handling::handle_key_press(ui, utils::keypress('1'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("Set ref (#): 1"),
@@ -78,11 +72,9 @@ fn test_set_reference() {
             // 1, and (2) "Ref: #1" to appear in the bottom-left pane.
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let ref_line = utils::screen_line(&buffer, ref_line_y);
+            let ref_line = utils::screen_line(buffer, ref_line_y);
 
             // Check for "Ref: #1"
             assert!(
@@ -103,11 +95,9 @@ fn test_set_reference() {
             // namely sequence 1 itself.
 
             key_handling::handle_key_press(ui, utils::keypress('o'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_seq_line = utils::screen_line(&buffer, last_seq_line_y);
+            let last_seq_line = utils::screen_line(buffer, last_seq_line_y);
 
             // The last sequence should be seq 1, header "frugilegus" and sequence "catgcatatg", and
             // maximal similarity (██):
@@ -124,12 +114,10 @@ fn test_set_reference() {
 
             key_handling::handle_key_press(ui, utils::keypress('R'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_seq_line = utils::screen_line(&buffer, last_seq_line_y);
-            let ref_line = utils::screen_line(&buffer, ref_line_y);
+            let last_seq_line = utils::screen_line(buffer, last_seq_line_y);
+            let ref_line = utils::screen_line(buffer, ref_line_y);
 
             // The last sequence should now be seq 4, header "corone"... OR seq 3 "corax" - they
             // have the same sequence. So I'm not going to check the header.
@@ -158,7 +146,7 @@ fn test_invalid_ref() {
         "tests/data/test-set-ref.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
 
             // Pressing R0<Enter> should trigger a warning that no such ref exists, since there
@@ -168,11 +156,9 @@ fn test_invalid_ref() {
             key_handling::handle_key_press(ui, utils::keypress('0'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expect = "Ref # must be > 0";
             assert!(
@@ -189,11 +175,9 @@ fn test_invalid_ref() {
             key_handling::handle_key_press(ui, utils::keypress('6'));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expect = "Ref # too large (max 5)";
             assert!(
@@ -213,7 +197,7 @@ fn test_ref_spec_del_esc() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let last_line_y = SCREEN_HEIGHT - 1;
 
             // We enter ref spec (R), then start entering a ref #
@@ -222,11 +206,9 @@ fn test_ref_spec_del_esc() {
             key_handling::handle_key_press(ui, utils::keypress('1'));
             key_handling::handle_key_press(ui, utils::keypress('2'));
             key_handling::handle_key_press(ui, utils::keypress('3'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "Set ref (#): 123";
             assert!(
@@ -241,11 +223,9 @@ fn test_ref_spec_del_esc() {
             key_handling::handle_key_press(ui, KeyCode::Delete.into());
             key_handling::handle_key_press(ui, utils::keypress('9'));
 
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "Set ref (#): 129";
             assert!(
@@ -258,11 +238,9 @@ fn test_ref_spec_del_esc() {
             // Pressing Esc should clear modeline
 
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "└─────────────────└─";
             assert!(

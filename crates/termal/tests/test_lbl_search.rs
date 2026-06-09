@@ -35,7 +35,7 @@ fn test_header_search() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
@@ -43,11 +43,9 @@ fn test_header_search() {
 
             key_handling::handle_key_press(ui, key_double_quote);
             // Don't forget to draw the UI after the key event...
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("Hdr search:"),
@@ -60,11 +58,9 @@ fn test_header_search() {
             key_handling::handle_key_press(ui, utils::keypress('K'));
             key_handling::handle_key_press(ui, utils::keypress('F'));
             key_handling::handle_key_press(ui, utils::keypress('J'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("Hdr search: KFJ"),
@@ -78,11 +74,9 @@ fn test_header_search() {
 
             let first_match_line_y = SCREEN_HEIGHT - 14;
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let first_match_line = utils::screen_line(&buffer, first_match_line_y);
+            let first_match_line = utils::screen_line(buffer, first_match_line_y);
 
             assert!(
                 first_match_line.contains("219│KFJ"), // might as well check line #
@@ -91,7 +85,7 @@ fn test_header_search() {
                 first_match_line
             );
 
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("match #1/8"),
@@ -102,11 +96,9 @@ fn test_header_search() {
             // Pressing 'n' should cause the modeline to change to "match #2/8"
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("match #2/8"),
@@ -123,11 +115,9 @@ fn test_header_search() {
             key_handling::handle_key_press(ui, utils::keypress('n'));
             key_handling::handle_key_press(ui, utils::keypress('n'));
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("match #1/8"),
@@ -138,11 +128,9 @@ fn test_header_search() {
             // Pressing 'p' should cause the modeline to change to "match #8/8"
 
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "match #8/8";
             assert!(
@@ -161,11 +149,9 @@ fn test_header_search() {
             key_handling::handle_key_press(ui, utils::keypress('p'));
             key_handling::handle_key_press(ui, utils::keypress('p'));
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "match #1/8";
             assert!(
@@ -178,11 +164,9 @@ fn test_header_search() {
             // Pressing Esc should clear modeline
 
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "└─────────────────└─";
             assert!(
@@ -202,16 +186,14 @@ fn test_header_search_prefix() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             //let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
             key_handling::handle_key_press(ui, utils::keypress('f'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             let expected = "find: [h]eaders [s]eq"; // screen is too narrow for whole msg
             assert!(
                 screen.contains(expected),
@@ -221,11 +203,9 @@ fn test_header_search_prefix() {
             );
 
             key_handling::handle_key_press(ui, utils::keypress('h'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let screen = utils::buffer_text(&buffer);
+            let screen = utils::buffer_text(buffer);
             assert!(
                 screen.contains("Hdr search:"),
                 "\"Seq search:\" not found on screen:\n{}",
@@ -237,11 +217,9 @@ fn test_header_search_prefix() {
             key_handling::handle_key_press(ui, utils::keypress('K'));
             key_handling::handle_key_press(ui, utils::keypress('F'));
             key_handling::handle_key_press(ui, utils::keypress('J'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("Hdr search: KFJ"),
@@ -255,11 +233,9 @@ fn test_header_search_prefix() {
 
             let first_match_line_y = SCREEN_HEIGHT - 14;
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let first_match_line = utils::screen_line(&buffer, first_match_line_y);
+            let first_match_line = utils::screen_line(buffer, first_match_line_y);
 
             assert!(
                 first_match_line.contains("219│KFJ"), // might as well check line #
@@ -268,7 +244,7 @@ fn test_header_search_prefix() {
                 first_match_line
             );
 
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("match #1/8"),
@@ -279,11 +255,9 @@ fn test_header_search_prefix() {
             // Pressing 'n' should cause the modeline to change to "match #2/8"
 
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("match #2/8"),
@@ -300,11 +274,9 @@ fn test_header_search_prefix() {
             key_handling::handle_key_press(ui, utils::keypress('n'));
             key_handling::handle_key_press(ui, utils::keypress('n'));
             key_handling::handle_key_press(ui, utils::keypress('n'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             assert!(
                 last_line.contains("match #1/8"),
@@ -315,11 +287,9 @@ fn test_header_search_prefix() {
             // Pressing 'p' should cause the modeline to change to "match #8/8"
 
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "match #8/8";
             assert!(
@@ -338,11 +308,9 @@ fn test_header_search_prefix() {
             key_handling::handle_key_press(ui, utils::keypress('p'));
             key_handling::handle_key_press(ui, utils::keypress('p'));
             key_handling::handle_key_press(ui, utils::keypress('p'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "match #1/8";
             assert!(
@@ -355,11 +323,9 @@ fn test_header_search_prefix() {
             // Pressing Esc should clear modeline
 
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "└─────────────────└─";
             assert!(
@@ -380,7 +346,7 @@ fn test_missing_header_search_prefix() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
@@ -391,11 +357,9 @@ fn test_missing_header_search_prefix() {
             key_handling::handle_key_press(ui, utils::keypress('I'));
             key_handling::handle_key_press(ui, utils::keypress('S'));
             key_handling::handle_key_press(ui, utils::keypress('S'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "Hdr search: MISS";
             assert!(
@@ -408,11 +372,9 @@ fn test_missing_header_search_prefix() {
             // Pressing Enter should cause "No match." to appear in the modeline
 
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "No match.";
             assert!(
@@ -425,11 +387,9 @@ fn test_missing_header_search_prefix() {
             // Pressing Esc should clear modeline
 
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "└─────────────────└─";
             assert!(
@@ -449,7 +409,7 @@ fn test_header_search_del() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
@@ -460,11 +420,9 @@ fn test_header_search_del() {
             key_handling::handle_key_press(ui, utils::keypress('I'));
             key_handling::handle_key_press(ui, utils::keypress('S'));
             key_handling::handle_key_press(ui, utils::keypress('S'));
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "Hdr search: MISS";
             assert!(
@@ -479,11 +437,9 @@ fn test_header_search_del() {
             key_handling::handle_key_press(ui, KeyCode::Delete.into());
             key_handling::handle_key_press(ui, utils::keypress('T'));
 
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "Hdr search: MIST";
             assert!(
@@ -496,11 +452,9 @@ fn test_header_search_del() {
             // Pressing Esc should clear modeline
 
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "└─────────────────└─";
             assert!(
@@ -527,7 +481,7 @@ fn test_header_search_current_match_survives_reordering() {
     app.display_current_match();
     let expected_next_in_new_order = current_header_marker(&app);
 
-    utils::with_rig("tests/data/test-motion.msa", 80, 15, |mut ui, terminal| {
+    utils::with_rig("tests/data/test-motion.msa", 80, 15, |ui, terminal| {
         key_handling::handle_key_press(ui, utils::keypress('"'));
         key_handling::handle_key_press(ui, utils::keypress('K'));
         key_handling::handle_key_press(ui, utils::keypress('F'));
@@ -538,7 +492,7 @@ fn test_header_search_current_match_survives_reordering() {
 
         key_handling::handle_key_press(ui, utils::keypress('o'));
         key_handling::handle_key_press(ui, KeyCode::Enter.into());
-        terminal.draw(|f| render_ui(f, &mut ui)).expect("update");
+        terminal.draw(|f| render_ui(f, ui)).expect("update");
         let buffer = terminal.backend().buffer().clone();
         let screen = utils::buffer_text(&buffer);
 
@@ -550,7 +504,7 @@ fn test_header_search_current_match_survives_reordering() {
         );
 
         key_handling::handle_key_press(ui, utils::keypress('n'));
-        terminal.draw(|f| render_ui(f, &mut ui)).expect("update");
+        terminal.draw(|f| render_ui(f, ui)).expect("update");
         let buffer = terminal.backend().buffer().clone();
         let screen = utils::buffer_text(&buffer);
 
@@ -571,7 +525,7 @@ fn test_header_search_malformed() {
         "tests/data/test-motion.msa",
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
-        |mut ui, terminal| {
+        |ui, terminal| {
             let key_double_quote = utils::keypress('"');
             let last_line_y = SCREEN_HEIGHT - 1;
 
@@ -581,11 +535,9 @@ fn test_header_search_malformed() {
             key_handling::handle_key_press(ui, key_double_quote);
             key_handling::handle_key_press(ui, utils::keypress('['));
             key_handling::handle_key_press(ui, KeyCode::Enter.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "ERROR: Malformed regex";
             assert!(
@@ -598,11 +550,9 @@ fn test_header_search_malformed() {
             // Pressing Esc should clear modeline
 
             key_handling::handle_key_press(ui, KeyCode::Esc.into());
-            terminal
-                .draw(|f| render::render_ui(f, &mut ui))
-                .expect("update");
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
-            let last_line = utils::screen_line(&buffer, last_line_y);
+            let last_line = utils::screen_line(buffer, last_line_y);
 
             let expected = "└─────────────────└─";
             assert!(

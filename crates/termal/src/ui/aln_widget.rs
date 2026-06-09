@@ -216,7 +216,7 @@ fn apply_diff_mode(raw_c: u8, ref_c: u8, diff_mode: DiffMode) -> u8 {
     match diff_mode {
         DiffMode::Original => raw_c,
         DiffMode::DiffWRTRef => {
-            if raw_c.to_ascii_uppercase() != ref_c.to_ascii_uppercase() {
+            if !raw_c.eq_ignore_ascii_case(&ref_c) {
                 raw_c
             } else {
                 b'-'
