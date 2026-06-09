@@ -9,7 +9,10 @@ use ratatui::{
 
 use termal_alignment::alignment::RefSpec;
 
-use crate::{app::App, ui::{DiffMode, zoombox::draw_zoombox_border}};
+use crate::{
+    app::App,
+    ui::{zoombox::draw_zoombox_border, DiffMode},
+};
 
 fn highlight_match_style(mut style: Style, is_match: bool, is_current_match: bool) -> Style {
     if is_match {
@@ -83,7 +86,8 @@ impl<'a> Widget for SeqPane<'a> {
                         let ref_screenline = self.app.rank_to_screenline(rk);
                         let reference = self.sequences[rk].as_bytes();
                         let ref_char = reference[j];
-                        if i == ref_screenline { // Keep the reference untouched
+                        if i == ref_screenline {
+                            // Keep the reference untouched
                             diffed_char = raw_char;
                         } else {
                             diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
@@ -109,8 +113,8 @@ impl<'a> Widget for SeqPane<'a> {
 // TODO: is it necessary that these fields (and the struct itself) be pub?
 pub struct SeqPaneZoomedOut<'a> {
     pub app: &'a App,
-    pub sequences: &'a [String],    // alignment.sequences
-    pub ordering: &'a [usize],      // ordering map
+    pub sequences: &'a [String], // alignment.sequences
+    pub ordering: &'a [usize],   // ordering map
     pub ref_spec: RefSpec,
     pub diff_mode: DiffMode,
     pub retained_rows: &'a [usize], // indices into "logical rows"
@@ -172,7 +176,8 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
                         let ref_screenline = self.app.rank_to_screenline(rk);
                         let reference = self.sequences[rk].as_bytes();
                         let ref_char = reference[j];
-                        if i == ref_screenline { // Keep the reference untouched
+                        if i == ref_screenline {
+                            // Keep the reference untouched
                             diffed_char = raw_char;
                         } else {
                             diffed_char = apply_diff_mode(raw_char, ref_char, self.diff_mode);
@@ -205,14 +210,11 @@ impl<'a> Widget for SeqPaneZoomedOut<'a> {
             );
         }
     }
-
 }
 
 fn apply_diff_mode(raw_c: u8, ref_c: u8, diff_mode: DiffMode) -> u8 {
     match diff_mode {
-        DiffMode::Original => {
-            raw_c
-        }
+        DiffMode::Original => raw_c,
         DiffMode::DiffWRTRef => {
             if raw_c.to_ascii_uppercase() != ref_c.to_ascii_uppercase() {
                 raw_c
@@ -226,11 +228,10 @@ fn apply_diff_mode(raw_c: u8, ref_c: u8, diff_mode: DiffMode) -> u8 {
 #[cfg(test)]
 mod tests {
 
-use crate::ui::{DiffMode, aln_widget::apply_diff_mode};
+    use crate::ui::{aln_widget::apply_diff_mode, DiffMode};
 
     #[test]
     fn test_apply_diff_mode() {
-
         let diff_mode = DiffMode::Original;
         let raw_char = b'A';
         let ref_char = b'A';
@@ -248,7 +249,5 @@ use crate::ui::{DiffMode, aln_widget::apply_diff_mode};
         let ref_char = b'A';
         let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
         assert_eq!(obt, b'C');
-
     }
-
 }

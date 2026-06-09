@@ -6,9 +6,11 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use crate::seq_match::SequenceSearchTarget;
 
 use super::{
-    InputMode,
-    InputMode::{DiffCmdPrefix, Help, LabelSearch, Normal, PaneCmdPrefix, PendingCount, Search, SearchCmdPrefix, SetReference},
-    DiffMode,
+    DiffMode, InputMode,
+    InputMode::{
+        DiffCmdPrefix, Help, LabelSearch, Normal, PaneCmdPrefix, PendingCount, Search,
+        SearchCmdPrefix, SetReference,
+    },
     {ZoomLevel, UI},
 };
 
@@ -22,8 +24,8 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
         Search { pattern, target } => handle_sequence_search(ui, key_event, &pattern, target),
         SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
-        PaneCmdPrefix => handle_pane_prefix(ui, key_event),        
-        DiffCmdPrefix => handle_diff_prefix(ui, key_event),        
+        PaneCmdPrefix => handle_pane_prefix(ui, key_event),
+        DiffCmdPrefix => handle_diff_prefix(ui, key_event),
         SearchCmdPrefix => handle_search_prefix(ui, key_event),
     };
     done
@@ -85,15 +87,22 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         }
         KeyCode::Char('w') => {
             ui.input_mode = InputMode::PaneCmdPrefix;
-            ui.app.argument_msg(String::from("toggle pane: [l]eft [b]ottom [f]ull"), String::from(""));
+            ui.app.argument_msg(
+                String::from("toggle pane: [l]eft [b]ottom [f]ull"),
+                String::from(""),
+            );
         }
         KeyCode::Char('d') => {
             ui.input_mode = InputMode::DiffCmdPrefix;
-            ui.app.argument_msg(String::from("diff mode: [d]iff [n]ormal"), String::from(""));
+            ui.app
+                .argument_msg(String::from("diff mode: [d]iff [n]ormal"), String::from(""));
         }
         KeyCode::Char('f') => {
             ui.input_mode = InputMode::SearchCmdPrefix;
-            ui.app.argument_msg(String::from("find: [h]eaders [s]equences [a]lignment"), String::from(""));
+            ui.app.argument_msg(
+                String::from("find: [h]eaders [s]equences [a]lignment"),
+                String::from(""),
+            );
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -161,7 +170,12 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
     }
 }
 
-fn handle_sequence_search(ui: &mut UI, key_event: KeyEvent, pattern: &str, target: SequenceSearchTarget) {
+fn handle_sequence_search(
+    ui: &mut UI,
+    key_event: KeyEvent,
+    pattern: &str,
+    target: SequenceSearchTarget,
+) {
     match key_event.code {
         KeyCode::Esc => {
             ui.input_mode = InputMode::Normal;
@@ -301,7 +315,6 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
         _ => {}
     }
 }
-
 
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
@@ -479,7 +492,7 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         // Column Metric
         KeyCode::Char('c') => ui.app.next_col_metric(),
         KeyCode::Char('C') => ui.app.next_col_metric(), // FIXME ok when <3 metrics, but there
-                                                        // should be a prev_col_metric() fn.
+        // should be a prev_col_metric() fn.
 
         // ----- Search -----
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,

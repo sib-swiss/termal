@@ -11,11 +11,7 @@ use crate::{
     app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
-    seq_match::{
-        MatchPosition,
-        SequenceSearchTarget,
-        regex_match_positions,
-    },
+    seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
 };
 
 #[derive(Clone, Copy)]
@@ -763,7 +759,6 @@ impl App {
             Coverage => self.alignment.densities.clone(),
         }
     }
-
 }
 
 // Computes an ordering WRT an array, that is, an array of indices of elements of the source array,

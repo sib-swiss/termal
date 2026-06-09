@@ -26,10 +26,7 @@ use self::{
 };
 
 use crate::{
-    app::{
-        App,
-        JumpTarget,
-    },
+    app::{App, JumpTarget},
     seq_match::SequenceSearchTarget,
 };
 
@@ -77,7 +74,6 @@ enum InputMode {
     PaneCmdPrefix,
     DiffCmdPrefix,
     SearchCmdPrefix,
-
     // ExCommand { buffer: String },
 }
 
@@ -99,8 +95,8 @@ impl fmt::Display for VideoMode {
 
 #[derive(Clone, Copy)]
 pub enum DiffMode {
-    Original,       // sequence residue/gap
-    DiffWRTRef,     // residue IFF != ref, else gap
+    Original,   // sequence residue/gap
+    DiffWRTRef, // residue IFF != ref, else gap
 }
 
 // A bit field that denotes if the alignment is too wide (with respect to the sequence panel), too

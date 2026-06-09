@@ -10,8 +10,8 @@ use crate::common::utils;
 
 use termal_msa::{
     app::{App, JumpTarget},
-    ui::{key_handling, render},
     seq_match::SequenceSearchTarget,
+    ui::{key_handling, render},
 };
 
 const SCREEN_WIDTH: u16 = 25;
@@ -121,10 +121,11 @@ fn test_sequence_search_prefix() {
             let expected = "find: [h]eaders [s]eq"; // screen is too narrow for whole msg
             assert!(
                 screen.contains(expected),
-                "\"{}\" not found on screen:\n{}", expected,
+                "\"{}\" not found on screen:\n{}",
+                expected,
                 screen
             );
-            
+
             key_handling::handle_key_press(ui, utils::keypress('s'));
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))
@@ -424,7 +425,8 @@ fn test_alignment_search() {
             let expected = "No match.";
             assert!(
                 screen.contains(expected),
-                "\"{}\" not found on screen:\n{}", expected,
+                "\"{}\" not found on screen:\n{}",
+                expected,
                 screen
             );
         },

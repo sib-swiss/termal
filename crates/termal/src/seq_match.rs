@@ -13,12 +13,8 @@ pub struct MatchPosition {
 }
 
 impl MatchPosition {
-
     pub fn new(start_col: usize, end_col: usize) -> Self {
-        MatchPosition {
-            start_col,
-            end_col,
-        }
+        MatchPosition { start_col, end_col }
     }
 
     pub fn start_col(&self) -> usize {
@@ -30,31 +26,33 @@ impl MatchPosition {
     }
 }
 
-pub fn regex_match_positions(re: &Regex, seq: &str, target: SequenceSearchTarget) -> Vec<MatchPosition> {
+pub fn regex_match_positions(
+    re: &Regex,
+    seq: &str,
+    target: SequenceSearchTarget,
+) -> Vec<MatchPosition> {
     match target {
-        SequenceSearchTarget::BiologicalSequence => {
-            regex_match_positions_gapaware(re, seq)
-        }
-        SequenceSearchTarget::AlignmentRow => {
-            regex_match_positions_naive(re, seq)
-        }
+        SequenceSearchTarget::BiologicalSequence => regex_match_positions_gapaware(re, seq),
+        SequenceSearchTarget::AlignmentRow => regex_match_positions_naive(re, seq),
     }
 }
 
 pub fn regex_match_positions_naive(re: &Regex, seq: &str) -> Vec<MatchPosition> {
     re.find_iter(seq)
-    .map(|m| MatchPosition::new (
-        m.start(), m.end()
-    )).collect::<Vec<MatchPosition>>()
+        .map(|m| MatchPosition::new(m.start(), m.end()))
+        .collect::<Vec<MatchPosition>>()
 }
 
 pub fn regex_match_positions_gapaware(re: &Regex, seq: &str) -> Vec<MatchPosition> {
     let gap_mapper = GapMapper::new(seq);
     re.find_iter(&gap_mapper.degapped_seq)
-    .map(|m| MatchPosition::new (
-            gap_mapper.map_back(m.start()),
-            gap_mapper.map_back(m.end()-1) + 1,
-    )).collect::<Vec<MatchPosition>>()
+        .map(|m| {
+            MatchPosition::new(
+                gap_mapper.map_back(m.start()),
+                gap_mapper.map_back(m.end() - 1) + 1,
+            )
+        })
+        .collect::<Vec<MatchPosition>>()
 }
 
 pub struct GapMapper {
@@ -63,7 +61,6 @@ pub struct GapMapper {
 }
 
 impl GapMapper {
-
     fn new(seq: &str) -> Self {
         let mut degapped_seq: Vec<char> = Vec::with_capacity(seq.len());
         let mut orig_pos: Vec<usize> = Vec::with_capacity(seq.len());
@@ -80,9 +77,8 @@ impl GapMapper {
     }
 
     fn map_back(&self, pos: usize) -> usize {
-       self.orig_pos[pos] 
+        self.orig_pos[pos]
     }
-
 }
 
 #[cfg(test)]
@@ -91,10 +87,7 @@ mod tests {
     use regex::Regex;
 
     use crate::seq_match::{
-        GapMapper,
-        MatchPosition,
-        regex_match_positions_naive,
-        regex_match_positions_gapaware,
+        regex_match_positions_gapaware, regex_match_positions_naive, GapMapper, MatchPosition,
     };
 
     #[test]
@@ -102,11 +95,19 @@ mod tests {
         let re = Regex::new("A[CT]G").unwrap();
         let seq = "AATGXACGY";
         let match_pos = regex_match_positions_naive(&re, seq);
-        assert_eq!(match_pos,
+        assert_eq!(
+            match_pos,
             vec![
-                MatchPosition{start_col: 1, end_col: 4},
-                MatchPosition{start_col: 5, end_col: 8},
-            ]);
+                MatchPosition {
+                    start_col: 1,
+                    end_col: 4
+                },
+                MatchPosition {
+                    start_col: 5,
+                    end_col: 8
+                },
+            ]
+        );
     }
 
     #[test]
@@ -130,11 +131,19 @@ mod tests {
         let re = Regex::new("A[CT]G").unwrap();
         let seq = "AATGXA-C-GY";
         let match_pos = regex_match_positions_gapaware(&re, seq);
-        assert_eq!(match_pos,
+        assert_eq!(
+            match_pos,
             vec![
-                MatchPosition{start_col: 1, end_col: 4},
-                MatchPosition{start_col: 5, end_col: 10},
-            ]);
+                MatchPosition {
+                    start_col: 1,
+                    end_col: 4
+                },
+                MatchPosition {
+                    start_col: 5,
+                    end_col: 10
+                },
+            ]
+        );
     }
 
     #[test]
@@ -142,10 +151,13 @@ mod tests {
         let re = Regex::new("MANES").unwrap();
         let seq = "MANES----H";
         let match_pos = regex_match_positions_gapaware(&re, seq);
-        assert_eq!(match_pos,
-            vec![
-                MatchPosition{start_col: 0, end_col: 5},
-            ]);
+        assert_eq!(
+            match_pos,
+            vec![MatchPosition {
+                start_col: 0,
+                end_col: 5
+            },]
+        );
     }
 
     #[test]
@@ -153,10 +165,13 @@ mod tests {
         let re = Regex::new("MANES").unwrap();
         let seq = "--MANES";
         let match_pos = regex_match_positions_gapaware(&re, seq);
-        assert_eq!(match_pos,
-            vec![
-                MatchPosition{start_col: 2, end_col: 7},
-            ]);
+        assert_eq!(
+            match_pos,
+            vec![MatchPosition {
+                start_col: 2,
+                end_col: 7
+            },]
+        );
     }
 
     #[test]
@@ -164,10 +179,12 @@ mod tests {
         let re = Regex::new("MANES").unwrap();
         let seq = "--MANES----H";
         let match_pos = regex_match_positions_gapaware(&re, seq);
-        assert_eq!(match_pos,
-            vec![
-                MatchPosition{start_col: 2, end_col: 7},
-            ]);
+        assert_eq!(
+            match_pos,
+            vec![MatchPosition {
+                start_col: 2,
+                end_col: 7
+            },]
+        );
     }
 }
-

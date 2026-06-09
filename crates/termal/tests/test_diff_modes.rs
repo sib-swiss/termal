@@ -21,7 +21,6 @@ fn test_diff_mode() {
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |mut ui, terminal| {
-
             let last_line_y = 9;
 
             // Pressing d should cause "d... [dn]" to appear on last line
@@ -125,7 +124,7 @@ fn test_diff_mode() {
                 line_3
             );
 
-            // Pressing 'D' should revert to normal mode 
+            // Pressing 'D' should revert to normal mode
 
             key_handling::handle_key_press(ui, utils::keypress('D'));
             terminal
@@ -212,7 +211,6 @@ fn test_diff_mode() {
                 expect,
                 line_3
             );
-
         },
     );
 }
@@ -225,7 +223,6 @@ fn test_diff_mode_reorder() {
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |mut ui, terminal| {
-
             let last_line_y = 9;
 
             // Select seq 3 as reference
@@ -245,7 +242,7 @@ fn test_diff_mode_reorder() {
             let buffer = terminal.backend().buffer();
 
             // No reordering yet: rank order is 1, 2, 3
-            
+
             // Seq 1 should be -G-C--
 
             let line_1 = utils::screen_line(&buffer, 1);
@@ -350,7 +347,7 @@ fn test_diff_mode_reorder() {
                 line_2
             );
 
-            // Seq 3 should be rank 2 (Epipactis) -G-CA- 
+            // Seq 3 should be rank 2 (Epipactis) -G-CA-
 
             let line_3 = utils::screen_line(&buffer, 3);
             let expect = "-G-CA-";
@@ -360,7 +357,6 @@ fn test_diff_mode_reorder() {
                 expect,
                 line_3
             );
-
         },
     );
 }

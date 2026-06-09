@@ -4,9 +4,9 @@
 pub mod app;
 pub mod errors;
 mod runner;
+pub mod seq_match;
 pub mod ui;
 mod vec_f64_aux;
-pub mod seq_match;
 
 use crate::errors::TermalError;
 

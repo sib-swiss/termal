@@ -40,7 +40,8 @@ fn test_header_search() {
             let expected = "Metric: coverage │██████████";
             assert!(
                 penultimate_line.contains(expected),
-                "\"{}\" not found on last line: {}", expected,
+                "\"{}\" not found on last line: {}",
+                expected,
                 penultimate_line
             );
 
@@ -60,7 +61,8 @@ fn test_header_search() {
             let expected = "Metric: entropy  │▂▂ ▂ ▂▂█ █";
             assert!(
                 penultimate_line.contains(expected),
-                "\"{}\" not found on last line: {}", expected,
+                "\"{}\" not found on last line: {}",
+                expected,
                 penultimate_line
             );
         },

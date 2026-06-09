@@ -215,10 +215,11 @@ fn test_header_search_prefix() {
             let expected = "find: [h]eaders [s]eq"; // screen is too narrow for whole msg
             assert!(
                 screen.contains(expected),
-                "\"{}\" not found on screen:\n{}", expected,
+                "\"{}\" not found on screen:\n{}",
+                expected,
                 screen
             );
-            
+
             key_handling::handle_key_press(ui, utils::keypress('h'));
             terminal
                 .draw(|f| render::render_ui(f, &mut ui))

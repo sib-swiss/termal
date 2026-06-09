@@ -21,7 +21,7 @@ use super::{
     MIN_COLS_SHOWN, UI, V_SCROLLBAR_WIDTH,
 };
 
-use crate::vec_f64_aux::{normalize, ones_complement, product};
+use crate::vec_f64_aux::{normalize, ones_complement};
 
 /*****************************************************************
  * Panel Texts
@@ -358,8 +358,7 @@ fn compute_labels_pane_text<'a>(ui: &'a UI<'a>) -> Vec<Line<'a>> {
 fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
     log::debug!("Entering render_label_nums_pane()");
     let base_style = get_label_num_style(ui.theme(), ui.get_label_num_color());
-    let mut lbl_nums = Text::from(compute_label_numbers(ui))
-        .style(base_style);
+    let mut lbl_nums = Text::from(compute_label_numbers(ui)).style(base_style);
     // log::debug!("lbl_nums: {:#?}", lbl_nums);
 
     // If the reference is an alignment sequence (as opposed to the consnsus), highlight it.
@@ -368,15 +367,14 @@ fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
         log::debug!("Ref rank: {}", ref_rk);
         let ref_screenline = ui.app.rank_to_screenline(ref_rk);
         log::debug!("Ref scln: {}", ref_screenline);
-        let highlight_style = Style::default()
-            .add_modifier(Modifier::REVERSED);
+        let highlight_style = Style::default().add_modifier(Modifier::REVERSED);
         match ui.zoom_level {
             ZoomLevel::ZoomedIn => {
                 if let Some(ref_num) = lbl_nums.lines.get_mut(ref_screenline) {
                     ref_num.style = highlight_style;
                 }
             }
-            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => { 
+            ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
                 let try_pos = retained_seq_ndx(ui)
                     .iter()
                     .position(|scln| ui.app.screenline_to_rank(*scln) == ref_rk);
@@ -617,7 +615,6 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         Theme::Dark | Theme::Light => ui.color_scheme().conservation_color,
         Theme::Monochrome => Color::Reset,
     };
-
 
     // FIXME These computations arguably belong App-side - UI is concerned with display, not values.
     // That's exactly what App::current_col_metric_values() is for (but doesn't do the math yet).

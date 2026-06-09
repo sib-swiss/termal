@@ -51,7 +51,8 @@ fn test_wl() {
             let last_line = utils::screen_line(&buffer, last_line_y);
 
             // The last line should contain nothing but border, in particular, no vertical separator
-            let expected = "└──────────────────────────────────────────────────────────────────────────────┘";
+            let expected =
+                "└──────────────────────────────────────────────────────────────────────────────┘";
             assert!(
                 last_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -77,7 +78,6 @@ fn test_wl() {
                 expected,
                 last_line
             );
-
         },
     );
 }
@@ -140,7 +140,8 @@ fn test_wb() {
             let buffer = terminal.backend().buffer();
             let sep_line = utils::screen_line(&buffer, sep_line_y);
 
-            let expected = "│  6│LEACOLDL_0│█▊│------------MSDT-----------------------NSTSQNNTNS--------CGC║";
+            let expected =
+                "│  6│LEACOLDL_0│█▊│------------MSDT-----------------------NSTSQNNTNS--------CGC║";
             assert!(
                 sep_line.contains(expected),
                 "\"{}\" not found on sep line: {}",
@@ -165,7 +166,6 @@ fn test_wb() {
                 expected,
                 sep_line
             );
-
         },
     );
 }
@@ -210,7 +210,8 @@ fn test_wf() {
             let sep_line = utils::screen_line(&buffer, sep_line_y);
 
             // Line 6 should now contain sequence and no header
-            let expected = "------------MSDT-----------------------NSTSQNNTNS--------CGCGKT-VPKYPEQVTGMYLL║";
+            let expected =
+                "------------MSDT-----------------------NSTSQNNTNS--------CGCGKT-VPKYPEQVTGMYLL║";
             assert!(
                 sep_line.contains(expected),
                 "\"{}\" not found on sep line: {}",
@@ -236,7 +237,6 @@ fn test_wf() {
                 expected,
                 sep_line
             );
-
         },
     );
 }
