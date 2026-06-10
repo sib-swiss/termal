@@ -77,6 +77,11 @@ struct Cli {
     dry_run: bool,
 
     // Rare options (long form only)
+
+    /// Show citation
+    #[arg(long)]
+    citation: bool,
+
     /// Start with labels pane hidden
     #[arg(long, hide_short_help = true)]
     hide_labels_pane: bool,
@@ -168,6 +173,11 @@ pub fn run() -> Result<(), TermalError> {
 
     if cli.show_bindings {
         println!("{}", include_str!("ui/bindings.md"));
+        return Ok(());
+    }
+
+    if cli.citation {
+        println!("{}", include_str!("../../../CITATION.txt"));
         return Ok(());
     }
 
