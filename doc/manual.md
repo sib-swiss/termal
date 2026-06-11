@@ -77,6 +77,7 @@ experimental or used for debugging or testing. For a full list, do `termal
 | :----     | :-------------------------- | :---------------------------                                                   |
 | `-b`      | `--show-bindings`           | Show key bindings and exit successfully                                        |
 | `-i`      | `--info`                    | Show alignment metrics and quit                                                |
+|           | `--citation`                | Show citation information and exit successfully                                |
 | `-f`      | `--format <FORMAT>`         | Sequence file format [`fasta`/`stockholm`] (or just `f`/`s`); default: `fasta` |
 | `-o`      | `--user-order <USER_ORDER>` | User-supplied order (filename)                                                 |
 | `-c`      | `--color-map <COLOR_MAP>`   | Gecos color map (filename)                                                     |
@@ -278,6 +279,19 @@ To cycle forward through the zoom modes, press `z`; to cycle backward, press
 
 # Searching {#searching}
 
+## The Search Prefix Command {#search-prefix}
+
+All searches can be initiated via the `f` prefix command:
+
+command   action
+--------  -------
+`fh`      header search (see [Searching sequence headers](#hdr-search))
+`fs`      sequence search, ignoring gaps (see [Searching sequences](#seq-search))
+`fa`      alignment search: matches the raw alignment row, including gap characters
+
+The standalone `"` and `/` commands are shortcuts for `fh` and `fs` respectively.
+`fa` (alignment search) is only available through the `f` prefix.
+
 ##  Searching sequence headers {#hdr-search}
 
 Termal supports searching within sequence headers using regular expressions.
@@ -323,10 +337,11 @@ During a search, the modeline displays:
 - the index of the current match,
 - the total number of matches.
 
-**NOTE** The current implementation of sequence search does not treat gap
-characters specially. So if you want e.g. to specify a possible gap between A
-and T, you need to do so explicitly: `A-?T`. A smarter handling of gaps is
-planned for a future release.
+**NOTE** By default, sequence search ignores gap characters: the regular
+expression is matched against the ungapped sequence, and match positions are
+mapped back to the alignment. To search the raw alignment row including gaps
+(e.g. to match `A-?T` literally), use the alignment search command `fa` instead
+(see [Searching](#searching)).
 
 ### Example:
 
@@ -442,6 +457,18 @@ backward. The current metric is displayed in the corner pane.
 
 The sequences can be [ordered](#ordering) according to the current metric.
 
+## Column Metrics {#col-metrics}
+
+The bottom pane displays a barplot of the current _column metric_, a numeric
+property of each alignment column. Two metrics are available:
+
+a. **Entropy**: a measure of conservation. High bar = well-conserved column;
+   low bar = high variability.
+b. **Coverage**: fraction of non-gap residues at that column.
+
+To cycle through column metrics, press `c` (forward) or `C` (backward). The
+current metric name is shown in the bottom pane.
+
 ## Residue Colormaps
 
 Termal supports four built-in residue color maps:
@@ -494,6 +521,23 @@ theme is displayed in the top border of the Termal screen.
 **NOTE** Termal has been tested predominantly in a dark-themed
 terminal.
 
+## Diff Mode
+
+In diff mode, each residue in the alignment is displayed relative to the
+[reference](#ref-spec):
+
+symbol   meaning
+-------  --------
+letter   residue differs from the reference at this position
+`.`      residue is identical to the reference
+`-`      actual gap in the sequence
+
+This makes it easy to spot variation at a glance, especially when combined
+with setting a specific sequence as reference.
+
+To enter diff mode, press `dd`; to return to normal mode, press `D` or `dn`.
+The reference sequence row is always shown in full, regardless of diff mode.
+
 ## Inverse Video
 
 By default, Termal displays the sequence residues in inverse video. To toggle to
@@ -521,16 +565,13 @@ Termal currently does **not** support:
 
 Features planned for the next release:
 
-* better handling of gaps in regexp searches
-* jumps to conserved regions 
+* jumps to conserved regions
 * a color map for vision-impaired users
 
 Features that will be added later
 
 * exporting (part of) the alignment as SVG
-* arbitrary sequence as reference
-* showing only residues that differ from the consensus, or that are fully
-  conserved (à la EMBOSS's `showalign -show`)
+* showing fully conserved residues (à la EMBOSS's `showalign -show`)
 
 Features under consideration
 
@@ -553,41 +594,6 @@ and clarity over graphical interaction.
 
 Many commands, as well as the prefix argument syntax, were deliberately copied
 from [Vim](https://vim.org).
-
----
-
-# Companion programs
-
-## `termal-export`
-
-This program produces SVG representations of alignments, e.g. for
-publication. Its call syntax is simply:
-
-```bash
-termal-export [options] <alignment file>
-```
-
-The SVG is printed out to standard output, so it's usually best to redirect it
-to a file of your choice, e.g.
-
-```bash
-termal-export my-aln.msa > my-aln.svg
-```
-
-### Options
-
-
-The main options supported by `termal-export` are shown in the table below.
-Other options exist, but they are either experimental or used for debugging or
-testing. For a full list, pass `-h`.
-
-| **short** | **long**                          | **function**                                                                                     |
-| :----     | :--------------------------       | :---------------------------                                                                     |
-| `-o`      | `--order <ORDER>`                 | User-supplied order file (as in termal) (TODO)                                                   |
-| `-c`      | `--colormap-name <COLORMAP_NAME>` | Colormap [default: aa-clustalx] [possible values: aa-lesk, aa-clustalx, dna-jalview, monochrome] |
-|           | `--rows <ROWS>`                   | Row range as START:END (0-based, END exclusive). Example: 0:50 (TODO)                            |
-|           | `--cols <COLS>`                   | Column range as START:END (0-based, END exclusive). Example: 0:200 (TODO)                        |
-| `-h`      | `--help`                          | Print help                                                                                       |
 
 
 # References
