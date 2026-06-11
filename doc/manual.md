@@ -87,8 +87,10 @@ experimental or used for debugging or testing. For a full list, do `termal
 
 # Screen layout
 
+![Termal displaying `example-1.msa`. From left to right and top to bottom: headers pane, alignment pane, corner pane, reference pane, and modeline.](screenshot.png){#fig-layout}
+
 The interface is divided into four areas, starting from the top and left to
-right::
+right ([**fig. 1**](#fig-layout)):
 
 - **Headers pane** or simply **left pane**: shows sequence numbers and headers, as well as a barplot
   of the current [metric](#metrics)
