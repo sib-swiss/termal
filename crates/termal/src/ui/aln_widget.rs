@@ -216,10 +216,12 @@ fn apply_diff_mode(raw_c: u8, ref_c: u8, diff_mode: DiffMode) -> u8 {
     match diff_mode {
         DiffMode::Original => raw_c,
         DiffMode::DiffWRTRef => {
-            if !raw_c.eq_ignore_ascii_case(&ref_c) {
-                raw_c
-            } else {
+            if raw_c == b'-' {
                 b'-'
+            } else if raw_c.eq_ignore_ascii_case(&ref_c) {
+                b'.'
+            } else {
+                raw_c
             }
         }
     }
@@ -242,12 +244,25 @@ mod tests {
         let raw_char = b'A';
         let ref_char = b'A';
         let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
-        assert_eq!(obt, b'-');
+        assert_eq!(obt, b'.');
 
         let diff_mode = DiffMode::DiffWRTRef;
         let raw_char = b'C';
         let ref_char = b'A';
         let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
         assert_eq!(obt, b'C');
+
+        // An actual gap in the sequence must remain a gap, not become a dot
+        let diff_mode = DiffMode::DiffWRTRef;
+        let raw_char = b'-';
+        let ref_char = b'-';
+        let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
+        assert_eq!(obt, b'-');
+
+        let diff_mode = DiffMode::DiffWRTRef;
+        let raw_char = b'-';
+        let ref_char = b'A';
+        let obt = apply_diff_mode(raw_char, ref_char, diff_mode);
+        assert_eq!(obt, b'-');
     }
 }

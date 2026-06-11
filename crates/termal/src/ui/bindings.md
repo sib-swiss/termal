@@ -54,7 +54,7 @@ R<Ret>          : set reference to consensus
 
 ## Difference Modes
 
-dd : diff mode - only show residues when different from the reference
+dd : diff mode - residues identical to the reference shown as '.', differences shown as letters, actual gaps as '-'
 dn : normal mode 
 
 ## Adjusting the Panes

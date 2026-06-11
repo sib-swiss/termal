@@ -39,7 +39,7 @@ fn test_diff_mode() {
                 last_line
             );
 
-            // Pressing d should switch to difference mode. Seq 1 should now show only -----, as it
+            // Pressing d should switch to difference mode. Seq 1 should now show only ....., as it
             // happens to be identical to the reference (which by default is the consensus).
             //
             key_handling::handle_key_press(ui, utils::keypress('d'));
@@ -47,7 +47,7 @@ fn test_diff_mode() {
             let buffer = terminal.backend().buffer();
 
             let line_1 = utils::screen_line(buffer, 1);
-            let expect = "-----";
+            let expect = ".....";
             assert!(
                 line_1.contains(expect),
                 "\"{}\" not found in seq 1: {}",
@@ -55,10 +55,10 @@ fn test_diff_mode() {
                 line_1
             );
 
-            // Seq 2 should be ----A-, as it only differs from the ref at position 5.
+            // Seq 2 should be ...A., as it only differs from the ref at position 5.
 
             let line_2 = utils::screen_line(buffer, 2);
-            let expect = "---A-";
+            let expect = "...A.";
             assert!(
                 line_2.contains(expect),
                 "\"{}\" not found in seq 2: {}",
@@ -66,10 +66,10 @@ fn test_diff_mode() {
                 line_2
             );
 
-            // Seq 3 should be -C-T--, as it differs at 2 and 4
+            // Seq 3 should be .C.T.., as it differs at positions 2 and 4
 
             let line_3 = utils::screen_line(buffer, 3);
-            let expect = "-C-T-";
+            let expect = ".C.T.";
             assert!(
                 line_3.contains(expect),
                 "\"{}\" not found in seq 3: {}",
@@ -86,9 +86,9 @@ fn test_diff_mode() {
             terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
-            // Seq 1 should be -G-C--
+            // Seq 1 should be .G.C..
             let line_1 = utils::screen_line(buffer, 1);
-            let expect = "-G-C-";
+            let expect = ".G.C.";
             assert!(
                 line_1.contains(expect),
                 "\"{}\" not found in seq 1: {}",
@@ -96,10 +96,10 @@ fn test_diff_mode() {
                 line_1
             );
 
-            // Seq 2 should be -G-CA-, as it only differs from the ref at position 5.
+            // Seq 2 should be .G.CA., as it only differs from the ref at positions 2, 4, 5.
 
             let line_2 = utils::screen_line(buffer, 2);
-            let expect = "-G-CA-";
+            let expect = ".G.CA.";
             assert!(
                 line_2.contains(expect),
                 "\"{}\" not found in seq 2: {}",
@@ -229,10 +229,10 @@ fn test_diff_mode_reorder() {
 
             // No reordering yet: rank order is 1, 2, 3
 
-            // Seq 1 should be -G-C--
+            // Seq 1 should be .G.C..
 
             let line_1 = utils::screen_line(buffer, 1);
-            let expect = "-G-C-";
+            let expect = ".G.C.";
             assert!(
                 line_1.contains(expect),
                 "\"{}\" not found in seq 1: {}",
@@ -240,10 +240,10 @@ fn test_diff_mode_reorder() {
                 line_1
             );
 
-            // Seq 2 should be -G-CA-, as it only differs from the ref at position 5.
+            // Seq 2 should be .G.CA., as it only differs from the ref at positions 2, 4, 5.
 
             let line_2 = utils::screen_line(buffer, 2);
-            let expect = "-G-CA-";
+            let expect = ".G.CA.";
             assert!(
                 line_2.contains(expect),
                 "\"{}\" not found in seq 2: {}",
@@ -268,10 +268,10 @@ fn test_diff_mode_reorder() {
             terminal.draw(|f| render::render_ui(f, ui)).expect("update");
             let buffer = terminal.backend().buffer();
 
-            // Seq 1 should be rank 2 (Epipactis) -G-CA-
+            // Seq 1 should be rank 2 (Epipactis) .G.CA.
 
             let line_1 = utils::screen_line(buffer, 1);
-            let expect = "-G-CA-";
+            let expect = ".G.CA.";
             assert!(
                 line_1.contains(expect),
                 "\"{}\" not found in seq 1: {}",
@@ -279,10 +279,10 @@ fn test_diff_mode_reorder() {
                 line_1
             );
 
-            // Seq 2 should be rank 1,  -G-C--
+            // Seq 2 should be rank 1,  .G.C..
 
             let line_2 = utils::screen_line(buffer, 2);
-            let expect = "-G-C--";
+            let expect = ".G.C..";
             assert!(
                 line_2.contains(expect),
                 "\"{}\" not found in seq 2: {}",
@@ -318,10 +318,10 @@ fn test_diff_mode_reorder() {
                 line_1
             );
 
-            // Seq 2 should be rank 1 (Anacamptis),  -G-C--
+            // Seq 2 should be rank 1 (Anacamptis),  .G.C..
 
             let line_2 = utils::screen_line(buffer, 2);
-            let expect = "-G-C--";
+            let expect = ".G.C..";
             assert!(
                 line_2.contains(expect),
                 "\"{}\" not found in seq 2: {}",
@@ -329,10 +329,10 @@ fn test_diff_mode_reorder() {
                 line_2
             );
 
-            // Seq 3 should be rank 2 (Epipactis) -G-CA-
+            // Seq 3 should be rank 2 (Epipactis) .G.CA.
 
             let line_3 = utils::screen_line(buffer, 3);
-            let expect = "-G-CA-";
+            let expect = ".G.CA.";
             assert!(
                 line_3.contains(expect),
                 "\"{}\" not found in seq 3: {}",
