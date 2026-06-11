@@ -1,15 +1,15 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Termal: a fast and interactive terminal-based viewer for multiple sequence alignments"
-version: 1.2.0
-date-released: 2025-08-16
-doi: 10.5281/zenodo.1547243 
+version: 2.0.0
+date-released: YYYY-MM-DD  # TODO: set to actual release date
+doi: 10.5281/zenodo.1547243
 authors:
   - family-names: "Junier"
     given-names: "Thomas"
     affiliation: "Swiss Institute of Bioinformatics"
 repository-code: "https://github.com/sib-swiss/termal"
-url: "https://crates.io/crates/termal-aln"
+url: "https://crates.io/crates/termal-msa"
 license: MIT
 
 preferred-citation:
@@ -21,5 +21,5 @@ preferred-citation:
       affiliation: "Swiss Institute of Bioinformatics"
   journal: "Bioinformatics Advances"
   year: 2025
-  # Add volume/issue/pages/doi once available
+  doi: 10.1093/bioadv/vbaf208
 
