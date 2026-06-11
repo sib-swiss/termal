@@ -30,7 +30,7 @@ header-includes:
 #  Overview
 
 **Termal** is a terminal-based viewer for multiple sequence alignments (MSAs).
-It is designed for fast, keyboard-driven navigation of large alignments,
+It is designed for fast, keyboard-driven navigation of alignments of any size,
 particularly in remote or SSH-based environments where graphical tools are
 impractical.
 
@@ -93,10 +93,10 @@ The interface is divided into four areas, starting from the top and left to
 right ([**fig. 1**](#fig-layout)):
 
 - **Headers pane** or simply **left pane**: shows sequence numbers and headers, as well as a barplot
-  of the current [metric](#metrics)
+  of the current [sequence metric](#metrics)
 - **Alignment pane** or **main pane**: shows the aligned sequences, some
   properties of the alignments, as well as some current UI settings.
-- **Corner pane**: shows the current metric and [ordering](#ordering) (see below).
+- **Corner pane**: shows the current sequence metric and [ordering](#ordering) (see below).
 - **Reference pane** or **bottom pane**: shows horizontal position, the reference sequence
   (usually the consensus, but see [setting the reference](#ref-spec)), and a conservation barplot
 
@@ -108,8 +108,9 @@ In addition, the last line contains a message area ("modeline"), which displays:
 
 #  Interaction
 
-Termal is entirely keyboard-driven. All commands are issued by typing a single
-character (usually a letter).
+Termal is entirely keyboard-driven. Commands consist of one or two characters,
+optionally preceded by a numeric argument or followed by a string argument (see
+below).
 
 ##  Prefix arguments
 
@@ -258,12 +259,16 @@ does not fit on screen. It is possible for the alignment to fit on the screen
 only in one of the two dimensions: in this case, the zooming only applies to the
 other dimension.
 
+## Zoomed-in Mode
+
 In _zoomed-in_ mode, Termal displays as many _adjacent_ sequences and columns as
 will fit on the screen. This shows a detailed view of a portion of the
 alignment, but obscures its large-scale features. Motion commands change which
 portion of the alignment is displayed, causing new sequences/columns to appear
 into view and as many sequences/columns to disappear. Termal starts in
 zoomed-in mode.
+
+## Zoomed-out Modes
 
 In _zoomed-out_ mode, Termal shows the first and last sequence/column as well as
 a uniform sampling of sequences/columns between them. Enough sequences/columns
@@ -293,6 +298,8 @@ command   action
 
 The standalone `"` and `/` commands are shortcuts for `fh` and `fs` respectively.
 `fa` (alignment search) is only available through the `f` prefix.
+
+<!-- TODO: add an example of alignment search (fa) -->
 
 ##  Searching sequence headers {#hdr-search}
 
@@ -386,7 +393,7 @@ instead of the consensus.
 
 ##  Resizing the Left Pane
 
-The left pane can be widened (perhaps to show more of the sequence headers) with
+The left pane can be widened (_e.g._ to show more of the sequence headers) with
 `>` and shrunk with `<`. This also resizes the corner pane. Both accept a prefix
 argument, which is by how many characters the pane is to be resized:
 
@@ -401,9 +408,9 @@ command    motion
 
 By default, the sequences appear in the alignment pane in the same order as they
 appear in the alignment file. However, the sequences may be ordered according to
-the current [metric](#metrics), either ascending or descending. Note that the
+the current [sequence metric](#metrics), either ascending or descending. Note that the
 "first" sequence (on the screen) is the _top_ sequence. As a result, when
-sorting in ascending order, metric values increase from top to bottom.
+sorting in ascending order, sequence metric values increase from top to bottom.
 
 The user may also supply a custom ordering, by passing option `-o` and
 supplying the name of an ordering file (see below) as an argument to the option, e.g.:
@@ -421,9 +428,6 @@ example, passing the following ordering file would cause `AHMKMHDK_00298` to
 appear first, then `CEFNMEKK_03699`, etc., regardless of the order they appear
 in in the alignment file.
 
-Note that the headers in the ordering file are expected to match those in the
-alignment file.
-
 ```bash
 AHMKMHDK_00298
 CEFNMEKK_03699
@@ -431,6 +435,9 @@ IAGGDKJC_03995
 FHLODNDD_02091
 HJACHOPP_04370
 ```
+
+Note that the headers in the ordering file are expected to match those in the
+alignment file.
 
 ### Changing the Ordering
 
@@ -442,17 +449,17 @@ bar chart in the left pane:
 symbol   meaning
 -------  --------
 `-`      file order
-`↑`      current metric, ascending
-`↓`      current metric, descending
+`↑`      current sequence metric, ascending
+`↓`      current sequence metric, descending
 `u`      user-supplied order (`-o`)
 
-## Metrics {#metrics}
+## Sequence Metrics {#metrics}
 
-The left pane displays a bar chart of the current _metric_. This is a numeric
-property of the sequences. Currently, there are two possible metrics:
+The left pane displays a bar chart of the current sequence _metric_. This is a numeric
+property of the (aligned) sequences. Currently, there are two possible sequence metrics:
 
-a. Sequence length (not counting gaps)
-b. Similarity to the [reference](#ref-spec)
+a. Sequence **length** (not counting gaps)
+b. **Similarity** to the [reference](#ref-spec)
 
 To cycle forward through the metrics, press `t` (me**t**ric); press `T` to cycle
 backward. The current metric is displayed in the corner pane.
