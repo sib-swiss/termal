@@ -1,25 +1,31 @@
-termal 1.4.0 – Sequence searches
+termal 2.0.0 – Diff mode, gap-aware search, and split column metrics
 
-This release adds regular expression search within sequences, and adds commands
-for returning to the current match and jumping to a sequence by its original
-position in the alignment file. It also adds a command for setting the reference
-to any alignment sequence (instead of the consensus).
+This major release introduces diff mode, which highlights residues that differ
+from the reference sequence, making it easy to spot variation at a glance.
+The reference can now be set to any sequence in the alignment (not just the
+consensus), which combines naturally with diff mode.
 
-It also enables the user to select an alignment sequence as the reference (for t
-hesimilarity metric). Up to now only the consensus could serve as reference.
+Sequence search now ignores gaps by default: regular expressions match against
+the ungapped sequence and match positions are mapped back to the alignment
+coordinates. The previous literal-gap behavior is still available via the
+alignment search command.
 
-The release archives now also include the manual, sample alignments, an
-example ordering file, and curated custom colormap examples.
+The single column metric has been replaced by two separate, independently
+normalized metrics: entropy and coverage (density). This is a breaking change
+for any scripts or workflows that relied on the old combined metric.
 
 Highlights:
 
-- Regular expression search within sequences
-- Jump to the current search match
-- Jump to a sequence by its original file position
-- Scrollable help page for smaller terminals
-- Release archives with manual and example data
+- Diff mode: shows residues that differ from the reference
+- Any alignment sequence can serve as reference
+- Gap-aware regex search within sequences (new default)
+- Column metrics split into entropy and coverage
+- Prefix command `f` for searches (`/` and `"` still work)
+- `--citation` flag: prints citation information and exits
+- Running without arguments now shows help instead of crashing
 
-No breaking changes.
+Breaking changes: column metric API changed; search-within-sequences behavior
+changed (gaps now ignored by default).
 
 Termal remains a viewer, not an editor (for now).
 

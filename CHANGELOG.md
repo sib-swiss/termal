@@ -1,12 +1,14 @@
 # Changelog
 
-## [2.0.0]
+## [2.0.0] 2026-06-10
 
 ### Added
 
-* Reference can now be set to an alignment sequence 
-* Diff mode
-* Prefix command for searches (/ and " still work)
+* Reference can now be set to any alignment sequence
+* Diff mode: highlights residues that differ from the reference
+* Prefix command for searches (`f` prefix; `/` and `"` still work)
+* `--citation` flag: prints citation information and exits
+* Alignment filename is no longer required when using `-b`/`--show-bindings`
 
 ### Changed
 
@@ -17,7 +19,7 @@
 * Harmonized modeline messages displayed by prefix commands
 * Sequence search ignores gaps by default
 * Removed obscure options from short help
-* Panel toggles now with prefix command 
+* Panel toggles now with prefix command
 
 ### Fixed
 
