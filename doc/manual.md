@@ -54,7 +54,7 @@ termal my-alignment.msa
 
 Termal supports Fasta (default) and Stockholm (pass `-f stockholm` (or just `-f
 s`)) formats. Any alignment lines shorter than the longest one will be padded
-with gap characters at the end.
+with space characters at the end.
 
 ## Help
 
@@ -231,11 +231,16 @@ Termal supports regular expression searches in both headers and sequences (see
 Termal will automatically jump to the first match. To jump to the next or
 previous match, use `n` or `p`:
 
-command    motion
---------   --------------
-`[count]n` jump _count_ matches forward
-`[count]p` jump _count_ matches backward
-`<Return>` jump to the current match (which may be offscreen)
++---------------+----------------------------------------------+
+| command       | motion                                       |
++===============+==============================================+
+| `[count]n`    | jump _count_ matches forward                 |
++---------------+----------------------------------------------+
+| `[count]p`    | jump _count_ matches backward                |
++---------------+----------------------------------------------+
+| `<Return>`    | jump to the current match (which may be      |
+|               | offscreen)                                   |
++---------------+----------------------------------------------+
 
 Next and previous match jumps wrap around, i.e. pressing `n` while on the last
 match will move back to the first one. If no matches were found, match jump
@@ -290,16 +295,21 @@ To cycle forward through the zoom modes, press `z`; to cycle backward, press
 
 All searches can be initiated via the `f` prefix command:
 
-command   action
---------  -------
-`fh`      header search (see [Searching sequence headers](#hdr-search))
-`fs`      sequence search, ignoring gaps (see [Searching sequences](#seq-search))
-`fa`      alignment search: matches the raw alignment row, including gap characters
++-----------+------------------------------------------------------+
+| command   | action                                               |
++===========+======================================================+
+| `fh`      | header search (see [Searching sequence               |
+|           | headers](#hdr-search))                               |
++-----------+------------------------------------------------------+
+| `fs`      | sequence search, ignoring gaps (see                  |
+|           | [Searching sequences](#seq-search))                  |
++-----------+------------------------------------------------------+
+| `fa`      | alignment search: matches the raw alignment          |
+|           | row, including gap characters                        |
++-----------+------------------------------------------------------+
 
 The standalone `"` and `/` commands are shortcuts for `fh` and `fs` respectively.
 `fa` (alignment search) is only available through the `f` prefix.
-
-<!-- TODO: add an example of alignment search (fa) -->
 
 ##  Searching sequence headers {#hdr-search}
 
@@ -361,13 +371,28 @@ mapped back to the alignment. To search the raw alignment row including gaps
 This jumps to the first instance of `GAATTC`. The search order is according to
 the current [ordering](#ordering), then left to right.
 
+## Alignment search {#aln-search}
+
+Alignment search (`fa`) matches the raw alignment row, including gap characters.
+Use it when you want to explicitly match gaps in the pattern.
+
+### Example:
+
+```
+faA-*T<Enter>
+```
+
+This jumps to the first instance of `A` followed by zero or more gaps and then
+`T` in the alignment row. The search order is according to the current
+[ordering](#ordering), then left to right.
+
 ---
 
 # Setting the Reference {#ref-spec}
 
-Some features of the alignment are computed with respect to a _reference
-sequence_. This is the case, for example, of the similarity metric, which
-measures how similar each sequence is to the reference.
+Several features are computed with respect to a _reference sequence_: the
+[similarity metric](#metrics) measures how similar each sequence is to the
+reference, and [diff mode](#diff-mode) highlights residues that differ from it.
 
 By default, the reference is the consensus sequence (which is automatically
 computed). However, the user may select any sequence in the alignment to serve
@@ -388,72 +413,7 @@ This selects sequence #12 as reference. This is reflected in the corner pane,
 which now reads 'Ref: #12', and in the bottom pane, which displays sequence #12
 instead of the consensus.
 
-
-# Display Controls
-
-##  Resizing the Left Pane
-
-The left pane can be widened (_e.g._ to show more of the sequence headers) with
-`>` and shrunk with `<`. This also resizes the corner pane. Both accept a prefix
-argument, which is by how many characters the pane is to be resized:
-
-command    motion
---------   --------------
-`[count]>` widen the left pane by _count_ characters
-`[count]<` shrink the left pane by _count_ characters
-
-
-
-## Ordering the Sequences {#ordering}
-
-By default, the sequences appear in the alignment pane in the same order as they
-appear in the alignment file. However, the sequences may be ordered according to
-the current [sequence metric](#metrics), either ascending or descending. Note that the
-"first" sequence (on the screen) is the _top_ sequence. As a result, when
-sorting in ascending order, sequence metric values increase from top to bottom.
-
-The user may also supply a custom ordering, by passing option `-o` and
-supplying the name of an ordering file (see below) as an argument to the option, e.g.:
-
-```
-termal -o my-order alignment.msa
-```
-
-In this case, `termal` initially shows the alignment in custom ordering.
-
-### Ordering File
-
-An ordering file is simply the sequence headers in the desired order. For
-example, passing the following ordering file would cause `AHMKMHDK_00298` to
-appear first, then `CEFNMEKK_03699`, etc., regardless of the order they appear
-in in the alignment file.
-
-```bash
-AHMKMHDK_00298
-CEFNMEKK_03699
-IAGGDKJC_03995
-FHLODNDD_02091
-HJACHOPP_04370
-```
-
-Note that the headers in the ordering file are expected to match those in the
-alignment file.
-
-### Changing the Ordering
-
-To cycle forward through orderings, press (`o`). To cycle backward, press `O`.
-
-The current ordering is displayed is the corner pane, as a symbol just below the
-bar chart in the left pane:
-
-symbol   meaning
--------  --------
-`-`      file order
-`↑`      current sequence metric, ascending
-`↓`      current sequence metric, descending
-`u`      user-supplied order (`-o`)
-
-## Sequence Metrics {#metrics}
+# Sequence Metrics {#metrics}
 
 The left pane displays a bar chart of the current sequence _metric_. This is a numeric
 property of the (aligned) sequences. Currently, there are two possible sequence metrics:
@@ -466,7 +426,47 @@ backward. The current metric is displayed in the corner pane.
 
 The sequences can be [ordered](#ordering) according to the current metric.
 
-## Column Metrics {#col-metrics}
+# Ordering the Sequences {#ordering}
+
+Three orderings are available:
+
+- **File order** (default): sequences appear as in the alignment file.
+- **Metric order**: sequences are sorted by the current [sequence metric](#metrics),
+  ascending or descending.
+- **Custom order**: supplied by the user via the `-o` option (see below).
+
+To cycle forward through orderings, press `o`; to cycle backward, press `O`.
+
+The current ordering is displayed in the corner pane:
+
+symbol   meaning
+-------  --------
+`-`      file order
+`↑`      current sequence metric, ascending
+`↓`      current sequence metric, descending
+`u`      user-supplied order (`-o`)
+
+## Custom Ordering
+
+A custom ordering file can be supplied at launch:
+
+```
+termal -o my-order alignment.msa
+```
+
+An ordering file is simply the sequence headers in the desired order, one per
+line, _e.g._:.
+
+```bash
+AHMKMHDK_00298
+CEFNMEKK_03699
+IAGGDKJC_03995
+FHLODNDD_02091
+HJACHOPP_04370
+```
+Note that headers must match those in the alignment file exactly.
+
+# Column Metrics {#col-metrics}
 
 The bottom pane displays a barplot of the current _column metric_, a numeric
 property of each alignment column. Two metrics are available:
@@ -477,6 +477,36 @@ b. **Coverage**: fraction of non-gap residues at that column.
 
 To cycle through column metrics, press `c` (forward) or `C` (backward). The
 current metric name is shown in the bottom pane.
+
+# Display Settings
+
+##  Resizing the Left Pane
+
+The left pane can be widened (_e.g._ to show more of the sequence headers) with
+`>` and shrunk with `<`. This also resizes the corner pane. Both accept a prefix
+argument, which is by how many characters the pane is to be resized:
+
+command    motion
+--------   --------------
+`[count]>` widen the left pane by _count_ characters
+`[count]<` shrink the left pane by _count_ characters
+
+## Diff Mode {#diff-mode}
+
+In diff mode, each residue in the alignment is displayed relative to the
+[reference](#ref-spec):
+
+symbol   meaning
+-------  --------
+letter   residue differs from the reference at this position
+`.`      residue is identical to the reference
+`-`      actual gap in the sequence
+
+This makes it easy to spot variation at a glance, especially when combined
+with setting a specific sequence as reference.
+
+To enter diff mode, press `dd`; to return to normal mode, press `D` or `dn`.
+The reference sequence row is always shown in full, regardless of diff mode.
 
 ## Residue Colormaps
 
@@ -496,7 +526,7 @@ termal -c colormap.json my-alignment.msa
 ```
 
 where the colormap is a JSON file in the Gecos format
-(@kunzmann2020gecos). This is a straightworward format that looks like this:
+(@kunzmann2020gecos). This is a straightforward format that looks like this:
 
 ```json
 {
@@ -529,23 +559,6 @@ theme is displayed in the top border of the Termal screen.
 
 **NOTE** Termal has been tested predominantly in a dark-themed
 terminal.
-
-## Diff Mode
-
-In diff mode, each residue in the alignment is displayed relative to the
-[reference](#ref-spec):
-
-symbol   meaning
--------  --------
-letter   residue differs from the reference at this position
-`.`      residue is identical to the reference
-`-`      actual gap in the sequence
-
-This makes it easy to spot variation at a glance, especially when combined
-with setting a specific sequence as reference.
-
-To enter diff mode, press `dd`; to return to normal mode, press `D` or `dn`.
-The reference sequence row is always shown in full, regardless of diff mode.
 
 ## Inverse Video
 
