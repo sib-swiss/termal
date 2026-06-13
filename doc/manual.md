@@ -87,7 +87,12 @@ experimental or used for debugging or testing. For a full list, do `termal
 
 # Screen layout
 
-![Termal displaying `example-1.msa`. From left to right and top to bottom: headers pane, alignment pane, corner pane, reference pane, and modeline.](screenshot.png){#fig-layout}
+![
+Termal displaying `example-1.msa`. From left to right and top to bottom: headers
+pane, alignment pane, corner pane, reference pane, and modeline.
+The UI shows the result of a sequence search for `[DE][ST]`, with matches
+highlighted in inverse video.
+](tui_screenshot.png){#fig-layout}
 
 The interface is divided into four areas, starting from the top and left to
 right ([**fig. 1**](#fig-layout)):
@@ -126,9 +131,10 @@ If no prefix argument is given, commands default to **1**.
 ##  String Arguments
 
 String arguments are entered after typing the command character, and are entered
-by typing `Return`/`Enter`. Currently only the [header search](#hdr-search) command (`"`),
-[sequence search](#seq-search) command (`/`) and [reference selection](#ref-spec) command
-(`R`) take a string argument.
+by typing `Return`/`Enter`. Currently only the [header search](#hdr-search)
+command (`fh`, shortcut `"`), [sequence search](#seq-search) command (`fs`,
+shortcut `/`), [alignment search](#aln-search) command (`fa`) as well as
+[reference selection](#ref-spec) command (`R`) take a string argument.
 
 #  Navigation fundamentals
 
@@ -592,7 +598,10 @@ Features planned for the next release:
 
 Features that will be added later
 
-* exporting (part of) the alignment as SVG
+* `termal-export`, a companion program for producing publication-quality SVG
+  figures directly from alignment files, is under active development
+  and will be released separately. The figure in the title page of this manual
+  provides an example of its output.
 * showing fully conserved residues (à la EMBOSS's `showalign -show`)
 
 Features under consideration
