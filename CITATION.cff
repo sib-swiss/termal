@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Termal: a fast and interactive terminal-based viewer for multiple sequence alignments"
 version: 2.0.0
-date-released: YYYY-MM-DD  # TODO: set to actual release date
+date-released: 2026-06-13 
 doi: 10.5281/zenodo.15352914
 authors:
   - family-names: "Junier"
