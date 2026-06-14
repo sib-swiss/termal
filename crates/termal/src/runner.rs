@@ -177,7 +177,7 @@ pub fn run() -> Result<(), TermalError> {
     }
 
     if cli.citation {
-        println!("{}", include_str!("../../../CITATION.txt"));
+        println!("{}", include_str!("../CITATION.txt"));
         return Ok(());
     }
 
