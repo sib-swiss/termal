@@ -22,7 +22,7 @@ include = [
     "data/colormaps/gecos_default.json",
     "data/colormaps/high-contrast.json",
     "data/colormaps/no-green.json",
-    "CITATION.cff",
+    "CITATION.txt",
 ]
 #homepage: no page other than repo
 rust-version = "1.79" # May compile with earlier ones, but not checked.
