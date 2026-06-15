@@ -366,10 +366,37 @@ fn mark_lohi(metric: &[f64], threshold: f64) -> Vec<LoHiState> {
         .collect()
 }
 
+fn find_hi_runs(lohi_states: &[LoHiState]) -> Vec<(usize, usize)> {
+    let mut runs = Vec::new();
+    let mut run_start: Option<usize> = None;
+
+    for (i, state) in lohi_states.iter().enumerate() {
+        match (run_start, state) {
+            // start of a high-metric chunk
+            (None, LoHiState::High) => {
+                run_start = Some(i);
+            }
+            // any part of a low-metric chunk
+            (Some(start), LoHiState::Low) => {
+                runs.push((start, i - start));
+                run_start = None;
+            }
+            _ => {}
+        }
+    }
+
+    // trailing chunk
+    if let Some(start) = run_start {
+        runs.push((start, lohi_states.len() - start));
+    }
+
+    runs
+}
+
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, mark_lohi, percent_identity,
+        best_residue, consensus, densities, entropies, entropy, find_hi_runs, mark_lohi, percent_identity,
         res_count, seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, LoHiState,
         RefSpec, ResidueCounts, ResidueDistribution, SeqType,
         SeqType::{Nucleic, Protein},
@@ -697,6 +724,39 @@ mod tests {
                 LoHiState::High,
                 LoHiState::High,
             ]
+        );
+    }
+
+    #[test]
+    fn test_find_hi_runs() {
+        let lohi_states = vec![
+            LoHiState::High,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::High,    // start of a hi run at pos 4 (length 4)
+            LoHiState::High,
+            LoHiState::High,
+            LoHiState::High,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::High,    // start of a hi run at pos 12 (length 5)
+            LoHiState::High,
+            LoHiState::High,
+            LoHiState::High,
+            LoHiState::High,
+            LoHiState::High,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::Low,
+            LoHiState::High,
+            LoHiState::High,
+        ];
+        assert_eq!(
+            find_hi_runs(&lohi_states),
+            vec![(0, 1), (4, 4), (12, 6), (21, 2)]
         );
     }
 }
