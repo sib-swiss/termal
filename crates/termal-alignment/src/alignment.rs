@@ -36,6 +36,12 @@ pub enum RefSpecError {
     RefTooLarge(usize),
 }
 
+#[derive(Debug, PartialEq)]
+enum LoHiState {
+    Low,
+    High,
+}
+
 impl fmt::Display for RefSpecError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let err_msg = match self {
@@ -344,12 +350,28 @@ fn seq_type(sequence: &str) -> SeqType {
     }
 }
 
+fn mark_lohi(metric: &[f64], threshold: f64) -> Vec<LoHiState> {
+    assert!(!threshold.is_nan(), "threshold must not be NaN");
+    metric
+        .iter()
+        .map(|&v| {
+            assert!(!v.is_nan(), "metric value must not be NaN");
+
+            if v < threshold {
+                LoHiState::Low
+            } else {
+                LoHiState::High
+            }
+        })
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, percent_identity, res_count,
-        seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, RefSpec, ResidueCounts,
-        ResidueDistribution, SeqType,
+        best_residue, consensus, densities, entropies, entropy, mark_lohi, percent_identity,
+        res_count, seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, LoHiState,
+        RefSpec, ResidueCounts, ResidueDistribution, SeqType,
         SeqType::{Nucleic, Protein},
     };
     use crate::seq::fasta::read_fasta_file;
@@ -656,5 +678,25 @@ mod tests {
         let _ = aln.set_ref_spec(RefSpec::Consensus);
         assert_eq!("ACg-", aln.reference());
         assert_eq!(vec![0.5, 0.75, 1.0, 0.75, 0.75], aln.id_wrt_reference);
+    }
+
+    #[test]
+    fn test_mark_lohi() {
+        let metric = vec![0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0];
+        assert_eq!(
+            mark_lohi(&metric, 0.8),
+            vec![
+                LoHiState::Low,
+                LoHiState::Low,
+                LoHiState::Low,
+                LoHiState::Low,
+                LoHiState::Low,
+                LoHiState::Low,
+                LoHiState::Low,
+                LoHiState::High,
+                LoHiState::High,
+                LoHiState::High,
+            ]
+        );
     }
 }
