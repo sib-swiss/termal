@@ -393,10 +393,33 @@ fn find_hi_runs(lohi_states: &[LoHiState]) -> Vec<(usize, usize)> {
     runs
 }
 
+fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, usize)> {
+    let mut merged_runs = Vec::new();
+
+    if runs.is_empty() { return merged_runs; }
+
+    merged_runs.push(runs[0]);
+
+    for &(cur_run_start, cur_run_len) in &runs[1..] {
+        let (prev_run_start, prev_run_len) = *merged_runs.last().unwrap();
+
+        let low_run_start = prev_run_start + prev_run_len;
+        let low_run_len = cur_run_start - low_run_start;
+
+        if low_run_len >= threshold {
+            merged_runs.push((cur_run_start, cur_run_len));
+        } else {
+            merged_runs.last_mut().unwrap().1 += low_run_len + cur_run_len;
+        }
+    }
+
+    merged_runs
+}
+
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, find_hi_runs, mark_lohi, percent_identity,
+        best_residue, consensus, densities, entropies, entropy, find_hi_runs, mark_lohi, merge_hi_runs, percent_identity,
         res_count, seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, LoHiState,
         RefSpec, ResidueCounts, ResidueDistribution, SeqType,
         SeqType::{Nucleic, Protein},
@@ -757,6 +780,25 @@ mod tests {
         assert_eq!(
             find_hi_runs(&lohi_states),
             vec![(0, 1), (4, 4), (12, 6), (21, 2)]
+        );
+    }
+
+    #[test]
+    fn test_merge_hi_runs_merges_short_gaps_only() {
+        // Runs are:
+        // 0..4, 6..8, 11..14, 16..18, 22..24
+        //
+        // Gaps are:
+        // 4..6   len 2  -> merge if threshold is 3
+        // 8..11  len 3  -> do not merge if threshold is 3
+        // 14..16 len 2  -> merge if threshold is 3
+        // 18..22 len 4  -> do not merge if threshold is 3
+
+        let runs = vec![(0, 4), (6, 2), (11, 3), (16, 2), (22, 2)];
+
+        assert_eq!(
+            merge_hi_runs(&runs, 3),
+            vec![(0, 8), (11, 7), (22, 2)]
         );
     }
 }
