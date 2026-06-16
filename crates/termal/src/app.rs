@@ -5,7 +5,7 @@ use std::{collections::HashMap, fmt};
 
 use regex::Regex;
 
-use termal_alignment::alignment::{Alignment, RefSpec, RefSpecError};
+use termal_alignment::alignment::{Alignment, RefSpec, RefSpecError, find_hi_runs, mark_lohi, merge_hi_runs, };
 
 use crate::{
     app::ColMetric::{Coverage, Entropy},
@@ -13,6 +13,9 @@ use crate::{
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
     seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
 };
+
+const LOHI_HIGH_THRESHOLD: f64 = 0.8;
+const LOHI_GAP_THRESHOLD: usize = 3;
 
 #[derive(Clone, Copy)]
 pub enum SeqOrdering {
@@ -130,6 +133,9 @@ pub struct App {
     pub search_state: Option<SearchState>,
     current_msg: CurrentMessage,
     current_col_metric: ColMetric,
+    // Regions where the column metric is relatively high., This is used e.g. to navigate to
+    // regions of high conservation
+    pub hi_col_metric_regions: Vec<(usize, usize)>,
 }
 
 impl App {
@@ -152,6 +158,7 @@ impl App {
             search_state: None,
             current_msg: cur_msg,
             current_col_metric: Entropy,
+            hi_col_metric_regions: Vec::new(),
         };
         app.recompute_ordering();
         app
@@ -214,6 +221,12 @@ impl App {
             }
         }
         self.reverse_ordering = order(&self.ordering);
+    }
+
+    fn update_hi_metric_regions(&mut self) {
+        let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
+        let runs = find_hi_runs(&lohi_states);
+        self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
     }
 
     pub fn next_ordering_criterion(&mut self) {
