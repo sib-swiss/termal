@@ -75,7 +75,7 @@ pub struct Alignment {
     pub id_wrt_reference: Vec<f64>, // reference is usually the consensus, but CAN be an aln seq.
     // Recompute if ref changes.
     // Of course the sequence length is an integer, but using an integer type like u32 would make
-    // it hard (for me, at least...) to write a function that accepts a Vec of either  lengths or
+    // it hard (for me, at least...) to write a function that accepts a Vec of either lengths or
     // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
     pub relative_seq_len: Vec<f64>,
     pub macromolecule_type: SeqType,
