@@ -37,7 +37,7 @@ pub enum RefSpecError {
 }
 
 #[derive(Debug, PartialEq)]
-enum LoHiState {
+pub enum LoHiState {
     Low,
     High,
 }
@@ -350,7 +350,7 @@ fn seq_type(sequence: &str) -> SeqType {
     }
 }
 
-fn mark_lohi(metric: &[f64], threshold: f64) -> Vec<LoHiState> {
+pub fn mark_lohi(metric: &[f64], threshold: f64) -> Vec<LoHiState> {
     assert!(!threshold.is_nan(), "threshold must not be NaN");
     metric
         .iter()
@@ -366,7 +366,7 @@ fn mark_lohi(metric: &[f64], threshold: f64) -> Vec<LoHiState> {
         .collect()
 }
 
-fn find_hi_runs(lohi_states: &[LoHiState]) -> Vec<(usize, usize)> {
+pub fn find_hi_runs(lohi_states: &[LoHiState]) -> Vec<(usize, usize)> {
     let mut runs = Vec::new();
     let mut run_start: Option<usize> = None;
 
@@ -393,7 +393,7 @@ fn find_hi_runs(lohi_states: &[LoHiState]) -> Vec<(usize, usize)> {
     runs
 }
 
-fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, usize)> {
+pub fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, usize)> {
     let mut merged_runs = Vec::new();
 
     if runs.is_empty() { return merged_runs; }
