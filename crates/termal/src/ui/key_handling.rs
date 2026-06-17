@@ -321,8 +321,6 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
     // debug!("key event: {:#?}", key_event.code);
     match key_event.code {
-        // ----- Hide/Show panes -----
-        // NOTE: toggling panes is now handled by the prefix command w, see PaneCmdPrefix.
 
         // ----- Motion -----
 
@@ -437,11 +435,21 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('P') => ui.jump_to_next_vertical_match(-(count as i16)),
         KeyCode::Enter => ui.jump_to_current_match(),
 
-        // Left Pane width
+        // To regions of high column metric
+        KeyCode::Char(')') => ui.jump_to_next_hi_col_metric_region(count as i16),
+        KeyCode::Char('(') => ui.jump_to_next_hi_col_metric_region(-(count as i16)),
+
+
+        // ---- Left Pane width ----
+
+
+        // TODO: use just one function and pass negative count, like 'n' & 'p' or ')' and '('.
         KeyCode::Char('>') => ui.widen_label_pane(count as u16),
         KeyCode::Char('<') => ui.reduce_label_pane(count as u16),
 
-        // Zoom
+        // ---- Zoom ----
+
+
         KeyCode::Char('z') => ui.cycle_zoom(),
         // Since there are 3 zoom levels, cycling twice amounts to cycling
         // backwards.

@@ -136,6 +136,7 @@ pub struct App {
     // Regions where the column metric is relatively high., This is used e.g. to navigate to
     // regions of high conservation
     pub hi_col_metric_regions: Vec<(usize, usize)>,
+    pub cur_hi_col_metric_region: Option<usize>,
 }
 
 impl App {
@@ -159,8 +160,10 @@ impl App {
             current_msg: cur_msg,
             current_col_metric: Entropy,
             hi_col_metric_regions: Vec::new(),
+            cur_hi_col_metric_region: None,
         };
         app.recompute_ordering();
+        app.update_hi_metric_regions();
         app
     }
 
@@ -223,12 +226,6 @@ impl App {
         self.reverse_ordering = order(&self.ordering);
     }
 
-    fn update_hi_metric_regions(&mut self) {
-        let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
-        let runs = find_hi_runs(&lohi_states);
-        self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
-    }
-
     pub fn next_ordering_criterion(&mut self) {
         self.ordering_criterion = match self.ordering_criterion {
             SourceFile => SeqMetricIncr,
@@ -258,6 +255,38 @@ impl App {
         self.recompute_ordering();
         self.reorder_matches();
     }
+
+    fn update_hi_metric_regions(&mut self) {
+        let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
+        let runs = find_hi_runs(&lohi_states);
+        self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
+        /*
+        if self.hi_col_metric_regions.is_empty() {
+            self.cur_hi_col_metric_region = None;
+        } else {
+            self.cur_hi_col_metric_region = Some(0);
+        }
+        */
+    }
+
+    pub fn next_hi_metric_region_start(&self, col: usize) -> Option<usize> {
+        self.hi_col_metric_regions.iter().map(|&(s, _)| s).find(|s| *s > col)
+    }
+
+    /*
+    pub fn next_hi_col_metric_region(&mut self) {
+        let Some(cur_region) = self.cur_hi_col_metric_region else { return };
+
+        let num_regions = self.hi_col_metric_regions.len();
+
+        if num_regions == 0 {
+            self.cur_hi_col_metric_region = None;
+            return;
+        }
+
+        self.cur_hi_col_metric_region = Some((cur_region + 1) % num_regions);
+    }
+    */
 
     // Maps a rank (= index in the original alignment) to the corresponding line on the screen
     // (which may or may not be visible). This is affected by the ordering. This is NOT
