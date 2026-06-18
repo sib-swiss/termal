@@ -2,12 +2,15 @@
 // Copyright (c) 2025-2026 Thomas Junier
 // Subtracts the minimum and then divides by the maximum -> [0, 1]
 pub fn normalize(values: &[f64]) -> Vec<f64> {
+    assert!(!values.is_empty(), "cannot normalize empty slice");
+
     let max = values
         .iter()
         .fold(-1.0 / 0.0, |a: f64, b: &f64| f64::max(a, *b));
     let min = values
         .iter()
         .fold(1.0 / 0.0, |a: f64, b: &f64| f64::min(a, *b));
+
     values.iter().map(|v| (v - min) / (max - min)).collect()
 }
 

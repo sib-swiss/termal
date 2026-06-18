@@ -11,11 +11,13 @@ use termal_alignment::alignment::{
     find_hi_runs, mark_lohi, merge_hi_runs, Alignment, RefSpec, RefSpecError,
 };
 
+
 use crate::{
     app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
     seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
+    vec_f64_aux::{normalize, ones_complement},
 };
 
 const LOHI_HIGH_THRESHOLD: f64 = 0.8;
@@ -803,10 +805,15 @@ impl App {
         self.current_col_metric
     }
 
+    // The App-side values are processed for display and navigation. In particular, they are
+    // normalized; 'entropy' is ones-complemented so that high vlies mean high conservation (which
+    // is actually a misnomer).
+    // FIXME: Entropy should be called Conservation
+
     pub fn current_col_metric_values(&self) -> Vec<f64> {
         match self.current_col_metric {
-            Entropy => self.alignment.entropies.clone(),
-            Coverage => self.alignment.densities.clone(),
+            Entropy => ones_complement(&normalize(&self.alignment.entropies.clone())),
+            Coverage => normalize(&self.alignment.densities.clone()),
         }
     }
 }
