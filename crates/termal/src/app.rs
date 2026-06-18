@@ -11,7 +11,6 @@ use termal_alignment::alignment::{
     find_hi_runs, mark_lohi, merge_hi_runs, Alignment, RefSpec, RefSpecError,
 };
 
-
 use crate::{
     app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
@@ -264,16 +263,10 @@ impl App {
 
     fn update_hi_metric_regions(&mut self) {
         let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
+        debug!("states: {:?}", lohi_states);
         let runs = find_hi_runs(&lohi_states);
         self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
         debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
-        /*
-        if self.hi_col_metric_regions.is_empty() {
-            self.cur_hi_col_metric_region = None;
-        } else {
-            self.cur_hi_col_metric_region = Some(0);
-        }
-        */
     }
 
     pub fn next_hi_metric_region_start(&self, col: usize) -> Option<usize> {
@@ -283,20 +276,13 @@ impl App {
             .find(|s| *s > col)
     }
 
-    /*
-    pub fn next_hi_col_metric_region(&mut self) {
-        let Some(cur_region) = self.cur_hi_col_metric_region else { return };
-
-        let num_regions = self.hi_col_metric_regions.len();
-
-        if num_regions == 0 {
-            self.cur_hi_col_metric_region = None;
-            return;
-        }
-
-        self.cur_hi_col_metric_region = Some((cur_region + 1) % num_regions);
+    pub fn prev_hi_metric_region_start(&self, col: usize) -> Option<usize> {
+        self.hi_col_metric_regions
+            .iter()
+            .rev()
+            .map(|&(s, _)| s)
+            .find(|s| *s < col)
     }
-    */
 
     // Maps a rank (= index in the original alignment) to the corresponding line on the screen
     // (which may or may not be visible). This is affected by the ordering. This is NOT
