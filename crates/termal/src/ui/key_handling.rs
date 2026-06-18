@@ -321,7 +321,6 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
     // debug!("key event: {:#?}", key_event.code);
     match key_event.code {
-
         // ----- Motion -----
 
         // Arrows - late introduction, but might be friendlier to new users.
@@ -439,17 +438,13 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char(')') => ui.jump_to_next_hi_col_metric_region(count as i16),
         KeyCode::Char('(') => ui.jump_to_next_hi_col_metric_region(-(count as i16)),
 
-
         // ---- Left Pane width ----
-
 
         // TODO: use just one function and pass negative count, like 'n' & 'p' or ')' and '('.
         KeyCode::Char('>') => ui.widen_label_pane(count as u16),
         KeyCode::Char('<') => ui.reduce_label_pane(count as u16),
 
         // ---- Zoom ----
-
-
         KeyCode::Char('z') => ui.cycle_zoom(),
         // Since there are 3 zoom levels, cycling twice amounts to cycling
         // backwards.

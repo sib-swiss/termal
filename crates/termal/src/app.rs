@@ -3,9 +3,13 @@
 
 use std::{collections::HashMap, fmt};
 
+use log::debug;
+
 use regex::Regex;
 
-use termal_alignment::alignment::{Alignment, RefSpec, RefSpecError, find_hi_runs, mark_lohi, merge_hi_runs, };
+use termal_alignment::alignment::{
+    find_hi_runs, mark_lohi, merge_hi_runs, Alignment, RefSpec, RefSpecError,
+};
 
 use crate::{
     app::ColMetric::{Coverage, Entropy},
@@ -260,6 +264,7 @@ impl App {
         let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
         let runs = find_hi_runs(&lohi_states);
         self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
+        debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
         /*
         if self.hi_col_metric_regions.is_empty() {
             self.cur_hi_col_metric_region = None;
@@ -270,7 +275,10 @@ impl App {
     }
 
     pub fn next_hi_metric_region_start(&self, col: usize) -> Option<usize> {
-        self.hi_col_metric_regions.iter().map(|&(s, _)| s).find(|s| *s > col)
+        self.hi_col_metric_regions
+            .iter()
+            .map(|&(s, _)| s)
+            .find(|s| *s > col)
     }
 
     /*

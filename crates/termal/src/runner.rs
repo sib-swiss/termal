@@ -77,7 +77,6 @@ struct Cli {
     dry_run: bool,
 
     // Rare options (long form only)
-
     /// Show citation
     #[arg(long)]
     citation: bool,

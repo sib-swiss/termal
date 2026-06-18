@@ -396,7 +396,9 @@ pub fn find_hi_runs(lohi_states: &[LoHiState]) -> Vec<(usize, usize)> {
 pub fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, usize)> {
     let mut merged_runs = Vec::new();
 
-    if runs.is_empty() { return merged_runs; }
+    if runs.is_empty() {
+        return merged_runs;
+    }
 
     merged_runs.push(runs[0]);
 
@@ -419,9 +421,9 @@ pub fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, u
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, find_hi_runs, mark_lohi, merge_hi_runs, percent_identity,
-        res_count, seq_len_nogaps, seq_type, to_freq_distrib, Alignment, BestResidue, LoHiState,
-        RefSpec, ResidueCounts, ResidueDistribution, SeqType,
+        best_residue, consensus, densities, entropies, entropy, find_hi_runs, mark_lohi,
+        merge_hi_runs, percent_identity, res_count, seq_len_nogaps, seq_type, to_freq_distrib,
+        Alignment, BestResidue, LoHiState, RefSpec, ResidueCounts, ResidueDistribution, SeqType,
         SeqType::{Nucleic, Protein},
     };
     use crate::seq::fasta::read_fasta_file;
@@ -757,7 +759,7 @@ mod tests {
             LoHiState::Low,
             LoHiState::Low,
             LoHiState::Low,
-            LoHiState::High,    // start of a hi run at pos 4 (length 4)
+            LoHiState::High, // start of a hi run at pos 4 (length 4)
             LoHiState::High,
             LoHiState::High,
             LoHiState::High,
@@ -765,7 +767,7 @@ mod tests {
             LoHiState::Low,
             LoHiState::Low,
             LoHiState::Low,
-            LoHiState::High,    // start of a hi run at pos 12 (length 5)
+            LoHiState::High, // start of a hi run at pos 12 (length 5)
             LoHiState::High,
             LoHiState::High,
             LoHiState::High,
@@ -813,9 +815,6 @@ mod tests {
 
         let runs = vec![(0, 4), (6, 2), (11, 3), (16, 2), (22, 2)];
 
-        assert_eq!(
-            merge_hi_runs(&runs, 3),
-            vec![(0, 8), (11, 7), (22, 2)]
-        );
+        assert_eq!(merge_hi_runs(&runs, 3), vec![(0, 8), (11, 7), (22, 2)]);
     }
 }
