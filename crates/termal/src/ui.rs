@@ -772,7 +772,9 @@ impl<'a> UI<'a> {
     pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
         // FIXME: convert 'as <type>' to 'type::from(...)' whenever possible, as this protects
         // against checkless conversions
-        let sought_col = self.app.next_hi_metric_region_start(usize::from(self.leftmost_col));
+        let sought_col = self
+            .app
+            .next_hi_metric_region_start(usize::from(self.leftmost_col));
         if let Some(col) = sought_col {
             self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
         }
