@@ -770,24 +770,22 @@ impl<'a> UI<'a> {
     }
 
     pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
-        match count  {
-            count if count > 0 => {
-                let sought_col = self
-                    .app
-                    .next_hi_metric_region_start(usize::from(self.leftmost_col));
-                if let Some(col) = sought_col {
-                    self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
+        let mut sought_col: Option<usize>;
+        for _ in 0 .. count.abs() {
+            sought_col = match count  {
+                count if count > 0 => {
+                    self.app
+                        .next_hi_metric_region_start(usize::from(self.leftmost_col))
                 }
-            }
-            count if count < 0 => {
-                let sought_col = self
-                    .app
-                    .prev_hi_metric_region_start(usize::from(self.leftmost_col));
-                if let Some(col) = sought_col {
-                    self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
+                count if count < 0 => {
+                    self.app
+                        .prev_hi_metric_region_start(usize::from(self.leftmost_col))
                 }
+                _ => None
+            };
+            if let Some(col) = sought_col {
+                self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
             }
-            _ => {}
         }
     }
 
