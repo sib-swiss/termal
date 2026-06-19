@@ -12,11 +12,10 @@ use termal_alignment::alignment::{
 };
 
 use crate::{
-    app::ColMetric::{Coverage, Entropy},
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
     seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
-    vec_f64_aux::{normalize, ones_complement},
+    vec_f64_aux::{normalize, ones_complement, product},
 };
 
 const LOHI_HIGH_THRESHOLD: f64 = 0.8;
@@ -62,13 +61,15 @@ impl fmt::Display for SeqMetric {
 pub enum ColMetric {
     Coverage,
     Entropy,
+    SupportedEntropy,
 }
 
 impl fmt::Display for ColMetric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let col_metric = match self {
-            Coverage => "coverage",
-            Entropy => "entropy",
+            ColMetric::Coverage          => "coverage",
+            ColMetric::Entropy           => "conserv.",
+            ColMetric::SupportedEntropy  => "wt. cons.",
         };
         write!(f, "{}", col_metric)
     }
@@ -163,7 +164,7 @@ impl App {
             user_ordering: usr_ord,
             search_state: None,
             current_msg: cur_msg,
-            current_col_metric: Entropy,
+            current_col_metric: ColMetric::Entropy,
             hi_col_metric_regions: Vec::new(),
             cur_hi_col_metric_region: None,
         };
@@ -782,8 +783,17 @@ impl App {
 
     pub fn next_col_metric(&mut self) {
         self.current_col_metric = match self.current_col_metric {
-            Entropy => Coverage,
-            Coverage => Entropy,
+            ColMetric::Entropy => ColMetric::Coverage,
+            ColMetric::Coverage => ColMetric::SupportedEntropy,
+            ColMetric::SupportedEntropy => ColMetric::Entropy,
+        }
+    }
+
+    pub fn prev_col_metric(&mut self) {
+        self.current_col_metric = match self.current_col_metric {
+            ColMetric::Entropy => ColMetric::SupportedEntropy,
+            ColMetric::Coverage => ColMetric::Entropy,
+            ColMetric::SupportedEntropy => ColMetric::Coverage,
         }
     }
 
@@ -798,8 +808,13 @@ impl App {
 
     pub fn current_col_metric_values(&self) -> Vec<f64> {
         match self.current_col_metric {
-            Entropy => ones_complement(&normalize(&self.alignment.entropies.clone())),
-            Coverage => normalize(&self.alignment.densities.clone()),
+            ColMetric::Entropy => ones_complement(
+                &normalize(&self.alignment.entropies)),
+            ColMetric::Coverage => normalize(&self.alignment.densities),
+            ColMetric::SupportedEntropy => product(
+                 &self.alignment.densities,
+                 &ones_complement(&normalize(&self.alignment.entropies))
+            ),
         }
     }
 }

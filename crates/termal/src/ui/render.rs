@@ -9,8 +9,6 @@ use ratatui::{
 
 use termal_alignment::alignment::RefSpec::{self, Rank};
 
-use crate::app::ColMetric;
-
 use super::{
     aln_widget::{SeqPane, SeqPaneZoomedOut},
     barchart::{value_to_hbar, values_barchart},
