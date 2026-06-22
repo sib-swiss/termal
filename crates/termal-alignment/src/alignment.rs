@@ -784,6 +784,23 @@ mod tests {
     }
 
     #[test]
+    fn test_find_hi_runs_all_high() {
+        let lohi_states = vec![LoHiState::High, LoHiState::High, LoHiState::High];
+        assert_eq!(find_hi_runs(&lohi_states), vec![(0, 3)]);
+    }
+
+    #[test]
+    fn test_find_hi_runs_all_low() {
+        let lohi_states = vec![LoHiState::Low, LoHiState::Low, LoHiState::Low];
+        assert_eq!(find_hi_runs(&lohi_states), vec![]);
+    }
+
+    #[test]
+    fn test_merge_hi_runs_single_run() {
+        assert_eq!(merge_hi_runs(&[(5, 3)], 3), vec![(5, 3)]);
+    }
+
+    #[test]
     fn test_merge_hi_runs_merges_short_gaps_only() {
         // Runs are:
         // 0..4, 6..8, 11..14, 16..18, 22..24
