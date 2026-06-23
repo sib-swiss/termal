@@ -772,10 +772,12 @@ impl<'a> UI<'a> {
         let mut step_count = count.unsigned_abs();
         let count_sgn: isize = count.signum().into();
         let mut target: Option<JumpTarget> = None;
-        // Iteratively jump `count` times to next (resp. previous) match, but discard matches that would require a horizontal jump to display. 
-        while step_count > 0 {
+        let mut tries_left = self.app.num_seq_matches();
+        // Iteratively jump `count` times to next (resp. previous) match, but discard matches that
+        // would require a horizontal jump to display.
+        while step_count > 0 && tries_left > 0 {
             self.app.increment_current_match(count_sgn);
-            // Decrement IFF match is suitable
+            tries_left -= 1;
             target = self.app.current_match();
             match target {
                 Some(JumpTarget::Match(_, match_pos)) => {

@@ -532,6 +532,14 @@ impl App {
         }
     }
 
+    pub fn num_seq_matches(&self) -> usize {
+        if let Some(SearchState::Sequence(seq_state)) = &self.search_state {
+            seq_state.matches_by_rank.values().map(|m| m.len()).sum()
+        } else {
+            0
+        }
+    }
+
     pub fn display_current_match(&mut self) {
         match &self.search_state {
             Some(SearchState::Header(hdr_state)) => {
