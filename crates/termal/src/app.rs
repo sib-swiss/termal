@@ -278,7 +278,14 @@ impl App {
         self.hi_col_metric_regions
             .iter()
             .map(|&(s, _)| s)
-            .find(|s| *s > col)
+            .find(|&s| s > col)
+    }
+
+    pub fn prev_hi_metric_region_start(&self, col: usize) -> Option<usize> {
+        self.hi_col_metric_regions
+            .iter()
+            .map(|&(s, _)| s)
+            .rfind(|&s| s < col)
     }
 
     /*
