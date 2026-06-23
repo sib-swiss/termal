@@ -433,6 +433,8 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         // To search matches
         KeyCode::Char('n') => ui.jump_to_next_match(count as i16),
         KeyCode::Char('p') => ui.jump_to_next_match(-(count as i16)),
+        KeyCode::Char('N') => ui.jump_to_next_vertical_match(count as i16),
+        KeyCode::Char('P') => ui.jump_to_next_vertical_match(-(count as i16)),
         KeyCode::Enter => ui.jump_to_current_match(),
 
         // Left Pane width

@@ -765,6 +765,37 @@ impl<'a> UI<'a> {
         self.app.display_current_match();
     }
 
+    // Jump to next match, but vertically. This allows the user to stay within the same region,
+    // e.g. a conserved domain.
+
+    pub fn jump_to_next_vertical_match(&mut self, count: i16) {
+        let mut step_count = count.unsigned_abs();
+        let count_sgn: isize = count.signum().into();
+        let mut target: Option<JumpTarget> = None;
+        // Iteratively jump `count` times to next (resp. previous) match, but discard matches that would require a horizontal jump to display. 
+        while step_count > 0 {
+            self.app.increment_current_match(count_sgn);
+            // Decrement IFF match is suitable
+            target = self.app.current_match();
+            match target {
+                Some(JumpTarget::Match(screen_line, match_pos)) => {
+                   if match_pos.end_col() <= (self.leftmost_col + self.max_nb_col_shown()).into() {
+                       step_count -= 1;
+                   }
+                }
+                _ => {}
+            }
+        }
+
+        match target {
+            Some(JumpTarget::Match(screen_line, match_pos)) => {
+                self.jump_to_line(screen_line as u16);
+            }
+            _ => {}
+        }
+        self.app.display_current_match();
+    }
+
     pub fn jump_to_current_match(&mut self) {
         self.jump_to_next_match(0);
     }
