@@ -778,17 +778,19 @@ impl<'a> UI<'a> {
             // Decrement IFF match is suitable
             target = self.app.current_match();
             match target {
-                Some(JumpTarget::Match(screen_line, match_pos)) => {
-                   if match_pos.end_col() <= (self.leftmost_col + self.max_nb_col_shown()).into() {
-                       step_count -= 1;
-                   }
+                Some(JumpTarget::Match(_, match_pos)) => {
+                    let left = usize::from(self.leftmost_col);
+                    let right = usize::from(self.leftmost_col + self.max_nb_col_shown());
+                    if match_pos.start_col() >= left && match_pos.end_col() <= right {
+                        step_count -= 1;
+                    }
                 }
                 _ => {}
             }
         }
 
         match target {
-            Some(JumpTarget::Match(screen_line, match_pos)) => {
+            Some(JumpTarget::Match(screen_line, _)) => {
                 self.jump_to_line(screen_line as u16);
             }
             _ => {}
