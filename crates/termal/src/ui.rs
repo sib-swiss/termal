@@ -201,12 +201,12 @@ impl<'a> UI<'a> {
      * affects the maximal top line and leftmost column, etc.
      * */
 
-    fn max_nb_seq_shown(&self) -> u16 {
+    pub fn max_nb_seq_shown(&self) -> u16 {
         let height = self.aln_pane_size.unwrap().height;
         height.saturating_sub(2) // Borders - TODO: use constants!
     }
 
-    fn max_nb_col_shown(&self) -> u16 {
+    pub fn max_nb_col_shown(&self) -> u16 {
         let width = self.aln_pane_size.unwrap().width;
         width.saturating_sub(2) // Borders - TODO: use constants!
     }
