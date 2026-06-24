@@ -351,7 +351,7 @@ fn handle_ex_command(
             ui.input_mode = InputMode::Normal;
         }
         KeyCode::Tab => {
-            todo!();    // TODO: completion
+           // later: implement completion
         }
         _ => {}
     }
