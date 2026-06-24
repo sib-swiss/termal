@@ -7,10 +7,6 @@ use crate::seq_match::SequenceSearchTarget;
 
 use super::{
     DiffMode, InputMode,
-    InputMode::{
-        DiffCmdPrefix, Help, LabelSearch, Normal, PaneCmdPrefix, PendingCount, Search,
-        SearchCmdPrefix, SetReference,
-    },
     {ZoomLevel, UI},
 };
 
@@ -18,15 +14,16 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
     let mut done = false;
     let mode = ui.input_mode.clone();
     match mode {
-        Normal => done = handle_normal_key(ui, key_event),
-        Help => handle_help_key(ui, key_event),
-        PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
-        LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
-        Search { pattern, target } => handle_sequence_search(ui, key_event, &pattern, target),
-        SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
-        PaneCmdPrefix => handle_pane_prefix(ui, key_event),
-        DiffCmdPrefix => handle_diff_prefix(ui, key_event),
-        SearchCmdPrefix => handle_search_prefix(ui, key_event),
+        InputMode::Normal => done = handle_normal_key(ui, key_event),
+        InputMode::Help => handle_help_key(ui, key_event),
+        InputMode::PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
+        InputMode::LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
+        InputMode::Search { pattern, target } => handle_sequence_search(ui, key_event, &pattern, target),
+        InputMode::SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
+        InputMode::PaneCmdPrefix => handle_pane_prefix(ui, key_event),
+        InputMode::DiffCmdPrefix => handle_diff_prefix(ui, key_event),
+        InputMode::SearchCmdPrefix => handle_search_prefix(ui, key_event),
+        InputMode::ExCommand { cmd } => handle_ex_command(ui, key_event, &cmd),
     };
     done
 }
@@ -103,6 +100,13 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
                 String::from("find: [h]eaders [s]equences [a]lignment"),
                 String::from(""),
             );
+        }
+        KeyCode::Char(':') => {
+            ui.input_mode = InputMode::ExCommand {
+                cmd: String::new(),
+            };
+            ui.app
+                .argument_msg(String::from(":"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -316,6 +320,43 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
     }
 }
 
+fn handle_ex_command(
+    ui: &mut UI,
+    key_event: KeyEvent,
+    cmd: &str,
+) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char(c) if c.is_ascii_graphic() || ' ' == c => {
+            ui.app.add_argument_char(c);
+            let mut updated_cmd = cmd.to_string();
+            updated_cmd.push(c);
+            ui.input_mode = InputMode::ExCommand {
+                cmd: updated_cmd,
+            }
+        }
+        KeyCode::Delete | KeyCode::Backspace => {
+            ui.app.pop_argument_char();
+            let mut updated_cmd = cmd.to_string();
+            updated_cmd.pop();
+            ui.input_mode = InputMode::ExCommand {
+                cmd: updated_cmd,
+            };
+        }
+        KeyCode::Enter => {
+            ui.app.ex_command(cmd);
+            ui.input_mode = InputMode::Normal;
+        }
+        KeyCode::Tab => {
+            todo!();    // TODO: completion
+        }
+        _ => {}
+    }
+}
+
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
 
@@ -507,7 +548,6 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         // ----- Editing -----
         // Filter alignment through external command (à la Vim's '!')
         KeyCode::Char('!') => ui.app.warning_msg("Filtering not implemented yet"),
-        KeyCode::Char(':') => ui.app.warning_msg("Ex mode not implemented yet"),
 
         // ----- Diff Mode -----
         KeyCode::Char('D') => ui.diff_mode = DiffMode::Original,

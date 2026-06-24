@@ -90,7 +90,9 @@ enum InputMode {
     PaneCmdPrefix,
     DiffCmdPrefix,
     SearchCmdPrefix,
-    // ExCommand { buffer: String },
+    ExCommand {
+        cmd: String
+    },
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]

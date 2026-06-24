@@ -730,6 +730,12 @@ impl App {
         }
     }
 
+    // Ex Commands (actually, just commands, but they're triggered by ':', just like in Vim).
+
+    pub fn ex_command(&mut self, cmd: &str) {
+        self.clear_msg();
+    }
+
     // Messages
 
     pub fn current_message(&self) -> &CurrentMessage {
