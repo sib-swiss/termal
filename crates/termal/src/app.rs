@@ -273,7 +273,7 @@ impl App {
         self.reorder_matches();
     }
 
-    fn update_hi_metric_regions(&mut self) {
+    pub fn update_hi_metric_regions(&mut self) {
         let lohi_states = mark_lohi(&self.current_col_metric_values(), self.options.lohi_high_threshold);
         let runs = find_hi_runs(&lohi_states);
         self.hi_col_metric_regions = merge_hi_runs(&runs, self.options.lohi_gap_threshold);
@@ -731,10 +731,6 @@ impl App {
     }
 
     // Ex Commands (actually, just commands, but they're triggered by ':', just like in Vim).
-
-    pub fn ex_command(&mut self, cmd: &str) {
-        self.clear_msg();
-    }
 
     // Messages
 
