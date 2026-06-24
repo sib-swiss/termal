@@ -18,8 +18,19 @@ use crate::{
     seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
 };
 
-const LOHI_HIGH_THRESHOLD: f64 = 0.8;
-const LOHI_GAP_THRESHOLD: usize = 3;
+pub struct AppOptions {
+    pub lohi_high_threshold: f64,
+    pub lohi_gap_threshold: usize,
+}
+
+impl Default for AppOptions {
+    fn default() -> Self {
+        AppOptions {
+            lohi_high_threshold: 0.8,
+            lohi_gap_threshold: 3,
+        }
+    }
+}
 
 #[derive(Clone, Copy)]
 pub enum SeqOrdering {
@@ -141,6 +152,7 @@ pub struct App {
     // regions of high conservation
     pub hi_col_metric_regions: Vec<(usize, usize)>,
     pub cur_hi_col_metric_region: Option<usize>,
+    pub options: AppOptions,
 }
 
 impl App {
@@ -165,6 +177,7 @@ impl App {
             current_col_metric: Entropy,
             hi_col_metric_regions: Vec::new(),
             cur_hi_col_metric_region: None,
+            options: AppOptions::default(),
         };
         app.recompute_ordering();
         app.update_hi_metric_regions();
@@ -261,9 +274,9 @@ impl App {
     }
 
     fn update_hi_metric_regions(&mut self) {
-        let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
+        let lohi_states = mark_lohi(&self.current_col_metric_values(), self.options.lohi_high_threshold);
         let runs = find_hi_runs(&lohi_states);
-        self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
+        self.hi_col_metric_regions = merge_hi_runs(&runs, self.options.lohi_gap_threshold);
         debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
         /*
         if self.hi_col_metric_regions.is_empty() {
