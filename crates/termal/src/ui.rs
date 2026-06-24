@@ -54,6 +54,22 @@ enum VideoMode {
     Inverse,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum JumpMode {
+    LazyCentered,
+    AlwaysCenter,
+}
+
+pub struct UIOptions {
+    pub jump_mode: JumpMode,
+}
+
+impl Default for UIOptions {
+    fn default() -> Self {
+        UIOptions { jump_mode: JumpMode::LazyCentered }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 enum InputMode {
     Normal,
@@ -139,6 +155,7 @@ pub struct UI<'a> {
     input_mode: InputMode,
     help_state: HelpState,
     diff_mode: DiffMode,
+    pub options: UIOptions,
 }
 
 impl<'a> UI<'a> {
@@ -172,6 +189,7 @@ impl<'a> UI<'a> {
             input_mode: InputMode::Normal,
             help_state: HelpState::default(),
             diff_mode: DiffMode::Original,
+            options: UIOptions::default(),
         }
     }
 
@@ -754,11 +772,11 @@ impl<'a> UI<'a> {
 
         match target {
             Some(JumpTarget::HeaderLine(match_screenline)) => {
-                self.jump_to_line(match_screenline as u16);
+                self.scroll_line_to_view(match_screenline);
             }
             Some(JumpTarget::Match(screen_line, match_pos)) => {
-                self.jump_to_line(screen_line as u16);
-                self.jump_to_col(match_pos.start_col() as u16);
+                self.scroll_line_to_view(screen_line);
+                self.scroll_col_to_view(match_pos.start_col(), match_pos.end_col());
             }
             None => {}
         }
@@ -793,7 +811,7 @@ impl<'a> UI<'a> {
 
         match target {
             Some(JumpTarget::Match(screen_line, _)) => {
-                self.jump_to_line(screen_line as u16);
+                self.scroll_line_to_view(screen_line);
             }
             _ => {}
         }
@@ -802,6 +820,32 @@ impl<'a> UI<'a> {
 
     pub fn jump_to_current_match(&mut self) {
         self.jump_to_next_match(0);
+    }
+
+    fn scroll_line_to_view(&mut self, screen_line: usize) {
+        let tl = self.top_line as usize;
+        let visible = self.max_nb_seq_shown() as usize;
+        if self.options.jump_mode == JumpMode::LazyCentered
+            && screen_line >= tl
+            && screen_line < tl + visible
+        {
+            return;
+        }
+        let centered = screen_line.saturating_sub(visible / 2);
+        self.top_line = (centered as u16).min(self.max_top_line());
+    }
+
+    fn scroll_col_to_view(&mut self, start_col: usize, end_col: usize) {
+        let lc = self.leftmost_col as usize;
+        let visible = self.max_nb_col_shown() as usize;
+        if self.options.jump_mode == JumpMode::LazyCentered
+            && start_col >= lc
+            && end_col <= lc + visible
+        {
+            return;
+        }
+        let centered = start_col.saturating_sub(visible / 2);
+        self.leftmost_col = (centered as u16).min(self.max_leftmost_col());
     }
 
     pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
