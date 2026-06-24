@@ -6,7 +6,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use crate::seq_match::SequenceSearchTarget;
 
 use super::{
-    DiffMode, InputMode, JumpMode,
+    ex_command, DiffMode, InputMode,
     {ZoomLevel, UI},
 };
 
@@ -347,37 +347,13 @@ fn handle_ex_command(
             };
         }
         KeyCode::Enter => {
-            execute_ex_command(ui, cmd);
+            ex_command::execute(ui, cmd);
             ui.input_mode = InputMode::Normal;
         }
         KeyCode::Tab => {
             todo!();    // TODO: completion
         }
         _ => {}
-    }
-}
-
-fn execute_ex_command(ui: &mut UI, cmd: &str) {
-    ui.app.clear_msg();
-    let parts: Vec<&str> = cmd.trim().split_whitespace().collect();
-    match parts.as_slice() {
-        ["set", "jump", "lazy"] => ui.options.jump_mode = JumpMode::LazyCentered,
-        ["set", "jump", "center"] => ui.options.jump_mode = JumpMode::AlwaysCenter,
-        ["set", "lohi-threshold", val] => match val.parse::<f64>() {
-            Ok(v) if (0.0..=1.0).contains(&v) => {
-                ui.app.options.lohi_high_threshold = v;
-                ui.app.update_hi_metric_regions();
-            }
-            _ => ui.app.warning_msg(format!("lohi-threshold: expected float in [0,1], got '{val}'")),
-        },
-        ["set", "lohi-gap", val] => match val.parse::<usize>() {
-            Ok(v) => {
-                ui.app.options.lohi_gap_threshold = v;
-                ui.app.update_hi_metric_regions();
-            }
-            _ => ui.app.warning_msg(format!("lohi-gap: expected integer, got '{val}'")),
-        },
-        _ => ui.app.warning_msg(format!("Unknown command: '{cmd}'")),
     }
 }
 

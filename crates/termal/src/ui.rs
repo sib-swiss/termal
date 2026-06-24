@@ -4,6 +4,7 @@ mod aln_widget;
 mod barchart;
 pub mod color_map;
 mod color_scheme;
+pub mod ex_command;
 pub mod key_handling;
 mod msg_theme;
 pub mod render;
