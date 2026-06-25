@@ -47,7 +47,7 @@ fn test_header_search() {
             let buffer = terminal.backend().buffer();
             let penultimate_line = utils::screen_line(buffer, penultimate_line_y);
 
-            let expected = "Metric: entropy  │▂▂ ▂ ▂▂█ █";
+            let expected = "Metric: conserv. │▂▂ ▂ ▂▂█ █";
             assert!(
                 penultimate_line.contains(expected),
                 "\"{}\" not found on last line: {}",
