@@ -11,7 +11,13 @@ pub fn normalize(values: &[f64]) -> Vec<f64> {
         .iter()
         .fold(1.0 / 0.0, |a: f64, b: &f64| f64::min(a, *b));
 
-    values.iter().map(|v| (v - min) / (max - min)).collect()
+    let range = max - min;
+    if range == 0.0 {
+        // All values identical: clamp the uniform value to [0, 1] so coverage=1.0 shows full
+        // bars and entropy=0.0 shows empty bars, rather than returning NaN from 0/0.
+        return values.iter().map(|v| v.clamp(0.0, 1.0)).collect();
+    }
+    values.iter().map(|v| (v - min) / range).collect()
 }
 
 // Complements to one. Only makes sense for normalized values.

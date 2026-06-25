@@ -4,6 +4,7 @@ mod aln_widget;
 mod barchart;
 pub mod color_map;
 mod color_scheme;
+pub mod ex_command;
 pub mod key_handling;
 mod msg_theme;
 pub mod render;
@@ -54,6 +55,22 @@ enum VideoMode {
     Inverse,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum JumpMode {
+    LazyCentered,
+    AlwaysCenter,
+}
+
+pub struct UIOptions {
+    pub jump_mode: JumpMode,
+}
+
+impl Default for UIOptions {
+    fn default() -> Self {
+        UIOptions { jump_mode: JumpMode::LazyCentered }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 enum InputMode {
     Normal,
@@ -74,7 +91,9 @@ enum InputMode {
     PaneCmdPrefix,
     DiffCmdPrefix,
     SearchCmdPrefix,
-    // ExCommand { buffer: String },
+    ExCommand {
+        cmd: String
+    },
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -139,6 +158,7 @@ pub struct UI<'a> {
     input_mode: InputMode,
     help_state: HelpState,
     diff_mode: DiffMode,
+    pub options: UIOptions,
 }
 
 impl<'a> UI<'a> {
@@ -172,7 +192,12 @@ impl<'a> UI<'a> {
             input_mode: InputMode::Normal,
             help_state: HelpState::default(),
             diff_mode: DiffMode::Original,
+            options: UIOptions::default(),
         }
+    }
+
+    pub fn app(&self) -> &App {
+        &self.app
     }
 
     // ****************************************************************
@@ -183,12 +208,12 @@ impl<'a> UI<'a> {
      * affects the maximal top line and leftmost column, etc.
      * */
 
-    fn max_nb_seq_shown(&self) -> u16 {
+    pub fn max_nb_seq_shown(&self) -> u16 {
         let height = self.aln_pane_size.unwrap().height;
         height.saturating_sub(2) // Borders - TODO: use constants!
     }
 
-    fn max_nb_col_shown(&self) -> u16 {
+    pub fn max_nb_col_shown(&self) -> u16 {
         let width = self.aln_pane_size.unwrap().width;
         width.saturating_sub(2) // Borders - TODO: use constants!
     }
@@ -754,13 +779,48 @@ impl<'a> UI<'a> {
 
         match target {
             Some(JumpTarget::HeaderLine(match_screenline)) => {
-                self.jump_to_line(match_screenline as u16);
+                self.scroll_line_to_view(match_screenline);
             }
             Some(JumpTarget::Match(screen_line, match_pos)) => {
-                self.jump_to_line(screen_line as u16);
-                self.jump_to_col(match_pos.start_col() as u16);
+                self.scroll_line_to_view(screen_line);
+                self.scroll_col_to_view(match_pos.start_col(), match_pos.end_col());
             }
             None => {}
+        }
+        self.app.display_current_match();
+    }
+
+    // Jump to next match, but vertically. This allows the user to stay within the same region,
+    // e.g. a conserved domain.
+
+    pub fn jump_to_next_vertical_match(&mut self, count: i16) {
+        let mut step_count = count.unsigned_abs();
+        let count_sgn: isize = count.signum().into();
+        let mut target: Option<JumpTarget> = None;
+        let mut tries_left = self.app.num_seq_matches();
+        // Iteratively jump `count` times to next (resp. previous) match, but discard matches that
+        // would require a horizontal jump to display.
+        while step_count > 0 && tries_left > 0 {
+            self.app.increment_current_match(count_sgn);
+            tries_left -= 1;
+            target = self.app.current_match();
+            match target {
+                Some(JumpTarget::Match(_, match_pos)) => {
+                    let left = usize::from(self.leftmost_col);
+                    let right = usize::from(self.leftmost_col + self.max_nb_col_shown());
+                    if match_pos.start_col() >= left && match_pos.end_col() <= right {
+                        step_count -= 1;
+                    }
+                }
+                _ => {}
+            }
+        }
+
+        match target {
+            Some(JumpTarget::Match(screen_line, _)) => {
+                self.scroll_line_to_view(screen_line);
+            }
+            _ => {}
         }
         self.app.display_current_match();
     }
@@ -769,26 +829,44 @@ impl<'a> UI<'a> {
         self.jump_to_next_match(0);
     }
 
-    pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
-        let mut sought_col: Option<usize>;
-        for _ in 0 .. count.abs() {
-            sought_col = match count  {
-                count if count > 0 => {
-                    self.app
-                        .next_hi_metric_region_start(usize::from(self.leftmost_col))
-                }
-                count if count < 0 => {
-                    self.app
-                        .prev_hi_metric_region_start(usize::from(self.leftmost_col))
-                }
-                _ => None
-            };
-            if let Some(col) = sought_col {
-                self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
-            }
+    fn scroll_line_to_view(&mut self, screen_line: usize) {
+        let tl = self.top_line as usize;
+        let visible = self.max_nb_seq_shown() as usize;
+        if self.options.jump_mode == JumpMode::LazyCentered
+            && screen_line >= tl
+            && screen_line < tl + visible
+        {
+            return;
         }
+        let centered = screen_line.saturating_sub(visible / 2);
+        self.top_line = (centered as u16).min(self.max_top_line());
     }
 
+    fn scroll_col_to_view(&mut self, start_col: usize, end_col: usize) {
+        let lc = self.leftmost_col as usize;
+        let visible = self.max_nb_col_shown() as usize;
+        if self.options.jump_mode == JumpMode::LazyCentered
+            && start_col >= lc
+            && end_col <= lc + visible
+        {
+            return;
+        }
+        let centered = start_col.saturating_sub(visible / 2);
+        self.leftmost_col = (centered as u16).min(self.max_leftmost_col());
+    }
+
+    pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
+        let col = usize::from(self.leftmost_col);
+        let sought_col = if count >= 0 {
+            self.app.next_hi_metric_region_start(col)
+        } else {
+            self.app.prev_hi_metric_region_start(col)
+        };
+        if let Some(col) = sought_col {
+            self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
+        }
+        // None -> noop
+    }
 
     // Debugging
 

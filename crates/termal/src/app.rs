@@ -18,8 +18,19 @@ use crate::{
     vec_f64_aux::{normalize, ones_complement, product},
 };
 
-const LOHI_HIGH_THRESHOLD: f64 = 0.8;
-const LOHI_GAP_THRESHOLD: usize = 3;
+pub struct AppOptions {
+    pub lohi_high_threshold: f64,
+    pub lohi_gap_threshold: usize,
+}
+
+impl Default for AppOptions {
+    fn default() -> Self {
+        AppOptions {
+            lohi_high_threshold: 0.8,
+            lohi_gap_threshold: 3,
+        }
+    }
+}
 
 #[derive(Clone, Copy)]
 pub enum SeqOrdering {
@@ -143,6 +154,7 @@ pub struct App {
     // regions of high conservation
     pub hi_col_metric_regions: Vec<(usize, usize)>,
     pub cur_hi_col_metric_region: Option<usize>,
+    pub options: AppOptions,
 }
 
 impl App {
@@ -167,6 +179,7 @@ impl App {
             current_col_metric: ColMetric::Entropy,
             hi_col_metric_regions: Vec::new(),
             cur_hi_col_metric_region: None,
+            options: AppOptions::default(),
         };
         app.recompute_ordering();
         app.update_hi_metric_regions();
@@ -262,11 +275,10 @@ impl App {
         self.reorder_matches();
     }
 
-    fn update_hi_metric_regions(&mut self) {
-        let lohi_states = mark_lohi(&self.current_col_metric_values(), LOHI_HIGH_THRESHOLD);
-        debug!("states: {:?}", lohi_states);
+    pub fn update_hi_metric_regions(&mut self) {
+        let lohi_states = mark_lohi(&self.current_col_metric_values(), self.options.lohi_high_threshold);
         let runs = find_hi_runs(&lohi_states);
-        self.hi_col_metric_regions = merge_hi_runs(&runs, LOHI_GAP_THRESHOLD);
+        self.hi_col_metric_regions = merge_hi_runs(&runs, self.options.lohi_gap_threshold);
         debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
     }
 
@@ -274,16 +286,30 @@ impl App {
         self.hi_col_metric_regions
             .iter()
             .map(|&(s, _)| s)
-            .find(|s| *s > col)
+            .find(|&s| s > col)
     }
 
     pub fn prev_hi_metric_region_start(&self, col: usize) -> Option<usize> {
         self.hi_col_metric_regions
             .iter()
-            .rev()
             .map(|&(s, _)| s)
-            .find(|s| *s < col)
+            .rfind(|&s| s < col)
     }
+
+    /*
+    pub fn next_hi_col_metric_region(&mut self) {
+        let Some(cur_region) = self.cur_hi_col_metric_region else { return };
+
+        let num_regions = self.hi_col_metric_regions.len();
+
+        if num_regions == 0 {
+            self.cur_hi_col_metric_region = None;
+            return;
+        }
+
+        self.cur_hi_col_metric_region = Some((cur_region + 1) % num_regions);
+    }
+    */
 
     // Maps a rank (= index in the original alignment) to the corresponding line on the screen
     // (which may or may not be visible). This is affected by the ordering. This is NOT
@@ -514,6 +540,14 @@ impl App {
         }
     }
 
+    pub fn num_seq_matches(&self) -> usize {
+        if let Some(SearchState::Sequence(seq_state)) = &self.search_state {
+            seq_state.matches_by_rank.values().map(|m| m.len()).sum()
+        } else {
+            0
+        }
+    }
+
     pub fn display_current_match(&mut self) {
         match &self.search_state {
             Some(SearchState::Header(hdr_state)) => {
@@ -690,6 +724,8 @@ impl App {
             None => {}
         }
     }
+
+    // Ex Commands (actually, just commands, but they're triggered by ':', just like in Vim).
 
     // Messages
 
