@@ -21,8 +21,6 @@ use super::{
     MIN_COLS_SHOWN, UI, V_SCROLLBAR_WIDTH,
 };
 
-use crate::vec_f64_aux::{normalize, ones_complement};
-
 /*****************************************************************
  * Panel Texts
  *
@@ -616,12 +614,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
         Theme::Monochrome => Color::Reset,
     };
 
-    // FIXME These computations arguably belong App-side - UI is concerned with display, not values.
-    // That's exactly what App::current_col_metric_values() is for (but doesn't do the math yet).
-    let col_metric_values = match ui.app.current_col_metric() {
-        ColMetric::Entropy => ones_complement(&normalize(&ui.app.alignment.entropies)),
-        ColMetric::Coverage => normalize(&ui.app.alignment.densities),
-    };
+    let col_metric_values = ui.app.current_col_metric_values();
 
     let btm_text: Vec<Line> = vec![
         Line::from(Span::styled(

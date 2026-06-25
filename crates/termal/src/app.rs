@@ -16,6 +16,7 @@ use crate::{
     app::SeqMetric::{PctIdWrtConsensus, SeqLen},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
     seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
+    vec_f64_aux::{normalize, ones_complement},
 };
 
 pub struct AppOptions {
@@ -278,13 +279,6 @@ impl App {
         let runs = find_hi_runs(&lohi_states);
         self.hi_col_metric_regions = merge_hi_runs(&runs, self.options.lohi_gap_threshold);
         debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
-        /*
-        if self.hi_col_metric_regions.is_empty() {
-            self.cur_hi_col_metric_region = None;
-        } else {
-            self.cur_hi_col_metric_region = Some(0);
-        }
-        */
     }
 
     pub fn next_hi_metric_region_start(&self, col: usize) -> Option<usize> {
@@ -833,10 +827,15 @@ impl App {
         self.current_col_metric
     }
 
+    // The App-side values are processed for display and navigation. In particular, they are
+    // normalized; 'entropy' is ones-complemented so that high vlies mean high conservation (which
+    // is actually a misnomer).
+    // FIXME: Entropy should be called Conservation
+
     pub fn current_col_metric_values(&self) -> Vec<f64> {
         match self.current_col_metric {
-            Entropy => self.alignment.entropies.clone(),
-            Coverage => self.alignment.densities.clone(),
+            Entropy => ones_complement(&normalize(&self.alignment.entropies.clone())),
+            Coverage => normalize(&self.alignment.densities.clone()),
         }
     }
 }
