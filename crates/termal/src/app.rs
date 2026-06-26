@@ -176,7 +176,7 @@ impl App {
             user_ordering: usr_ord,
             search_state: None,
             current_msg: cur_msg,
-            current_col_metric: ColMetric::Entropy,
+            current_col_metric: ColMetric::SupportedEntropy,
             hi_col_metric_regions: Vec::new(),
             cur_hi_col_metric_region: None,
             options: AppOptions::default(),

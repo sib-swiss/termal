@@ -20,7 +20,7 @@ fn test_header_search() {
         |ui, terminal| {
             let penultimate_line_y = SCREEN_HEIGHT - 2;
 
-            // Pressing c should cause the column metric to switch to 'coverage'
+            // Pressing c (next metric) from the default SupportedEntropy cycles to Entropy
             key_handling::handle_key_press(ui, utils::keypress('c'));
 
             // Don't forget to draw the UI after the key event...
@@ -28,7 +28,7 @@ fn test_header_search() {
             let buffer = terminal.backend().buffer();
             let penultimate_line = utils::screen_line(buffer, penultimate_line_y);
 
-            let expected = "Metric: coverage │██████████";
+            let expected = "Metric: conserv. │▂▂ ▂ ▂▂█ █";
             assert!(
                 penultimate_line.contains(expected),
                 "\"{}\" not found on last line: {}",
@@ -47,7 +47,7 @@ fn test_header_search() {
             let buffer = terminal.backend().buffer();
             let penultimate_line = utils::screen_line(buffer, penultimate_line_y);
 
-            let expected = "Metric: conserv. │▂▂ ▂ ▂▂█ █";
+            let expected = "Metric: wt. cons.│▂▂ ▂ ▂▂█ █";
             assert!(
                 penultimate_line.contains(expected),
                 "\"{}\" not found on last line: {}",
