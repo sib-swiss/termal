@@ -23,7 +23,9 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         InputMode::PaneCmdPrefix => handle_pane_prefix(ui, key_event),
         InputMode::DiffCmdPrefix => handle_diff_prefix(ui, key_event),
         InputMode::SearchCmdPrefix => handle_search_prefix(ui, key_event),
-        InputMode::ExCommand { cmd } => handle_ex_command(ui, key_event, &cmd),
+        InputMode::ExCommand { cmd, history_prefix, history_idx } => {
+            handle_ex_command(ui, key_event, &cmd, history_prefix, history_idx)
+        }
     };
     done
 }
@@ -104,6 +106,8 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         KeyCode::Char(':') => {
             ui.input_mode = InputMode::ExCommand {
                 cmd: String::new(),
+                history_prefix: None,
+                history_idx: None,
             };
             ui.app
                 .argument_msg(String::from(":"), String::from(""));
@@ -324,6 +328,8 @@ fn handle_ex_command(
     ui: &mut UI,
     key_event: KeyEvent,
     cmd: &str,
+    history_prefix: Option<String>,
+    history_idx: Option<usize>,
 ) {
     match key_event.code {
         KeyCode::Esc => {
@@ -331,27 +337,90 @@ fn handle_ex_command(
             ui.app.clear_msg();
         }
         KeyCode::Char(c) if c.is_ascii_graphic() || ' ' == c => {
-            ui.app.add_argument_char(c);
+            // Typing cancels history browsing.
             let mut updated_cmd = cmd.to_string();
             updated_cmd.push(c);
+            ui.app.argument_msg(":", updated_cmd.clone());
             ui.input_mode = InputMode::ExCommand {
                 cmd: updated_cmd,
-            }
+                history_prefix: None,
+                history_idx: None,
+            };
         }
         KeyCode::Delete | KeyCode::Backspace => {
-            ui.app.pop_argument_char();
+            // Backspace also cancels history browsing.
             let mut updated_cmd = cmd.to_string();
             updated_cmd.pop();
+            ui.app.argument_msg(":", updated_cmd.clone());
             ui.input_mode = InputMode::ExCommand {
                 cmd: updated_cmd,
+                history_prefix: None,
+                history_idx: None,
             };
         }
         KeyCode::Enter => {
+            ui.app.push_ex_history(cmd);
             ex_command::execute(ui, cmd);
             ui.input_mode = InputMode::Normal;
         }
+        KeyCode::Up => {
+            // First Up press: snapshot the current buffer as the search prefix.
+            let prefix = history_prefix.unwrap_or_else(|| cmd.to_string());
+            // checked_sub returns None instead of wrapping/panicking on underflow, so
+            // len().checked_sub(1) is None when the history is empty (len = 0) rather than
+            // saturating to 0 and producing a bogus index into an empty Vec.
+            let search_start = history_idx
+                .and_then(|i| i.checked_sub(1))
+                .or_else(|| ui.app.ex_history.len().checked_sub(1));
+            // Search backward (newest first) for an entry starting with the prefix.
+            let found = search_start.and_then(|start| {
+                (0..=start)
+                    .rev()
+                    .find(|&i| ui.app.ex_history[i].starts_with(&prefix))
+            });
+            if let Some(idx) = found {
+                let entry = ui.app.ex_history[idx].clone();
+                ui.app.argument_msg(":", entry.clone());
+                ui.input_mode = InputMode::ExCommand {
+                    cmd: entry,
+                    history_prefix: Some(prefix),
+                    history_idx: Some(idx),
+                };
+            } else {
+                // No match: keep current state but remember the prefix.
+                ui.input_mode = InputMode::ExCommand {
+                    cmd: cmd.to_string(),
+                    history_prefix: Some(prefix),
+                    history_idx,
+                };
+            }
+        }
+        KeyCode::Down => {
+            if let (Some(prefix), Some(idx)) = (history_prefix, history_idx) {
+                // Search forward from the entry after the current one.
+                let found = (idx + 1..ui.app.ex_history.len())
+                    .find(|&i| ui.app.ex_history[i].starts_with(&prefix));
+                if let Some(next_idx) = found {
+                    let entry = ui.app.ex_history[next_idx].clone();
+                    ui.app.argument_msg(":", entry.clone());
+                    ui.input_mode = InputMode::ExCommand {
+                        cmd: entry,
+                        history_prefix: Some(prefix),
+                        history_idx: Some(next_idx),
+                    };
+                } else {
+                    // Reached the present: restore the original prefix as the buffer.
+                    ui.app.argument_msg(":", prefix.clone());
+                    ui.input_mode = InputMode::ExCommand {
+                        cmd: prefix,
+                        history_prefix: None,
+                        history_idx: None,
+                    };
+                }
+            }
+        }
         KeyCode::Tab => {
-           // later: implement completion
+            // later: implement completion
         }
         _ => {}
     }

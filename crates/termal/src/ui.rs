@@ -92,7 +92,9 @@ enum InputMode {
     DiffCmdPrefix,
     SearchCmdPrefix,
     ExCommand {
-        cmd: String
+        cmd: String,
+        history_prefix: Option<String>,
+        history_idx: Option<usize>,
     },
 }
 

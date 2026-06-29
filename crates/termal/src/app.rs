@@ -155,6 +155,7 @@ pub struct App {
     pub hi_col_metric_regions: Vec<(usize, usize)>,
     pub cur_hi_col_metric_region: Option<usize>,
     pub options: AppOptions,
+    pub ex_history: Vec<String>,
 }
 
 impl App {
@@ -180,6 +181,7 @@ impl App {
             hi_col_metric_regions: Vec::new(),
             cur_hi_col_metric_region: None,
             options: AppOptions::default(),
+            ex_history: Vec::new(),
         };
         app.recompute_ordering();
         app.update_hi_metric_regions();
@@ -789,6 +791,12 @@ impl App {
     pub fn pop_argument_char(&mut self) {
         self.current_msg.message.pop();
         self.current_msg.kind = MessageKind::Argument;
+    }
+
+    pub fn push_ex_history(&mut self, cmd: &str) {
+        if !cmd.is_empty() && self.ex_history.last().map(|s| s.as_str()) != Some(cmd) {
+            self.ex_history.push(cmd.to_string());
+        }
     }
 
     pub fn set_aln_ref(&mut self, ref_spec_str: &str) {
