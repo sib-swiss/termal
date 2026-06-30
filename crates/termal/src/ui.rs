@@ -864,10 +864,12 @@ impl<'a> UI<'a> {
         } else {
             self.app.prev_hi_metric_region_start(col)
         };
-        if let Some(col) = sought_col {
-            self.leftmost_col = u16::try_from(col).expect("screen col does not fit in u16");
+        if let Some(dest) = sought_col {
+            self.leftmost_col = u16::try_from(dest).expect("screen col does not fit in u16");
+            self.app.debug_msg(format!("jump: col {} -> {} (regions: {:?})", col, dest, self.app.hi_col_metric_regions));
+        } else {
+            self.app.debug_msg(format!("jump: no region found after col {} (regions: {:?})", col, self.app.hi_col_metric_regions));
         }
-        // None -> noop
     }
 
     // Debugging
