@@ -858,16 +858,22 @@ impl<'a> UI<'a> {
     }
 
     pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
-        let col = usize::from(self.leftmost_col);
-        let sought_col = if count >= 0 {
-            self.app.next_hi_metric_region_start(col)
-        } else {
-            self.app.prev_hi_metric_region_start(col)
-        };
-        if let Some(dest) = sought_col {
-            self.leftmost_col = u16::try_from(dest).expect("screen col does not fit in u16");
+        let forward = count >= 0;
+        for _ in 0..count.unsigned_abs() {
+            let col = usize::from(self.leftmost_col);
+            let region = if forward {
+                self.app.next_hi_metric_region(col)
+            } else {
+                self.app.prev_hi_metric_region(col)
+            };
+            match region {
+                Some((start, _len)) => {
+                    // Put the region start at the left edge so long regions are visible in full.
+                    self.leftmost_col = (start as u16).min(self.max_leftmost_col());
+                }
+                None => break,
+            }
         }
-        // None -> noop
     }
 
     // Debugging

@@ -284,18 +284,18 @@ impl App {
         debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
     }
 
-    pub fn next_hi_metric_region_start(&self, col: usize) -> Option<usize> {
+    pub fn next_hi_metric_region(&self, col: usize) -> Option<(usize, usize)> {
         self.hi_col_metric_regions
             .iter()
-            .map(|&(s, _)| s)
-            .find(|&s| s > col)
+            .copied()
+            .find(|&(s, _)| s > col)
     }
 
-    pub fn prev_hi_metric_region_start(&self, col: usize) -> Option<usize> {
+    pub fn prev_hi_metric_region(&self, col: usize) -> Option<(usize, usize)> {
         self.hi_col_metric_regions
             .iter()
-            .map(|&(s, _)| s)
-            .rfind(|&s| s < col)
+            .copied()
+            .rfind(|&(s, _)| s < col)
     }
 
     /*
