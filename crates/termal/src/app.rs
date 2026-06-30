@@ -26,7 +26,7 @@ pub struct AppOptions {
 impl Default for AppOptions {
     fn default() -> Self {
         AppOptions {
-            lohi_high_threshold: 0.8,
+            lohi_high_threshold: 0.2,
             lohi_gap_threshold: 3,
         }
     }

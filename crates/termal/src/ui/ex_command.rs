@@ -3,6 +3,7 @@
 
 use super::{JumpMode, UI};
 
+#[allow(dead_code)]
 fn show_regions(ui: &mut UI) {
     let regions = &ui.app.hi_col_metric_regions;
     if regions.is_empty() {
@@ -25,7 +26,6 @@ pub fn execute(ui: &mut UI, cmd: &str) {
             Ok(v) if (0.0..=1.0).contains(&v) => {
                 ui.app.options.lohi_high_threshold = v;
                 ui.app.update_hi_metric_regions();
-                show_regions(ui);
             }
             _ => ui
                 .app
@@ -35,7 +35,6 @@ pub fn execute(ui: &mut UI, cmd: &str) {
             Ok(v) => {
                 ui.app.options.lohi_gap_threshold = v;
                 ui.app.update_hi_metric_regions();
-                show_regions(ui);
             }
             _ => ui
                 .app
