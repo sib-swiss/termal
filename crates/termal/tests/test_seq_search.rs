@@ -385,3 +385,107 @@ fn test_alignment_search() {
         },
     );
 }
+
+// Zero-width matches used to underflow when mapping the match end back to gapped coordinates
+// (`map_back(m.end() - 1)` with `m.end() == 0`), crashing the app. They are now skipped.
+
+#[test]
+fn test_empty_pattern_does_not_crash() {
+    utils::with_rig(
+        "tests/data/test-seq-search-gapped.fas",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            // '/' then Enter, i.e. a search for the empty pattern.
+            key_handling::handle_key_press(ui, utils::keypress('/'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
+            let buffer = terminal.backend().buffer();
+            let screen = utils::buffer_text(buffer);
+            let expected = "No match.";
+            assert!(
+                screen.contains(expected),
+                "\"{}\" not found on screen:\n{}",
+                expected,
+                screen
+            );
+        },
+    );
+}
+
+#[test]
+fn test_pattern_matching_empty_string_does_not_crash() {
+    utils::with_rig(
+        "tests/data/test-seq-search-gapped.fas",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            // 'z*' matches the empty string everywhere, but never any residue.
+            key_handling::handle_key_press(ui, utils::keypress('/'));
+            key_handling::handle_key_press(ui, utils::keypress('z'));
+            key_handling::handle_key_press(ui, utils::keypress('*'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
+            let buffer = terminal.backend().buffer();
+            let screen = utils::buffer_text(buffer);
+            let expected = "No match.";
+            assert!(
+                screen.contains(expected),
+                "\"{}\" not found on screen:\n{}",
+                expected,
+                screen
+            );
+        },
+    );
+}
+
+// A malformed regex leaves search_state as None, so jumping on Enter would let
+// display_current_match() overwrite the error with "No current search.".
+#[test]
+fn test_malformed_regex_keeps_error_message() {
+    utils::with_rig(
+        "tests/data/test-seq-search-gapped.fas",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            // '[' is an unterminated character class.
+            key_handling::handle_key_press(ui, utils::keypress('/'));
+            key_handling::handle_key_press(ui, utils::keypress('['));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
+            let buffer = terminal.backend().buffer();
+            let screen = utils::buffer_text(buffer);
+            assert!(
+                screen.contains("Malformed regex"),
+                "\"Malformed regex\" not found on screen:\n{}",
+                screen
+            );
+        },
+    );
+}
+
+// Dropping zero-width matches must not discard the real ones: 'a*' yields empty matches at every
+// non-'a' position, interleaved with the genuine runs of 'a'.
+
+#[test]
+fn test_pattern_matching_empty_string_keeps_nonempty_matches() {
+    utils::with_rig(
+        "tests/data/test-seq-search-gapped.fas",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            key_handling::handle_key_press(ui, utils::keypress('/'));
+            key_handling::handle_key_press(ui, utils::keypress('a'));
+            key_handling::handle_key_press(ui, utils::keypress('*'));
+            key_handling::handle_key_press(ui, KeyCode::Enter.into());
+            terminal.draw(|f| render::render_ui(f, ui)).expect("update");
+            let buffer = terminal.backend().buffer();
+            let screen = utils::buffer_text(buffer);
+            assert!(
+                screen.contains("match #1/"),
+                "expected at least one match for 'a*', screen:\n{}",
+                screen
+            );
+        },
+    );
+}

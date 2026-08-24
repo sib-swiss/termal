@@ -210,7 +210,9 @@ fn handle_sequence_search(
         KeyCode::Enter => {
             ui.app.regex_search_seq(pattern, target);
             ui.input_mode = InputMode::Normal;
-            ui.jump_to_next_match(0);
+            if ui.app.search_state.is_some() {
+                ui.jump_to_next_match(0);
+            }
         }
         _ => {}
     }
