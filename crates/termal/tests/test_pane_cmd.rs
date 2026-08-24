@@ -265,3 +265,18 @@ fn test_w_esc() {
         },
     );
 }
+
+// Roadmap: "When the horizontal scrollbar is visible, pushing the labels pane all the way to the
+// right (admittedly not a very frequent situation) causes a panic."
+// test-motion.msa is 226 seqs x 60 cols, so on a narrow screen both scrollbars are shown.
+#[test]
+fn test_widen_label_pane_to_max_does_not_panic() {
+    utils::with_rig("tests/data/test-motion.msa", 40, 12, |ui, terminal| {
+        for i in 0..60 {
+            key_handling::handle_key_press(ui, utils::keypress('>'));
+            terminal
+                .draw(|f| render::render_ui(f, ui))
+                .unwrap_or_else(|e| panic!("draw failed after {} presses of '>': {}", i + 1, e));
+        }
+    });
+}
