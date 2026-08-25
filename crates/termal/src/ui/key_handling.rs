@@ -6,8 +6,7 @@ use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use crate::seq_match::SequenceSearchTarget;
 
 use super::{
-    ex_command, DiffMode, InputMode,
-    {ZoomLevel, UI},
+    ex_command, DiffMode, InputMode, {ZoomLevel, UI},
 };
 
 pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
@@ -18,14 +17,18 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         InputMode::Help => handle_help_key(ui, key_event),
         InputMode::PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
         InputMode::LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
-        InputMode::Search { pattern, target } => handle_sequence_search(ui, key_event, &pattern, target),
+        InputMode::Search { pattern, target } => {
+            handle_sequence_search(ui, key_event, &pattern, target)
+        }
         InputMode::SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
         InputMode::PaneCmdPrefix => handle_pane_prefix(ui, key_event),
         InputMode::DiffCmdPrefix => handle_diff_prefix(ui, key_event),
         InputMode::SearchCmdPrefix => handle_search_prefix(ui, key_event),
-        InputMode::ExCommand { cmd, history_prefix, history_idx } => {
-            handle_ex_command(ui, key_event, &cmd, history_prefix, history_idx)
-        }
+        InputMode::ExCommand {
+            cmd,
+            history_prefix,
+            history_idx,
+        } => handle_ex_command(ui, key_event, &cmd, history_prefix, history_idx),
     };
     done
 }
@@ -109,8 +112,7 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
                 history_prefix: None,
                 history_idx: None,
             };
-            ui.app
-                .argument_msg(String::from(":"), String::from(""));
+            ui.app.argument_msg(String::from(":"), String::from(""));
         }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
@@ -608,7 +610,7 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
         // Column Metric
         KeyCode::Char('c') => ui.app.next_col_metric(),
-        KeyCode::Char('C') => ui.app.prev_col_metric(), 
+        KeyCode::Char('C') => ui.app.prev_col_metric(),
 
         // ----- Search -----
         KeyCode::Char('?') => ui.input_mode = InputMode::Help,

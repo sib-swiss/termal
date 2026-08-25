@@ -67,7 +67,9 @@ pub struct UIOptions {
 
 impl Default for UIOptions {
     fn default() -> Self {
-        UIOptions { jump_mode: JumpMode::LazyCentered }
+        UIOptions {
+            jump_mode: JumpMode::LazyCentered,
+        }
     }
 }
 

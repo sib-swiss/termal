@@ -74,7 +74,11 @@ fn set_jump_center_changes_jump_mode() {
         SCREEN_WIDTH,
         SCREEN_HEIGHT,
         |ui, _terminal| {
-            assert_eq!(ui.options.jump_mode, JumpMode::LazyCentered, "default should be LazyCentered");
+            assert_eq!(
+                ui.options.jump_mode,
+                JumpMode::LazyCentered,
+                "default should be LazyCentered"
+            );
             type_ex_command(ui, "set jump center");
             assert_eq!(ui.options.jump_mode, JumpMode::AlwaysCenter);
         },
@@ -168,7 +172,8 @@ fn invalid_lohi_threshold_shows_warning() {
                 last_line
             );
             assert_eq!(
-                ui.app().options.lohi_high_threshold, original,
+                ui.app().options.lohi_high_threshold,
+                original,
                 "threshold should be unchanged after bad input"
             );
         },

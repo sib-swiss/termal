@@ -48,12 +48,10 @@ pub fn regex_match_positions_gapaware(re: &Regex, seq: &str) -> Vec<MatchPositio
     let mut match_positions: Vec<MatchPosition> = Vec::new();
     for m in re.find_iter(&gap_mapper.degapped_seq) {
         if m.start() < m.end() {
-            match_positions.push(
-                MatchPosition::new(
-                    gap_mapper.map_back(m.start()),
-                    gap_mapper.map_back(m.end() - 1) + 1,
-                )
-            );
+            match_positions.push(MatchPosition::new(
+                gap_mapper.map_back(m.start()),
+                gap_mapper.map_back(m.end() - 1) + 1,
+            ));
         }
     }
 

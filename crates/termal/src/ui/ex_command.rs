@@ -10,7 +10,10 @@ fn show_regions(ui: &mut UI) {
         ui.app.debug_msg("hi-metric regions: (none)".to_string());
     } else {
         // s and e are 0-based (start, length); convert to 1-based inclusive end for display.
-        let list: Vec<String> = regions.iter().map(|(s, e)| format!("{}..{}", s+1, s+e)).collect();
+        let list: Vec<String> = regions
+            .iter()
+            .map(|(s, e)| format!("{}..{}", s + 1, s + e))
+            .collect();
         ui.app
             .debug_msg(format!("{} region(s): {}", list.len(), list.join("  ")));
     }
@@ -27,9 +30,9 @@ pub fn execute(ui: &mut UI, cmd: &str) {
                 ui.app.options.lohi_high_threshold = v;
                 ui.app.update_hi_metric_regions();
             }
-            _ => ui
-                .app
-                .warning_msg(format!("lohi-threshold: expected float in [0,1], got '{val}'")),
+            _ => ui.app.warning_msg(format!(
+                "lohi-threshold: expected float in [0,1], got '{val}'"
+            )),
         },
         ["set", "lohi-gap", val] | ["set", "lg", val] => match val.parse::<usize>() {
             Ok(v) => {

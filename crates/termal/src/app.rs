@@ -78,9 +78,9 @@ pub enum ColMetric {
 impl fmt::Display for ColMetric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let col_metric = match self {
-            ColMetric::Coverage          => "coverage",
-            ColMetric::Entropy           => "conserv.",
-            ColMetric::SupportedEntropy  => "wt. cons.",
+            ColMetric::Coverage => "coverage",
+            ColMetric::Entropy => "conserv.",
+            ColMetric::SupportedEntropy => "wt. cons.",
         };
         write!(f, "{}", col_metric)
     }
@@ -278,7 +278,10 @@ impl App {
     }
 
     pub fn update_hi_metric_regions(&mut self) {
-        let lohi_states = mark_lohi(&self.current_col_metric_values(), self.options.lohi_high_threshold);
+        let lohi_states = mark_lohi(
+            &self.current_col_metric_values(),
+            self.options.lohi_high_threshold,
+        );
         let runs = find_hi_runs(&lohi_states);
         self.hi_col_metric_regions = merge_hi_runs(&runs, self.options.lohi_gap_threshold);
         debug!("hi_col_metric_regions: {:?}", self.hi_col_metric_regions);
@@ -852,12 +855,11 @@ impl App {
 
     pub fn current_col_metric_values(&self) -> Vec<f64> {
         match self.current_col_metric {
-            ColMetric::Entropy => ones_complement(
-                &normalize(&self.alignment.entropies)),
+            ColMetric::Entropy => ones_complement(&normalize(&self.alignment.entropies)),
             ColMetric::Coverage => normalize(&self.alignment.densities),
             ColMetric::SupportedEntropy => product(
-                 &self.alignment.densities,
-                 &ones_complement(&normalize(&self.alignment.entropies))
+                &self.alignment.densities,
+                &ones_complement(&normalize(&self.alignment.entropies)),
             ),
         }
     }
