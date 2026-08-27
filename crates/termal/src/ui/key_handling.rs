@@ -368,6 +368,9 @@ fn handle_ex_command(
             ui.input_mode = InputMode::Normal;
         }
         KeyCode::Up => {
+            if history_idx == Some(0) {
+                return;
+            }
             // First Up press: snapshot the current buffer as the search prefix.
             let prefix = history_prefix.unwrap_or_else(|| cmd.to_string());
             // checked_sub returns None instead of wrapping/panicking on underflow, so

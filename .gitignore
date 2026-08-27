@@ -27,3 +27,5 @@ termal*.zip
 .codex
 remotes*.log
 *.md
+faber.toml
+.faber
