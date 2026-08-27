@@ -287,24 +287,23 @@ fn iupac_ambiguity_code(amb_nt: &mut [char]) -> char {
     let normalized_nt_as_string = normalized_nt.into_iter().join("");
 
     match normalized_nt_as_string.as_str() {
-        "a" => 'a',     // Adenine
-        "ac" => 'm',    // aMino
-        "acg" => 'v',   // not-T (not-U), V follows U
-        "acgt" => 'n',  // aNy
-        "act" => 'h',   // not-G, H follows G in the alphabet
-        "ag" => 'r',    // puRine
-        "agt" => 'd',   // not-C, D follows C
-        "at" => 'w',    // Weak interaction (2 H bonds)
-        "c" => 'c',     // Cytosine
-        "cg" => 's',    // Strong interaction (3 H bonds)
-        "cgt" => 'b',   // not-A, B follows A
-        "ct" => 'y',    // pYrimidine
-        "g" => 'g',     // Guanine
-        "gt" => 'k',    // Keto
-        "t" => 't',     // Thymine
-        &_ => 'n'       // Anything else folded into N - might want to bail, perhaps?
+        "a" => 'a',    // Adenine
+        "ac" => 'm',   // aMino
+        "acg" => 'v',  // not-T (not-U), V follows U
+        "acgt" => 'n', // aNy
+        "act" => 'h',  // not-G, H follows G in the alphabet
+        "ag" => 'r',   // puRine
+        "agt" => 'd',  // not-C, D follows C
+        "at" => 'w',   // Weak interaction (2 H bonds)
+        "c" => 'c',    // Cytosine
+        "cg" => 's',   // Strong interaction (3 H bonds)
+        "cgt" => 'b',  // not-A, B follows A
+        "ct" => 'y',   // pYrimidine
+        "g" => 'g',    // Guanine
+        "gt" => 'k',   // Keto
+        "t" => 't',    // Thymine
+        &_ => 'n',     // Anything else folded into N - might want to bail, perhaps?
     }
-
 }
 
 fn best_residue(counts: &ResidueCounts, seq_type: SeqType) -> BestResidue {
