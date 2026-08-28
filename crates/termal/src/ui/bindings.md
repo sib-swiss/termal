@@ -13,11 +13,15 @@ Arguments (counts, search patterns) and match index are shown in the modeline.
 
 ## Jumping (positions)
 
-[count]| : jump to absolute column
-[count]- : jump to absolute sequence (by current order)
-[count]= : jump to absolute sequence (by file order)
-[count]% : jump to vertical position (0–100%)
-[count]# : jump to horizontal position (0–100%)
+Command    Jumps To
+-------    ---------
+[count]|   absolute column
+[count]-   absolute sequence (by current order)
+[count]=   absolute sequence (by file order)
+[count]%   relative vertical position (0–100%)
+[count]#   relative horizontal position (0–100%)
+[count])   next conserved region
+[count](   previous conserved region
 
 ## Zooming
 
@@ -54,7 +58,8 @@ R<Ret>          : set reference to consensus
 
 ## Difference Modes
 
-dd : diff mode - residues identical to the reference shown as '.', differences shown as letters, actual gaps as '-'
+dd : diff mode - residues identical to the reference shown as '.',
+     differences shown as letters, actual gaps as '-'
 dn : normal mode 
 
 ## Adjusting the Panes
@@ -77,3 +82,20 @@ Try dark/inverse for best results (this is the default).
 o,O: next/previous ordering
 t,T: next/previous sequence metric
 c,C: next/previous column metric
+
+## ':' Commands
+
+All ':' commands are sent by <Ret>
+
+Command                   Effect
+--------                  ------------------------------------------------------
+:set jump lazy            recenter view only when a jump target scrolls off-screen (default)
+:set jump center          always recenter the view on every jump
+:set lohi-threshold <x>   set the conserved-region metric threshold (default 0.2)
+:set lohi-gap <n>         merge conserved regions separated by ≤ n columns (default 3)
+
+### When typing ':' Commands
+
+* Up   : move up history, recalling previous command matching current
+* Down : move down history
+* Esc  : cancel command
