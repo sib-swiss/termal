@@ -136,7 +136,9 @@ command (`fh`, shortcut `"`), [sequence search](#seq-search) command (`fs`,
 shortcut `/`), [alignment search](#aln-search) command (`fa`) as well as
 [reference selection](#ref-spec) command (`R`) take a string argument.
 
-#  Navigation fundamentals
+#  Navigation
+
+## Basics
 
 Navigation in Termal is inspired by [Vim](https://vim.org)  but simplified and adapted to
 multiple sequence alignments. The effect of motion commands depends on the [zoom
@@ -230,7 +232,7 @@ command    motion
 `[count]%` jump to _count_ % of the alignment's height
 `[count]#` jump to _column_ % of the alignment's width
 
-### Jumps to search matches {#match-jumps}
+### Jumps to Search Matches {#match-jumps}
 
 Termal supports regular expression searches in both headers and sequences (see
 [Searching](#searching) for how to start a search). If any matches are found,
@@ -317,7 +319,7 @@ All searches can be initiated via the `f` prefix command:
 The standalone `"` and `/` commands are shortcuts for `fh` and `fs` respectively.
 `fa` (alignment search) is only available through the `f` prefix.
 
-##  Searching sequence headers {#hdr-search}
+##  Searching Sequence Headers {#hdr-search}
 
 Termal supports searching within sequence headers using regular expressions.
 
@@ -345,7 +347,7 @@ This jumps to the first sequence whose header starts with `Eco` (if any). The
 search order is according to the current [ordering](#ordering).
 
 
-##  Searching sequences {#seq-search}
+##  Searching Sequences {#seq-search}
 
 Termal supports searching within sequences using regular expressions.
 
@@ -377,7 +379,7 @@ mapped back to the alignment. To search the raw alignment row including gaps
 This jumps to the first instance of `GAATTC`. The search order is according to
 the current [ordering](#ordering), then left to right.
 
-## Alignment search {#aln-search}
+## Alignment Search {#aln-search}
 
 Alignment search (`fa`) matches the raw alignment row, including gap characters.
 Use it when you want to explicitly match gaps in the pattern.
@@ -581,7 +583,7 @@ The modeline (in the bottom border of the Termal screen) provides feedback about
 
 ---
 
-#  Limitations and scope
+#  Limitations and Scope
 
 Termal currently does **not** support:
 
@@ -612,7 +614,7 @@ Features under consideration
 
 ---
 
-#  Design philosophy
+#  Design Philosophy
 
 Termal prioritizes:
 

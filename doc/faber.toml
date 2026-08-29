@@ -1,0 +1,7 @@
+
+[task.manual]
+outputs = ["manual.pdf"]
+cmd = """
+	pandoc --standalone --citeproc --to=pdf --pdf-engine=lualatex --output=manual.pdf manual.md
+"""
+inputs = ["manual.md"]
