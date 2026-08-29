@@ -42,7 +42,7 @@ Termal is presented in [@junier2025termal].
 
 #  Basic usage
 
-##  Starting Termal
+##  Starting the Program
 
 Simply pass your alignment file as an argument to `termal`, e.g.:
 
@@ -136,7 +136,9 @@ command (`fh`, shortcut `"`), [sequence search](#seq-search) command (`fs`,
 shortcut `/`), [alignment search](#aln-search) command (`fa`) as well as
 [reference selection](#ref-spec) command (`R`) take a string argument.
 
-#  Navigation fundamentals
+#  Navigation
+
+##  Basics
 
 Navigation in Termal is inspired by [Vim](https://vim.org)  but simplified and adapted to
 multiple sequence alignments. The effect of motion commands depends on the [zoom
@@ -252,6 +254,7 @@ Next and previous match jumps wrap around, i.e. pressing `n` while on the last
 match will move back to the first one. If no matches were found, match jump
 commands have no effect.
 
+### Jumps to conserved regions
 ### Examples
 
 * `123|`: Jump to column 123 (if it exists).
@@ -593,8 +596,9 @@ Termal currently does **not** support:
 
 Features planned for the next release:
 
-* jumps to conserved regions
 * a color map for vision-impaired users
+* translation of aa regexps into nt, using IUPAC ambiguity codes - enabling
+  search for amino acid patterns in DNA alignments
 
 Features that will be added later
 
@@ -606,9 +610,11 @@ Features that will be added later
 
 Features under consideration
 
-* Showing a phylogeny in the left pane
-* Simple edits (removing empty columns)
-* Saving parts of the alignments
+* showing translations of DNA sequences, where possible
+* showing a phylogeny in the left pane
+* simple edits (removing empty columns)
+* saving parts of the alignments
+* SAM/BAM pileups as a new "alignment" type (à la `samtools tview`).
 
 ---
 
