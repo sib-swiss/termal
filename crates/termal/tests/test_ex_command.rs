@@ -153,6 +153,153 @@ fn unknown_command_shows_warning() {
 }
 
 #[test]
+fn history_up_recalls_most_recent_command() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            let last_line_y = SCREEN_HEIGHT - 1;
+
+            type_ex_command(ui, "set jump center");
+            type_ex_command(ui, "set jump lazy");
+
+            key_handling::handle_key_press(ui, utils::keypress(':'));
+            key_handling::handle_key_press(ui, utils::key(KeyCode::Up));
+            terminal.draw(|f| render::render_ui(f, ui)).expect("draw");
+            let last_line = utils::screen_line(terminal.backend().buffer(), last_line_y);
+
+            assert!(
+                last_line.contains("set jump lazy"),
+                "expected most recent command recalled, got: {}",
+                last_line
+            );
+        },
+    );
+}
+
+#[test]
+fn history_up_twice_recalls_older_command() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            let last_line_y = SCREEN_HEIGHT - 1;
+
+            type_ex_command(ui, "set jump center");
+            type_ex_command(ui, "set jump lazy");
+
+            key_handling::handle_key_press(ui, utils::keypress(':'));
+            key_handling::handle_key_press(ui, utils::key(KeyCode::Up));
+            key_handling::handle_key_press(ui, utils::key(KeyCode::Up));
+            terminal.draw(|f| render::render_ui(f, ui)).expect("draw");
+            let last_line = utils::screen_line(terminal.backend().buffer(), last_line_y);
+
+            assert!(
+                last_line.contains("set jump center"),
+                "expected older command recalled, got: {}",
+                last_line
+            );
+        },
+    );
+}
+
+#[test]
+fn history_up_stops_at_oldest_entry_without_wrapping() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            let last_line_y = SCREEN_HEIGHT - 1;
+
+            // Populate history (the commands get executed, but it matters little here)
+            type_ex_command(ui, "set jump center");
+            type_ex_command(ui, "set jump lazy");
+            type_ex_command(ui, "set lohi-gap 3");
+
+            key_handling::handle_key_press(ui, utils::keypress(':'));
+            for _ in 0..5 {
+                key_handling::handle_key_press(ui, utils::key(KeyCode::Up));
+            }
+            terminal.draw(|f| render::render_ui(f, ui)).expect("draw");
+            let last_line = utils::screen_line(terminal.backend().buffer(), last_line_y);
+
+            assert!(
+                last_line.contains("set jump center"),
+                "expected to stay on oldest history entry rather than wrapping around, got: {}",
+                last_line
+            );
+        },
+    );
+}
+
+#[test]
+fn history_down_after_up_returns_to_original_buffer() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            let last_line_y = SCREEN_HEIGHT - 1;
+
+            // Populate history (the commands get executed, but it matters little here)
+            type_ex_command(ui, "set jump center");
+
+            key_handling::handle_key_press(ui, utils::keypress(':'));
+            key_handling::handle_key_press(ui, utils::keypress('s'));
+            key_handling::handle_key_press(ui, utils::key(KeyCode::Up));
+            key_handling::handle_key_press(ui, utils::key(KeyCode::Down));
+            terminal.draw(|f| render::render_ui(f, ui)).expect("draw");
+            let last_line = utils::screen_line(terminal.backend().buffer(), last_line_y);
+
+            assert!(
+                last_line.contains(":s") && !last_line.contains("set jump center"),
+                "expected original in-progress buffer 's' restored after Down, got: {}",
+                last_line
+            );
+        },
+    );
+}
+
+#[test]
+fn history_up_filters_by_typed_prefix() {
+    utils::with_rig(
+        "tests/data/test-motion.msa",
+        SCREEN_WIDTH,
+        SCREEN_HEIGHT,
+        |ui, terminal| {
+            let last_line_y = SCREEN_HEIGHT - 1;
+
+            // Populate history (the commands get executed, but it matters little here)
+            type_ex_command(ui, "set jump center");
+            type_ex_command(ui, "set lohi-gap 3");
+            type_ex_command(ui, "set jump lazy");
+
+            // Start entering a command, but stop in the middle - that's where the user would want
+            // to hit UP to recall a previous command with the same prefix, if any. In this case,
+            // it is "set jump center", 3 cmds back.
+            key_handling::handle_key_press(ui, utils::keypress(':'));
+            for c in "set jump c".chars() {
+                key_handling::handle_key_press(ui, utils::keypress(c));
+            }
+            // Up should skip "set lohi-gap 3" and "set jump lazy" (neither matches
+            // the "set jump c" prefix) and land on "set jump center".
+            key_handling::handle_key_press(ui, utils::key(KeyCode::Up));
+            terminal.draw(|f| render::render_ui(f, ui)).expect("draw");
+            let last_line = utils::screen_line(terminal.backend().buffer(), last_line_y);
+
+            assert!(
+                last_line.contains("set jump center"),
+                "expected prefix-filtered recall to skip non-matching entry, got: {}",
+                last_line
+            );
+        },
+    );
+}
+
+#[test]
 fn invalid_lohi_threshold_shows_warning() {
     utils::with_rig(
         "tests/data/test-motion.msa",
