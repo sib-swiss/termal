@@ -29,3 +29,4 @@ remotes*.log
 *.md
 faber.toml
 .faber
+*log
