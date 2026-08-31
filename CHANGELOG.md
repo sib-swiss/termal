@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.1.0] 2026-09-01
+
+### Added
+
+* New column metric: weighted conservation, based on the product of coverage and raw
+  conservation.
+* Jumps to conserved regions (`)` and `(`)
+* Ex commands (only `:set` for now), including command history
+* Vertical match jumps: `[count]N` and `[count]P` jump to the next/previous
+  sequence search match without changing horizontal scroll position. 
+
+### Fixed
+
+* Sequence search no longer crashes on empty-matching patterns like `/z*` or `//`
+* Malformed regex patterns (e.g. `/[`) now display an error message without being
+  overwritten by a false "no current match" status
+* Consensus sequence is now deterministic when computing tied residues: uses IUPAC
+  ambiguity codes for nucleotides (R, Y, W, K, etc.) and 'X' for proteins, ensuring
+  consistent results across runs
+
 ## [2.0.0] 2026-06-10
 
 ### Added

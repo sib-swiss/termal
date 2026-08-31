@@ -1,32 +1,30 @@
-termal 2.0.0 – Diff mode, gap-aware search, and split column metrics
+termal 2.1.0 – Stability fixes, weighted conservation, and navigation improvements
 
-This major release introduces diff mode, which highlights residues that differ
-from the reference sequence, making it easy to spot variation at a glance.
-The reference can now be set to any sequence in the alignment (not just the
-consensus), which combines naturally with diff mode.
+This release brings important stability fixes for sequence search, a new column
+metric for conservation analysis, and better navigation when dealing with
+scattered matches.
 
-Sequence search now ignores gaps by default: regular expressions match against
-the ungapped sequence and match positions are mapped back to the alignment
-coordinates. The previous literal-gap behavior is still available via the
-alignment search command.
+Consensus sequences are now deterministic: when residues tie for frequency, the
+new computation uses IUPAC ambiguity codes (for nucleotides) or 'X' (for
+proteins), ensuring consistent results across runs.
 
-The single column metric has been replaced by two separate, independently
-normalized metrics: entropy and coverage (density). This is a breaking change
-for any scripts or workflows that relied on the old combined metric.
+Sequence search is now more robust: empty-matching patterns no longer crash, and
+malformed regex patterns display helpful error messages without being silently
+overwritten.
+
+The new weighted conservation metric factors in sequence simil reference when
+computing column conservation, providing a more nuanced view of alignment
+variation.
 
 Highlights:
 
-- Diff mode: shows residues that differ from the reference
-- Any alignment sequence can serve as reference
-- Gap-aware regex search within sequences (new default)
-- Column metrics split into entropy and coverage
-- Prefix command `f` for searches (`/` and `"` still work)
-- `--citation` flag: prints citation information and exits
-- Running without arguments now shows help instead of crashing
+- Consensus computation is now deterministic (IUPAC codes for tied residues)
+- Sequence search handles edge cases gracefully (empty matches, malformed
+  patterns)
+- Weighted conservation: new column metric (conservation weighted by coverage)
+- Vertical match jumps (N/P): navigate matches without changing horizontal view
+- Conserved region jumps documented and configurable (with `:set ...`)
 
-Breaking changes: column metric API changed; search-within-sequences behavior
-changed (gaps now ignored by default).
-
-Termal remains a viewer, not an editor (for now).
+No breaking changes.
 
 See the changelog for full details.
