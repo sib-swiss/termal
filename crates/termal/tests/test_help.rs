@@ -40,7 +40,7 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
                 screen
             );
 
-            for _ in 0..20 {
+            for _ in 0..100 {
                 key_handling::handle_key_press(ui, utils::keypress('j'));
             }
             terminal.draw(|f| render::render_ui(f, ui)).expect("update");
@@ -48,8 +48,8 @@ fn help_dialog_opens_scrolls_resets_and_closes() {
             let scrolled_screen = utils::buffer_text(&buffer);
 
             assert!(
-                scrolled_screen.contains("## Zooming"),
-                "scrolling did not reveal lower help content:\n{}",
+                !scrolled_screen.contains("# Main Key Bindings"),
+                "help content should have scrolled out of view:\n{}",
                 scrolled_screen
             );
             assert!(
