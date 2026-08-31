@@ -48,6 +48,7 @@ fh<regexp><Ret> : sequence search
 " : shortcut for fh
 
 [count]n,p  : next / previous match
+[count]N,P  : next / previous match, vertically
 Ret         : current match (e.g. after reordering)
 Esc         : cancel search
 

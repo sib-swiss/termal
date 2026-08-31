@@ -204,6 +204,8 @@ behaviour of `less` and other Unix pagers.
 
 ## Jumps
 
+### Position Jumps
+
 Jump commands move directly to a position, specified by the prefix argument. The
 viewport moves so that the target sequence (respectively column) appears at the
 top (respectively left) of the alignment pane.
@@ -212,7 +214,7 @@ top (respectively left) of the alignment pane.
 screen line_. This will be the same as the sequence's number in the alignment
 file, unless the sequences have been [reordered](#ordering).
 
-### Absolute jumps
+#### Absolute jumps
 
 In absolute jumps, the prefix argument denotes a specific sequence or column:
 
@@ -222,7 +224,7 @@ command    motion
 `[count]=` jump to sequence _count_ (in original file order)
 `[count]|` jump to column _count_
 
-###  Relative jumps
+####  Relative jumps
 
 In relative jumps, the prefix argument denotes a percentage of the alignment's
 height or width, rounded to the nearest sequence/column.
@@ -237,7 +239,13 @@ command    motion
 Termal supports regular expression searches in both headers and sequences (see
 [Searching](#searching) for how to start a search). If any matches are found,
 Termal will automatically jump to the first match. To jump to the next or
-previous match, use `n` or `p`:
+previous match, use `n` or `p`. The prefix argument allows to jump more than one
+match ast a time. The `Return` key always jumps to the current match (this is
+useful if it is offscreen).
+
+The sequence match jumps also have "vertical" variants, `N` and `P`.  These also
+jump to the next (respectively, previous) match, but only if no horizontal
+motion is needed. This is useful for staying within a region of interest.
 
 +---------------+----------------------------------------------+
 | command       | motion                                       |
@@ -245,6 +253,10 @@ previous match, use `n` or `p`:
 | `[count]n`    | jump _count_ matches forward                 |
 +---------------+----------------------------------------------+
 | `[count]p`    | jump _count_ matches backward                |
++---------------+----------------------------------------------+
+| `[count]N`    | jump _count_ matches forward, vertically     |
++---------------+----------------------------------------------+
+| `[count]P`    | jump _count_ matches backwar, vertically     |
 +---------------+----------------------------------------------+
 | `<Return>`    | jump to the current match (which may be      |
 |               | offscreen)                                   |
@@ -254,15 +266,34 @@ Next and previous match jumps wrap around, i.e. pressing `n` while on the last
 match will move back to the first one. If no matches were found, match jump
 commands have no effect.
 
-### Jumps to conserved regions
+By default, a jump will cause the viewport to move only if the next/previous
+match is off screen, avoiding repeated changes to the display. This can be
+changed by setting the `jump` variable to `center`, in which case the view is
+centered on the match at every jump. See [ex commands](#ex-commands) for how to
+set variables.
+
+
+### Jumps to Conserved Regions {#jmp-cons-reg}
+
+Termal defines a _conserved region_ as either:
+
+a. a continuous stretch of positions where the [column metric](#col-metrics) has a high value, or
+b. two conserved regions separated by only a few bases
+
+where a "high" value is 0.2 or more, and "a few" bases means 3 or less.
+These thresholds can be changed by setting `lohi-threshold` and
+`lohi-gap`, respectively (see [ex commands](#ex-commands)).
+
 ### Examples
 
 * `123|`: Jump to column 123 (if it exists).
 * `200-`: Jump to the 200th sequence from the top of the display, which may differ from the original file order if sequences have been reordered.
 * `50%`: Jump to the vertical midpoint of the alignment.
 * `25#`: Jump to one quarter of the alignment width.
-* `n`: jump to the next match
-* `3p`: jump three matches backward
+* `n`: jump to the next match, if any
+* `3p`: jump three matches backward, if possible
+* `3N`: jump three matches forward (if possible), no horizontal motion
+* `4(`: jump four conserved regions backward, if possible
 
 # Zooming
 
@@ -424,7 +455,7 @@ instead of the consensus.
 
 # Sequence Metrics {#metrics}
 
-The left pane displays a bar chart of the current sequence _metric_. This is a numeric
+The left pane displays a bar chart of the current _sequence metric_. This is a numeric
 property of the (aligned) sequences. Currently, there are two possible sequence metrics:
 
 a. Sequence **length** (not counting gaps)
@@ -478,14 +509,18 @@ Note that headers must match those in the alignment file exactly.
 # Column Metrics {#col-metrics}
 
 The bottom pane displays a barplot of the current _column metric_, a numeric
-property of each alignment column. Two metrics are available:
+property of each alignment column. Three metrics are available:
 
-a. **Entropy**: a measure of conservation. High bar = well-conserved column;
-   low bar = high variability.
-b. **Coverage**: fraction of non-gap residues at that column.
+a. **Conservation**: High bar = well-conserved column; low bar = high
+variability. Derived from the column entropy.
+b. **Coverage**: per-column fraction of non-gap residues.
+c. **Weighted conservation**: The product of the previous two. The main
+difference with raw conservation is that a column may achieve high conservation
+even if it is mostly gaps, while its weighted conservation will not.
 
-To cycle through column metrics, press `c` (forward) or `C` (backward). The
-current metric name is shown in the bottom pane.
+The metric is displayed in the _column metric bar plot_. To this end, they are
+normalized to fit the [0, 1] interval.  The (normalized) value of the column
+metric is used to define [conserved regions](#jmp-cons-reg). 
 
 # Display Settings
 
@@ -578,11 +613,32 @@ video mode is displayed in the top border of the Termal screen.
 ##  Modeline and feedback
 
 The modeline (in the bottom border of the Termal screen) provides feedback about:
+
 - pending numeric arguments,
 - active search state,
 - current search match index.
 
 ---
+
+# Ex Commands (aka "`:`" commands) {#ex-commands}
+
+Ex commands^[so named because they are accessed by typing `:`, like in the `ex`
+editor, and then in `vi`, `Vim` and friends] are used for the more rarely used
+operations. To enter an ex command, type `:`, then the command, then `Return`.
+
+## `:set` 
+
+The `:set` command is used to set the value of variables. Currently, the
+following variables are available:
+
+Name                       Value              Affects
+-------------------        --------           -------------------------------
+`jump`                     `lazy|center`      [Match jump](#match-jumps) behaviour 
+`lohi-threshold | lt`      float, $\in [0,1]$ Definition of [conserved regions](#jmp-cons-reg)
+`lohi-gap | lg`            int, > 0           Definition of [conserved regions](#jmp-cons-reg)
+
+**Note** that some variables have short forms, _e.g._ `lohi-threshold` can be
+abbreviated to `lt`, etc.
 
 #  Limitations and Scope
 
