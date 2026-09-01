@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1] 2026-09-01
+
+### Fixed
+
+* Version mismatch: Cargo.toml versions now match GitHub release tag (v2.1.0
+  binaries were built from code with v2.0.0 in Cargo.toml; now all versions
+  consistent)
+
 ## [2.1.0] 2026-09-01
 
 ### Added

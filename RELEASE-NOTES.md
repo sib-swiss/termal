@@ -1,3 +1,5 @@
+termal 2.1.1 – Fixes to version number mismatches in 2.1.0
+
 termal 2.1.0 – Stability fixes, weighted conservation, and navigation improvements
 
 This release brings important stability fixes for sequence search, a new column
