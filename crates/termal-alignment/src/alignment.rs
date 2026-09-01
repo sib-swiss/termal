@@ -207,6 +207,29 @@ impl Alignment {
             RefSpec::Rank(rk) => self.sequences[rk].clone(),
         }
     }
+
+    pub fn consensus(sequences: &Vec<String>, seq_type: SeqType) -> String {
+        let mut consensus = String::new();
+        for j in 0..sequences[0].len() {
+            let dist = res_count(sequences, j); // res -> count map
+            let br = best_residue(&dist, seq_type);
+            let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
+            if rel_freq >= UC_CONS_THRESHOLD {
+                consensus.push(br.residue.to_ascii_uppercase());
+            } else if rel_freq >= LC_CONS_THRESHOLD {
+                if br.residue.is_alphabetic() {
+                    consensus.push(br.residue.to_ascii_lowercase());
+                } else {
+                    //consensus.push('-');
+                    consensus.push(br.residue);
+                }
+            } else {
+                consensus.push('*');
+            }
+        }
+        consensus
+    }
+
 }
 
 fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
@@ -218,34 +241,7 @@ fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
     freqs
 }
 
-// TODO: consensus(), best_residue(), entropies(), densities(), and related functions
-// should be methods of Alignment instead of free functions. This would eliminate the need
-// to thread parameters like SeqType through signatures — they could access self.macromolecule_type
-// directly. See the B0024 fix (2026-08-25) where SeqType was threaded through consensus()
-// as motivation for this refactor.
-
-pub fn consensus(sequences: &Vec<String>, seq_type: SeqType) -> String {
-    let mut consensus = String::new();
-    for j in 0..sequences[0].len() {
-        let dist = res_count(sequences, j); // res -> count map
-        let br = best_residue(&dist, seq_type);
-        let rel_freq: f64 = (br.frequency as f64 / sequences.len() as f64) as f64;
-        if rel_freq >= UC_CONS_THRESHOLD {
-            consensus.push(br.residue.to_ascii_uppercase());
-        } else if rel_freq >= LC_CONS_THRESHOLD {
-            if br.residue.is_alphabetic() {
-                consensus.push(br.residue.to_ascii_lowercase());
-            } else {
-                //consensus.push('-');
-                consensus.push(br.residue);
-            }
-        } else {
-            consensus.push('*');
-        }
-    }
-    consensus
-}
-
+// TODO: -> method
 pub fn entropies(sequences: &Vec<String>) -> Vec<f64> {
     let mut entropies: Vec<f64> = Vec::new();
     for j in 0..sequences[0].len() {
@@ -271,6 +267,7 @@ pub fn col_density(sequences: &Vec<String>, col: usize) -> f64 {
     mass as f64 / sequences.len() as f64
 }
 
+// TODO: -> method
 pub fn densities(sequences: &Vec<String>) -> Vec<f64> {
     (0..sequences[0].len())
         .map(|col| col_density(sequences, col))
@@ -306,6 +303,7 @@ fn iupac_ambiguity_code(amb_nt: &mut [char]) -> char {
     }
 }
 
+// TODO: -> method
 fn best_residue(counts: &ResidueCounts, seq_type: SeqType) -> BestResidue {
     let max_freq = counts.values().max().unwrap();
     let mut most_frequent_residues = counts // plural <- may be ties

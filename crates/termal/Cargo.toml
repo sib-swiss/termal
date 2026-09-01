@@ -1,7 +1,7 @@
 [package]
 name = "termal-msa"
 default-run = "termal"
-version = "2.0.0"
+version = "2.1.0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/sib-swiss/termal"
@@ -43,7 +43,7 @@ bitflags = "2.6.0"
 serde_json = "1.0.135"
 hex_color = "3"
 regex = "1.12.2"
-termal-alignment = { version = "0.2.0", path = "../termal-alignment" }
+termal-alignment = { version = "0.3.0", path = "../termal-alignment" }
 
 [dev-dependencies]
 insta = "1"
