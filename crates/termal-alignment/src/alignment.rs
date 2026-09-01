@@ -112,9 +112,9 @@ impl Alignment {
         // NOTE: the 's' can also be written '&*s', which makes the automatic re-borrow explicit.
         let first_seq = sequences.first();
         let macromolecule_type = seq_type(first_seq.expect("No sequence found."));
-        let consensus = consensus(&sequences, macromolecule_type);
-        let entropies = entropies(&sequences);
-        let densities = densities(&sequences);
+        let consensus = compute_consensus(&sequences, macromolecule_type);
+        let entropies = compute_entropies(&sequences);
+        let densities = compute_densities(&sequences);
         let id_wrt_reference = sequences
             .iter()
             .map(|seq| percent_identity(seq, &consensus))
@@ -143,9 +143,9 @@ impl Alignment {
         let sequences = seqs;
         let first_seq = sequences.first();
         let macromolecule_type = seq_type(first_seq.expect("No sequence found."));
-        let consensus = consensus(&sequences, macromolecule_type);
-        let entropies = entropies(&sequences);
-        let densities = densities(&sequences);
+        let consensus = compute_consensus(&sequences, macromolecule_type);
+        let entropies = compute_entropies(&sequences);
+        let densities = compute_densities(&sequences);
         let id_wrt_reference = sequences
             .iter()
             .map(|seq| percent_identity(seq, &consensus))
@@ -207,6 +207,7 @@ impl Alignment {
             RefSpec::Rank(rk) => self.sequences[rk].clone(),
         }
     }
+
 }
 
 fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
@@ -218,13 +219,7 @@ fn res_count(sequences: &Vec<String>, col: usize) -> ResidueCounts {
     freqs
 }
 
-// TODO: consensus(), best_residue(), entropies(), densities(), and related functions
-// should be methods of Alignment instead of free functions. This would eliminate the need
-// to thread parameters like SeqType through signatures — they could access self.macromolecule_type
-// directly. See the B0024 fix (2026-08-25) where SeqType was threaded through consensus()
-// as motivation for this refactor.
-
-pub fn consensus(sequences: &Vec<String>, seq_type: SeqType) -> String {
+fn compute_consensus(sequences: &Vec<String>, seq_type: SeqType) -> String {
     let mut consensus = String::new();
     for j in 0..sequences[0].len() {
         let dist = res_count(sequences, j); // res -> count map
@@ -246,7 +241,7 @@ pub fn consensus(sequences: &Vec<String>, seq_type: SeqType) -> String {
     consensus
 }
 
-pub fn entropies(sequences: &Vec<String>) -> Vec<f64> {
+fn compute_entropies(sequences: &Vec<String>) -> Vec<f64> {
     let mut entropies: Vec<f64> = Vec::new();
     for j in 0..sequences[0].len() {
         let dist = res_count(sequences, j);
@@ -271,7 +266,7 @@ pub fn col_density(sequences: &Vec<String>, col: usize) -> f64 {
     mass as f64 / sequences.len() as f64
 }
 
-pub fn densities(sequences: &Vec<String>) -> Vec<f64> {
+fn compute_densities(sequences: &Vec<String>) -> Vec<f64> {
     (0..sequences[0].len())
         .map(|col| col_density(sequences, col))
         .collect()
@@ -463,7 +458,7 @@ pub fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, u
 #[cfg(test)]
 mod tests {
     use crate::alignment::{
-        best_residue, consensus, densities, entropies, entropy, find_hi_runs, mark_lohi,
+        best_residue,  entropy, find_hi_runs, mark_lohi,
         merge_hi_runs, percent_identity, res_count, seq_len_nogaps, seq_type, to_freq_distrib,
         Alignment, BestResidue, LoHiState, RefSpec, ResidueCounts, ResidueDistribution, SeqType,
         SeqType::{Nucleic, Protein},
@@ -491,7 +486,7 @@ mod tests {
         // Updated: the output changed with the IUPAC codes implementation. Position 2 and 4
         // are now resolved through the ambiguity code matcher, which defaults to 'n' for
         // protein residues. This is expected behavior until the function gains protein support.
-        assert_eq!("AQw-n", consensus(&aln2.sequences, SeqType::Protein));
+        assert_eq!("AQw-n", aln2.consensus);
     }
 
     #[test]
@@ -595,25 +590,23 @@ mod tests {
     fn test_entropies() {
         let fasta2 = read_fasta_file("data/test-cons.fas").unwrap();
         let aln2 = Alignment::from_file(fasta2);
-        let entrs = entropies(&aln2.sequences);
         let eps = 0.001;
-        assert_relative_eq!(0.0, entrs[0], epsilon = eps);
-        assert_relative_eq!(0.4505, entrs[1], epsilon = eps);
-        assert_relative_eq!(1.5607, entrs[2], epsilon = eps);
-        assert_relative_eq!(0.6365, entrs[3], epsilon = eps);
+        assert_relative_eq!(0.0, aln2.entropies[0], epsilon = eps);
+        assert_relative_eq!(0.4505, aln2.entropies[1], epsilon = eps);
+        assert_relative_eq!(1.5607, aln2.entropies[2], epsilon = eps);
+        assert_relative_eq!(0.6365, aln2.entropies[3], epsilon = eps);
     }
 
     #[test]
     fn test_density() {
         let fasta = read_fasta_file("data/test-density.msa").unwrap();
         let aln = Alignment::from_file(fasta);
-        let dens = densities(&aln.sequences);
-        assert_eq!(1.0, dens[0]);
-        assert_eq!(0.8, dens[1]);
-        assert_eq!(0.6, dens[2]);
-        assert_eq!(0.4, dens[3]);
-        assert_eq!(0.2, dens[4]);
-        assert_eq!(0.0, dens[5]);
+        assert_eq!(1.0, aln.densities[0]);
+        assert_eq!(0.8, aln.densities[1]);
+        assert_eq!(0.6, aln.densities[2]);
+        assert_eq!(0.4, aln.densities[3]);
+        assert_eq!(0.2, aln.densities[4]);
+        assert_eq!(0.0, aln.densities[5]);
     }
 
     #[test]
@@ -876,18 +869,19 @@ mod tests {
             "AGGCAC".to_string(),
             "ACGTGC".to_string(),
         ];
-        let consensus1 = consensus(&seqs, SeqType::Nucleic);
-        let consensus2 = consensus(&seqs, SeqType::Nucleic);
-        let consensus3 = consensus(&seqs, SeqType::Nucleic);
+        let headers: Vec<String> = (0..seqs.len()).map(|i| format!("seq{}", i)).collect();
+        let aln1 = Alignment::from_vecs(headers.clone(), seqs.clone());
+        let aln2 = Alignment::from_vecs(headers.clone(), seqs.clone());
+        let aln3 = Alignment::from_vecs(headers.clone(), seqs.clone());
         assert_eq!(
-            consensus1, consensus2,
+            aln1.consensus, aln2.consensus,
             "consensus changed between calls: '{}' vs '{}'",
-            consensus1, consensus2
+            aln1.consensus, aln2.consensus
         );
         assert_eq!(
-            consensus2, consensus3,
+            aln2.consensus, aln3.consensus,
             "consensus changed between calls: '{}' vs '{}'",
-            consensus2, consensus3
+            aln2.consensus, aln3.consensus
         );
     }
 
@@ -901,13 +895,14 @@ mod tests {
             "AGGCAC".to_string(),
             "ACGTGC".to_string(),
         ];
-        let cons = consensus(&seqs, SeqType::Nucleic);
+        let headers: Vec<String> = (0..seqs.len()).map(|i| format!("seq{}", i)).collect();
+        let aln = Alignment::from_vecs(headers, seqs);
         // Positions: 0=A (3/3), 1=G (2/3), 2=G (3/3), 3=C (2/3), 4=d/D (tie 1/3), 5=C (3/3)
         // The exact case depends on frequency threshold, but position 4 should be deterministic.
         assert!(
-            cons.chars().nth(4).unwrap().to_ascii_lowercase() == 'd',
+            aln.consensus.chars().nth(4).unwrap().to_ascii_lowercase() == 'd',
             "position 4 should resolve to IUPAC code 'd' for A/G/T tie, got '{}'",
-            cons.chars().nth(4).unwrap()
+            aln.consensus.chars().nth(4).unwrap()
         );
     }
 
@@ -921,12 +916,13 @@ mod tests {
             "ATT".to_string(),
             "ATT".to_string(),
         ];
+        let headers: Vec<String> = (0..seqs.len()).map(|i| format!("seq{}", i)).collect();
+        let aln = Alignment::from_vecs(headers, seqs);
         // Position 0: A 4/4
         // Position 1: C 2/4, T 2/4 (tie at top frequency)
         // Position 2: T 4/4
-        let cons = consensus(&seqs, SeqType::Nucleic);
         // Position 1 should be a nucleotide IUPAC code (C and T -> 'y' for pYrimidine).
-        let pos1 = cons.chars().nth(1).unwrap().to_ascii_lowercase();
+        let pos1 = aln.consensus.chars().nth(1).unwrap().to_ascii_lowercase();
         assert_eq!(
             pos1, 'y',
             "position 1 should resolve to IUPAC code 'y' for C/T tie, got '{}'",
