@@ -12,7 +12,7 @@ use termal_alignment::alignment::{
 };
 
 use crate::{
-    app::SeqMetric::{PctIdWrtConsensus, SeqLen},
+    app::SeqMetric::{PctIdWrtConsensus, SeqLen, SeqQuality},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
     seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
     vec_f64_aux::{normalize, ones_complement, product},
@@ -56,13 +56,15 @@ impl fmt::Display for SeqOrdering {
 pub enum SeqMetric {
     PctIdWrtConsensus,
     SeqLen,
+    SeqQuality,
 }
 
 impl fmt::Display for SeqMetric {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let seq_metric = match self {
-            PctIdWrtConsensus => "%id (ref)",
-            SeqLen => "seq len",
+            SeqMetric::PctIdWrtConsensus => "%id (ref)",
+            SeqMetric::SeqLen => "seq len",
+            SeqMetric::SeqQuality => "seq qual"
         };
         write!(f, "{}", seq_metric)
     }
@@ -330,7 +332,8 @@ impl App {
     pub fn next_seq_metric(&mut self) {
         self.seq_metric = match self.seq_metric {
             PctIdWrtConsensus => SeqLen,
-            SeqLen => PctIdWrtConsensus,
+            SeqLen => SeqQuality,
+            SeqQuality => PctIdWrtConsensus,
         };
         self.recompute_ordering();
         self.reorder_matches();
@@ -341,7 +344,8 @@ impl App {
     pub fn prev_seq_metric(&mut self) {
         self.seq_metric = match self.seq_metric {
             PctIdWrtConsensus => SeqLen,
-            SeqLen => PctIdWrtConsensus,
+            SeqLen => SeqQuality,
+            SeqQuality => PctIdWrtConsensus,
         };
         self.recompute_ordering();
         self.reorder_matches();
@@ -367,6 +371,7 @@ impl App {
         match self.seq_metric {
             PctIdWrtConsensus => &self.alignment.id_wrt_reference,
             SeqLen => &self.alignment.relative_seq_len,
+            SeqQuality => &self.alignment.seq_quality,
         }
     }
 

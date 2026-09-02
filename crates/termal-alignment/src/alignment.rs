@@ -3,7 +3,7 @@
 
 mod permutation;
 
-use std::{collections::HashMap, fmt};
+use std::{collections::{HashMap, HashSet}, fmt};
 
 use itertools::Itertools;
 
@@ -78,6 +78,7 @@ pub struct Alignment {
     // it hard (for me, at least...) to write a function that accepts a Vec of either lengths or
     // %IDs. Tried Box, and generics, but the extra work doesn't seem warranted.
     pub relative_seq_len: Vec<f64>,
+    pub seq_quality: Vec<f64>,      // based on the fraction of ambiguous residues
     pub macromolecule_type: SeqType,
     /* Specifies whether the reference sequence should be the consensus (see above) or one of the
      * original sequences (identified by rank).*/
@@ -120,6 +121,10 @@ impl Alignment {
             .map(|seq| percent_identity(seq, &consensus))
             .collect();
         let relative_seq_len = sequences.iter().map(|seq| seq_len_nogaps(seq)).collect();
+        let seq_quality = sequences
+            .iter()
+            .map(|seq| seq_quality(seq, macromolecule_type))
+            .collect();
 
         Alignment {
             headers,
@@ -129,6 +134,7 @@ impl Alignment {
             densities,
             id_wrt_reference,
             relative_seq_len,
+            seq_quality,
             macromolecule_type,
             ref_spec: RefSpec::Consensus,
         }
@@ -151,6 +157,10 @@ impl Alignment {
             .map(|seq| percent_identity(seq, &consensus))
             .collect();
         let relative_seq_len = sequences.iter().map(|seq| seq_len_nogaps(seq)).collect();
+        let seq_quality = sequences
+            .iter()
+            .map(|seq| seq_quality(seq, macromolecule_type))
+            .collect();
 
         Alignment {
             headers,
@@ -160,6 +170,7 @@ impl Alignment {
             densities,
             id_wrt_reference,
             relative_seq_len,
+            seq_quality,
             macromolecule_type,
             ref_spec: RefSpec::Consensus,
         }
@@ -370,6 +381,45 @@ fn seq_len_nogaps(s: &str) -> f64 {
     s.chars().filter(|c| c.is_alphabetic()).count() as f64 / s.len() as f64
 }
 
+// Quality based on the proportion of non-ambiguous residues (ignoring gaps)
+fn seq_quality(s: &str, macromolecule_type: SeqType) -> f64 {
+
+    let ambiguous_vec = match macromolecule_type {
+        SeqType::Nucleic => {
+            vec![
+                    'Y', 'y',
+                    'R', 'r',
+                    'W', 'w',
+                    'K', 'k',
+                    'S', 's',
+                    'M', 'm',
+                    'D', 'd',
+                    'V', 'v',
+                    'H', 'h',
+                    'B', 'b',
+                    'N', 'n'
+            ]
+        }
+        SeqType::Protein => {
+            vec!['X', 'x']
+        }
+    };
+
+    let ambiguous: HashSet<char> = HashSet::from_iter(ambiguous_vec);
+
+    let non_gap_chars: Vec<char> = s.chars().filter(|c| c.is_alphabetic()).collect();
+    let num_non_ambig = non_gap_chars.iter()
+        .filter(|r| !ambiguous.contains(r))
+        .count();
+
+    if non_gap_chars.is_empty() {
+        0.0
+    } else {
+        num_non_ambig as f64 / non_gap_chars.len() as f64
+    }
+
+}
+
 fn seq_type(sequence: &str) -> SeqType {
     let counts = sequence.to_lowercase().chars().counts();
     let counts_u64: HashMap<char, u64> = counts.into_iter().map(|(k, v)| (k, v as u64)).collect();
@@ -459,7 +509,7 @@ pub fn merge_hi_runs(runs: &[(usize, usize)], threshold: usize) -> Vec<(usize, u
 mod tests {
     use crate::alignment::{
         best_residue,  entropy, find_hi_runs, mark_lohi,
-        merge_hi_runs, percent_identity, res_count, seq_len_nogaps, seq_type, to_freq_distrib,
+        merge_hi_runs, percent_identity, res_count, seq_len_nogaps, seq_quality, seq_type, to_freq_distrib,
         Alignment, BestResidue, LoHiState, RefSpec, ResidueCounts, ResidueDistribution, SeqType,
         SeqType::{Nucleic, Protein},
     };
@@ -928,5 +978,62 @@ mod tests {
             "position 1 should resolve to IUPAC code 'y' for C/T tie, got '{}'",
             pos1
         );
+    }
+
+    #[test]
+    fn test_seq_quality_nucleic_no_ambiguous() {
+        // Perfect sequence with no ambiguous residues
+        let seq = "ACGTACGTACGT";
+        let quality = seq_quality(seq, SeqType::Nucleic);
+        assert_eq!(1.0, quality);
+    }
+
+    #[test]
+    fn test_seq_quality_nucleic_all_ambiguous() {
+        // All ambiguous nucleotides (Y, R, W, etc.)
+        let seq = "YRWKSM";
+        let quality = seq_quality(seq, SeqType::Nucleic);
+        assert_eq!(0.0, quality);
+    }
+
+    #[test]
+    fn test_seq_quality_nucleic_mixed() {
+        // Half ambiguous, half not (ACGT = 4 non-ambig, YR = 2 ambig, total 6)
+        let seq = "ACGTYR";
+        let quality = seq_quality(seq, SeqType::Nucleic);
+        let eps = 0.001;
+        assert_relative_eq!(2.0 / 3.0, quality, epsilon = eps);
+    }
+
+    #[test]
+    fn test_seq_quality_nucleic_with_gaps() {
+        // Gaps don't count as ambiguous or non-ambiguous in this calculation
+        // Sequence "ACG-T" has 4 non-gap chars, all non-ambiguous
+        let seq = "ACG-T";
+        let quality = seq_quality(seq, SeqType::Nucleic);
+        assert_eq!(1.0, quality);
+    }
+
+    #[test]
+    fn test_seq_quality_protein_no_ambiguous() {
+        let seq = "ACDEFGHIKLMNPQRSTVW";
+        let quality = seq_quality(seq, SeqType::Protein);
+        assert_eq!(1.0, quality);
+    }
+
+    #[test]
+    fn test_seq_quality_protein_all_ambiguous() {
+        let seq = "XXxx";
+        let quality = seq_quality(seq, SeqType::Protein);
+        assert_eq!(0.0, quality);
+    }
+
+    #[test]
+    fn test_seq_quality_protein_mixed() {
+        // "ACGX" = 3 non-ambig, 1 ambig
+        let seq = "ACGX";
+        let quality = seq_quality(seq, SeqType::Protein);
+        let eps = 0.001;
+        assert_relative_eq!(0.75, quality, epsilon = eps);
     }
 }
