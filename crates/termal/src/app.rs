@@ -355,6 +355,7 @@ impl App {
         println!("name: {}", self.filename);
         println!("nb_sequences: {}", self.num_seq());
         println!("nb_columns: {}", self.aln_len());
+        println!("type: {}", self.alignment.macromolecule_type);
         println!();
     }
 

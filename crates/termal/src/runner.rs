@@ -224,7 +224,7 @@ pub fn run() -> Result<(), TermalError> {
     }
 
     if cli.info {
-        info!("Running in debug mode.");
+        // info!("Running in debug mode.");
         app.output_info();
         return Ok(());
     }

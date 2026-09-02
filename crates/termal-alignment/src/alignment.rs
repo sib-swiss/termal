@@ -24,6 +24,16 @@ pub enum SeqType {
     Protein,
 }
 
+impl fmt::Display for SeqType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let text = match self {
+            SeqType::Nucleic => "nucleic",
+            SeqType::Protein => "protein",
+        };
+        write!(f, "{}", text)
+    }
+}
+
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum RefSpec {
     Consensus,
