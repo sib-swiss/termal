@@ -4,11 +4,20 @@
 
 # termal
 
-**termal** is a terminal-based viewer for multiple sequence alignments, designed
+`termal` is a terminal-based viewer for multiple sequence alignments, designed
 for fast, keyboard-driven navigation in local and remote (SSH/HPC) environments.
 
 It requires no installer, has no runtime dependencies, and runs directly in a
 terminal.
+
+
+`termal-export` is a companion program that generates publication-ready SVG
+figures from multiple sequence alignments. It supports row/column filtering and multiple
+color schemes. For help, do:
+
+```bash
+termal-export --help
+```
 
 ---
 
