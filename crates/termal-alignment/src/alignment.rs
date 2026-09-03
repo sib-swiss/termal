@@ -3,7 +3,10 @@
 
 mod permutation;
 
-use std::{collections::{HashMap, HashSet}, fmt};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt,
+};
 
 use itertools::Itertools;
 

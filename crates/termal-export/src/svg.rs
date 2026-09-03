@@ -51,6 +51,8 @@ fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
     let backgrounds = seq
         .chars()
         .enumerate()
+        .skip(opts.region.cols.start)
+        .take(opts.region.cols.end - opts.region.cols.start)
         .map(|(i, c)| {
             let color_string = opts.colormap.rgb(c as u8).to_hex();
             format!(
@@ -89,16 +91,19 @@ fn write_aln<W: Write>(
     out: &mut W,
 ) -> Result<()> {
     let zipped_aln = zip(aln.headers.iter(), aln.sequences.iter());
-    for (i, (hdr, seq)) in zipped_aln.enumerate() {
-        writeln!(
-            out,
-            "<g transform='translate(0,{})'>{}<g transform='translate({},0)'>{}</g></g>",
-            i as f32 * opts.cell_height,
-            svg_header(hdr, opts),
-            layout.hdr_txt_width,
-            svg_sequence(seq, opts),
-        )?;
-    }
+    for (i, (hdr, seq)) in zipped_aln
+        .enumerate()
+        .skip(opts.region.rows.start)
+        .take(opts.region.rows.end - opts.region.rows.start) {
+            writeln!(
+                out,
+                "<g transform='translate(0,{})'>{}<g transform='translate({},0)'>{}</g></g>",
+                i as f32 * opts.cell_height,
+                svg_header(hdr, opts),
+                layout.hdr_txt_width,
+                svg_sequence(seq, opts),
+            )?;
+    };
     Ok(())
 }
 

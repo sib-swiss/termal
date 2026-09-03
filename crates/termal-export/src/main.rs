@@ -3,8 +3,10 @@
 
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
-use std::io::{self, Write};
-use std::path::PathBuf;
+use std::{
+    io::{self, Write},
+    path::PathBuf,
+};
 
 use termal_alignment::{
     rgb::ColorMapName,
@@ -12,6 +14,9 @@ use termal_alignment::{
     seq::{fasta, file},
     Alignment,
 };
+
+// This crate's lib.rs, also used by termal-msa (the TUI app)
+use termal_export::{compute_layout, export_svg, Region, ExportOpts};
 
 // A wrapper for rgb::ColorMapName. This allows us to decouple that struct from Clap::ValueEnum.
 // NOTE: the capitalisation differs slightly from ColorMapName's because of the way Clap derives
@@ -35,9 +40,6 @@ impl From<ColorMapArg> for ColorMapName {
         }
     }
 }
-
-// This crate's lib.rs, also used by termal-msa (the TUI app)
-use termal_export::{compute_layout, export_svg, ExportOpts};
 
 #[derive(Parser, Debug)]
 #[command(name = "termal-export")]
@@ -104,7 +106,7 @@ fn parse_range(s: &str) -> Result<std::ops::Range<usize>> {
         .with_context(|| format!("invalid START in '{s}'"))?;
     let end: usize = b.parse().with_context(|| format!("invalid END in '{s}'"))?;
     anyhow::ensure!(start <= end, "range START must be <= END in '{s}'");
-    Ok(start..end)
+    Ok(start - 1 .. end - 1) // Biology is 1-based
 }
 
 fn main() -> Result<()> {
@@ -118,19 +120,20 @@ fn main() -> Result<()> {
     let colormap = ResidueColorMap::by_name(colormap_name);
 
     // Region (defaults: all)
-    let _row_range = match &args.rows {
+    let row_range = match &args.rows {
         Some(r) => parse_range(r)?,
         None => 0..aln.num_seq(),
     };
-    let _col_range = match &args.cols {
+    let col_range = match &args.cols {
         Some(r) => parse_range(r)?,
         None => 0..aln.aln_len(),
     };
 
-    // let region = Region { rows: row_range, cols: col_range }; // adjust type/fields
+    let region = Region { rows: row_range, cols: col_range }; 
 
     // Export options
     let opts = ExportOpts {
+        region: region,
         cell_width: args.cell_width,
         cell_height: args.cell_height,
         residue_font_size: args.residue_font_size,
