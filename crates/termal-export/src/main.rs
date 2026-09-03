@@ -147,7 +147,6 @@ fn main() -> Result<()> {
 
     // Layout
     let layout = compute_layout(&aln, &opts);
-    eprintln!("DEBUG: layout width={}, height={}, hdr_width={}", layout.grid_width, layout.grid_height, layout.hdr_txt_width);
 
     let mut stdout = io::BufWriter::new(io::stdout().lock());
     export_svg(&aln, &opts, &layout, &mut stdout)?;
