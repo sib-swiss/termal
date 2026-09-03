@@ -118,7 +118,7 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
         KeyCode::Char('v') => {
             ui.input_mode = InputMode::JumpCmdPrefix;
             ui.app.argument_msg(
-                String::from("jump to: [R]ef [tblr]"),
+                String::from("jump to: [R]ef [tblr] [c]ur match"),
                 String::from(""),
             );
         }
@@ -498,6 +498,11 @@ fn handle_jump_prefix(ui: &mut UI, key_event: KeyEvent) {
         }
         KeyCode::Char('r') => {
             ui.jump_to_end();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('c') => {
+            ui.jump_to_current_match();
             ui.input_mode = InputMode::Normal;
             ui.app.clear_msg();
         }
