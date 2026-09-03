@@ -72,6 +72,8 @@ fn svg_sequence(seq: &str, opts: &ExportOpts) -> String {
     let residues = seq
         .chars()
         .enumerate()
+        .skip(opts.region.cols.start)
+        .take(opts.region.cols.end - opts.region.cols.start)
         .map(|(i, c)| {
             format!(
                 "<tspan x='{}' y='{}'>{}</tspan>",
