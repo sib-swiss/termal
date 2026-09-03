@@ -29,6 +29,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             history_prefix,
             history_idx,
         } => handle_ex_command(ui, key_event, &cmd, history_prefix, history_idx),
+        InputMode::JumpCmdPrefix => handle_jump_prefix(ui, key_event),
     };
     done
 }
@@ -114,6 +115,13 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             };
             ui.app.argument_msg(String::from(":"), String::from(""));
         }
+        KeyCode::Char('v') => {
+            ui.input_mode = InputMode::JumpCmdPrefix;
+            ui.app.argument_msg(
+                String::from("jump to: [R]ef [tblr]"),
+                String::from(""),
+            );
+        }
         // Anything else: dispatch corresponding command, without count
         _ => dispatch_command(ui, key_event, None),
     }
@@ -137,6 +145,35 @@ fn handle_pending_count_key(ui: &mut UI, key_event: KeyEvent, count: usize) -> b
         KeyCode::Esc => {
             ui.input_mode = InputMode::Normal;
             ui.app.clear_msg();
+        }
+        // Prefix commands: discard count and enter prefix mode
+        KeyCode::Char('v') => {
+            ui.input_mode = InputMode::JumpCmdPrefix;
+            ui.app.argument_msg(
+                String::from("jump to: [R]ef [tblr]"),
+                String::from(""),
+            );
+        }
+        KeyCode::Char('w') => {
+            ui.input_mode = InputMode::PaneCmdPrefix;
+            ui.app.argument_msg(
+                String::from("toggle pane: [l]eft [b]ottom [f]ull"),
+                String::from(""),
+            );
+        }
+        KeyCode::Char('d') => {
+            ui.input_mode = InputMode::DiffCmdPrefix;
+            ui.app.argument_msg(
+                String::from("diff: [t]otal [s]eq"),
+                String::from(""),
+            );
+        }
+        KeyCode::Char('f') => {
+            ui.input_mode = InputMode::SearchCmdPrefix;
+            ui.app.argument_msg(
+                String::from("search: [s]eq [h]dr"),
+                String::from(""),
+            );
         }
         _ => {
             ui.input_mode = InputMode::Normal;
@@ -433,6 +470,42 @@ fn handle_ex_command(
     }
 }
 
+fn handle_jump_prefix(ui: &mut UI, key_event: KeyEvent) {
+    match key_event.code {
+        KeyCode::Esc => {
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('R') => {
+            ui.jump_to_reference();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('t') => {
+            ui.jump_to_top();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('b') => {
+            ui.jump_to_bottom();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('l') => {
+            ui.jump_to_begin();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        KeyCode::Char('r') => {
+            ui.jump_to_end();
+            ui.input_mode = InputMode::Normal;
+            ui.app.clear_msg();
+        }
+        // TODO: tblr
+        _ => {}
+    }
+}
+
 fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) {
     let count = count_arg.unwrap_or(1);
 
@@ -568,10 +641,6 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
         KeyCode::Char('Z') => {
             ui.cycle_zoom();
             ui.cycle_zoom();
-        }
-        // Toggle zoom box guides
-        KeyCode::Char('v') => {
-            ui.set_zoombox_guides(!ui.show_zb_guides);
         }
         // Toggle zoom box visibility
         KeyCode::Char('B') => {

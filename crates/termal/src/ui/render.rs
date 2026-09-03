@@ -357,12 +357,10 @@ fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
     let mut lbl_nums = Text::from(compute_label_numbers(ui)).style(base_style);
     // log::debug!("lbl_nums: {:#?}", lbl_nums);
 
-    // If the reference is an alignment sequence (as opposed to the consnsus), highlight it.
+    // If the reference is an alignment sequence (as opposed to the consensus), highlight it.
 
     if let Rank(ref_rk) = ui.app.alignment.get_ref_spec() {
-        log::debug!("Ref rank: {}", ref_rk);
         let ref_screenline = ui.app.rank_to_screenline(ref_rk);
-        log::debug!("Ref scln: {}", ref_screenline);
         let highlight_style = Style::default().add_modifier(Modifier::REVERSED);
         match ui.zoom_level {
             ZoomLevel::ZoomedIn => {
@@ -375,7 +373,6 @@ fn render_label_nums_pane(f: &mut Frame, num_chunk: Rect, ui: &UI) {
                     .iter()
                     .position(|scln| ui.app.screenline_to_rank(*scln) == ref_rk);
                 if let Some(pos) = try_pos {
-                    log::debug!("pos: {:#?}", pos);
                     if let Some(ref_num) = lbl_nums.lines.get_mut(pos) {
                         ref_num.style = highlight_style;
                     }

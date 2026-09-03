@@ -21,6 +21,8 @@ use bitflags::bitflags;
 use ratatui::layout::Size;
 use ratatui::style::{Color, Style};
 
+use termal_alignment::alignment::RefSpec;
+
 use self::{
     color_map::colormap_gecos,
     color_scheme::{ColorScheme, Theme},
@@ -98,6 +100,7 @@ enum InputMode {
         history_prefix: Option<String>,
         history_idx: Option<usize>,
     },
+    JumpCmdPrefix,
 }
 
 #[derive(Clone, Copy, Debug, Default, PartialEq)]
@@ -831,6 +834,21 @@ impl<'a> UI<'a> {
 
     pub fn jump_to_current_match(&mut self) {
         self.jump_to_next_match(0);
+    }
+
+    pub fn jump_to_reference(&mut self) {
+        match self.app.alignment.get_ref_spec() {
+            RefSpec::Rank(ref_rk) => {
+                let ref_screenline = self.app.rank_to_screenline(ref_rk);
+                self.scroll_line_to_view(ref_screenline); 
+            }
+            RefSpec::Consensus => {
+                self.app.argument_msg(
+                    String::from("Reference is consensus"),
+                    String::from("")
+                );
+            }
+        }
     }
 
     fn scroll_line_to_view(&mut self, screen_line: usize) {
