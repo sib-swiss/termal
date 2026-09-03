@@ -47,8 +47,8 @@ pub fn compute_layout(aln: &Alignment, opts: &ExportOpts) -> Layout {
     let hdr_txt_width = max_hdr_len as f32 * opts.char_width + GUTTER_WIDTH;
 
     Layout {
-        grid_width: hdr_txt_width + opts.region.cols.end as f32 * opts.cell_width,
-        grid_height: opts.region.rows.end as f32 * opts.cell_height,
+        grid_width: hdr_txt_width + (opts.region.cols.end - opts.region.cols.start) as f32 * opts.cell_width,
+        grid_height: (opts.region.rows.end - opts.region.rows.start) as f32 * opts.cell_height,
         hdr_txt_width,
     }
 }
