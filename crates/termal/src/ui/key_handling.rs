@@ -311,6 +311,32 @@ fn handle_sequence_search(
                 };
             }
         }
+        KeyCode::Down => {
+            if let (Some(prefix), Some(idx)) = (history_prefix, history_idx) {
+                // Search forward from the entry after the current one.
+                let found = (idx + 1..ui.app.seq_srch_history.len())
+                    .find(|&i| ui.app.seq_srch_history[i].starts_with(&prefix));
+                if let Some(next_idx) = found {
+                    let entry = ui.app.seq_srch_history[next_idx].clone();
+                    ui.app.argument_msg("Search: ", entry.clone());
+                    ui.input_mode = InputMode::Search {
+                        pattern: entry,
+                        target,
+                        history_prefix: Some(prefix),
+                        history_idx: Some(next_idx),
+                    };
+                } else {
+                    // Reached the present: restore the original prefix as the buffer.
+                    ui.app.argument_msg("Search: ", prefix.clone());
+                    ui.input_mode = InputMode::Search {
+                        pattern: prefix,
+                        target,
+                        history_prefix: None,
+                        history_idx: None,
+                    };
+                }
+            }
+        }
         _ => {}
     }
 }
