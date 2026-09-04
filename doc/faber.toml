@@ -1,7 +1,9 @@
-
-[task.manual]
-outputs = ["manual.pdf"]
+[rule.pandoc]
+input = "{stem}.md"
+outputs = ["${stem}.pdf"]
 cmd = """
-	pandoc --standalone --citeproc --to=pdf --pdf-engine=lualatex --output=manual.pdf manual.md
+pandoc --standalone --citeproc --to=pdf --pdf-engine=lualatex --output=${stem}.pdf ${stem}.md
 """
-inputs = ["manual.md"]
+
+[task.all]
+inputs = ["manual.pdf", "termal-export-manual.pdf"]

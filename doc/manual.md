@@ -34,10 +34,10 @@ It is designed for fast, keyboard-driven navigation of alignments of any size,
 particularly in remote or SSH-based environments where graphical tools are
 impractical.
 
-Termal is a **read-only** viewer. It does not modify alignments. This may change
+termal is a **read-only** viewer. It does not modify alignments. This may change
 in future versions.
 
-Termal is presented in [@junier2025termal].
+termal is presented in [@junier2025termal].
 
 A companion program, [**termal-export**](#termal-export), produces SVG plots
 from alignments (see title page).
@@ -660,10 +660,6 @@ Features planned for the next release:
 
 Features that will be added later
 
-* `termal-export`, a companion program for producing publication-quality SVG
-  figures directly from alignment files, is under active development
-  and will be released separately. The figure in the title page of this manual
-  provides an example of its output.
 * showing fully conserved residues (à la EMBOSS's `showalign -show`)
 
 Features under consideration
@@ -692,24 +688,11 @@ from [Vim](https://vim.org).
 
 # Companion Programs
 
-## `termal-export`
+## termal-export
 
-`termal-export` is a companion program that generates publication-ready SVG
-figures from multiple sequence alignments. It supports selection of ranges of
-sequences and columns, and features the same color schemes as Termal. The SVG is
-designed to be easy to edit, e.g. the sequences and headers are grouped to allow
-easy selection of whole rows, etc.
-
-Termal-export takes an alignment as argument, and produces SVG on standard output:
-
-```bash
-termal-export data/example-1.msa > example-1.svg.
-```
-For details, do
-
-```bash
-termal-export --help
-```
+**termal-export** is a companion program that generates publication-ready SVG
+figures from multiple sequence alignments. It has its own manual,
+`termal-export-manual.pdf`.
 
 
 # References

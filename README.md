@@ -2,16 +2,15 @@
 [![crates.io](https://img.shields.io/crates/v/termal-msa.svg)](https://crates.io/crates/termal-msa)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15352914.svg)](https://doi.org/10.5281/zenodo.15352914)
 
-# termal
+# Termal
 
-`termal` is a terminal-based viewer for multiple sequence alignments, designed
+**Termal** is a terminal-based viewer for multiple sequence alignments, designed
 for fast, keyboard-driven navigation in local and remote (SSH/HPC) environments.
 
 It requires no installer, has no runtime dependencies, and runs directly in a
 terminal.
 
-
-`termal-export` is a companion program that generates publication-ready SVG
+**termal-export** is a companion program that generates publication-ready SVG
 figures from multiple sequence alignments. It supports row/column filtering and multiple
 color schemes. For help, do:
 
