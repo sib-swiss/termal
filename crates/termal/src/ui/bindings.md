@@ -94,6 +94,7 @@ Command                   Effect
 :set jump center          always recenter the view on every jump
 :set lohi-threshold <x>   set the conserved-region metric threshold (default 0.2)
 :set lohi-gap <n>         merge conserved regions separated by ≤ n columns (default 3)
+:set <case|nocase>        enables/disables case sensitivity in searches
 
 ### When typing ':' Commands
 
