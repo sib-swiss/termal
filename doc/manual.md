@@ -39,6 +39,8 @@ in future versions.
 
 Termal is presented in [@junier2025termal].
 
+A companion program, [**termal-export**](#termal-export), produces SVG plots
+from alignments (see title page).
 
 #  Basic usage
 
@@ -687,6 +689,27 @@ and clarity over graphical interaction.
 
 Many commands, as well as the prefix argument syntax, were deliberately copied
 from [Vim](https://vim.org).
+
+# Companion Programs
+
+## `termal-export`
+
+`termal-export` is a companion program that generates publication-ready SVG
+figures from multiple sequence alignments. It supports selection of ranges of
+sequences and columns, and features the same color schemes as Termal. The SVG is
+designed to be easy to edit, e.g. the sequences and headers are grouped to allow
+easy selection of whole rows, etc.
+
+Termal-export takes an alignment as argument, and produces SVG on standard output:
+
+```bash
+termal-export data/example-1.msa > example-1.svg.
+```
+For details, do
+
+```bash
+termal-export --help
+```
 
 
 # References
