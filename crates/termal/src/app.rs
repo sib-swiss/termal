@@ -811,6 +811,12 @@ impl App {
         }
     }
 
+    pub fn push_seq_search_history(&mut self, pattern: &str) {
+        if !pattern.is_empty() && self.seq_srch_history.last().map(|s| s.as_str()) != Some(pattern) {
+            self.seq_srch_history.push(pattern.to_string());
+        }
+    }
+
     pub fn set_aln_ref(&mut self, ref_spec_str: &str) {
         let try_set_ref_spec = if ref_spec_str.is_empty() {
             self.alignment.set_ref_spec(RefSpec::Consensus)

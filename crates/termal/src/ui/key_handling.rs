@@ -272,7 +272,43 @@ fn handle_sequence_search(
             ui.app.regex_search_seq(pattern, target);
             ui.input_mode = InputMode::Normal;
             if ui.app.search_state.is_some() {
+                ui.app.push_seq_search_history(pattern); // push pattern IFF success
                 ui.jump_to_next_match(0);
+            }
+        }
+        // See Up case in handle_ex_command() for explanations
+        KeyCode::Up => {
+            if history_idx == Some(0) {
+                return;
+            }
+            // First Up press: snapshot the current buffer as the search prefix.
+            let prefix = history_prefix.unwrap_or_else(|| pattern.to_string());
+            let search_start = history_idx
+                .and_then(|i| i.checked_sub(1))
+                .or_else(|| ui.app.seq_srch_history.len().checked_sub(1));
+            // Search backward (newest first) for an entry starting with the prefix.
+            let found = search_start.and_then(|start| {
+                (0..=start)
+                    .rev()
+                    .find(|&i| ui.app.seq_srch_history[i].starts_with(&prefix))
+            });
+            if let Some(idx) = found {
+                let entry = ui.app.seq_srch_history[idx].clone();
+                ui.app.argument_msg("Search: ", entry.clone());
+                ui.input_mode = InputMode::Search {
+                    pattern: entry,
+                    target,
+                    history_prefix: Some(prefix),
+                    history_idx: Some(idx),
+                };
+            } else {
+                // No match: keep current state but remember the prefix.
+                ui.input_mode = InputMode::Search {
+                    pattern: pattern.to_string(),
+                    target,
+                    history_prefix: Some(prefix),
+                    history_idx,
+                };
             }
         }
         _ => {}
