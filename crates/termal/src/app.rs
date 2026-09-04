@@ -156,6 +156,8 @@ pub struct App {
     pub cur_hi_col_metric_region: Option<usize>,
     pub options: AppOptions,
     pub ex_history: Vec<String>,
+    pub hdr_srch_history: Vec<String>,
+    pub seq_srch_history: Vec<String>,
     case_sensitive: bool,   // Regex searches
 }
 
@@ -183,6 +185,8 @@ impl App {
             cur_hi_col_metric_region: None,
             options: AppOptions::default(),
             ex_history: Vec::new(),
+            hdr_srch_history: Vec::new(),
+            seq_srch_history: Vec::new(),
             case_sensitive: true,
         };
         app.recompute_ordering();
@@ -798,6 +802,12 @@ impl App {
     pub fn push_ex_history(&mut self, cmd: &str) {
         if !cmd.is_empty() && self.ex_history.last().map(|s| s.as_str()) != Some(cmd) {
             self.ex_history.push(cmd.to_string());
+        }
+    }
+
+    pub fn push_hdr_search_history(&mut self, pattern: &str) {
+        if !pattern.is_empty() && self.hdr_srch_history.last().map(|s| s.as_str()) != Some(pattern) {
+            self.hdr_srch_history.push(pattern.to_string());
         }
     }
 

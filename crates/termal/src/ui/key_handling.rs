@@ -225,6 +225,7 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             ui.app.regex_search_labels(pattern);
             ui.input_mode = InputMode::Normal;
             if ui.app.search_state.is_some() {
+                ui.app.push_hdr_search_history(pattern); // push pattern IFF success
                 ui.jump_to_next_match(0);
             }
         }
