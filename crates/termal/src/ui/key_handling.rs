@@ -16,10 +16,17 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
         InputMode::Normal => done = handle_normal_key(ui, key_event),
         InputMode::Help => handle_help_key(ui, key_event),
         InputMode::PendingCount { count } => done = handle_pending_count_key(ui, key_event, count),
-        InputMode::LabelSearch { pattern } => handle_label_search(ui, key_event, &pattern),
-        InputMode::Search { pattern, target } => {
-            handle_sequence_search(ui, key_event, &pattern, target)
-        }
+        InputMode::LabelSearch {
+            pattern,
+            history_prefix,
+            history_idx,
+        } => handle_label_search(ui, key_event, &pattern),
+        InputMode::Search {
+            pattern,
+            target,
+            history_prefix,
+            history_idx,
+        } => handle_sequence_search(ui, key_event, &pattern, target, history_prefix, history_idx),
         InputMode::SetReference { ref_spec } => handle_set_reference(ui, key_event, &ref_spec),
         InputMode::PaneCmdPrefix => handle_pane_prefix(ui, key_event),
         InputMode::DiffCmdPrefix => handle_diff_prefix(ui, key_event),
@@ -68,6 +75,8 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             // shortcut for fh
             ui.input_mode = InputMode::LabelSearch {
                 pattern: String::from(""),
+                history_prefix: None,
+                history_idx: None,
             };
             ui.app
                 .argument_msg(String::from("Hdr search: "), String::from(""));
@@ -77,6 +86,8 @@ fn handle_normal_key(ui: &mut UI, key_event: KeyEvent) -> bool {
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
                 target: SequenceSearchTarget::BiologicalSequence,
+                history_prefix: None,
+                history_idx: None,
             };
             ui.app
                 .argument_msg(String::from("Seq search: "), String::from(""));
@@ -196,6 +207,8 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             updated_pattern.push(c);
             ui.input_mode = InputMode::LabelSearch {
                 pattern: updated_pattern,
+                history_prefix: None,
+                history_idx: None,
             }
         }
         KeyCode::Delete | KeyCode::Backspace => {
@@ -204,6 +217,8 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
             updated_pattern.pop();
             ui.input_mode = InputMode::LabelSearch {
                 pattern: updated_pattern,
+                history_prefix: None,
+                history_idx: None,
             };
         }
         KeyCode::Enter => {
@@ -222,6 +237,8 @@ fn handle_sequence_search(
     key_event: KeyEvent,
     pattern: &str,
     target: SequenceSearchTarget,
+    history_prefix: Option<String>,
+    history_idx: Option<usize>,
 ) {
     match key_event.code {
         KeyCode::Esc => {
@@ -235,6 +252,8 @@ fn handle_sequence_search(
             ui.input_mode = InputMode::Search {
                 pattern: updated_pattern,
                 target,
+                history_prefix: None,
+                history_idx: None,
             }
         }
         KeyCode::Delete | KeyCode::Backspace => {
@@ -244,6 +263,8 @@ fn handle_sequence_search(
             ui.input_mode = InputMode::Search {
                 pattern: updated_pattern,
                 target,
+                history_prefix: None,
+                history_idx: None,
             };
         }
         KeyCode::Enter => {
@@ -341,6 +362,8 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
         KeyCode::Char('h') => {
             ui.input_mode = InputMode::LabelSearch {
                 pattern: String::from(""),
+                history_prefix: None,
+                history_idx: None,
             };
             ui.app
                 .argument_msg(String::from("Hdr search: "), String::from(""));
@@ -349,6 +372,8 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
                 target: SequenceSearchTarget::BiologicalSequence,
+                history_prefix: None,
+                history_idx: None,
             };
             ui.app
                 .argument_msg(String::from("Seq search: "), String::from(""));
@@ -357,6 +382,8 @@ fn handle_search_prefix(ui: &mut UI, key_event: KeyEvent) {
             ui.input_mode = InputMode::Search {
                 pattern: String::from(""),
                 target: SequenceSearchTarget::AlignmentRow,
+                history_prefix: None,
+                history_idx: None,
             };
             ui.app
                 .argument_msg(String::from("Aln search: "), String::from(""));

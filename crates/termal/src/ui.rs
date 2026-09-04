@@ -84,10 +84,14 @@ enum InputMode {
     },
     LabelSearch {
         pattern: String,
+        history_prefix: Option<String>,
+        history_idx: Option<usize>,
     },
     Search {
         pattern: String,
         target: SequenceSearchTarget,
+        history_prefix: Option<String>,
+        history_idx: Option<usize>,
     },
     SetReference {
         ref_spec: String,

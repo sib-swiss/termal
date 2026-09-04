@@ -5,8 +5,6 @@ use std::{collections::HashMap, fmt};
 
 use log::debug;
 
-use regex::Regex;
-
 use termal_alignment::alignment::{
     find_hi_runs, mark_lohi, merge_hi_runs, Alignment, RefSpec, RefSpecError,
 };
