@@ -20,7 +20,7 @@ pub fn handle_key_press(ui: &mut UI, key_event: KeyEvent) -> bool {
             pattern,
             history_prefix,
             history_idx,
-        } => handle_label_search(ui, key_event, &pattern),
+        } => handle_label_search(ui, key_event, &pattern, history_prefix, history_idx),
         InputMode::Search {
             pattern,
             target,
@@ -195,7 +195,13 @@ fn handle_pending_count_key(ui: &mut UI, key_event: KeyEvent, count: usize) -> b
     done
 }
 
-fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
+fn handle_label_search(
+    ui: &mut UI,
+    key_event: KeyEvent,
+    pattern: &str,
+    history_prefix: Option<String>,
+    history_idx: Option<usize>,
+    ) {
     match key_event.code {
         KeyCode::Esc => {
             ui.input_mode = InputMode::Normal;
@@ -229,6 +235,64 @@ fn handle_label_search(ui: &mut UI, key_event: KeyEvent, pattern: &str) {
                 ui.jump_to_next_match(0);
             }
         }
+        // See Up case in handle_ex_command() for explanations
+        KeyCode::Up => {
+            if history_idx == Some(0) {
+                return;
+            }
+            // First Up press: snapshot the current buffer as the search prefix.
+            let prefix = history_prefix.unwrap_or_else(|| pattern.to_string());
+            let search_start = history_idx
+                .and_then(|i| i.checked_sub(1))
+                .or_else(|| ui.app.hdr_srch_history.len().checked_sub(1));
+            // Search backward (newest first) for an entry starting with the prefix.
+            let found = search_start.and_then(|start| {
+                (0..=start)
+                    .rev()
+                    .find(|&i| ui.app.hdr_srch_history[i].starts_with(&prefix))
+            });
+            if let Some(idx) = found {
+                let entry = ui.app.hdr_srch_history[idx].clone();
+                ui.app.argument_msg("Search: ", entry.clone());
+                ui.input_mode = InputMode::LabelSearch {
+                    pattern: entry,
+                    history_prefix: Some(prefix),
+                    history_idx: Some(idx),
+                };
+            } else {
+                // No match: keep current state but remember the prefix.
+                ui.input_mode = InputMode::LabelSearch {
+                    pattern: pattern.to_string(),
+                    history_prefix: Some(prefix),
+                    history_idx,
+                };
+            }
+        }
+        KeyCode::Down => {
+            if let (Some(prefix), Some(idx)) = (history_prefix, history_idx) {
+                // Search forward from the entry after the current one.
+                let found = (idx + 1..ui.app.hdr_srch_history.len())
+                    .find(|&i| ui.app.hdr_srch_history[i].starts_with(&prefix));
+                if let Some(next_idx) = found {
+                    let entry = ui.app.hdr_srch_history[next_idx].clone();
+                    ui.app.argument_msg("Search: ", entry.clone());
+                    ui.input_mode = InputMode::LabelSearch {
+                        pattern: entry,
+                        history_prefix: Some(prefix),
+                        history_idx: Some(next_idx),
+                    };
+                } else {
+                    // Reached the present: restore the original prefix as the buffer.
+                    ui.app.argument_msg("Search: ", prefix.clone());
+                    ui.input_mode = InputMode::LabelSearch {
+                        pattern: prefix,
+                        history_prefix: None,
+                        history_idx: None,
+                    };
+                }
+            }
+        }
+ 
         _ => {}
     }
 }
