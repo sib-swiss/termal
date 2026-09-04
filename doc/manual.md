@@ -353,6 +353,9 @@ All searches can be initiated via the `f` prefix command:
 The standalone `"` and `/` commands are shortcuts for `fh` and `fs` respectively.
 `fa` (alignment search) is only available through the `f` prefix.
 
+By default, searching is case sensitive. Case sensitivity can be changed with
+`:set <case|nocase>` (see [ex commands](#ex-commands)).
+
 ##  Searching Sequence Headers {#hdr-search}
 
 Termal supports searching within sequence headers using regular expressions.
@@ -638,6 +641,7 @@ Name                       Value              Affects
 `jump`                     `lazy|center`      [Match jump](#match-jumps) behaviour 
 `lohi-threshold | lt`      float, $\in [0,1]$ Definition of [conserved regions](#jmp-cons-reg)
 `lohi-gap | lg`            int, > 0           Definition of [conserved regions](#jmp-cons-reg)
+`case|nocase`              N/A                Case sensitivity in searches
 
 **Note** that some variables have short forms, _e.g._ `lohi-threshold` can be
 abbreviated to `lt`, etc.
