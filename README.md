@@ -43,8 +43,28 @@ termal -c data/colormaps/gecos_default.json data/example-1.msa
 > xattr -d com.apple.quarantine ./termal
 > ```
 
-### From source
+### From source (Cargo)
 
+Install the TUI viewer:
 ```sh
 cargo install termal-msa
 ```
+
+Install the figure generator:
+```sh
+cargo install termal-export
+```
+
+Both are standalone binaries. `termal-export` can be used independently of `termal-msa`.
+
+---
+
+## Workspace
+
+This is a Rust workspace with three crates:
+
+- **`termal-alignment`** — Core library for alignment parsing and metrics (zero external dependencies). Published to crates.io; used by both tools.
+- **`termal-msa`** — Interactive terminal viewer. Published to crates.io as `termal-msa`.
+- **`termal-export`** — SVG figure generator for publication. Published to crates.io as `termal-export`.
+
+Both binaries depend on `termal-alignment` for alignment I/O and metric computation.
