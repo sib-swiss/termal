@@ -1,4 +1,4 @@
-use regex::Regex;
+use regex::{Regex, RegexBuilder};
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum SequenceSearchTarget {
@@ -35,6 +35,14 @@ pub fn regex_match_positions(
         SequenceSearchTarget::BiologicalSequence => regex_match_positions_gapaware(re, seq),
         SequenceSearchTarget::AlignmentRow => regex_match_positions_naive(re, seq),
     }
+}
+
+// A helper for ensuring correct case sensitivity when buliding regexes
+
+pub fn compile_regex(pattern: &str, case_insensitive: bool) -> Result<Regex, regex::Error> {
+    RegexBuilder::new(pattern)
+        .case_insensitive(! case_insensitive)
+        .build()
 }
 
 pub fn regex_match_positions_naive(re: &Regex, seq: &str) -> Vec<MatchPosition> {
@@ -186,6 +194,79 @@ mod tests {
             match_pos,
             vec![MatchPosition {
                 start_col: 2,
+                end_col: 7
+            },]
+        );
+    }
+
+    #[test]
+    fn test_case_insensitive_naive() {
+        use regex::RegexBuilder;
+        let re = RegexBuilder::new("ACG")
+            .case_insensitive(true)
+            .build()
+            .unwrap();
+        let seq = "acgtACGtacg";
+
+        let match_pos = regex_match_positions_naive(&re, seq);
+
+        assert_eq!(
+            match_pos,
+            vec![
+                MatchPosition {
+                    start_col: 0,
+                    end_col: 3
+                },
+                MatchPosition {
+                    start_col: 4,
+                    end_col: 7
+                },
+                MatchPosition {
+                    start_col: 8,
+                    end_col: 11
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn test_case_insensitive_gapaware() {
+        use regex::RegexBuilder;
+        let re = RegexBuilder::new("A[CT]G")
+            .case_insensitive(true)
+            .build()
+            .unwrap();
+        let seq = "a-c-g-ACG";
+
+        let match_pos = regex_match_positions_gapaware(&re, seq);
+
+        assert_eq!(
+            match_pos,
+            vec![
+                MatchPosition {
+                    start_col: 0,
+                    end_col: 5
+                },
+                MatchPosition {
+                    start_col: 6,
+                    end_col: 9
+                },
+            ]
+        );
+    }
+
+    #[test]
+    fn test_case_sensitive_still_works() {
+        let re = Regex::new("ACG").unwrap();
+        let seq = "acgtACGtacg";
+
+        let match_pos = regex_match_positions_naive(&re, seq);
+
+        // Should only match uppercase ACG
+        assert_eq!(
+            match_pos,
+            vec![MatchPosition {
+                start_col: 4,
                 end_col: 7
             },]
         );

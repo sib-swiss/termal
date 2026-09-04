@@ -7,6 +7,8 @@ pub fn execute(ui: &mut UI, cmd: &str) {
     ui.app.clear_msg();
     let parts: Vec<&str> = cmd.trim().split_whitespace().collect();
     match parts.as_slice() {
+        ["set", "case"] => ui.app.set_case_sensitive(true),
+        ["set", "nocase"] => ui.app.set_case_sensitive(false),
         ["set", "jump", "lazy"] => ui.options.jump_mode = JumpMode::LazyCentered,
         ["set", "jump", "center"] => ui.options.jump_mode = JumpMode::AlwaysCenter,
         ["set", "lohi-threshold", val] | ["set", "lt", val] => match val.parse::<f64>() {

@@ -319,10 +319,11 @@ fn tick_position(aln_length: usize) -> String {
 // Draw UI
 ****************************************************************/
 
+// Might be renamed to "status bar"
 fn compute_title(ui: &UI) -> String {
     ui.common_ratio();
-    let title = format!(
-        " {} | {}/{}s x {}/{}c | {} {}",
+    format!(
+        " {} | {}/{}s x {}/{}c | {} {} | {} | {} ",
         ui.app.filename,
         ui.max_nb_seq_shown(),
         ui.app.num_seq(),
@@ -330,15 +331,12 @@ fn compute_title(ui: &UI) -> String {
         ui.app.aln_len(),
         ui.color_scheme(),
         ui.video_mode,
-    );
-    format!(
-        "{} | {} ",
-        title,
         match ui.zoom_level {
             ZoomLevel::ZoomedIn => "Zoomed in",
             ZoomLevel::ZoomedOut => "Zoomed out ",
             ZoomLevel::ZoomedOutAR => "Z. out (Aspect)",
-        }
+        },
+        if ui.app.case_sensitive() { "Case" } else { "Nocase" },
     )
 }
 

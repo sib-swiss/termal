@@ -14,7 +14,7 @@ use termal_alignment::alignment::{
 use crate::{
     app::SeqMetric::{PctIdWrtConsensus, SeqLen, SeqQuality},
     app::SeqOrdering::{SeqMetricDecr, SeqMetricIncr, SourceFile, User},
-    seq_match::{regex_match_positions, MatchPosition, SequenceSearchTarget},
+    seq_match::{compile_regex, regex_match_positions, MatchPosition, SequenceSearchTarget},
     vec_f64_aux::{normalize, ones_complement, product},
 };
 
@@ -158,6 +158,7 @@ pub struct App {
     pub cur_hi_col_metric_region: Option<usize>,
     pub options: AppOptions,
     pub ex_history: Vec<String>,
+    case_sensitive: bool,   // Regex searches
 }
 
 impl App {
@@ -184,6 +185,7 @@ impl App {
             cur_hi_col_metric_region: None,
             options: AppOptions::default(),
             ex_history: Vec::new(),
+            case_sensitive: true,
         };
         app.recompute_ordering();
         app.update_hi_metric_regions();
@@ -651,20 +653,12 @@ impl App {
     }
 
     pub fn regex_search_seq(&mut self, pattern: &str, target: SequenceSearchTarget) {
-        let try_re = Regex::new(pattern);
+        let try_re = compile_regex(pattern, self.case_sensitive);
         match try_re {
             Ok(re) => {
                 let mut matches_by_rank: HashMap<usize, Vec<MatchPosition>> = HashMap::new();
                 for (rank, sequence) in self.alignment.sequences.iter().enumerate() {
                     let seq_matches = regex_match_positions(&re, sequence, target);
-                    /*
-                    let seq_matches = re
-                        .find_iter(sequence)
-                        .map(|m| MatchPosition::new (
-                            m.start(), m.end()
-                        ))
-                        .collect::<Vec<MatchPosition>>();
-                    */
                     if !seq_matches.is_empty() {
                         matches_by_rank.insert(rank, seq_matches);
                     }
@@ -868,6 +862,14 @@ impl App {
                 &ones_complement(&normalize(&self.alignment.entropies)),
             ),
         }
+    }
+
+    pub fn set_case_sensitive(&mut self, sensitive: bool) {
+        self.case_sensitive = sensitive;
+    }
+
+    pub fn case_sensitive(&self) -> bool {
+        self.case_sensitive
     }
 }
 
