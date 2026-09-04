@@ -3,6 +3,8 @@ name = "termal-export"
 version = "0.2.0"
 edition = "2021"
 publish = true
+license = "MIT"
+description = "A generator of SVG representations of multiple sequence alignments"
 
 [dependencies]
 termal-alignment = { version = "0.3", path = "../termal-alignment" }
