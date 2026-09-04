@@ -253,7 +253,7 @@ fn handle_label_search(
             });
             if let Some(idx) = found {
                 let entry = ui.app.hdr_srch_history[idx].clone();
-                ui.app.argument_msg("Search: ", entry.clone());
+                ui.app.argument_msg("Hdr search: ", entry.clone());
                 ui.input_mode = InputMode::LabelSearch {
                     pattern: entry,
                     history_prefix: Some(prefix),
@@ -275,7 +275,7 @@ fn handle_label_search(
                     .find(|&i| ui.app.hdr_srch_history[i].starts_with(&prefix));
                 if let Some(next_idx) = found {
                     let entry = ui.app.hdr_srch_history[next_idx].clone();
-                    ui.app.argument_msg("Search: ", entry.clone());
+                    ui.app.argument_msg("Hdr search: ", entry.clone());
                     ui.input_mode = InputMode::LabelSearch {
                         pattern: entry,
                         history_prefix: Some(prefix),
@@ -283,7 +283,7 @@ fn handle_label_search(
                     };
                 } else {
                     // Reached the present: restore the original prefix as the buffer.
-                    ui.app.argument_msg("Search: ", prefix.clone());
+                    ui.app.argument_msg("Hdr search: ", prefix.clone());
                     ui.input_mode = InputMode::LabelSearch {
                         pattern: prefix,
                         history_prefix: None,
@@ -358,7 +358,7 @@ fn handle_sequence_search(
             });
             if let Some(idx) = found {
                 let entry = ui.app.seq_srch_history[idx].clone();
-                ui.app.argument_msg("Search: ", entry.clone());
+                ui.app.argument_msg("Seq search: ", entry.clone());
                 ui.input_mode = InputMode::Search {
                     pattern: entry,
                     target,
@@ -382,7 +382,7 @@ fn handle_sequence_search(
                     .find(|&i| ui.app.seq_srch_history[i].starts_with(&prefix));
                 if let Some(next_idx) = found {
                     let entry = ui.app.seq_srch_history[next_idx].clone();
-                    ui.app.argument_msg("Search: ", entry.clone());
+                    ui.app.argument_msg("Seq search: ", entry.clone());
                     ui.input_mode = InputMode::Search {
                         pattern: entry,
                         target,
@@ -391,7 +391,7 @@ fn handle_sequence_search(
                     };
                 } else {
                     // Reached the present: restore the original prefix as the buffer.
-                    ui.app.argument_msg("Search: ", prefix.clone());
+                    ui.app.argument_msg("Seq search: ", prefix.clone());
                     ui.input_mode = InputMode::Search {
                         pattern: prefix,
                         target,
