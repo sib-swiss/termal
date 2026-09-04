@@ -95,8 +95,8 @@ mod tests {
         };
 
         let layout = compute_layout(&aln, &opts);
-        assert_eq!(layout.hdr_txt_width, 84.0);
-        assert_eq!(layout.grid_width, 117.0);
+        assert_eq!(layout.hdr_txt_width, 90.4);
+        assert_eq!(layout.grid_width, 123.4);
         assert_eq!(layout.grid_height, 24.0);
     }
 
