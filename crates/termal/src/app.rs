@@ -380,8 +380,9 @@ impl App {
 
     // Search
 
+    // TODO: rename to regex_search_hdr
     pub fn regex_search_labels(&mut self, pattern: &str) {
-        let try_re = Regex::new(pattern);
+        let try_re = compile_regex(pattern, self.case_sensitive);
         match try_re {
             Ok(re) => {
                 let matches: Vec<usize> = self
