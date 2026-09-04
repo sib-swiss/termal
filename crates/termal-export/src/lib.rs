@@ -29,6 +29,7 @@ pub struct ExportOpts {
     pub margin_x: f32,
     pub margin_y: f32,
     pub cell_frames: bool,
+    pub hdr_pane_width_corr: f32,
 }
 
 #[derive(Clone, Debug)]
@@ -44,7 +45,7 @@ pub fn compute_layout(aln: &Alignment, opts: &ExportOpts) -> Layout {
             .skip(opts.region.rows.start)
             .take(opts.region.rows.end - opts.region.rows.start)
             .map(|h| h.len()).max().unwrap_or(0);
-    let hdr_txt_width = max_hdr_len as f32 * opts.char_width + GUTTER_WIDTH;
+    let hdr_txt_width = max_hdr_len as f32 * opts.char_width * opts.hdr_pane_width_corr + GUTTER_WIDTH;
 
     Layout {
         grid_width: hdr_txt_width + (opts.region.cols.end - opts.region.cols.start) as f32 * opts.cell_width,
@@ -69,6 +70,7 @@ impl Default for ExportOpts {
             margin_x: 10.0,
             margin_y: 10.0,
             cell_frames: false,
+            hdr_pane_width_corr: 1.1,
         }
     }
 }

@@ -84,6 +84,10 @@ struct Args {
     #[arg(long, default_value_t = 8.0)]
     char_width: f32,
 
+    /// Header pane width correction factor
+    #[arg(long, default_value_t = 1.1)]
+    hdr_pane_width_corr: f32,
+
     /// Margin x in px
     #[arg(long, default_value_t = 10.0)]
     margin_x: f32,
@@ -142,6 +146,7 @@ fn main() -> Result<()> {
         margin_x: args.margin_x,
         margin_y: args.margin_y,
         cell_frames: args.cell_frames,
+        hdr_pane_width_corr: args.hdr_pane_width_corr,
         ..Default::default()
     };
 
