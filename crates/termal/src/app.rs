@@ -1044,4 +1044,62 @@ mod tests {
             None => panic!(),
         }
     }
+
+    #[test]
+    fn test_header_search_case_sensitive_default() {
+        let hdrs = vec![
+            String::from("Human"),
+            String::from("mouse"),
+            String::from("ZEBRA"),
+            String::from("Chicken"),
+        ];
+        let seqs = vec![
+            String::from("ATCG"),
+            String::from("ATCG"),
+            String::from("ATCG"),
+            String::from("ATCG"),
+        ];
+        let aln = Alignment::from_vecs(hdrs, seqs);
+        let mut app = App::new("TEST", aln, None);
+
+        // Default: case-sensitive. Should only match "Human" (capital H)
+        app.regex_search_labels("^H");
+        match app.search_state {
+            Some(SearchState::Header(state)) => {
+                assert_eq!(state.match_ranks, vec![0], "case-sensitive search should only find 'Human'");
+            }
+            _ => panic!("Expected header search state"),
+        }
+    }
+
+    #[test]
+    fn test_header_search_case_insensitive() {
+        let hdrs = vec![
+            String::from("Human"),
+            String::from("mouse"),
+            String::from("ZEBRA"),
+            String::from("Chicken"),
+        ];
+        let seqs = vec![
+            String::from("ATCG"),
+            String::from("ATCG"),
+            String::from("ATCG"),
+            String::from("ATCG"),
+        ];
+        let aln = Alignment::from_vecs(hdrs, seqs);
+        let mut app = App::new("TEST", aln, None);
+
+        // Enable case-insensitive
+        app.set_case_sensitive(false);
+
+        // Should match "Human" (capital H) with lowercase pattern
+        app.regex_search_labels("^h");
+        match app.search_state {
+            Some(SearchState::Header(state)) => {
+                assert_eq!(state.match_ranks, vec![0], "case-insensitive search should find 'Human' with lowercase pattern");
+            }
+            _ => panic!("Expected header search state"),
+        }
+    }
+
 }

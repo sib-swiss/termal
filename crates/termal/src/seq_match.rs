@@ -37,11 +37,11 @@ pub fn regex_match_positions(
     }
 }
 
-// A helper for ensuring correct case sensitivity when buliding regexes
+// A helper for ensuring correct case sensitivity when building regexes
 
-pub fn compile_regex(pattern: &str, case_insensitive: bool) -> Result<Regex, regex::Error> {
+pub fn compile_regex(pattern: &str, case_sensitive: bool) -> Result<Regex, regex::Error> {
     RegexBuilder::new(pattern)
-        .case_insensitive(! case_insensitive)
+        .case_insensitive(!case_sensitive)
         .build()
 }
 
