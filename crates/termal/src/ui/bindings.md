@@ -86,8 +86,6 @@ c,C: next/previous column metric
 
 ## ':' Commands
 
-All ':' commands are sent by <Ret>
-
 Command                   Effect
 --------                  ------------------------------------------------------
 :set jump lazy            recenter view only when a jump target scrolls off-screen (default)
@@ -96,8 +94,11 @@ Command                   Effect
 :set lohi-gap <n>         merge conserved regions separated by ≤ n columns (default 3)
 :set <case|nocase>        enables/disables case sensitivity in searches
 
-### When typing ':' Commands
+All ':' commands are sent by <Ret>, cancels the  command
+
+## History
+
+Search commands and ':' commands have history:
 
 * Up   : move up history, recalling previous command matching current
-* Down : move down history
-* Esc  : cancel command
+* Down : same, moving down
