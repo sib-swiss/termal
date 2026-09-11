@@ -118,12 +118,29 @@ impl Alignment {
                 max_len = l;
             }
         }
+
         // Pad any sequence shorter than max_len, so we are not limited to alignments with exactly
         // identical numbers of positions (reviewer suggestion).
+        // NOTE: As of Rust 1.87, the format!() macro stores width/precision as u16 internally.
+        // So when we pass max_len (a usize) to it, the macro tries to fit it into a u16.
+        // If max_len > 65,535, it panics: "Formatting argument out of range."
+        // So we avoid format!() entirely and pad manually with push_str() and repeat(),
+        // which have no u16 limitation.
+
+        /*
         sequences
             .iter_mut()
             .for_each(|s| *s = format!("{:<width$}", s, width = max_len));
         // NOTE: the 's' can also be written '&*s', which makes the automatic re-borrow explicit.
+        */
+        sequences
+            .iter_mut()
+            .for_each(|s| {
+                if s.len() < max_len {
+                    s.push_str(&" ".repeat(max_len - s.len()));
+                }
+            });
+
         let first_seq = sequences.first();
         let macromolecule_type = seq_type(first_seq.expect("No sequence found."));
         let consensus = compute_consensus(&sequences, macromolecule_type);
