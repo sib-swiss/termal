@@ -230,7 +230,7 @@ fn test_sequence_search_respects_reordered_traversal() {
             let expected_top_line =
                 (first_screenline.saturating_sub(vh / 2) as u16).min(ui.max_top_line());
             let expected_leftmost_col =
-                (first_start_col.saturating_sub(vw / 2) as u16).min(ui.max_leftmost_col());
+                first_start_col.saturating_sub(vw / 2).min(ui.max_leftmost_col());
             assert_eq!(ui.top_line(), expected_top_line);
             assert_eq!(ui.leftmost_col(), expected_leftmost_col);
 
@@ -247,7 +247,7 @@ fn test_sequence_search_respects_reordered_traversal() {
             let expected_next_top_line =
                 (next_screenline.saturating_sub(vh / 2) as u16).min(ui.max_top_line());
             let expected_next_leftmost_col =
-                (next_start_col.saturating_sub(vw / 2) as u16).min(ui.max_leftmost_col());
+                next_start_col.saturating_sub(vw / 2).min(ui.max_leftmost_col());
             assert_eq!(ui.top_line(), expected_next_top_line);
             assert_eq!(ui.leftmost_col(), expected_next_leftmost_col);
         },
