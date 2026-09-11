@@ -153,7 +153,7 @@ pub struct UI<'a> {
     show_scrollbars: bool,
     highlight_retained_cols: bool,
     top_line: u16,
-    leftmost_col: u16,
+    leftmost_col: usize,  // Position in a sequence, which can exceed u16::MAX
     left_pane_width: u16,
     previous_left_pane_width: u16, // To restore width after hiding pane
     bottom_pane_height: u16,
@@ -251,7 +251,7 @@ impl<'a> UI<'a> {
     pub fn top_line(&self) -> u16 {
         self.top_line
     }
-    pub fn leftmost_col(&self) -> u16 {
+    pub fn leftmost_col(&self) -> usize {
         self.leftmost_col
     }
     pub fn help_top_line(&self) -> u16 {
@@ -287,9 +287,9 @@ impl<'a> UI<'a> {
         }
     }
 
-    pub fn max_leftmost_col(&self) -> u16 {
-        if self.app.aln_len() >= self.max_nb_col_shown() {
-            self.app.aln_len() - self.max_nb_col_shown()
+    pub fn max_leftmost_col(&self) -> usize {
+        if self.app.aln_len() >= self.max_nb_col_shown() as usize {
+            self.app.aln_len() - self.max_nb_col_shown() as usize
         } else {
             0
         }
@@ -394,7 +394,7 @@ impl<'a> UI<'a> {
     // TODO: might be an inner function of cycle_zoom, as it is not used anywhere else.
     fn aln_wrt_seq_pane(&self) -> AlnWRTSeqPane {
         let mut rel = AlnWRTSeqPane::Fits;
-        if self.app.aln_len() > self.max_nb_col_shown() {
+        if self.app.aln_len() > self.max_nb_col_shown() as usize {
             rel |= AlnWRTSeqPane::TooWide;
         }
         if self.app.num_seq() > self.max_nb_seq_shown() {
@@ -438,10 +438,10 @@ impl<'a> UI<'a> {
     pub fn common_ratio(&self) -> f64 {
         let min_ratio = self.h_ratio().min(self.v_ratio());
         let max_ratio = self.h_ratio().max(self.v_ratio());
-        let max_r_cols = (self.app.aln_len() as f64 * max_ratio).floor() as u16;
+        let max_r_cols = (self.app.aln_len() as f64 * max_ratio).floor() as usize;
         let max_r_seqs = (self.app.num_seq() as f64 * max_ratio).floor() as u16;
 
-        if max_r_cols == self.max_nb_col_shown() && max_r_seqs == self.max_nb_seq_shown() {
+        if max_r_cols == self.max_nb_col_shown() as usize && max_r_seqs == self.max_nb_seq_shown() {
             max_ratio
         } else {
             min_ratio
@@ -521,7 +521,7 @@ impl<'a> UI<'a> {
     pub fn zoombox_right(&self, max_nb_col_shown_ar: usize) -> usize {
         match self.zoom_level {
             ZoomLevel::ZoomedOut => {
-                let mut zb_right = (((self.leftmost_col + self.max_nb_col_shown()) as f64)
+                let mut zb_right = (((self.leftmost_col + self.max_nb_col_shown() as usize) as f64)
                     * self.h_ratio())
                 .floor() as usize;
                 // If w_a < w_p
@@ -533,7 +533,7 @@ impl<'a> UI<'a> {
             ZoomLevel::ZoomedOutAR => {
                 let ratio = self.common_ratio();
                 let aln_para_width = min(max_nb_col_shown_ar as u16, self.max_nb_col_shown());
-                let mut zb_right = (((self.leftmost_col + self.max_nb_col_shown()) as f64) * ratio)
+                let mut zb_right = (((self.leftmost_col + self.max_nb_col_shown() as usize) as f64) * ratio)
                     .floor() as usize;
                 // If w_a < w_p
                 if zb_right > aln_para_width as usize {
@@ -665,7 +665,7 @@ impl<'a> UI<'a> {
     }
 
     pub fn scroll_one_col_left(&mut self, count: u16) {
-        self.leftmost_col = self.leftmost_col.saturating_sub(count);
+        self.leftmost_col = self.leftmost_col.saturating_sub(count as usize);
     }
 
     pub fn scroll_one_line_down(&mut self, count: u16) {
@@ -674,7 +674,7 @@ impl<'a> UI<'a> {
 
     pub fn scroll_one_col_right(&mut self, count: u16) {
         self.leftmost_col = min(
-            self.leftmost_col.saturating_add(count),
+            self.leftmost_col.saturating_add(count as usize),
             self.max_leftmost_col(),
         );
     }
@@ -690,7 +690,7 @@ impl<'a> UI<'a> {
     pub fn scroll_one_screen_left(&mut self, count: u16) {
         self.leftmost_col = self
             .leftmost_col
-            .saturating_sub(count.saturating_mul(self.max_nb_col_shown()));
+            .saturating_sub((count as usize).saturating_mul(self.max_nb_col_shown() as usize));
     }
 
     pub fn scroll_one_screen_down(&mut self, count: u16) {
@@ -704,7 +704,7 @@ impl<'a> UI<'a> {
     pub fn scroll_one_screen_right(&mut self, count: u16) {
         self.leftmost_col = min(
             self.leftmost_col
-                .saturating_add(count.saturating_mul(self.max_nb_col_shown())),
+                .saturating_add((count as usize).saturating_mul(self.max_nb_col_shown() as usize)),
             self.max_leftmost_col(),
         );
     }
@@ -719,7 +719,7 @@ impl<'a> UI<'a> {
     pub fn scroll_zoombox_one_col_left(&mut self, count: u16) {
         self.leftmost_col = self
             .leftmost_col
-            .saturating_sub((count as f64 / self.h_ratio()).round() as u16);
+            .saturating_sub((count as f64 / self.h_ratio()).round() as usize);
     }
 
     pub fn scroll_zoombox_one_line_down(&mut self, count: u16) {
@@ -733,7 +733,7 @@ impl<'a> UI<'a> {
     pub fn scroll_zoombox_one_col_right(&mut self, count: u16) {
         self.leftmost_col = min(
             self.leftmost_col
-                .saturating_add((count as f64 / self.h_ratio()).round() as u16),
+                .saturating_add((count as f64 / self.h_ratio()).round() as usize),
             self.max_leftmost_col(),
         );
     }
@@ -769,7 +769,7 @@ impl<'a> UI<'a> {
     }
 
     pub fn jump_to_col(&mut self, col: u16) {
-        self.leftmost_col = min(col, self.max_leftmost_col());
+        self.leftmost_col = min(col as usize, self.max_leftmost_col());
     }
 
     pub fn jump_to_pct_line(&mut self, pct: u16) {
@@ -780,7 +780,7 @@ impl<'a> UI<'a> {
 
     pub fn jump_to_pct_col(&mut self, pct: u16) {
         let clamped_pct = min(100, pct);
-        let tgt_col = (clamped_pct as f64 / 100.0 * self.app.aln_len() as f64).round() as u16;
+        let tgt_col = (clamped_pct as f64 / 100.0 * self.app.aln_len() as f64).round() as usize;
         self.leftmost_col = tgt_col;
     }
 
@@ -818,7 +818,7 @@ impl<'a> UI<'a> {
             match target {
                 Some(JumpTarget::Match(_, match_pos)) => {
                     let left = usize::from(self.leftmost_col);
-                    let right = usize::from(self.leftmost_col + self.max_nb_col_shown());
+                    let right = usize::from(self.leftmost_col + self.max_nb_col_shown() as usize);
                     if match_pos.start_col() >= left && match_pos.end_col() <= right {
                         step_count -= 1;
                     }
@@ -878,7 +878,7 @@ impl<'a> UI<'a> {
             return;
         }
         let centered = start_col.saturating_sub(visible / 2);
-        self.leftmost_col = (centered as u16).min(self.max_leftmost_col());
+        self.leftmost_col = centered.min(self.max_leftmost_col());
     }
 
     pub fn jump_to_next_hi_col_metric_region(&mut self, count: i16) {
@@ -893,7 +893,7 @@ impl<'a> UI<'a> {
             match region {
                 Some((start, _len)) => {
                     // Put the region start at the left edge so long regions are visible in full.
-                    self.leftmost_col = (start as u16).min(self.max_leftmost_col());
+                    self.leftmost_col = start.min(self.max_leftmost_col());
                 }
                 None => break,
             }
@@ -903,11 +903,11 @@ impl<'a> UI<'a> {
     // Debugging
 
     pub fn assert_invariants(&self) {
-        if self.max_nb_col_shown() > self.app.aln_len() {
+        if self.max_nb_col_shown() as usize > self.app.aln_len() {
             assert!(self.max_leftmost_col() == 0);
         } else {
             assert!(
-                self.max_leftmost_col() + self.max_nb_col_shown() == self.app.aln_len(),
+                self.max_leftmost_col() + self.max_nb_col_shown() as usize == self.app.aln_len(),
                 "l_max: {} + w_p: {} == w_a: {} failed",
                 self.max_leftmost_col(),
                 self.max_nb_col_shown(),

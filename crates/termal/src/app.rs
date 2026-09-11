@@ -195,14 +195,15 @@ impl App {
     }
 
     // Computed properties (TODO: could be set in a struct member, as they do not change)
-    // FIXME where do we need num_seq as u16?
+    // FIXME where do we need num_seq as u16? And should we not return usize for num_seq the way we do
+    // for aln_len?
 
     pub fn num_seq(&self) -> u16 {
         self.alignment.num_seq().try_into().unwrap()
     }
 
-    pub fn aln_len(&self) -> u16 {
-        self.alignment.aln_len().try_into().unwrap()
+    pub fn aln_len(&self) -> usize {
+        self.alignment.aln_len()
     }
 
     fn recompute_ordering(&mut self) {

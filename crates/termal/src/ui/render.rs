@@ -500,7 +500,7 @@ fn render_alignment_pane(f: &mut Frame, aln_chunk: Rect, ui: &UI) {
             && ui.max_nb_col_shown() > 2
         {
             let mut h_scrollbar_state = ScrollbarState::default()
-                .content_length((ui.app.aln_len() - ui.max_nb_col_shown()).into())
+                .content_length((ui.app.aln_len() - ui.max_nb_col_shown() as usize).into())
                 .viewport_content_length((ui.max_nb_col_shown() - 2).into())
                 .position(ui.leftmost_col.into());
             let h_scrollbar = Scrollbar::new(ScrollbarOrientation::HorizontalBottom)
@@ -623,7 +623,7 @@ fn render_bottom_pane(f: &mut Frame, bottom_chunk: Rect, ui: &UI) {
     ];
 
     let btm_para = Paragraph::new(btm_text)
-        .scroll((0, ui.leftmost_col))
+        .scroll((0, u16::try_from(ui.leftmost_col).unwrap_or(u16::MAX)))
         .block(btm_block);
     f.render_widget(btm_para, bottom_chunk);
 }
