@@ -690,13 +690,13 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
                         }
                     },
                     KeyCode::Right => match ui.zoom_level() {
-                        ZoomLevel::ZoomedIn => ui.scroll_one_col_right(count as u16),
+                        ZoomLevel::ZoomedIn => ui.scroll_one_col_right(count),
                         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
                             ui.scroll_zoombox_one_col_right(count as u16)
                         }
                     },
                     KeyCode::Left => match ui.zoom_level() {
-                        ZoomLevel::ZoomedIn => ui.scroll_one_col_left(count as u16),
+                        ZoomLevel::ZoomedIn => ui.scroll_one_col_left(count),
                         ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
                             ui.scroll_zoombox_one_col_left(count as u16)
                         }
@@ -729,7 +729,7 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
         // Left
         KeyCode::Char('h') => match ui.zoom_level() {
-            ZoomLevel::ZoomedIn => ui.scroll_one_col_left(count as u16),
+            ZoomLevel::ZoomedIn => ui.scroll_one_col_left(count),
             ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
                 ui.scroll_zoombox_one_col_left(count as u16)
             }
@@ -749,7 +749,7 @@ fn dispatch_command(ui: &mut UI, key_event: KeyEvent, count_arg: Option<usize>) 
 
         // Right
         KeyCode::Char('l') => match ui.zoom_level() {
-            ZoomLevel::ZoomedIn => ui.scroll_one_col_right(count as u16),
+            ZoomLevel::ZoomedIn => ui.scroll_one_col_right(count),
             ZoomLevel::ZoomedOut | ZoomLevel::ZoomedOutAR => {
                 ui.scroll_zoombox_one_col_right(count as u16)
             }

@@ -11,6 +11,8 @@ pub mod render;
 mod style;
 mod zoombox;
 
+use log::debug;
+
 use std::{
     cmp::{max, min},
     fmt,
@@ -664,19 +666,21 @@ impl<'a> UI<'a> {
         self.top_line = self.top_line.saturating_sub(count);
     }
 
-    pub fn scroll_one_col_left(&mut self, count: u16) {
-        self.leftmost_col = self.leftmost_col.saturating_sub(count as usize);
+    pub fn scroll_one_col_left(&mut self, count: usize) {
+        self.leftmost_col = self.leftmost_col.saturating_sub(count);
     }
 
     pub fn scroll_one_line_down(&mut self, count: u16) {
         self.top_line = min(self.top_line.saturating_add(count), self.max_top_line());
     }
 
-    pub fn scroll_one_col_right(&mut self, count: u16) {
+    pub fn scroll_one_col_right(&mut self, count: usize) {
+        debug!("scroll_one_col_right: before leftmost_col={}", self.leftmost_col);
         self.leftmost_col = min(
-            self.leftmost_col.saturating_add(count as usize),
+            self.leftmost_col.saturating_add(count),
             self.max_leftmost_col(),
         );
+        debug!("scroll_one_col_right: after leftmost_col={}", self.leftmost_col);
     }
 
     // By screens

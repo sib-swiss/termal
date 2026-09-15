@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2025-2026 Thomas Junier
 
+use log::debug;
+
 use ratatui::{
     prelude::{Buffer, Position, Rect},
     style::{Modifier, Style},
@@ -47,6 +49,7 @@ pub struct SeqPane<'a> {
 
 impl<'a> Widget for SeqPane<'a> {
     fn render(self, area: Rect, buf: &mut Buffer) {
+     debug!("SeqPane::render: area={:?}", area);
         let rows = area.height as usize;
         let cols = area.width as usize;
 
@@ -68,12 +71,24 @@ impl<'a> Widget for SeqPane<'a> {
             let seq = self.sequences[self.ordering[i]].as_bytes();
 
             for c in 0..cols {
+
+                // TODO: rm when debugged
+                if c == 0 {
+                    debug!("render: r={}, left_j={}, seq.len()={}, j_range=[{},{}]",
+                       r, self.left_j, seq.len(), self.left_j, self.left_j + cols);
+                }
+
                 let j = self.left_j + c;
                 if j >= seq.len() {
                     break;
                 }
 
                 let raw_char = seq[j];
+
+                // TODO: rm when debugged
+				if c < 3 && r == 0 {
+					debug!("render cell: c={}, j={}, char={}", c, j, raw_char as char);
+				}
 
                 let diffed_char: u8;
                 match self.ref_spec {
